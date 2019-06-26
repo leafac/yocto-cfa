@@ -1,0 +1,14 @@
+*.aux
+*.bbl
+*.bib
+*.blg
+*.lof
+*.log
+*.lot
+*.out
+*.synctex.gz
+*.toc
+*.xmpdata
+*.xmpi
+
+compiled/
