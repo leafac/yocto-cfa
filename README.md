@@ -1,7 +1,7 @@
 Demand-Driven Context-Sensitive Higher-Order Program Analysis
 =============================================================
 
-[Leandro Facchinetti](https://www.leafac.com)’s dissertation
+[Leandro Facchinetti](https://www.leafac.com)’s dissertation.
 
 Build the dissertation with the usual LaTeX routine:
 
