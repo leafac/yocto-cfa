@@ -95,6 +95,10 @@ Finally, we evaluate our techniques in comparison to the state-of-the-art and de
 
 Dr.~Scott F. Smith (advisor); Dr.~Zachary Palmer; Dr.~Matthew Green.
 
+\chapter{Source Code}
+
+The source code for this dissertation and all accompanying programs is available at \href{https://github.com/leafac/demand-driven-context-sensitive-higher-order-program-analysis}{\texttt{https://github.com/leafac/demand-driven-context-sensitive-higher-order-program-analysis}}.
+
 \chapter{Prior Art}
 
 The work in this dissertation is partially based on my previous publications:
@@ -530,6 +534,11 @@ To this end, one of the main contributions in this dissertation is a precision m
 \section{Sensitivities}
 \label{section:sensitivities}
 
+\begin{itemize}
+  \item Sensitive vs. regular-approximating
+  \item call–return alignment
+\end{itemize}
+
 When reasoning about the precision of analyzers, we find common problems that they must solve. If the analyzer can preserve precision when facing this problem they are said to be \emph{sensitive} to it, and if they cannot, they are said to be \emph{insensitive} to it. Whether an analyzer is sensitive or insensitive in some of the dimensions we discuss below is often subjective and dependent on the details of the algorithm the analyzer implements. Some of these sensitivities overlap, and the distinctions between may be unclear. This is similar to how it is difficult to classify a programming language as object-oriented, functional, logical, and so forth. Many languages have features from multiple families, for example, Java is object-oriented but in the latest versions also includes features from functional languages, namely higher-order functions.
 
 In the following subsections we introduce the most common sensitivities relevant to the kinds of analyzers we investigate in this dissertation.
@@ -805,6 +814,7 @@ Not only can the analyzer predict that the original program does not trigger the
 \begin{itemize}
   \item Difficult to understand (and compare, and find the right one for the job)
   \item Expensive
+  \item One issue feeds the other: if an analyzer is difficult to understand, it’s hard to tell whether it’ll be fast for a certain task
 \end{itemize}
 
 \begin{itemize}
@@ -837,25 +847,23 @@ Not only can the analyzer predict that the original program does not trigger the
 \chapter{Building a State-of-the-Art Program Analysis from Scratch}
 \label{section:building-a-state-of-the-art-program-analysis-from-scratch}
 
+In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:step-0--base-interpreter}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). Students of program analysis will appreciate the pedagogical value of this presentation. The discussion is presented in terms of code, and you are encouraged to experiment with it as you follow along.
+
+Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we use our system to recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may find this useful to determine which technique is more appropriate for a certain task.
+
+In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In~§~\ref{section:evalutation} we show that this context model strikes a better balance between precision and running time than most alternatives, particularly for recursive programs.
+
+\paragraph{Formal Characteristics of our Analyzer.}
+
+Our analyzer has the following features: it is terminating; it is sound; it features perfect call–return alignment; it builds the control-flow graph for the program on-the-fly (online construction); it is regular-approximating context-sensitive; it is regular-approximating field-sensitive (that is, with respect to non-local variables in closures).
+
+% TODO: I believe that our analyzer has perfect call–return alignment, but only regular-approximating context sensitivity. This has a huge impact in the rest of what I wrote, starting with the title (which claims that my analyzer is context-sensitive). Upon further reflection (that is, since I start writing the Introduction and whatnot), I believe that call–return alignment is the best we can do, and it doesn’t necessarily translate into context-sensitivity all the time.
+
+* * *
+
 \begin{itemize}
-  \item The source code for this chapter is available at \url{https://github.com/leafac/demand-driven-program-analysis}
-  \item Start with a concrete interpreter and do ten-step progression to get to an abstract interpreter (following the steps of ADI but improving on it for being more direct and simpler to understand; no open recursion or monads)
-  \item Novel context models (lists of unique call sites \& sets of call sites) (they seem to perform well in practice; sometimes better than the less precise approaches)
-  \item Investigate variations to explore their effects: store widening, \(k\)-CFA, sets-of-call-sites, stack/heap separation
-  \item Some of the variations are bigger steps than the construction of the base analysis.
+  \item Architecture
   \item  We achieve this simplicity in presentation by making the analyzed language small and by using relatively straightforward programming techniques, not by compromising on features: the resulting program analyzer is the state-of-the-art.
-\end{itemize}
-
-\paragraph{Contributions:}
-
-\begin{itemize}
-  \item Untangle the complexities in ADI, in particular the open recursion and the monads. Also, make some parts of the framework clearer, for example, the interplay between cycle detection and the cache construction.
-  \item A novel context model which we conjecture has perfect precision up to recursion (lists-of-unique-call-sites)
-\end{itemize}
-
-\section{Architecture}
-
-\begin{itemize}
   \item Surface language \& Core language §~\ref{section:compiling-the-surface-language-into-the-core-language}
   \item Reduce~(\(⇒\)) \& Lift~(\(⇑\))
   \item Draw a picture of the square.
@@ -869,9 +877,8 @@ Not only can the analyzer predict that the original program does not trigger the
   \item Soundness proof = ADI + Allocation Characterizes Polyvariance
 \end{itemize}
 
-\section{High-Level View}
-
 \begin{itemize}
+  \item High-Level View
   \item Finitize the space \& check for cycles
   \item Finitize the space using the AAM trick: (1)~removing the recursion from the data structures (figure with diagram of grammars, one including a cycle and another not including it); and (2)~finitizing the space of addresses.
   \item Briefly describe each step.
@@ -884,6 +891,7 @@ Not only can the analyzer predict that the original program does not trigger the
 \end{itemize}
 
 \section{Step 0: Base Interpreter}
+\label{section:step-0--base-interpreter}
 
 \begin{itemize}
   \item Ground truth
@@ -1692,6 +1700,7 @@ Not only can the analyzer predict that the original program does not trigger the
 \end{itemize}
 
 \section{Step 10: Compute Kleene Fixed-Point Algorithm of the Cache}
+\label{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}
 
 \begin{itemize}
   \item We recover soundness by computing the Kleene Fixed-Point Algorithm of the Cache. We run the auxiliary \(→\) repeatedly, over the same cache \(\$\), until it doesn’t change between runs (converges).
@@ -1775,6 +1784,7 @@ Not only can the analyzer predict that the original program does not trigger the
 \end{itemize}
 
 \section{Variation: Context Model: Sets of Call Sites}
+\label{section:variation--context-model--sets-of-call-sites}
 
 \begin{itemize}
   \item This is a weakening of our novel context model. Time stamps \(t\) are no longer \emph{lists of unique call sites}, but \emph{sets}. The order of the call sites \(ℓᶜ\) in the time stamp \(t\) are no longer preserved, so this context model conflates contexts in which the same call sites appear in different orders, for example, \([1, 2]\) and \([2, 1]\) both become \(\{1, 2\}\).
@@ -2161,6 +2171,7 @@ Not only can the analyzer predict that the original program does not trigger the
 \end{itemize}
 
 \section{Variation: Stack/Heap Separation}
+\label{section:variation--stack-heap-separation}
 
 \begin{itemize}
   \item This variation was inspired by CFA2.
@@ -2345,6 +2356,11 @@ Not only can the analyzer predict that the original program does not trigger the
 
 \chapter{Related Work}
 \label{section:related-work}
+
+\begin{itemize}
+  \item Start with a concrete interpreter and do ten-step progression to get to an abstract interpreter (following the steps of ADI but improving on it for being more direct and simpler to understand; no open recursion or monads)
+  \item Untangle the complexities in ADI, in particular the open recursion and the monads. Also, make some parts of the framework clearer, for example, the interplay between cycle detection and the cache construction.
+\end{itemize}
 
 The main goal of research is to produce useful knowledge for people outside academia. In the field of program analysis, that typically means program analyzers to support compiler optimizations, program verification and IDEs used by programmers in industry. So researchers must write their papers targeting the developers of those tools. They must help the developers understand the trade-offs between program analysis techniques and choose the one that fits their use case the best.
 
