@@ -849,9 +849,9 @@ Not only can the analyzer predict that the original program does not trigger the
 
 In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:step-0--base-interpreter}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). Students of program analysis will appreciate the pedagogical value of this presentation. The discussion is presented in terms of code, and you are encouraged to experiment with it as you follow along.
 
-Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we use our system to recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may find this useful to determine which technique is more appropriate for a certain task.
+Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we use our system to recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may use this to determine which technique is more appropriate for a certain task.
 
-In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In~§~\ref{section:evalutation} we show that this context model strikes a better balance between precision and running time than most alternatives, particularly for recursive programs.
+In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In a later chapter~(§~\ref{section:evalutation}) we show that this context model strikes a better balance between precision and running time than most alternatives, particularly for recursive programs.
 
 \paragraph{Formal Characteristics of our Analyzer.}
 
