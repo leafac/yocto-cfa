@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/leafac/demand-driven-context-sensitive-higher-order-program-analysis.svg?branch=master)](https://travis-ci.com/leafac/demand-driven-context-sensitive-higher-order-program-analysis)
+
 Demand-Driven Context-Sensitive Higher-Order Program Analysis
 =============================================================
 
