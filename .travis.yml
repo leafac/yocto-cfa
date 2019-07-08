@@ -1,3 +1,6 @@
 language: minimal
-install: curl https://mirror.racket-lang.org/installers/7.3/racket-7.3-x86_64-linux.sh | sh
+install:
+  - wget https://mirror.racket-lang.org/installers/7.3/racket-7.3-x86_64-linux.sh
+  - chmod a+x racket-7.3-x86_64-linux.sh
+  - yes | ./racket-7.3-x86_64-linux.sh
 script: raco test .
