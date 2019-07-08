@@ -240,23 +240,9 @@ I write \LaTeX{} in Visual Studio Code with the LaTeX-Workshop extension. I mana
 \chapter{Introduction}
 \label{section:introduction}
 
-We begin this chapter with a brief overview of why program analysis is worth studying~(§~\ref{section:program-analysis}). We then drill down from the broad research area that is program analysis to the specific kind in which we are interested in this dissertation~(§~\ref{TO}–\ref{DO}). We present the issues with the state-of-the-art in this kind program analysis~(§~\ref{TODO}), and how our contributions address them~(§~\ref{TODO}).
+We begin this chapter with a brief overview of why program analysis is worth studying~(§~\ref{section:program-analysis}). We then drill down from the broad research area that is program analysis to the specific kind of analyzer in which we are interested in this dissertation~(§~\ref{TO}–\ref{DO}). We present some issues with the state-of-the-art in this kind program analysis, and how our contributions address them~(§~\ref{TODO}).
 
-\begin{itemize}
-  \item Racket specifics that I need to explain:
-  \item Syntax: prefix (S-expressions), regular (operators and function calls look the same), brackets vs.\ parenthesis, question mark and unicode in identifier names, basic values (like functions (\(λ\)s), numbers, booleans and strings (though strings may not be necessary))
-  \item \texttt{return} is implicit
-  \item Everything is an expression (even if they return \texttt{void}): for example, \texttt{if} is more similar to C’s ternary conditionals (\texttt{?:}) than to C’s \texttt{if}
-  \item Comments with ;; and with \#;
-  \item set!
-  \item begin
-  \item shadowing
-  \item The use of Racket is for convenience, we could have used any higher-order language.
-\end{itemize}
-
-\begin{itemize}
-  \item TODO: Figure: Drill in the big areas down into our specific subject
-\end{itemize}
+TODO: Forward references to the kind of analyzer we build in §~2.
 
 \section{Program Analysis}
 \label{section:program-analysis}
@@ -362,6 +348,10 @@ Similar to what occurred in the first-order example above, control flow determin
 The key in this example is that the converse is true as well: data flow determines control flow. The \texttt{pay-function} is a value determined by the computation \texttt{win?}, and it determines whether we enter the \texttt{double} or the \texttt{nothing} function. Unlike first-order languages, functions are not always identified by name, but may be treated as values.
 
 The interdependence of control flow and data flow is the identifying characteristic of higher-order languages, and it complicates the development of analyzers, which must perform the two tasks in tandem. The results of Control-Flow Analysis inform Data-Flow Analysis and vice-versa. Researchers in the area of first-order program analysis tend to use the terms \emph{online} or \emph{on-the-fly} when referring to how Control-Flow Analysis is performed at the same time as Data-Flow Analysis.
+
+\subsection{Control-Flow Graph Construction}
+
+TODO: Online (on-the-fly) vs.\ offline.
 
 \subsection{Local vs.\ Non-Local Variable References}
 
@@ -497,6 +487,7 @@ In general, the lesson is that even the subtlest change in the analyzed language
 
 \begin{itemize}
   \item TODO: Figure: Triangle: Computable / Sound / Complete: Pick any two.
+  \item TODO: Soundiness manifesto
 \end{itemize}
 
 The first difficulty in developing static analyses is termination. All interesting questions we want to ask about programs may cause an analyzer to run forever looking for an answer. Returning to the example above, an analyzer may run forever testing the program for all possible numbers for \texttt{user\_input}. And for some applications non-termination may be acceptable. Or the issue may be side-stepped by setting a timeout. If the program crashes, the analyzer terminates with an answer, and if we reach the timeout, the analyzer terminates with a guess: “I was unable to make the program crash, so it probably does not.”
@@ -536,12 +527,13 @@ To this end, one of the main contributions in this dissertation is a precision m
 
 \begin{itemize}
   \item Sensitive vs. regular-approximating
-  \item call–return alignment
 \end{itemize}
 
 When reasoning about the precision of analyzers, we find common problems that they must solve. If the analyzer can preserve precision when facing this problem they are said to be \emph{sensitive} to it, and if they cannot, they are said to be \emph{insensitive} to it. Whether an analyzer is sensitive or insensitive in some of the dimensions we discuss below is often subjective and dependent on the details of the algorithm the analyzer implements. Some of these sensitivities overlap, and the distinctions between may be unclear. This is similar to how it is difficult to classify a programming language as object-oriented, functional, logical, and so forth. Many languages have features from multiple families, for example, Java is object-oriented but in the latest versions also includes features from functional languages, namely higher-order functions.
 
 In the following subsections we introduce the most common sensitivities relevant to the kinds of analyzers we investigate in this dissertation.
+
+\subsection{Call–Return Alignment}
 
 \subsection{Flow-Sensitivity}
 \label{section:flow-sensitivity}
@@ -847,17 +839,11 @@ Not only can the analyzer predict that the original program does not trigger the
 \chapter{Building a State-of-the-Art Program Analysis from Scratch}
 \label{section:building-a-state-of-the-art-program-analysis-from-scratch}
 
-In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:step-0--base-interpreter}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). Students of program analysis will appreciate the pedagogical value of this presentation. The discussion is presented in terms of code, and you are encouraged to experiment with it as you follow along.
+In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:step-0--base-interpreter}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). We present ideas with code, and you are encouraged to experiment with this code as you follow along. This may serve as a first introduction to the area of program analysis.
 
-Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we use our system to recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may use this to determine which technique is more appropriate for a certain task.
+Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we use our system to recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may use this to determine which technique is more appropriate for a given task.
 
 In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In a later chapter~(§~\ref{section:evalutation}) we show that this context model strikes a better balance between precision and running time than most alternatives, particularly for recursive programs.
-
-\paragraph{Formal Characteristics of our Analyzer.}
-
-Our analyzer has the following features: it is terminating; it is sound; it features perfect call–return alignment; it builds the control-flow graph for the program on-the-fly (online construction); it is regular-approximating context-sensitive; it is regular-approximating field-sensitive (that is, with respect to non-local variables in closures).
-
-% TODO: I believe that our analyzer has perfect call–return alignment, but only regular-approximating context sensitivity. This has a huge impact in the rest of what I wrote, starting with the title (which claims that my analyzer is context-sensitive). Upon further reflection (that is, since I start writing the Introduction and whatnot), I believe that call–return alignment is the best we can do, and it doesn’t necessarily translate into context-sensitivity all the time.
 
 * * *
 
@@ -2595,12 +2581,24 @@ the compiled language borrows features from the language in which we are develop
 }
 
 @article{toplas,
-	title = {Higher-{Order} {Demand}-{Driven} {Program} {Analysis}},
-	abstract = {Developing accurate and efficient program analyses for languages with higher-order functions is known to be difficult. Here we define a new higher-order program analysis, Demand-Driven Program Analysis (DDPA), which extends well-known *demand-driven* lookup techniques found in first-order program analyses to higher-order programs. This task presents several unique challenges to obtain good accuracy, including the need for a new method for demand-driven lookup of non-local variable values. DDPA is flow- and context-sensitive and provably polynomial-time. To efficiently implement DDPA we develop a novel pushdown automaton metaprogramming framework, the Pushdown Reachability automaton (PDR). The analysis is formalized and proved sound, and an implementation is described.},
-	journal = {ACM Transactions on Programming Languages and Systems (TOPLAS)},
-	author = {{Leandro Facchinetti} and {Zachary Palmer} and {Scott Smith}},
-	year = {2019},
-	note = {Accepted for publication},
+ author = {Facchinetti, Leandro and Palmer, Zachary and Smith, Scott},
+ title = {Higher-order Demand-driven Program Analysis},
+ journal = {ACM Trans. Program. Lang. Syst.},
+ issue_date = {July 2019},
+ volume = {41},
+ number = {3},
+ month = jul,
+ year = {2019},
+ issn = {0164-0925},
+ pages = {14:1--14:53},
+ articleno = {14},
+ numpages = {53},
+ url = {http://doi.acm.org/10.1145/3310340},
+ doi = {10.1145/3310340},
+ acmid = {3310340},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ keywords = {Functional programming, context-sensitive, demand-driven, flow-sensitive, polynomial-time, program analysis, pushdown system},
 }
 
 @phdthesis{cfa2,
