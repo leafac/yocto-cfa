@@ -1,3 +1,6 @@
 language: minimal
-install: sudo add-apt-repository -y ppa:plt/racket && sudo apt-get update && sudo apt-get install -y racket
+install:
+  - sudo add-apt-repository --yes ppa:plt/racket
+  - sudo apt update
+  - sudo apt install --yes racket
 script: raco test .
