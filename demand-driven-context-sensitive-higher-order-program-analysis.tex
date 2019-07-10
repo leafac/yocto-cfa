@@ -866,22 +866,23 @@ Our analyzer must disambiguate between program points that look the same, so we 
 The grammar for the Core Language is the following:
 
 \begin{tabular}{rcll}
-           \(e\) & ::= & \(f\) | \(c\) | \(r\)       & Expressions         \\
-           \(f\) & ::= & \(((λ (x) e) . ℓᶠ)\)        & Functions           \\
-           \(c\) & ::= & \(((e e) . ℓᶜ)\)            & Calls               \\
-           \(r\) & ::= & \((x . ℓʳ)\)                & Variable References \\
-          \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)    & Labels              \\
-  \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers» &                     \\
-          \(x\)  & ::= & «Identifiers»               & Identifiers         \\
+           \(e\) & ::= & \(f\) | \(c\) | \(r\)                 & Expressions         \\
+           \(f\) & ::= & \texttt{((λ (\(x\)) \(e\)) . \(ℓᶠ\))} & Functions           \\
+           \(c\) & ::= & \texttt{((\(e\) \(e\)) . \(ℓᶜ\))}     & Calls               \\
+           \(r\) & ::= & \texttt{(\(x\) . \(ℓʳ\))}             & Variable References \\
+          \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)              & Labels              \\
+  \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers»           &                     \\
+          \(x\)  & ::= & «Identifiers»                         & Identifiers         \\
 \end{tabular}
 
 \begin{itemize}
   \item Why we distinguish the kinds of labels.
+  \item Follow the rules for identifiers from Racket.
 \end{itemize}
 
 The Core Language is something called the labeled call-by-value statically-scoped \(λ\)-calculus.
 
-We use the superscript \texttt{ᶜ} to disambiguate elements of the Core Language from those of other languages, for example, an expression in the Core Language is \texttt{eᶜ}.
+We use the superscript \(ᶜ\) to disambiguate elements of the Core Language from those of other languages, for example, an expression in the Core Language is \(eᶜ\).
 
 \subsection{Surface Language}
 \label{section:surface-language}
