@@ -6,13 +6,13 @@
 ;; ---------------------------------------------------------------------------------------------------
 ;; CORE LANGUAGE (LABELED CALL-BY-VALUE λ-CALCULUS) (ᶜ)
 ;;
-;; e  ::= f | c | r                               Expressions
-;; f  ::= ((λ (x) e) . ℓᶠ)                        Functions
-;; c  ::= ((e e) . ℓᶜ)                            Calls
-;; r  ::= (x . ℓʳ)                                Variable References
-;; ℓᵉ ::= ℓᶠ | ℓᶜ | ℓʳ                            Labels
+;;          e ::= f | c | r                       Expressions
+;;          f ::= ((λ (x) e) . ℓᶠ)                Functions
+;;          c ::= ((e e) . ℓᶜ)                    Calls
+;;          r ::= (x . ℓʳ)                        Variable References
+;;         ℓᵉ ::= ℓᶠ | ℓᶜ | ℓʳ                    Labels
 ;; ℓᶠ, ℓᶜ, ℓʳ ::= «Disjoint sets of integers»
-;; x  ::= «Identifiers»                           Identifiers
+;;          x ::= «Identifiers»                   Identifiers
 ;;
 ;; Closed
 ;;

@@ -848,25 +848,48 @@ In this chapter we also introduce a context model based on lists of unique call 
 \section{Languages}
 \label{section:languages}
 
-We want our analyzer to be as simple as possible, so we want the analyzed language to include few features, but we want our example programs and tests to be readable, so we want to write them in a language with more features. We solve this impasse by defining two languages, a \emph{Core Language}~(§~\ref{section:core-language}) and a \emph{Surface Language}~(§~\ref{section:surface-language}). We define a compiler from the Surface Language into the Core Language in~§~\ref{section:compiling-the-surface-language-into-the-core-language}.
+We want our analyzer to be as simple as possible, so we need the analyzed language to include few features, but we also want our example programs and tests to be readable, so we need to write them in a language with more features. We solve this impasse by defining two languages, the \emph{Core Language}~(§~\ref{section:core-language}) and the \emph{Surface Language}~(§~\ref{section:surface-language}), and a compiler from the Surface Language into the Core Language~(§~\ref{section:compiling-the-surface-language-into-the-core-language}).
 
-\subsection{Core Language (Labeled Call-by-Value \(λ\)-Calculus) (\texttt{ᶜ})}
+\subsection{Core Language}
 \label{section:core-language}
 
 The Core Language is the language analyzed by our analyzer. To keep the analyzer as simple as possible, the Core Language includes only the essential features of higher-order programming:
 
 \begin{itemize}
   \item The only kind of value is the function, for example, \texttt{(λ (x) x)} is a function that simply returns its argument (the identity function). Functions may only receive one argument (unary functions).
-  \item The only operation on functions are calling them, for example, in the program \texttt{((λ (x) x) (λ (y) y))} the identity function \texttt{(λ (x) x)} is being called with the argument \texttt{(λ (y) y)} (which happens to be another identity function).
-  \item Variables may be referenced, for example, the highlighted \texttt{\highlight{x}} in \texttt{(λ (x) \highlight{x})}. **TODO: CLOSED**
+  \item The only kind of operation is the function application, for example, \texttt{((λ (x) x) (λ (y) y))} is an application of the function \texttt{(λ (x) x)} (the identity function) with the argument \texttt{(λ (y) y)} (which happens to be another identity function).
+  \item Variables may only be referenced after they are defined, for example, the program \texttt{(λ (x) \highlight{x})} is valid because the variable \texttt{x} is only referenced in \texttt{\highlight{x}} after it is defined in \texttt{(λ (x) \_\_\_)}, but the program \texttt{(λ (x) \highlight{y})} is invalid because the variable \texttt{\highlight{y}} is undefined. We say that \texttt{\highlight{x}} is a \emph{closed variable reference} and that the former program is \emph{closed}, but that \texttt{\highlight{y}} is an \emph{open variable reference} and that the latter program is \emph{open}.
 \end{itemize}
 
-, and the only operations are calling a function and referencing a variable.
+Our analyzer must disambiguate between program points that look the same, so we label each program point with a unique integer. For example, in the program \texttt{((λ (x) x) (λ (x) x))}) the two \texttt{(λ (x) x)} look the same, but the labels disambiguate them: \texttt{((λ (x) x⁰)¹ (λ (x) x²)³)⁴}. In the code, we represent these labels by pairing the program points with them, for example, \texttt{((((λ (x) (x . 0)) . 1) ((λ (x) (x . 2)) . 3)) . 4)}.
 
-Our analyzer must be able to distinguish between program points that look the same, for example, the two references to the variable \texttt{f} in the function call \texttt{(f f)}, so we label each program point with a unique number. 
+The grammar for the Core Language is the following:
 
-\subsection{Surface Language (Racket Subset) (\texttt{ˢ})}
+\begin{tabular}{rcll}
+           \(e\) & ::= & \(f\) | \(c\) | \(r\)       & Expressions         \\
+           \(f\) & ::= & \(((λ (x) e) . ℓᶠ)\)        & Functions           \\
+           \(c\) & ::= & \(((e e) . ℓᶜ)\)            & Calls               \\
+           \(r\) & ::= & \((x . ℓʳ)\)                & Variable References \\
+          \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)    & Labels              \\
+  \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers» &                     \\
+          \(x\)  & ::= & «Identifiers»               & Identifiers         \\
+\end{tabular}
+
+\begin{itemize}
+  \item Why we distinguish the kinds of labels.
+\end{itemize}
+
+The Core Language is something called the labeled call-by-value statically-scoped \(λ\)-calculus.
+
+We use the superscript \texttt{ᶜ} to disambiguate elements of the Core Language from those of other languages, for example, an expression in the Core Language is \texttt{eᶜ}.
+
+\subsection{Surface Language}
 \label{section:surface-language}
+
+\begin{itemize}
+  \item The Core Language is a subset of the Surface Langauge (except for the labels)
+  \item  (Racket Subset) (\texttt{ˢ})
+\end{itemize}
 
 \begin{itemize}
   \item Architecture
