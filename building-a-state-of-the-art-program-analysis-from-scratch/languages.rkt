@@ -4,6 +4,18 @@
 (provide (all-defined-out))
 
 ;; ---------------------------------------------------------------------------------------------------
+;; CORE LANGUAGE (LABELED CALL-BY-VALUE λ-CALCULUS) (ᶜ)
+;;
+;; e  ::= f | c | r                               Expressions
+;; f  ::= ((λ (x) e) . ℓᶠ)                        Functions
+;; c  ::= ((e e) . ℓᶜ)                            Calls
+;; r  ::= (x . ℓʳ)                                Variable References
+;; ℓᵉ ::= ℓᶠ | ℓᶜ | ℓʳ                            Labels
+;; ℓᶠ, ℓᶜ, ℓʳ ::= «Disjoint sets of integers»
+;; x  ::= «Identifiers»                           Identifiers
+;;
+;; Closed
+;; ---------------------------------------------------------------------------------------------------
 ;; SURFACE LANGUAGE (RACKET SUBSET) (ˢ)
 ;;
 ;; e ::=                                          Expressions
@@ -44,20 +56,7 @@
 ;;
 ;; Closed
 ;;
-;; ---------------------------------------------------------------------------------------------------
-;; CORE LANGUAGE (LABELED λ-CALCULUS) (ᶜ)
-;;
-;; e  ::= f | c | r                               Expressions
-;; f  ::= ((λ (x) e) . ℓᶠ)                        Functions
-;; c  ::= ((e e) . ℓᶜ)                            Calls
-;; r  ::= (x . ℓʳ)                                Variable References
-;; ℓᵉ ::= ℓᶠ | ℓᶜ | ℓʳ                            Labels
-;; ℓᶠ, ℓᶜ, ℓʳ ::= «Disjoint sets of integers»
-;; x  ::= «Identifiers»                           Identifiers
-;;
-;; Closed
-;;
-;; ---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 ;; COMPILER
 ;;
 ;; ‘⇓’ is pronounced ‘compile’.

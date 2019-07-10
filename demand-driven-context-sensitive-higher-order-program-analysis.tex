@@ -839,13 +839,34 @@ Not only can the analyzer predict that the original program does not trigger the
 \chapter{Building a State-of-the-Art Program Analysis from Scratch}
 \label{section:building-a-state-of-the-art-program-analysis-from-scratch}
 
-In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:step-0--base-interpreter}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). We present ideas with code, and you are encouraged to experiment with this code as you follow along. This may serve as a first introduction to the area of program analysis.
+In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:languages}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). We present ideas with code, and you are encouraged to experiment with this code as you follow along. This may serve as a first introduction to the area of program analysis.
 
-Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we use our system to recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may use this to determine which technique is more appropriate for a given task.
+Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may use this to determine which technique is more appropriate for a given task.
 
-In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In a later chapter~(§~\ref{section:evalutation}) we show that this context model strikes a better balance between precision and running time than most alternatives, particularly for recursive programs.
+In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In a later chapter~(§~\ref{section:evalutation}) we show that this context model strikes a good balance between precision and running time, particularly for recursive programs.
 
-* * *
+\section{Languages}
+\label{section:languages}
+
+We want our analyzer to be as simple as possible, so we want the analyzed language to include few features, but we want our example programs and tests to be readable, so we want to write them in a language with more features. We solve this impasse by defining two languages, a \emph{Core Language}~(§~\ref{section:core-language}) and a \emph{Surface Language}~(§~\ref{section:surface-language}). We define a compiler from the Surface Language into the Core Language in~§~\ref{section:compiling-the-surface-language-into-the-core-language}.
+
+\subsection{Core Language (Labeled Call-by-Value \(λ\)-Calculus) (\texttt{ᶜ})}
+\label{section:core-language}
+
+The Core Language is the language analyzed by our analyzer. To keep the analyzer as simple as possible, the Core Language includes only the essential features of higher-order programming:
+
+\begin{itemize}
+  \item The only kind of value is the function, for example, \texttt{(λ (x) x)} is a function that simply returns its argument (the identity function). Functions may only receive one argument (unary functions).
+  \item The only operation on functions are calling them, for example, in the program \texttt{((λ (x) x) (λ (y) y))} the identity function \texttt{(λ (x) x)} is being called with the argument \texttt{(λ (y) y)} (which happens to be another identity function).
+  \item Variables may be referenced, for example, the highlighted \texttt{\highlight{x}} in \texttt{(λ (x) \highlight{x})}. **TODO: CLOSED**
+\end{itemize}
+
+, and the only operations are calling a function and referencing a variable.
+
+Our analyzer must be able to distinguish between program points that look the same, for example, the two references to the variable \texttt{f} in the function call \texttt{(f f)}, so we label each program point with a unique number. 
+
+\subsection{Surface Language (Racket Subset) (\texttt{ˢ})}
+\label{section:surface-language}
 
 \begin{itemize}
   \item Architecture
@@ -2400,7 +2421,7 @@ For the rest of this chapter we will address each aspect from the checklist abov
 \end{itemize}
 
 \section{Surface Language}
-\label{section:surface-language}
+% \label{section:surface-language}
 
 \begin{itemize}
   \item It’s important because it’s used to determine the analysis applicability (if it can’t handle functions, for example, it may be bad) \& communicate examples \& reasoning about the quality of the analysis
@@ -2409,7 +2430,7 @@ For the rest of this chapter we will address each aspect from the checklist abov
 \end{itemize}
 
 \section{Core Language}
-\label{section:core-language}
+% \label{section:core-language}
 
 \begin{itemize}
   \item Keep the core language small
