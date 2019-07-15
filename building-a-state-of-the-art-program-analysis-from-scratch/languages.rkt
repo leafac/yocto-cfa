@@ -4,7 +4,7 @@
 (provide (all-defined-out))
 
 ;; ---------------------------------------------------------------------------------------------------
-;; CORE LANGUAGE (LABELED CALL-BY-VALUE λ-CALCULUS) (ᶜ)
+;; CORE LANGUAGE (LABELED CALL-BY-VALUE STATICALLY-SCOPED λ-CALCULUS) (ᶜ)
 ;;
 ;;          e ::= f | c | r                       Expressions
 ;;          f ::= ((λ (x) e) . ℓᶠ)                Functions

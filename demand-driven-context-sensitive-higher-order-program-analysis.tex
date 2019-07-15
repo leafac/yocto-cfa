@@ -839,16 +839,16 @@ Not only can the analyzer predict that the original program does not trigger the
 \chapter{Building a State-of-the-Art Program Analysis from Scratch}
 \label{section:building-a-state-of-the-art-program-analysis-from-scratch}
 
-In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:languages}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). We present ideas with code, and you are encouraged to experiment with this code as you follow along. This may serve as a first introduction to the area of program analysis.
+In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:languages}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). We present ideas with code, and you are encouraged to experiment with this code as you follow along, which may serve as a first introduction to the area of program analysis.
 
-Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we recreate store widening, stack/heap separation, and other techniques~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}). Developers of analyzers in industry and researchers alike may use this to determine which technique is more appropriate for a given task.
+Beyond its pedagogical value, the analyzer we build in this chapter may also be used to explore and compare different techniques of program analysis. To illustrate this, we recreate techniques such as store widening, stack/heap separation, and so forth~(§~\ref{section:variation--context-model--sets-of-call-sites}–§~\ref{section:variation--stack-heap-separation}).
 
 In this chapter we also introduce a context model based on lists of unique call sites~(§~\ref{section:step-5--finitize-the-space-of-addresses}). In a later chapter~(§~\ref{section:evalutation}) we show that this context model strikes a good balance between precision and running time, particularly for recursive programs.
 
 \section{Languages}
 \label{section:languages}
 
-We want our analyzer to be as simple as possible, so we need the analyzed language to include few features, but we also want our example programs and tests to be readable, so we need to write them in a language with more features. We solve this impasse by defining two languages, the \emph{Core Language}~(§~\ref{section:core-language}) and the \emph{Surface Language}~(§~\ref{section:surface-language}), and a compiler from the Surface Language into the Core Language~(§~\ref{section:compiling-the-surface-language-into-the-core-language}).
+We want our analyzer to be as simple as possible, so we need the language it analyzes to include only a few features, but we also want our example programs and tests to be readable, so we need to write them in a language with more features. We solve this impasse by defining two languages, the \emph{Core Language}~(§~\ref{section:core-language}) and the \emph{Surface Language}~(§~\ref{section:surface-language}), and a compiler from the Surface Language to the Core Language~(§~\ref{section:compiling-the-surface-language-into-the-core-language}).
 
 \subsection{Core Language}
 \label{section:core-language}
@@ -856,14 +856,14 @@ We want our analyzer to be as simple as possible, so we need the analyzed langua
 The Core Language is the language analyzed by our analyzer. To keep the analyzer as simple as possible, the Core Language includes only the essential features of higher-order programming:
 
 \begin{itemize}
-  \item The only kind of value is the function, for example, \texttt{(λ (x) x)} is a function that simply returns its argument (the identity function). Functions may only receive one argument (unary functions).
+  \item The only kind of value is the function, for example, \texttt{(λ (x) x)} is a function that simply returns its argument (the identity function). A function may receive only one argument (unary function).
   \item The only kind of operation is the function application, for example, \texttt{((λ (x) x) (λ (y) y))} is an application of the function \texttt{(λ (x) x)} (the identity function) with the argument \texttt{(λ (y) y)} (which happens to be another identity function).
-  \item Variables may only be referenced after they are defined, for example, the program \texttt{(λ (x) \highlight{x})} is valid because the variable \texttt{x} is only referenced in \texttt{\highlight{x}} after it is defined in \texttt{(λ (x) \_\_\_)}, but the program \texttt{(λ (x) \highlight{y})} is invalid because the variable \texttt{\highlight{y}} is undefined. We say that \texttt{\highlight{x}} is a \emph{closed variable reference} and that the former program is \emph{closed}, but that \texttt{\highlight{y}} is an \emph{open variable reference} and that the latter program is \emph{open}.
+  \item Variables may only be referenced after they are defined, for example, the fragment \texttt{(λ (x) \highlight{x})} is a program in the Core Language because the variable \texttt{x} is only referenced in \texttt{\highlight{x}} after it is defined in \texttt{(λ (x) \_\_\_)}, but the fragment \texttt{(λ (x) \highlight{y})} is not a program in the Core Language because the variable \texttt{\highlight{y}} is undefined. We say that \texttt{\highlight{x}} is a \emph{closed variable reference} and that the former fragment is \emph{closed}, but that \texttt{\highlight{y}} is an \emph{open variable reference} and that the latter fragment is \emph{open}. Only closed fragments may be programs in the Core Language.
 \end{itemize}
 
-Our analyzer must disambiguate between program points that look the same, so we label each program point with a unique integer. For example, in the program \texttt{((λ (x) x) (λ (x) x))}) the two \texttt{(λ (x) x)} look the same, but the labels disambiguate them: \texttt{((λ (x) x⁰)¹ (λ (x) x²)³)⁴}. In the code, we represent these labels by pairing the program points with them, for example, \texttt{((((λ (x) (x . 0)) . 1) ((λ (x) (x . 2)) . 3)) . 4)}.
+Our analyzer must disambiguate between fragments that look the same, so we label each program point with a unique integer. For example, in the program \texttt{((λ (x) x) (λ (x) x))}) the two fragments \texttt{(λ (x) x)} look the same, but the labels disambiguate them: \texttt{((((λ (x) (x . 0)) . 1) ((λ (x) (x . 2)) . 3)) . 4)}.
 
-The grammar for the Core Language is the following:
+The grammar for the Core Language is the following (refer to \url{http://matt.might.net/articles/grammars-bnf-ebnf/} to learn how to read a grammar):
 
 \begin{tabular}{rcll}
            \(e\) & ::= & \(f\) | \(c\) | \(r\)                 & Expressions         \\
@@ -872,17 +872,16 @@ The grammar for the Core Language is the following:
            \(r\) & ::= & \texttt{(\(x\) . \(ℓʳ\))}             & Variable References \\
           \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)              & Labels              \\
   \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers»           &                     \\
-          \(x\)  & ::= & «Identifiers»                         & Identifiers         \\
+           \(x\) & ::= & «Identifiers»                         & Identifiers         \\
 \end{tabular}
 
-\begin{itemize}
-  \item Why we distinguish the kinds of labels.
-  \item Follow the rules for identifiers from Racket.
-\end{itemize}
+Identifiers (\(x\)) in the Core Language have the same form as identifiers in Racket.
 
-The Core Language is something called the labeled call-by-value statically-scoped \(λ\)-calculus.
+The grammar differentiates the labels for different kinds of expression (\(ℓᶠ\), \(ℓᶜ\), and \(ℓʳ\)). We do this because we want the structures in our analyzer to be as compact as possible, so we let a label stand for an expression when we are interested only in its identity rather than in its form, but we must be able to distinguish between the different kinds of expressions. For example, in Step 2~(§~\ref{section:step-2--introduce-time-stamps}) we define something called \emph{time stamps} (\(t\)) in terms of call sites (\(c\)) and we use their labels (\(ℓᶜ\)) because we are interested only in their identities rather than in what function was called or in what argument was passed to it—the different kinds of labels prevent other kinds of expressions (those represented by \(ℓᶠ\) and \(ℓʳ\)) from occurring in time stamps.
 
-We use the superscript \(ᶜ\) to disambiguate elements of the Core Language from those of other languages, for example, an expression in the Core Language is \(eᶜ\).
+When we are dealing with multiple languages, we use the superscript \(ᶜ\) to represent the Core Language and avoid ambiguity. For example, when we are defining the compiler from the Surface Language to the Core Language~(§~\ref{section:compiling-the-surface-language-into-the-core-language}) we represent an expression in the Core Language as \(eᶜ\).
+
+In technical terms, the Core Language is something called the \emph{labeled call-by-value statically-scoped \(λ\)-calculus}.
 
 \subsection{Surface Language}
 \label{section:surface-language}
@@ -1064,6 +1063,7 @@ We use the superscript \(ᶜ\) to disambiguate elements of the Core Language fro
 \end{itemize}
 
 \section{Step 2: Introduce Time Stamps}
+\label{section:step-2--introduce-time-stamps}
 
 \begin{itemize}
   \item We introduce time stamps to use on the next step. So we compute it, keep it around, and do nothing with it yet.
