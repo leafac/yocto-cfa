@@ -859,7 +859,7 @@ We want our analyzer to be as simple as possible, so we need the language it ana
   \label{figure:language-hierarchy}
 \end{figure}
 
-\subsection{Core Language}
+\subsection{Core Language (\texttt{ᶜ})}
 \label{section:core-language}
 
 The Core Language is the language analyzed by our analyzer. To keep the analyzer as simple as possible, the Core Language includes only the essential features of higher-order programming:
@@ -872,17 +872,22 @@ The Core Language is the language analyzed by our analyzer. To keep the analyzer
 
 Our analyzer must disambiguate between fragments that look the same, so we label each program point with a unique integer. For example, in the program \texttt{((λ (x) x) (λ (x) x))}) the two fragments \texttt{(λ (x) x)} look the same, but the labels disambiguate them: \texttt{((((λ (x) (x . 0)) . 1) ((λ (x) (x . 2)) . 3)) . 4)}.
 
-The grammar for the Core Language is the following (refer to \url{http://matt.might.net/articles/grammars-bnf-ebnf/} to learn how to read a grammar):
+The grammar for the Core Language is in Figure~\ref{figure:core-language-grammar} (refer to \url{http://matt.might.net/articles/grammars-bnf-ebnf/} to learn how to read a grammar).
 
-\begin{tabular}{rcll}
-           \(e\) & ::= & \(f\) | \(c\) | \(r\)                 & Expressions         \\
-           \(f\) & ::= & \texttt{((λ (\(x\)) \(e\)) . \(ℓᶠ\))} & Functions           \\
-           \(c\) & ::= & \texttt{((\(e\) \(e\)) . \(ℓᶜ\))}     & Calls               \\
-           \(r\) & ::= & \texttt{(\(x\) . \(ℓʳ\))}             & Variable References \\
-          \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)              & Labels              \\
-  \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers»           &                     \\
-           \(x\) & ::= & «Identifiers»                         & Identifiers         \\
-\end{tabular}
+\begin{figure}[h]
+  \centering
+  \begin{tabular}{rcll}
+             \(e\) & ::= & \(f\) | \(c\) | \(r\)                 & Expressions         \\
+             \(f\) & ::= & \texttt{((λ (\(x\)) \(e\)) . \(ℓᶠ\))} & Functions           \\
+             \(c\) & ::= & \texttt{((\(e\) \(e\)) . \(ℓᶜ\))}     & Calls               \\
+             \(r\) & ::= & \texttt{(\(x\) . \(ℓʳ\))}             & Variable References \\
+            \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)              & Labels              \\
+    \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers»           &                     \\
+             \(x\) & ::= & «Identifiers»                         & Identifiers         \\
+  \end{tabular}
+  \caption{Core Language’s grammar.}
+  \label{figure:core-language-grammar}
+\end{figure}
 
 Identifiers (\(x\)) in the Core Language have the same form as identifiers in Racket.
 
@@ -892,15 +897,53 @@ When we are dealing with multiple languages, we use the superscript \(ᶜ\) to r
 
 In technical terms, the Core Language is something called the \emph{labeled call-by-value statically-scoped \(λ\)-calculus}.
 
-\subsection{Surface Language}
+\subsection{Surface Language (\texttt{ˢ})}
 \label{section:surface-language}
 
-The Surface Language is the language in which we write our examples and tests. Before our analyzer can analyze a program in the Surface Language, it must be compiled~(§~\ref{section:compiling-the-surface-language-into-the-core-language}) into the Core Language~(§~\ref{section:surface-language}).
+The Surface Language is the language in which we write our examples and tests. For our convenience, the Surface Language includes more features than the Core Language~(§~\ref{section:core-language}), but before our analyzer can analyze a program in the Surface Language, it must be compiled~(§~\ref{section:compiling-the-surface-language-into-the-core-language}) to the Core Language. The Surface Language is a subset of Racket which supports the forms defined in Figure~\ref{figure:surface-language-grammar}.
 
-\begin{itemize}
-  \item The Core Language is a subset of the Surface Langauge (except for the labels)
-  \item  (Racket Subset) (\texttt{ˢ})
-\end{itemize}
+\begin{figure}[h]
+  \centering
+  \begin{tabular}{rcll}
+    \(e\) & ::= &                                         & Expressions \\
+          &     &  BOOLEANS & \\
+          &     &  | \#t | \#f & \\
+          &     &  | (if e e e) & \\
+          &     &  | (and e ...) | (or e ...) | not | xor & \\
+          &     & & \\
+          &     &  NUMBERS & \\
+          &     &  | <non-negative-integers> & \\
+          &     &  | add1 | sub1 | + | (+ e ...) | - | (- e ...{2,}) & \\
+          &     &  | zero? & \\
+          &     &  \texttt{| <= | (<= e ...+) | >= | (>= e ...+) | = | (= e ...+) | < | (< e ...+) | > | (> e ...+)} & \\
+          &     &  | * | (* e ...) | quotient | expt & \\
+          &     & & \\
+          &     &  PAIRS & \\
+          &     &  | null | cons & \\
+          &     &  | null? | car | cdr & \\
+          &     & & \\
+          &     &  LISTS & \\
+          &     &  | empty | (list e ...) & \\
+          &     &  | first | rest & \\
+          &     &  | map & \\
+          &     & & \\
+          &     &  BINDINGS & \\
+          &     &  | (let ([x e] ...) e ...+) & \\
+          &     &  | (let* ([x e] ...) e ...+) & \\
+          &     &  | (letrec ([x e]) e ...+) & \\
+          &     &  | (begin e ...+) & \\
+          &     & & \\
+          &     &  FUNCTIONS & \\
+          &     &  | (λ (x ...) e ...+) & \\
+          &     &  | identity | const | (thunk e) & \\
+          &     &  | (e ...+) & \\
+          &     &  | x & \\
+          &     & & \\
+    \(x\) & ::= & «Identifiers»                           & Identifiers \\
+  \end{tabular}
+  \caption{Surface Language’s grammar.}
+  \label{figure:surface-language-grammar}
+\end{figure}
 
 \begin{itemize}
   \item Architecture

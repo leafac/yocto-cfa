@@ -4,7 +4,7 @@
 (provide (all-defined-out))
 
 ;; ---------------------------------------------------------------------------------------------------
-;; CORE LANGUAGE (LABELED CALL-BY-VALUE STATICALLY-SCOPED λ-CALCULUS) (ᶜ)
+;; CORE LANGUAGE (ᶜ)
 ;;
 ;;          e ::= f | c | r                       Expressions
 ;;          f ::= ((λ (x) e) . ℓᶠ)                Functions
@@ -14,10 +14,8 @@
 ;; ℓᶠ, ℓᶜ, ℓʳ ::= «Disjoint sets of integers»
 ;;          x ::= «Identifiers»                   Identifiers
 ;;
-;; Closed
-;;
 ;; ---------------------------------------------------------------------------------------------------
-;; SURFACE LANGUAGE (RACKET SUBSET) (ˢ)
+;; SURFACE LANGUAGE (ˢ)
 ;;
 ;; e ::=                                          Expressions
 ;;     BOOLEANS
@@ -29,7 +27,8 @@
 ;;     | <non-negative-integers>
 ;;     | add1 | sub1 | + | (+ e ...) | - | (- e ...{2,})
 ;;     | zero?
-;;     | <= | (<= e ...+) | >= | (>= e ...+) | = | (= e ...+) | < | (< e ...+) | > | (> e ...+)
+;;     | <= | (<= e ...+) | >= | (>= e ...+)
+;;     | = | (= e ...+) | < | (< e ...+) | > | (> e ...+)
 ;;     | * | (* e ...) | quotient | expt
 ;;
 ;;     PAIRS
@@ -54,8 +53,6 @@
 ;;     | x
 ;;
 ;; x ::= «Identifiers»                            Identifiers
-;;
-;; Closed
 ;;
 ;; ---------------------------------------------------------------------------------------------------
 ;; COMPILER
