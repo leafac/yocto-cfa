@@ -11,7 +11,7 @@
 ;;          c ::= ((e e) . ℓᶜ)                    Calls
 ;;          r ::= (x . ℓʳ)                        Variable References
 ;;         ℓᵉ ::= ℓᶠ | ℓᶜ | ℓʳ                    Labels
-;; ℓᶠ, ℓᶜ, ℓʳ ::= «Disjoint sets of integers»
+;; ℓᶠ, ℓᶜ, ℓʳ ::= «Disjoint Sets of Integers»
 ;;          x ::= «Identifiers»                   Identifiers
 ;;
 ;; ---------------------------------------------------------------------------------------------------
@@ -20,11 +20,11 @@
 ;; e ::=                                          Expressions
 ;;     BOOLEANS
 ;;     | #t | #f
-;;     | (if e e e)
 ;;     | (and e ...) | (or e ...) | not | xor
+;;     | (if e e e)
 ;;
 ;;     NUMBERS
-;;     | <non-negative-integers>
+;;     | «Nonnegative Integers»
 ;;     | add1 | sub1 | + | (+ e ...) | - | (- e ...{2,})
 ;;     | zero?
 ;;     | <= | (<= e ...+) | >= | (>= e ...+)

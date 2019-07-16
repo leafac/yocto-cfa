@@ -12,7 +12,7 @@
 ;; ρ ::= [x ↦ a, ...]                             Environments
 ;; σ ::= [a ↦ d, ...]                             Stores
 ;; a ::= ⟨ℓᶠ, t⟩                                  Addresses
-;; t ::= [ℓᶜ, ...] «List of unique elements»      Time Stamps
+;; t ::= [ℓᶜ, ...] «Unique Elements»              Time Stamps
 
 ;; ⇒ : e → ¢
 (define (⇒ e)

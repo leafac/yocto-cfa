@@ -13,8 +13,8 @@
 ;; ρ ::= [x ↦ a, ...]                             Environments
 ;; σ ::= [a ↦ d, ...]                             Stores
 ;; a ::= ⟨ℓᶠ, t⟩                                  Addresses
-;; t ::= [ℓᶜ, ...] «Truncated to ‘k’ elements»    Time Stamps
-;; k ::= «Nonnegative-integer»                    Maximum Time Stamp Size
+;; t ::= [ℓᶜ, ...] «‘k’ Elements»                 Time Stamps
+;; k ::= «Nonnegative Integers»                   Maximum Time Stamp Size
 
 ;; ⇒ : k e → £
 (define (⇒ k e)
