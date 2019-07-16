@@ -18,39 +18,41 @@
 ;; SURFACE LANGUAGE (ˢ)
 ;;
 ;; e ::=                                          Expressions
-;;     BOOLEANS
-;;     | #t | #f
-;;     | (and e ...) | (or e ...) | not | xor
-;;     | (if e e e)
+;;       «BOOLEANS»
+;;       | #t | #f
+;;       | (and e ...) | (or e ...) | not | xor
+;;       | (if e e e)
 ;;
-;;     NUMBERS
-;;     | «Nonnegative Integers»
-;;     | add1 | sub1 | + | (+ e ...) | - | (- e ...{2,})
-;;     | zero?
-;;     | <= | (<= e ...+) | >= | (>= e ...+)
-;;     | = | (= e ...+) | < | (< e ...+) | > | (> e ...+)
-;;     | * | (* e ...) | quotient | expt
+;;       «NUMBERS»
+;;       | «Nonnegative Integers»
+;;       | add1 | sub1
+;;       | + | (+ e ...) | - | (- e ...{2,})
+;;       | * | (* e ...) | quotient | expt
+;;       | zero? | = | (= e ...+)
+;;       | < | (< e ...+) | > | (> e ...+)
+;;       | <= | (<= e ...+) | >= | (>= e ...+)
 ;;
-;;     PAIRS
-;;     | null | cons
-;;     | null? | car | cdr
+;;       «PAIRS»
+;;       | cons
+;;       | car | cdr
 ;;
-;;     LISTS
-;;     | empty | (list e ...)
-;;     | first | rest
-;;     | map
+;;       «LISTS»
+;;       | null | empty | (list e ...)
+;;       | null?
+;;       | first | rest
+;;       | map
 ;;
-;;     BINDINGS
-;;     | (let ([x e] ...) e ...+)
-;;     | (let* ([x e] ...) e ...+)
-;;     | (letrec ([x e]) e ...+)
-;;     | (begin e ...+)
+;;       «BINDINGS»
+;;       | (let ([x e] ...) e ...+)
+;;       | (let* ([x e] ...) e ...+)
+;;       | (letrec ([x e]) e ...+)
+;;       | (begin e ...+)
 ;;
-;;     FUNCTIONS
-;;     | (λ (x ...) e ...+)
-;;     | identity | const | (thunk e)
-;;     | (e ...+)
-;;     | x
+;;       «FUNCTIONS»
+;;       | (λ (x ...) e ...+)
+;;       | identity | const | (thunk e)
+;;       | (e ...+)
+;;       | x
 ;;
 ;; x ::= «Identifiers»                            Identifiers
 ;;
@@ -73,7 +75,6 @@
     ;; BOOLEANS
     [`#t `(λ (a b) a)]
     [`#f `(λ (a b) b)]
-    [`(if ,eᶜ ,eᵗ ,eᵉ) `((,eᶜ (thunk ,eᵗ) (thunk ,eᵉ)))]
     [`(and) `#t]
     [`(and ,e₁) e₁]
     [`(and ,e₁ ,e₂) `(if ,e₁ ,e₂ #f)]
@@ -84,6 +85,7 @@
     [`(or ,e₁ ,e₂ ...) `(or ,e₁ (or ,@e₂))]
     [`not `(λ (p) (λ (a b) (p b a)))]
     [`xor `(λ (p q) (p (not q) q))]
+    [`(if ,eᶜ ,eᵗ ,eᵉ) `((,eᶜ (thunk ,eᵗ) (thunk ,eᵉ)))]
 
     ;; NUMBERS
     [(? (λ (n) (and (integer? n) (not (negative? n)))) n)
@@ -106,22 +108,6 @@
     [`quotient `(letrec ([quot (λ (m n) (if (< m n) 0 (add1 (quot (- m n) n))))]) quot)]
     [`expt `(λ (m n) ((n (λ (a) (* a m))) (*)))]
     [`zero? `(λ (n) ((n (λ (x) #f)) #t))]
-    [`<= `(λ (m n) (zero? (- m n)))]
-    [`(<= ,e₁) `(begin ,e₁ #t)]
-    [`(<= ,e₁ ,e₂) `(,(encode¹ `<=) ,e₁ ,e₂)]
-    [`(<= ,e₁ ...)
-     #:when (not (empty? e₁))
-     (let ([x₁ (map (λ (x) (gensym)) e₁)])
-       `(let* (,@[map list x₁ e₁])
-          (and ,@(map (λ (x₂ x₃) `(<= ,x₂ ,x₃)) (drop-right x₁ 1) (drop x₁ 1)))))]
-    [`>= `(λ (m n) (zero? (- n m)))]
-    [`(>= ,e₁) `(begin ,e₁ #t)]
-    [`(>= ,e₁ ,e₂) `(,(encode¹ `>=) ,e₁ ,e₂)]
-    [`(>= ,e₁ ...)
-     #:when (not (empty? e₁))
-     (let ([x₁ (map (λ (x) (gensym)) e₁)])
-       `(let* (,@[map list x₁ e₁])
-          (and ,@(map (λ (x₂ x₃) `(>= ,x₂ ,x₃)) (drop-right x₁ 1) (drop x₁ 1)))))]
     [`= `(λ (m n) (and (<= m n) (>= m n)))]
     [`(= ,e₁) `(begin ,e₁ #t)]
     [`(= ,e₁ ,e₂) `(,(encode¹ `=) ,e₁ ,e₂)]
@@ -146,6 +132,22 @@
      (let ([x₁ (map (λ (x) (gensym)) e₁)])
        `(let* (,@[map list x₁ e₁])
           (and ,@(map (λ (x₂ x₃) `(> ,x₂ ,x₃)) (drop-right x₁ 1) (drop x₁ 1)))))]
+    [`<= `(λ (m n) (zero? (- m n)))]
+    [`(<= ,e₁) `(begin ,e₁ #t)]
+    [`(<= ,e₁ ,e₂) `(,(encode¹ `<=) ,e₁ ,e₂)]
+    [`(<= ,e₁ ...)
+     #:when (not (empty? e₁))
+     (let ([x₁ (map (λ (x) (gensym)) e₁)])
+       `(let* (,@[map list x₁ e₁])
+          (and ,@(map (λ (x₂ x₃) `(<= ,x₂ ,x₃)) (drop-right x₁ 1) (drop x₁ 1)))))]
+    [`>= `(λ (m n) (zero? (- n m)))]
+    [`(>= ,e₁) `(begin ,e₁ #t)]
+    [`(>= ,e₁ ,e₂) `(,(encode¹ `>=) ,e₁ ,e₂)]
+    [`(>= ,e₁ ...)
+     #:when (not (empty? e₁))
+     (let ([x₁ (map (λ (x) (gensym)) e₁)])
+       `(let* (,@[map list x₁ e₁])
+          (and ,@(map (λ (x₂ x₃) `(>= ,x₂ ,x₃)) (drop-right x₁ 1) (drop x₁ 1)))))]
 
     ;; PAIRS
     [`cons `(λ (a b) (λ (s) (s a b)))]
@@ -155,9 +157,9 @@
     ;; LISTS
     [`null `(λ (s) #t)]
     [`empty `null]
-    [`null? `(λ (l) (l (λ (a b) #f)))]
     [`(list) `empty]
     [`(list ,eʰ ,eᵗ ...) `(cons ,eʰ (list ,@eᵗ))]
+    [`null? `(λ (l) (l (λ (a b) #f)))]
     [`first `car]
     [`rest `cdr]
     [`map `(letrec ([ma (λ (f l) (if (null? l) l (cons (f (car l)) (ma f (cdr l)))))]) ma)]
@@ -304,9 +306,6 @@
   ;; BOOLEANS
   (check-equal? (eval '#t decode/boolean) '#t)
   (check-equal? (eval '#f decode/boolean) '#f)
-  (check-equal? (eval '(if #t #t #f) decode/boolean) '#t)
-  (check-equal? (eval '(if #f #t #f) decode/boolean) '#f)
-  (check-equal? (eval '(if #t #t (letrec ([f (λ (x) (f x))]) (f 0))) decode/boolean) '#t)
   (check-equal? (eval '(and) decode/boolean) '#t)
   (check-equal? (eval '(and #t) decode/boolean) '#t)
   (check-equal? (eval '(and #t #t) decode/boolean) '#t)
@@ -323,6 +322,9 @@
   (check-equal? (eval '(not #t) decode/boolean) '#f)
   (check-equal? (eval '(xor #t #f) decode/boolean) '#t)
   (check-equal? (eval '(xor #t #t) decode/boolean) '#f)
+  (check-equal? (eval '(if #t #t #f) decode/boolean) '#t)
+  (check-equal? (eval '(if #f #t #f) decode/boolean) '#f)
+  (check-equal? (eval '(if #t #t (letrec ([f (λ (x) (f x))]) (f 0))) decode/boolean) '#t)
 
   ;; NUMBERS
   (check-equal? (eval '0 decode/number) '0)
@@ -344,14 +346,6 @@
   (check-equal? (eval '(expt 5 2) decode/number) '25)
   (check-equal? (eval '(zero? 0) decode/boolean) '#t)
   (check-equal? (eval '(zero? 5) decode/boolean) '#f)
-  (check-equal? (eval '(<= 3) decode/boolean) '#t)
-  (check-equal? (eval '(<= 3 2) decode/boolean) '#f)
-  (check-equal? (eval '(<= 2 3) decode/boolean) '#t)
-  (check-equal? (eval '(<= 3 2 1) decode/boolean) '#f)
-  (check-equal? (eval '(>= 3) decode/boolean) '#t)
-  (check-equal? (eval '(>= 3 2) decode/boolean) '#t)
-  (check-equal? (eval '(>= 2 3) decode/boolean) '#f)
-  (check-equal? (eval '(>= 3 2 1) decode/boolean) '#t)
   (check-equal? (eval '(= 3) decode/boolean) '#t)
   (check-equal? (eval '(= 3 2) decode/boolean) '#f)
   (check-equal? (eval '(= 3 3) decode/boolean) '#t)
@@ -364,6 +358,14 @@
   (check-equal? (eval '(> 3 2) decode/boolean) '#t)
   (check-equal? (eval '(> 2 3) decode/boolean) '#f)
   (check-equal? (eval '(> 3 2 1) decode/boolean) '#t)
+  (check-equal? (eval '(<= 3) decode/boolean) '#t)
+  (check-equal? (eval '(<= 3 2) decode/boolean) '#f)
+  (check-equal? (eval '(<= 2 3) decode/boolean) '#t)
+  (check-equal? (eval '(<= 3 2 1) decode/boolean) '#f)
+  (check-equal? (eval '(>= 3) decode/boolean) '#t)
+  (check-equal? (eval '(>= 3 2) decode/boolean) '#t)
+  (check-equal? (eval '(>= 2 3) decode/boolean) '#f)
+  (check-equal? (eval '(>= 3 2 1) decode/boolean) '#t)
 
   ;; PAIRS
   (check-equal? (eval '(cons #t 5) (decode/pair decode/boolean decode/number)) '(#t . 5))
@@ -373,11 +375,11 @@
   ;; LISTS
   (check-equal? (eval 'null (decode/list decode/number)) '())
   (check-equal? (eval 'empty (decode/list decode/number)) '())
-  (check-equal? (eval '(null? null) decode/boolean) '#t)
-  (check-equal? (eval '(null? (cons #t 5)) decode/boolean) '#f)
   (check-equal? (eval '(list) (decode/list decode/number)) '())
   (check-equal? (eval '(list 1) (decode/list decode/number)) '(1))
   (check-equal? (eval '(list 1 2) (decode/list decode/number)) '(1 2))
+  (check-equal? (eval '(null? null) decode/boolean) '#t)
+  (check-equal? (eval '(null? (cons #t 5)) decode/boolean) '#f)
   (check-equal? (eval '(first (list 1 2)) decode/number) '1)
   (check-equal? (eval '(rest (list 1 2)) (decode/list decode/number)) '(2))
   (check-equal? (eval '(map add1 (list 1 2)) (decode/list decode/number)) '(2 3))

@@ -882,7 +882,7 @@ The grammar for the Core Language is in Figure~\ref{figure:core-language-grammar
              \(c\) & ::= & \texttt{((\(e\) \(e\)) . \(ℓᶜ\))}     & Calls               \\
              \(r\) & ::= & \texttt{(\(x\) . \(ℓʳ\))}             & Variable References \\
             \(ℓᵉ\) & ::= & \(ℓᶠ\) | \(ℓᶜ\) | \(ℓʳ\)              & Labels              \\
-    \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint sets of integers»           &                     \\
+    \(ℓᶠ, ℓᶜ, ℓʳ\) & ::= & «Disjoint Sets of Integers»           &                     \\
              \(x\) & ::= & «Identifiers»                         & Identifiers         \\
   \end{tabular}
   \caption{Core Language’s grammar.}
@@ -904,43 +904,8 @@ The Surface Language is the language in which we write our examples and tests. F
 
 \begin{figure}[h]
   \centering
-  \begin{tabular}{rcll}
-    \(e\) & ::= &                                         & Expressions \\
-          &     &  BOOLEANS & \\
-          &     &  | \#t | \#f & \\
-          &     &  | (if e e e) & \\
-          &     &  | (and e ...) | (or e ...) | not | xor & \\
-          &     & & \\
-          &     &  NUMBERS & \\
-          &     &  | <non-negative-integers> & \\
-          &     &  | add1 | sub1 | + | (+ e ...) | - | (- e ...{2,}) & \\
-          &     &  | zero? & \\
-          &     &  \texttt{| <= | (<= e ...+) | >= | (>= e ...+) | = | (= e ...+) | < | (< e ...+) | > | (> e ...+)} & \\
-          &     &  | * | (* e ...) | quotient | expt & \\
-          &     & & \\
-          &     &  PAIRS & \\
-          &     &  | null | cons & \\
-          &     &  | null? | car | cdr & \\
-          &     & & \\
-          &     &  LISTS & \\
-          &     &  | empty | (list e ...) & \\
-          &     &  | first | rest & \\
-          &     &  | map & \\
-          &     & & \\
-          &     &  BINDINGS & \\
-          &     &  | (let ([x e] ...) e ...+) & \\
-          &     &  | (let* ([x e] ...) e ...+) & \\
-          &     &  | (letrec ([x e]) e ...+) & \\
-          &     &  | (begin e ...+) & \\
-          &     & & \\
-          &     &  FUNCTIONS & \\
-          &     &  | (λ (x ...) e ...+) & \\
-          &     &  | identity | const | (thunk e) & \\
-          &     &  | (e ...+) & \\
-          &     &  | x & \\
-          &     & & \\
-    \(x\) & ::= & «Identifiers»                           & Identifiers \\
-  \end{tabular}
+  % \begin{tabular}{rcll}
+  % \end{tabular}
   \caption{Surface Language’s grammar.}
   \label{figure:surface-language-grammar}
 \end{figure}
