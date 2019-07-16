@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="68.942154mm"
+   height="43.037243mm"
+   viewBox="0 0 68.942154 43.037243"
+   version="1.1"
+   id="svg8"
+   inkscape:version="0.92.2 5c3e80d, 2017-08-06"
+   sodipodi:docname="language-hierarchy.svg">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.1235"
+     inkscape:cx="67.767383"
+     inkscape:cy="-30.019759"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1440"
+     inkscape:window-height="855"
+     inkscape:window-x="0"
+     inkscape:window-y="1"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-44.421152,-50.108652)">
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:Charter;-inkscape-font-specification:Charter;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08819444"
+       x="78.913391"
+       y="80.041664"
+       id="text12"><tspan
+         sodipodi:role="line"
+         id="tspan10"
+         x="78.913391"
+         y="80.041664"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:Charter;-inkscape-font-specification:Charter;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.08819444">Core Language*</tspan></text>
+    <ellipse
+       style="fill:none;stroke:#000000;stroke-width:0.17638889"
+       id="path4513"
+       cx="78.892227"
+       cy="79.163254"
+       rx="18.133436"
+       ry="8.0069723" />
+    <text
+       id="text4517"
+       y="67.089211"
+       x="78.854622"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:Charter;-inkscape-font-specification:Charter;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08819444"
+       xml:space="preserve"><tspan
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:Charter;-inkscape-font-specification:Charter;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.08819444"
+         y="67.089211"
+         x="78.854622"
+         id="tspan4515"
+         sodipodi:role="line">Surface Language</tspan></text>
+    <ellipse
+       ry="16.249443"
+       rx="25.669411"
+       cy="74.688766"
+       cx="78.892227"
+       id="ellipse4519"
+       style="fill:none;stroke:#000000;stroke-width:0.17638889" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;line-height:1.25;font-family:Charter;-inkscape-font-specification:Charter;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.08819444"
+       x="78.845627"
+       y="56.020748"
+       id="text4523"><tspan
+         sodipodi:role="line"
+         id="tspan4521"
+         x="78.845627"
+         y="56.020748"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.23333311px;font-family:Charter;-inkscape-font-specification:Charter;text-align:center;text-anchor:middle;fill:#000000;stroke:none;stroke-width:0.08819444">Racket</tspan></text>
+    <ellipse
+       style="fill:none;stroke:#000000;stroke-width:0.17638889"
+       id="ellipse4525"
+       cx="78.892227"
+       cy="71.627274"
+       rx="34.382881"
+       ry="21.430428" />
+  </g>
+</svg>
