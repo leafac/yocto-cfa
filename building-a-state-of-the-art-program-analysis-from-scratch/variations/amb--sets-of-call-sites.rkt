@@ -39,7 +39,9 @@
             (apply
              set-union
              (set)
-             (for/list ([¢¹ (in-set (→ e¹ ρ σ t))]) (→ e² ρ (second ¢¹) t)))]
+             (for*/list ([¢¹ (in-set (→ e¹ ρ σ t))]
+                         [¢² (in-set (→ e² ρ (second ¢¹) t))])
+               (set ¢¹ ¢²)))]
            [`((,eᶠ ,eᵃ) . ,ℓᶜ)
             (match-define tᵉ (set-add t ℓᶜ))
             (apply
@@ -126,4 +128,5 @@
   #;(check-equal? (eval countdown decode/number) (set 0 1))
   #;(check-equal? (eval church-arithmetic decode/number) (set 16))
   #;(check-equal? (eval sat decode/boolean) (set #t))
+  (check-equal? (eval simple-amb decode/boolean) (set #t #f))
   (check-equal? (eval (recursive-amb 5)) (set)))
