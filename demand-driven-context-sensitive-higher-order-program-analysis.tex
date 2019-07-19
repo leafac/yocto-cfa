@@ -2480,6 +2480,7 @@ For the rest of this chapter we will address each aspect from the checklist abov
 % \label{section:core-language}
 
 \begin{itemize}
+  \item Advantages and disadvantages of alphatization vs labeling (need gensym, which isn’t what the programmer wrote)
   \item Keep the core language small
   \item Keep the core language as close as possible to the surface
   \item Be intentional about what to add. Most features belong in the surface language.
@@ -2523,6 +2524,7 @@ For the rest of this chapter we will address each aspect from the checklist abov
 
 \begin{itemize}
   \item Why Racket: (1) homoiconic (no need to parse \& pretty print); (2) familiar (many papers in this area are in Scheme); (3) powerful (it has the basics like pattern matching; more advanced stuff like delimited continuations when you need them; and conveniences like PLT Redex and the plotting library; and it’s reasonably fast) (But there’s nothing Racket specific about this work; the analysis could work over other languages with higher-order functions (which means almost any language, these days) and be implemented in something like JavaScript in one day)
+  \item Why not Racket: Network effect.
 \end{itemize}
 
 \section{Evaluation}
@@ -2564,6 +2566,7 @@ For the rest of this chapter we will address each aspect from the checklist abov
 \begin{itemize}
   \item http://matt.might.net/articles/cps-conversion/
   \item http://matt.might.net/articles/a-normalization/
+  \item Graph of dependencies between the translations of different kinds of program points to show that it doesn’t include cycles (it’s a DAG), so the compilation is guaranteed to terminate
 \end{itemize}
 
 This compiler is rudimentary, but it demonstrates the general structure of a compiler and techniques that generally are not explored in educational materials but that are useful in practice, for example, defining features in the compiled language by borrowing from the language in which we are developing the compiler, which saves us from having to develop 
