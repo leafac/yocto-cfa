@@ -35,13 +35,7 @@
          (set-add! Σ ς)
          (match e
            [`((λ (,x) ,eᵇ) . ,ℓᶠ) (set `(,(set `(,e ,ρ)) ,σ))]
-           [`((amb ,e¹ ,e²) . ,ℓᶜ)
-            (apply
-             set-union
-             (set)
-             (for*/list ([¢¹ (in-set (→ e¹ ρ σ t))]
-                         [¢² (in-set (→ e² ρ (second ¢¹) t))])
-               (set ¢¹ ¢²)))]
+           [`((amb ,e¹ ,e²) . ,ℓᶜ) (set-union (→ e¹ ρ σ t) (→ e² ρ σ t))]
            [`((,eᶠ ,eᵃ) . ,ℓᶜ)
             (match-define tᵉ (set-add t ℓᶜ))
             (apply
@@ -94,6 +88,7 @@
     (define (↑ e x*)
       (match e
         [`((λ (,x) ,eᵇ) . ,ℓᶠ) `(λ (,x) ,(↑ eᵇ (set-add x* x)))]
+        [`((amb ,e¹ ,e²) . ,ℓᶜ) `(raise-user-error 'amb)]
         [`((,eᶠ ,eᵃ) . ,ℓᶜ) `(,(↑ eᶠ x*) ,(↑ eᵃ x*))]
         [`(,(? symbol? x) . ,ℓʳ) #:when (set-member? x* x) x]
         [`(,(? symbol? x) . ,ℓʳ) `(,(⇑/a (hash-ref ρ x)))]))
@@ -112,21 +107,24 @@
 (module+ test
   (require rackunit "../programs.rkt")
 
-  #;(check-equal? (eval identity (λ (f) (f #t))) (set #t))
-  #;(check-equal? (eval application decode/boolean) (set #t))
-  #;(check-equal? (eval const decode/boolean) (set #t))
-  #;(check-equal? (eval identity-called-twice decode/boolean) (set #t))
-  #;(check-equal? (eval identity-called-twice/apply decode/boolean) (set #t))
-  #;(check-equal? (eval identity-called-twice/η-expanded decode/boolean) (set #t))
-  #;(check-equal? (eval identity-called-twice/iife decode/boolean) (set #t))
-  #;(check-equal? (eval non-recursive-self-application decode/boolean) (set #t))
-  #;(check-equal? (eval identity&apply-with-self-passing decode/boolean) (set #t))
-  #;(check-equal? (eval try decode/boolean) (set #f))
-  #;(check-equal? (eval Ω) (set))
-  #;(check-equal? (eval Ω/creating-closures) (set))
-  #;(check-equal? (eval Ω/pushing-stack-frames) (set))
+  (check-equal? (eval identity (λ (f) (f #t))) (set #t))
+  (check-equal? (eval application decode/boolean) (set #t))
+  (check-equal? (eval const decode/boolean) (set #t))
+  (check-equal? (eval identity-called-twice decode/boolean) (set #t))
+  (check-equal? (eval identity-called-twice/apply decode/boolean) (set #t))
+  (check-equal? (eval identity-called-twice/η-expanded decode/boolean) (set #t))
+  (check-equal? (eval identity-called-twice/iife decode/boolean) (set #t))
+  (check-equal? (eval non-recursive-self-application decode/boolean) (set #t))
+  (check-equal? (eval identity&apply-with-self-passing decode/boolean) (set #t))
+  (check-equal? (eval try decode/boolean) (set #t #f))
+  (check-equal? (eval Ω) (set))
+  (check-equal? (eval Ω/creating-closures) (set))
+  (check-equal? (eval Ω/pushing-stack-frames) (set))
+  ;; SLOW & UNVERIFIED
   #;(check-equal? (eval countdown decode/number) (set 0 1))
-  #;(check-equal? (eval church-arithmetic decode/number) (set 16))
+  (check-equal? (eval church-arithmetic decode/number) (set 16))
+  ;; SLOW & UNVERIFIED
   #;(check-equal? (eval sat decode/boolean) (set #t))
   (check-equal? (eval amb/simple decode/boolean) (set #t #f))
-  (check-equal? (eval (amb/recursive 5)) (set)))
+  (check-equal? (eval amb/twice decode/number) (set 2 3 4 5 6 7 8))
+  (check-equal? (eval (amb/recursive 3)) (set)))

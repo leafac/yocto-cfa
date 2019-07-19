@@ -238,3 +238,5 @@
 (define amb/simple '(amb #t #f))
 
 (define (amb/recursive size) `(letrec ([f (λ (x) (amb ,@(make-list size '(f x))))]) (f f)))
+
+(define amb/twice '(let ([f (thunk (amb (amb 1 2) (amb 3 4)))]) (+ (f) (f))))
