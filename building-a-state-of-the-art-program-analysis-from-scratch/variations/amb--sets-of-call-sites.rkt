@@ -39,9 +39,7 @@
             (apply
              set-union
              (set)
-             (for*/list ([¢¹ (in-set (→ e¹ ρ σ t))]
-                         [¢² (in-set (→ e² ρ (second ¢¹) t))])
-               ¢²))]
+             (for/list ([¢¹ (in-set (→ e¹ ρ σ t))]) (→ e² ρ (second ¢¹) t)))]
            [`((,eᶠ ,eᵃ) . ,ℓᶜ)
             (match-define tᵉ (set-add t ℓᶜ))
             (apply
