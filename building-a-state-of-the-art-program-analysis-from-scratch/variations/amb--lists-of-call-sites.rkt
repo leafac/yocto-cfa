@@ -40,7 +40,7 @@
              set-union
              (set)
              (for*/list ([¢¹ (in-set (→ e¹ ρ σ t))]
-                         [¢² (in-set (→ e² ρ (second ¢¹) t))])
+                         [¢² (in-set (→ e² ρ σ t))])
                (set ¢¹ ¢²)))]
            [`((,eᶠ ,eᵃ) . ,ℓᶜ)
             (match-define tᵉ (if (member ℓᶜ t) t (cons ℓᶜ t)))
@@ -94,6 +94,7 @@
     (define (↑ e x*)
       (match e
         [`((λ (,x) ,eᵇ) . ,ℓᶠ) `(λ (,x) ,(↑ eᵇ (set-add x* x)))]
+        [`((amb ,e¹ ,e²) . ,ℓᶜ) `(raise-user-error 'amb)]
         [`((,eᶠ ,eᵃ) . ,ℓᶜ) `(,(↑ eᶠ x*) ,(↑ eᵃ x*))]
         [`(,(? symbol? x) . ,ℓʳ) #:when (set-member? x* x) x]
         [`(,(? symbol? x) . ,ℓʳ) `(,(⇑/a (hash-ref ρ x)))]))
@@ -129,4 +130,12 @@
   #;(check-equal? (eval church-arithmetic decode/number) (set 16))
   #;(check-equal? (eval sat decode/boolean) (set #t))
   (check-equal? (eval amb/simple decode/boolean) (set #t #f))
-  (check-equal? (eval (amb/recursive 5)) (set)))
+  (check-equal? (eval (amb/recursive 5)) (set))
+  (check-equal? (eval '(let ([f (thunk (amb 1 2))])
+                         (+ (f) (f)))
+                      decode/number)
+                (set 2 3 4))
+  (check-equal? (eval '(let ([f (thunk (amb (amb 1 2) (amb 3 4)))])
+                         (+ (f) (f)))
+                      decode/number)
+                (set 2 3 4 5 6 7 8)))
