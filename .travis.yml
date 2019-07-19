@@ -1,6 +1,1 @@
-language: minimal
-install:
-  - sudo add-apt-repository --yes ppa:plt/racket
-  - sudo apt update
-  - sudo apt install --yes racket
-script: raco test .
+language: node

@@ -1,3 +1,5 @@
+/node_modules
+
 *.aux
 *.bbl
 *.bib
@@ -10,5 +12,3 @@
 *.toc
 *.xmpdata
 *.xmpi
-
-compiled/

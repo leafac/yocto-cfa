@@ -1,23 +1,26 @@
-[![Build Status](https://travis-ci.com/leafac/demand-driven-context-sensitive-higher-order-program-analysis.svg?branch=master)](https://travis-ci.com/leafac/demand-driven-context-sensitive-higher-order-program-analysis)
+[![Build Status](https://travis-ci.com/leafac/yocto-cfa.svg?branch=master)](https://travis-ci.com/leafac/yocto-cfa)
 
-Demand-Driven Context-Sensitive Higher-Order Program Analysis
-=============================================================
+yocto-CFA
+=========
 
 [Leandro Facchinetti](https://www.leafac.com)’s dissertation.
 
-[**The Dissertation**](demand-driven-context-sensitive-higher-order-program-analysis.pdf) · [**The Dissertation Source**](demand-driven-context-sensitive-higher-order-program-analysis.tex)
+[**The Dissertation**](yocto-cfa.pdf) · [**The Dissertation Source**](yocto-cfa.tex)
 
-Build the dissertation with the usual LaTeX routine:
+Run Tests
+---------
+
+Install [Node.js](https://nodejs.org/) and run:
 
 ```console
-$ lualatex demand-driven-context-sensitive-higher-order-program-analysis.tex
-$ bibtex demand-driven-context-sensitive-higher-order-program-analysis
-$ lualatex demand-driven-context-sensitive-higher-order-program-analysis.tex
-$ lualatex demand-driven-context-sensitive-higher-order-program-analysis.tex
+$ npm install-test
 ```
 
-Run the tests for the accompanying code with [Racket](https://racket-lang.org):
+Build the Dissertation
+----------------------
+
+Install [LaTeX](https://www.latex-project.org) and run:
 
 ```console
-$ raco test .
+$ npm run build:dissertation
 ```
