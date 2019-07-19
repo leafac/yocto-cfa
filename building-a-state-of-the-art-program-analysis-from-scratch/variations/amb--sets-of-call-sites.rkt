@@ -128,5 +128,5 @@
   #;(check-equal? (eval countdown decode/number) (set 0 1))
   #;(check-equal? (eval church-arithmetic decode/number) (set 16))
   #;(check-equal? (eval sat decode/boolean) (set #t))
-  (check-equal? (eval simple-amb decode/boolean) (set #t #f))
-  (check-equal? (eval (recursive-amb 5)) (set)))
+  (check-equal? (eval amb/simple decode/boolean) (set #t #f))
+  (check-equal? (eval (amb/recursive 5)) (set)))
