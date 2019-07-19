@@ -2,7 +2,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "npm run test -- --watchAll",
-    "build:dissertation": "lualatex yocto-cfa.tex; bibtex yocto-cfa; lualatex yocto-cfa.tex; lualatex yocto-cfa.tex"
+    "build:dissertation": "cd dissertation && lualatex yocto-cfa.tex && bibtex yocto-cfa && lualatex yocto-cfa.tex && lualatex yocto-cfa.tex"
   },
   "devDependencies": {
     "@types/jest": "^24.0.15",

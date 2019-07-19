@@ -5,7 +5,7 @@ yocto-CFA
 
 [Leandro Facchinetti](https://www.leafac.com)’s dissertation.
 
-[**The Dissertation**](yocto-cfa.pdf) · [**The Dissertation Source**](yocto-cfa.tex)
+[**The Dissertation**](dissertation/yocto-cfa.pdf) · [**The Dissertation Source**](dissertation/yocto-cfa.tex)
 
 Run Tests
 ---------

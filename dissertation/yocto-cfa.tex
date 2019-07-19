@@ -23,14 +23,14 @@
 
 \usepackage{fontspec, unicode-math}
 \setmainfont{Charter}[
-  Path           = fonts/,
+  Path,
   UprightFont    = charter-regular.ttf,
   ItalicFont     = charter-italic.ttf,
   BoldFont       = charter-bold.ttf,
   BoldItalicFont = charter-bolditalic.ttf
 ]
 \setmonofont{Iosevka Term Slab}[
-  Path           = fonts/,
+  Path,
   UprightFont    = iosevka-term-slab-regular.ttf,
   ItalicFont     = iosevka-term-slab-italic.ttf,
   BoldFont       = iosevka-term-slab-bold.ttf,
@@ -58,7 +58,7 @@
   \begin{singlespace}
     \vspace*{0.5in}
 
-    \textbf{\uppercase{Demand-Driven Context-Sensitive\\Higher-Order Program Analysis}}
+    \textbf{\uppercase{yocto-CFA}}
 
     \vspace*{1in}
 
@@ -223,6 +223,10 @@ They supported my work for the first four years (process number: 13477/13-7).
 \paragraph{Meus pais, Ana~Maria Pereira e Vanderlei~Facchinetti.}
 
 Eles sempre me apoiaram em tudo o que faço, e eles que me incentivaram a procurar uma carreira em ciências da computação: primeiro com aqueles computadores enormes que ocupavam a mesa de jantar inteira — nós jantamos no sofá por um tempo — depois com os meus primeiros livros sobre programação, e finalmente dizendo para eu tentar o vestibular longe de casa. Meus pais me disseram para “mirar nas estrelas, porque se chegar na lua já está bom”. Com o apoio deles, acho que eu estou alcançando as estrelas.
+
+\chapter{The Name}
+
+% TODO:
 
 \chapter{Colophon}
 
@@ -854,7 +858,7 @@ We want our analyzer to be as simple as possible, so we need the language it ana
 
 \begin{figure}[h]
   \centering
-  \includegraphics{images/language-hierarchy.pdf}
+  \includegraphics{language-hierarchy.pdf}
   \caption{The hierarchy of languages. The Core Language is the language analyzed by our analyzer, which includes only the essential features of higher-order programming. The Surface Language is the language in which we write our examples and tests—it includes more features for convenience. The Core Language is a subset of the Surface Language (* except for the labels on each program point), and the Surface Language is a subset of Racket.}
   \label{figure:language-hierarchy}
 \end{figure}
