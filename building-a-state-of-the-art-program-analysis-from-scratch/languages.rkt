@@ -51,6 +51,7 @@
 ;;       «FUNCTIONS»
 ;;       | (λ (x ...) e ...+)
 ;;       | identity | const | (thunk e)
+;;       | (amb e ...{2,})
 ;;       | (e ...+)
 ;;       | x
 ;;
@@ -185,6 +186,8 @@
     [`identity `(λ (x) x)]
     [`const `(λ (a) (λ (b) a))]
     [`(thunk ,eᵇ) `(λ () ,eᵇ)]
+    [`(amb ,e¹ ,e²) `(amb ,(encode¹ e¹) ,(encode¹ e²))]
+    [`(amb ,e¹ ,e² ...) #:when (not (empty? e²)) `(amb ,e¹ (amb ,@e²))]
     [`(,eᶠ ,eᵃ) `(,(encode¹ eᶠ) ,(encode¹ eᵃ))]
     [`(,eᶠ) `(,eᶠ null)]
     [`(,eᶠ ,eᵃ₁ ,eᵃ₂ ...) `((,eᶠ ,eᵃ₁) ,@eᵃ₂)]
@@ -236,6 +239,7 @@
   (define (label¹ e)
     (match e
       [`(λ (,x) ,eᵇ) `((λ (,x) ,(label¹ eᵇ)) . ,(next-label))]
+      [`(amb ,e¹ ,e²) `((amb ,(label¹ e¹) ,(label¹ e²)) . ,(next-label))]
       [`(,eᶠ ,eᵃ) `((,(label¹ eᶠ) ,(label¹ eᵃ)) . ,(next-label))]
       [(? symbol? x) `(,x . ,(next-label))]))
 
@@ -407,6 +411,7 @@
   (check-equal? (eval '(identity 5) decode/number) '5)
   (check-equal? (decode/number ((eval '(const 5)) null)) '5)
   (check-equal? (decode/number ((eval '(thunk 5)) null)) '5)
+  ;; TODO: Tests for ‘amb’.
   (check-equal? (eval '((λ (x) x) 5) decode/number) '5)
   (check-equal? (eval '((λ () 5)) decode/number) '5)
   (check-equal? (eval '((λ (a b) a) 5 null) decode/number) '5))

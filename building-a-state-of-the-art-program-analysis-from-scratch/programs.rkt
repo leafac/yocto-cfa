@@ -234,3 +234,5 @@
           [sat-solve-4
            (λ (p) (try (λ (n1) (try (λ (n2) (try (λ (n3) (try (λ (n4) (p n1 n2 n3 n4))))))))))])
      (sat-solve-4 ϕ)))
+
+(define (recursive-amb size) `(letrec ([f (λ (x) (amb ,@(make-list size '(f f))))]) (f f)))

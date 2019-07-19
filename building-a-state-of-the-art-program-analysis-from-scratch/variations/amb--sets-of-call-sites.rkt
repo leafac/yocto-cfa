@@ -13,7 +13,7 @@
 ;; ρ ::= [x ↦ a, ...]                             Environments
 ;; σ ::= [a ↦ d, ...]                             Stores
 ;; a ::= ⟨ℓᶠ, t⟩                                  Addresses
-;; t ::= [ℓᶜ, ...] «Unique Elements»              Time Stamps
+;; t ::= {ℓᶜ, ...}                                Time Stamps
 
 ;; ⇒ : e → £
 (define (⇒ e)
@@ -43,7 +43,7 @@
                          [¢² (in-set (→ e² ρ (second ¢¹) t))])
                ¢²))]
            [`((,eᶠ ,eᵃ) . ,ℓᶜ)
-            (match-define tᵉ (if (member ℓᶜ t) t (cons ℓᶜ t)))
+            (match-define tᵉ (set-add t ℓᶜ))
             (apply
              set-union
              (set)
@@ -65,7 +65,7 @@
   (define (fixed-point)
     (define previous-$ (make-immutable-hash (hash->list $)))
     (set-clear! Σ)
-    (define £ (→ e (hash) (hash) empty))
+    (define £ (→ e (hash) (hash) (set)))
     (define current-$ (make-immutable-hash (hash->list $)))
     (if (equal? previous-$ current-$) £ (fixed-point)))
 
