@@ -43,6 +43,7 @@ function substitute (variable: Variable, in_: Expression, for_: Expression): Exp
         return _.isEqual(in_, variable) ? for_ : in_
     }
   }
+
   return traverse(in_)
 }
 
@@ -58,6 +59,7 @@ describe('evaluate()', () => {
       body: { kind: 'Variable', name: 'x' }
     })
   })
+
   test('arguments are substituted in function bodies', () => {
     expect(evaluate({
       kind: 'Call',
@@ -77,6 +79,7 @@ describe('evaluate()', () => {
       body: { kind: 'Variable', name: 'y' }
     })
   })
+
   test('programs with undefined variables throw an error', () => {
     expect(() => evaluate({ kind: 'Variable', name: 'x' })).toThrow()
   })
