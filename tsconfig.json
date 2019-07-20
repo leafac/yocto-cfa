@@ -2,6 +2,6 @@
   "compilerOptions": {
     "strict": true,
     "sourceMap": true,
-    "outDir": "out"
+    "outDir": "lib"
   }
 }
