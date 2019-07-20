@@ -1,9 +1,23 @@
 import * as _ from 'lodash'
 
 type Expression = Function_ | Call | Variable
-type Function_ = { kind: 'Function'; variable: Variable; body: Expression; }
-type Call = { kind: 'Call'; function: Expression; argument: Expression; }
-type Variable = { kind: 'Variable'; name: string; }
+
+type Function_ = {
+  kind: 'Function'
+  variable: Variable
+  body: Expression
+}
+
+type Call = {
+  kind: 'Call'
+  function: Expression
+  argument: Expression
+}
+
+type Variable = {
+  kind: 'Variable'
+  name: string
+}
 
 type Value = Function_
 
