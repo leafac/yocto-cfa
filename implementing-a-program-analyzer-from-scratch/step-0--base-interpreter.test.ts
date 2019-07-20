@@ -33,7 +33,7 @@ function substitute(variable: Variable, in_: Expression, for_: Expression): Expr
 }
 
 describe("evaluate()", () => {
-  it("a function is already a value", () => {
+  test("a function is already a value", () => {
       expect(evaluate({
         kind: "Function",
         variable: { kind: "Variable", name: "x" },
@@ -44,7 +44,7 @@ describe("evaluate()", () => {
       body: { kind: "Variable", name: "x" }
     });
   });
-  it("arguments are substituted in function bodies", () => {
+  test("arguments are substituted in function bodies", () => {
     expect(evaluate({
       kind: "Call",
       function: {
@@ -63,7 +63,7 @@ describe("evaluate()", () => {
       body: { kind: "Variable", name: "y" }
     });
   });
-  it("programs with undefined variables throw an error", () => {
+  test("programs with undefined variables throw an error", () => {
     expect(() => evaluate({ kind: "Variable", name: "x" })).toThrow();
   });
 });
