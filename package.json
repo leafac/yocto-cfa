@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "jest --preset ts-jest --testEnvironment node --testPathIgnorePatterns /lib/",
+    "test": "jest",
     "test:watch": "npm run test -- --watchAll",
     "build:dissertation": "cd dissertation && lualatex yocto-cfa.tex && bibtex yocto-cfa && lualatex yocto-cfa.tex && lualatex yocto-cfa.tex"
   },
@@ -13,5 +13,12 @@
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.5.3"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": [
+      "/lib/"
+    ]
   }
 }
