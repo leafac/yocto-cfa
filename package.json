@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "test": "jest",
-    "test:watch": "npm run test -- --watchAll",
+    "test": "standard '**/*.ts' && jest",
+    "test:watch": "jest --watchAll",
     "build:dissertation": "cd dissertation && lualatex yocto-cfa.tex && bibtex yocto-cfa && lualatex yocto-cfa.tex && lualatex yocto-cfa.tex"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
   },
   "standard": {
     "parser": "@typescript-eslint/parser",
-    "plugins": [ "@typescript-eslint/eslint-plugin" ]
+    "plugins": [ "@typescript-eslint/eslint-plugin" ],
+    "envs": ["jest"]
   }
 }
