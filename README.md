@@ -1,26 +1,10 @@
 [![Build Status](https://travis-ci.com/leafac/yocto-cfa.svg?branch=master)](https://travis-ci.com/leafac/yocto-cfa)
 
-yocto-CFA
+Yocto-CFA
 =========
 
-[Leandro Facchinetti](https://www.leafac.com)’s dissertation.
+[**Leandro Facchinetti’s dissertation**](dissertation/yocto-cfa.pdf)
 
-[**The Dissertation**](dissertation/yocto-cfa.pdf) · [**The Dissertation Source**](dissertation/yocto-cfa.tex)
+To run the tests locally, install [Node.js](https://nodejs.org/) and run `npm install-test` (to run the tests again `npm test` suffices).
 
-Run Tests
----------
-
-Install [Node.js](https://nodejs.org/) and run:
-
-```console
-$ npm install-test
-```
-
-Build the Dissertation
-----------------------
-
-Install [LaTeX](https://www.latex-project.org) and run:
-
-```console
-$ npm run build:dissertation
-```
+To build the dissertation, install [LaTeX](https://www.latex-project.org) and run `npm run build:dissertation`.
