@@ -1,27 +1,29 @@
 import * as _ from 'lodash'
 
-type Expression = Function_ | Call | Variable
+namespace YJS {
+  export type Expression = Function | Call | Variable
 
-type Function_ = {
-  kind: 'Function'
-  variable: Variable
-  body: Expression
+  export type Function = {
+    kind: 'Function'
+    variable: Variable
+    body: Expression
+  }
+
+  export type Call = {
+    kind: 'Call'
+    function: Expression
+    argument: Expression
+  }
+
+  export type Variable = {
+    kind: 'Variable'
+    name: string
+  }
 }
 
-type Call = {
-  kind: 'Call'
-  function: Expression
-  argument: Expression
-}
+type Value = YJS.Function
 
-type Variable = {
-  kind: 'Variable'
-  name: string
-}
-
-type Value = Function_
-
-function evaluate(expression: Expression): Value {
+function evaluate(expression: YJS.Expression): Value {
   switch (expression.kind) {
     case 'Function': return expression
     case 'Call':
@@ -32,8 +34,10 @@ function evaluate(expression: Expression): Value {
   }
 }
 
-function substitute(variable: Variable, in_: Expression, for_: Expression): Expression {
-  function traverse(in_: Expression): Expression {
+function substitute(
+  variable: YJS.Variable, in_: YJS.Expression, for_: YJS.Expression
+): YJS.Expression {
+  function traverse(in_: YJS.Expression): YJS.Expression {
     switch (in_.kind) {
       case 'Function':
         return _.isEqual(in_.variable, variable) ? in_ : { ...in_, body: traverse(in_.body) }
