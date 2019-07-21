@@ -57,7 +57,7 @@ describe("evaluate()", () => {
       kind: "Function",
       variable: { kind: "Variable", name: "x" },
       body: { kind: "Variable", name: "x" }
-    })).toMatchObject({
+    })).toEqual({
       kind: "Function",
       variable: { kind: "Variable", name: "x" },
       body: { kind: "Variable", name: "x" }
@@ -77,12 +77,15 @@ describe("evaluate()", () => {
         variable: { kind: "Variable", name: "y" },
         body: { kind: "Variable", name: "y" }
       }
-    })).toMatchObject({
+    })).toEqual({
       kind: "Function",
       variable: { kind: "Variable", name: "y" },
       body: { kind: "Variable", name: "y" }
     })
   })
+
+  test.todo("arguments are substituted DEEP in function bodies")
+  test.todo("shadowed arguments aren’t substituted")
 
   test("programs with undefined variables throw an error", () => {
     expect(() => evaluate({ kind: "Variable", name: "x" })).toThrow()
