@@ -4,20 +4,20 @@ namespace YJS {
   export type Expression = Function | Call | Variable
 
   export type Function = {
-    kind: "Function"
-    variable: Variable
-    body: Expression
+    readonly kind: "Function"
+    readonly variable: Variable
+    readonly body: Expression
   }
 
   export type Call = {
-    kind: "Call"
-    function: Expression
-    argument: Expression
+    readonly kind: "Call"
+    readonly function: Expression
+    readonly argument: Expression
   }
 
   export type Variable = {
-    kind: "Variable"
-    name: string
+    readonly kind: "Variable"
+    readonly name: string
   }
 }
 
