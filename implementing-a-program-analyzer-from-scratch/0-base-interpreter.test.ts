@@ -1,5 +1,6 @@
 import * as _ from "lodash"
 
+// TODO: Remove namespace in favor of standard ES6 modules (import / export)?
 namespace YJS {
   export type Expression = Function | Call | Variable
 
