@@ -1,7 +1,6 @@
 import * as _ from "lodash"
 
-// TODO: Remove namespace in favor of standard ES6 modules (import / export)?
-namespace YJS {
+namespace YoctoJavaScript {
   export type Expression = Function | Call | Variable
 
   export type Function = {
@@ -22,9 +21,9 @@ namespace YJS {
   }
 }
 
-type Value = YJS.Function
+type Value = YoctoJavaScript.Function
 
-function evaluate(expression: YJS.Expression): Value {
+function evaluate(expression: YoctoJavaScript.Expression): Value {
   switch (expression.kind) {
     case "Function": return expression
     case "Call":
@@ -36,9 +35,11 @@ function evaluate(expression: YJS.Expression): Value {
 }
 
 function substitute(
-  variable: YJS.Variable, in_: YJS.Expression, for_: YJS.Expression
-): YJS.Expression {
-  function traverse(in_: YJS.Expression): YJS.Expression {
+  variable: YoctoJavaScript.Variable,
+  in_: YoctoJavaScript.Expression,
+  for_: YoctoJavaScript.Expression
+): YoctoJavaScript.Expression {
+  function traverse(in_: YoctoJavaScript.Expression): YoctoJavaScript.Expression {
     switch (in_.kind) {
       case "Function":
         return _.isEqual(in_.variable, variable) ? in_ : { ...in_, body: traverse(in_.body) }
@@ -65,13 +66,71 @@ describe("evaluate()", () => {
     })
   })
 
-  test("arguments are substituted in function bodies", () => {
+  test.each([
+    [
+      {
+        kind: "Call",
+        function: {
+          kind: "Function",
+          variable: { kind: "Variable", name: "x" },
+          body: { kind: "Variable", name: "x" }
+        },
+        argument: {
+          kind: "Function",
+          variable: { kind: "Variable", name: "y" },
+          body: { kind: "Variable", name: "y" }
+        }
+      },
+      {
+        kind: "Function",
+        variable: { kind: "Variable", name: "y" },
+        body: { kind: "Variable", name: "y" }
+      }
+    ],
+    [
+      {
+        kind: "Call",
+        function: {
+          kind: "Function",
+          variable: { kind: "Variable", name: "x" },
+          body: {
+            kind: "Function",
+            variable: { kind: "Variable", name: "z" },
+            body: { kind: "Variable", name: "x" }
+          }
+        },
+        argument: {
+          kind: "Function",
+          variable: { kind: "Variable", name: "y" },
+          body: { kind: "Variable", name: "y" }
+        }
+      },
+      {
+        kind: "Function",
+        variable: { kind: "Variable", name: "z" },
+        body: {
+          kind: "Function",
+          variable: { kind: "Variable", name: "y" },
+          body: { kind: "Variable", name: "y" }
+        }
+      }
+    ]
+  ] as [YoctoJavaScript.Expression, Value][])(
+    "a call substitutes the argument in the function body",
+    (program, expectedValue) => { expect(evaluate(program)).toEqual(expectedValue) }
+  )
+
+  test("substitution doesn’t affect shadowed variables", () => {
     expect(evaluate({
       kind: "Call",
       function: {
         kind: "Function",
         variable: { kind: "Variable", name: "x" },
-        body: { kind: "Variable", name: "x" }
+        body: {
+          kind: "Function",
+          variable: { kind: "Variable", name: "x" },
+          body: { kind: "Variable", name: "x" }
+        }
       },
       argument: {
         kind: "Function",
@@ -80,13 +139,10 @@ describe("evaluate()", () => {
       }
     })).toEqual({
       kind: "Function",
-      variable: { kind: "Variable", name: "y" },
-      body: { kind: "Variable", name: "y" }
+      variable: { kind: "Variable", name: "x" },
+      body: { kind: "Variable", name: "x" }
     })
   })
-
-  test.todo("arguments are substituted DEEP in function bodies")
-  test.todo("shadowed arguments aren’t substituted")
 
   test("programs with undefined variables throw an error", () => {
     expect(() => evaluate({ kind: "Variable", name: "x" })).toThrow()
