@@ -12,13 +12,11 @@
     "@types/lodash": "^4.14.136",
     "jest": "^24.8.0",
     "ts-jest": "^24.0.2",
+    "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node",
-    "testPathIgnorePatterns": [
-      "/lib/"
-    ]
+    "testEnvironment": "node"
   }
 }
