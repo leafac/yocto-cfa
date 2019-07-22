@@ -1,94 +1,94 @@
 import * as _ from "lodash"
 
-// TODO: Remove namespace in favor of standard ES6 modules (import / export)?
-namespace YJS {
-  export type Expression = Function | Call | Variable
-
-  export type Function = {
-    readonly kind: "Function"
-    readonly variable: Variable
-    readonly body: Expression
-  }
-
-  export type Call = {
-    readonly kind: "Call"
-    readonly function: Expression
-    readonly argument: Expression
-  }
-
-  export type Variable = {
-    readonly kind: "Variable"
-    readonly name: string
-  }
+interface Expression {
+  evaluate(): Value
+  substitute(variable: Variable, expression: Expression): Expression
 }
 
-type Value = YJS.Function
+class Function_ implements Expression {
+  constructor(
+    public readonly variable: Variable,
+    public readonly body: Expression
+  ) { }
 
-function evaluate(expression: YJS.Expression): Value {
-  switch (expression.kind) {
-    case "Function": return expression
-    case "Call":
-      const { variable, body } = evaluate(expression.function)
-      const argument = evaluate(expression.argument)
-      return evaluate(substitute(variable, body, argument))
-    case "Variable": throw new Error(`Undefined variable ‘${expression}’.`)
+  evaluate(): Value {
+    return this
   }
-}
 
-function substitute(
-  variable: YJS.Variable, in_: YJS.Expression, for_: YJS.Expression
-): YJS.Expression {
-  function traverse(in_: YJS.Expression): YJS.Expression {
-    switch (in_.kind) {
-      case "Function":
-        return _.isEqual(in_.variable, variable) ? in_ : { ...in_, body: traverse(in_.body) }
-      case "Call":
-        return { ...in_, function: traverse(in_.function), argument: traverse(in_.argument) }
-      case "Variable":
-        return _.isEqual(in_, variable) ? for_ : in_
+  substitute(variable: Variable, expression: Expression): Expression {
+    if (_.isEqual(this.variable, variable)) {
+      return this
+    } else {
+      return new Function_(
+        this.variable,
+        this.body.substitute(variable, expression)
+      )
     }
   }
-
-  return traverse(in_)
 }
 
+class Call implements Expression {
+  constructor(
+    public readonly function_: Expression,
+    public readonly argument: Expression
+  ) { }
+
+  evaluate(): Value {
+    const function_ = this.function_.evaluate()
+    const argument = this.argument.evaluate()
+    return function_.body.substitute(function_.variable, argument).evaluate()
+  }
+
+  substitute(variable: Variable, expression: Expression): Expression {
+    return new Call(
+      this.function_.substitute(variable, expression),
+      this.argument.substitute(variable, expression)
+    )
+  }
+}
+
+class Variable implements Expression {
+  constructor(public readonly name: string) { }
+
+  evaluate(): Value {
+    throw new Error(`Undefined variable ‘${this}’.`)
+  }
+
+  substitute(variable: Variable, expression: Expression): Expression {
+    if (_.isEqual(this, variable)) {
+      return expression
+    } else {
+      return this
+    }
+  }
+}
+
+type Value = Function_
+
 describe("evaluate()", () => {
-  test("a function is already a value", () => {
-    expect(evaluate({
-      kind: "Function",
-      variable: { kind: "Variable", name: "x" },
-      body: { kind: "Variable", name: "x" }
-    })).toEqual({
-      kind: "Function",
-      variable: { kind: "Variable", name: "x" },
-      body: { kind: "Variable", name: "x" }
-    })
+  test("functions evaluate to themselves", () => {
+    expect(
+      new Function_(new Variable("x"), new Variable("x")).evaluate()
+    ).toEqual(
+      new Function_(new Variable("x"), new Variable("x"))
+    )
   })
 
-  test("arguments are substituted in function bodies", () => {
-    expect(evaluate({
-      kind: "Call",
-      function: {
-        kind: "Function",
-        variable: { kind: "Variable", name: "x" },
-        body: { kind: "Variable", name: "x" }
-      },
-      argument: {
-        kind: "Function",
-        variable: { kind: "Variable", name: "y" },
-        body: { kind: "Variable", name: "y" }
-      }
-    })).toEqual({
-      kind: "Function",
-      variable: { kind: "Variable", name: "y" },
-      body: { kind: "Variable", name: "y" }
-    })
+  test("calls substitute the argument in the function body", () => {
+    expect(
+      new Call(
+        new Function_(new Variable("x"), new Variable("x")),
+        new Function_(new Variable("y"), new Variable("y"))
+      ).evaluate()
+    ).toEqual(
+      new Function_(new Variable("y"), new Variable("y"))
+    )
   })
 
   test.todo("arguments are substituted DEEP in function bodies")
   test.todo("shadowed arguments aren’t substituted")
 
   test("programs with undefined variables throw an error", () => {
-    expect(() => evaluate({ kind: "Variable", name: "x" })).toThrow()
+    expect(() => new Variable("x").evaluate()).toThrow()
   })
 })
