@@ -22,9 +22,14 @@ export function evaluate(expression: Expression): Value {
     function traverse(expression: Expression): Expression {
       switch (expression.type) {
         case "ArrowFunctionExpression":
-          return expression.params[0].name === param.name ? expression : { ...expression, body: traverse(expression.body) }
+          return expression.params[0].name === param.name ?
+            expression : { ...expression, body: traverse(expression.body) }
         case "CallExpression":
-          return { ...expression, callee: traverse(expression.callee), arguments: [traverse(expression.arguments[0])] }
+          return {
+            ...expression,
+            callee: traverse(expression.callee),
+            arguments: [traverse(expression.arguments[0])]
+          }
         case "Identifier":
           return expression.name === param.name ? argument : expression
       }
