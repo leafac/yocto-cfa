@@ -39,6 +39,8 @@ function substitute(
   in_: YoctoJavaScript.Expression,
   for_: YoctoJavaScript.Expression
 ): YoctoJavaScript.Expression {
+  return traverse(in_)
+
   function traverse(in_: YoctoJavaScript.Expression): YoctoJavaScript.Expression {
     switch (in_.kind) {
       case "Function":
@@ -49,8 +51,6 @@ function substitute(
         return _.isEqual(in_, variable) ? for_ : in_
     }
   }
-
-  return traverse(in_)
 }
 
 describe("evaluate()", () => {
