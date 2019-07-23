@@ -11,7 +11,9 @@ describe("evaluate()", () => {
     [YJS`(x => z => x) (y => y)`, YJS`z => y => y`]
   ])(
     "a call substitutes the argument in the function body",
-    (program, expectedValue) => { expect(evaluate(program)).toEqual(expectedValue) }
+    (program, expectedValue) => {
+      expect(evaluate(program)).toEqual(expectedValue)
+    }
   )
 
   test("substitution doesn’t affect shadowed Identifiers", () => {
