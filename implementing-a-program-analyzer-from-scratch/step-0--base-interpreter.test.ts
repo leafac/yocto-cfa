@@ -21,4 +21,6 @@ describe("evaluate()", () => {
   test("programs with undefined Identifiers throw an error", () => {
     expect(() => evaluate(YJS`x`)).toThrow()
   })
+
+  test.todo("some programs run forever")
 })
