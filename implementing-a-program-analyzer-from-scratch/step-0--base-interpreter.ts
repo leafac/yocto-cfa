@@ -1,5 +1,4 @@
 import { ArrowFunctionExpression, Expression, Identifier } from "../languages/yocto-javascript"
-import * as _ from "lodash"
 
 export type Value = ArrowFunctionExpression
 
@@ -23,11 +22,11 @@ export function evaluate(expression: Expression): Value {
     function traverse(expression: Expression): Expression {
       switch (expression.type) {
         case "ArrowFunctionExpression":
-          return _.isEqual(expression.params[0], param) ? expression : { ...expression, body: traverse(expression.body) }
+          return expression.params[0].name === param.name ? expression : { ...expression, body: traverse(expression.body) }
         case "CallExpression":
           return { ...expression, callee: traverse(expression.callee), arguments: [traverse(expression.arguments[0])] }
         case "Identifier":
-          return _.isEqual(expression, param) ? argument : expression
+          return expression.name === param.name ? argument : expression
       }
     }
   }
