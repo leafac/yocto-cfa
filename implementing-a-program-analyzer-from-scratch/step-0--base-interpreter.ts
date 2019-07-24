@@ -1,6 +1,4 @@
-import { ArrowFunctionExpression, Expression, Identifier } from "../languages/yocto-javascript"
-
-export type Value = ArrowFunctionExpression
+import { Expression, Identifier, Value } from "../languages/yocto-javascript"
 
 export function evaluate(expression: Expression): Value {
   switch (expression.type) {

@@ -20,6 +20,8 @@ export interface Identifier {
   name: string
 }
 
+export type Value = ArrowFunctionExpression
+
 export function YJS(strings: TemplateStringsArray): Expression {
   // TODO: Check
   return (esprima.parseScript(strings[0]).body[0] as estree.ExpressionStatement).expression as Expression

@@ -20,9 +20,13 @@ describe("evaluate()", () => {
     expect(evaluate(YJS`(x => x => x) (y => y)`)).toEqual(YJS`x => x`)
   })
 
-  test("programs with undefined Identifiers throw an error", () => {
+  test("substitution doesn’t affect other Identifiers", () => {
+    expect(evaluate(YJS`(x => z => z) (y => y)`)).toEqual(YJS`z => z`)
+  })
+
+  test("programs with unbound Identifiers throw an error", () => {
     expect(() => evaluate(YJS`x`)).toThrow()
   })
 
-  test.todo("some programs run forever")
+  test.todo("the evaluation of some programs doesn’t terminate")
 })
