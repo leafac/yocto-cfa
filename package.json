@@ -17,6 +17,7 @@
   },
   "jest": {
     "preset": "ts-jest",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "verbose": true
   }
 }
