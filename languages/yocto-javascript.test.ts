@@ -1,4 +1,4 @@
-import { YJS } from "./yocto-javascript";
+import { YJS } from "./yocto-javascript"
 
 test("ArrowFunctionExpression", () => {
   expect(YJS`x => x`).toMatchInlineSnapshot(`
@@ -19,5 +19,7 @@ test("ArrowFunctionExpression", () => {
       ],
       "type": "ArrowFunctionExpression",
     }
-  `);
-});
+  `)
+})
+
+test.todo("Error cases.")
