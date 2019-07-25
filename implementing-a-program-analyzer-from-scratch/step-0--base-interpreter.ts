@@ -9,28 +9,28 @@ export function evaluate(expression: Expression): Value {
       return evaluate(substitute(param, body, argument))
     case "Identifier": throw new Error(`Unbound ‘${expression.name}’.`)
   }
+}
 
-  function substitute(
-    param: Identifier,
-    body: Expression,
-    argument: Value
-  ): Expression {
-    return traverse(body)
+function substitute(
+  param: Identifier,
+  body: Expression,
+  argument: Value
+): Expression {
+  return traverse(body)
 
-    function traverse(expression: Expression): Expression {
-      switch (expression.type) {
-        case "ArrowFunctionExpression":
-          return expression.params[0].name === param.name ?
-            expression : { ...expression, body: traverse(expression.body) }
-        case "CallExpression":
-          return {
-            ...expression,
-            callee: traverse(expression.callee),
-            arguments: [traverse(expression.arguments[0])]
-          }
-        case "Identifier":
-          return expression.name === param.name ? argument : expression
-      }
+  function traverse(expression: Expression): Expression {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return expression.params[0].name === param.name ?
+          expression : { ...expression, body: traverse(expression.body) }
+      case "CallExpression":
+        return {
+          ...expression,
+          callee: traverse(expression.callee),
+          arguments: [traverse(expression.arguments[0])]
+        }
+      case "Identifier":
+        return expression.name === param.name ? argument : expression
     }
   }
 }
