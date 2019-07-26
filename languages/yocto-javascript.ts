@@ -1,5 +1,5 @@
-import * as esprima from "esprima"
-import * as estree from "estree"
+import { parseScript as parse } from "esprima"
+import { Node } from "estree"
 
 export type Expression = ArrowFunctionExpression | CallExpression | Identifier
 export type Value = ArrowFunctionExpression
@@ -24,16 +24,16 @@ export interface Identifier {
 export type IdentifierName = string
 
 export function YJS(strings: TemplateStringsArray): Expression {
-  return traverse(esprima.parseScript(strings[0]), new Set())
+  return convert(parse(strings[0]), new Set())
 
-  function traverse(node: estree.Node, scope: Set<IdentifierName>): Expression {
+  function convert(node: Node, scope: Set<IdentifierName>): Expression {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1) {
           throw new SyntaxError("A Program must include exactly one Statement")
         }
-        return traverse(node.body[0], scope)
-      case "ExpressionStatement": return traverse(node.expression, scope)
+        return convert(node.body[0], scope)
+      case "ExpressionStatement": return convert(node.expression, scope)
       case "ArrowFunctionExpression":
         if (node.params.length !== 1) {
           throw new SyntaxError("An ArrowFunctionExpression must include exactly one param")
@@ -45,7 +45,7 @@ export function YJS(strings: TemplateStringsArray): Expression {
         return {
           type: "ArrowFunctionExpression",
           params: [{ type: "Identifier", name: param.name }],
-          body: traverse(node.body, new Set([...scope, param.name]))
+          body: convert(node.body, new Set(scope).add(param.name))
         }
       case "CallExpression":
         if (node.arguments.length !== 1) {
@@ -53,8 +53,8 @@ export function YJS(strings: TemplateStringsArray): Expression {
         }
         return {
           type: "CallExpression",
-          callee: traverse(node.callee, scope),
-          arguments: [traverse(node.arguments[0], scope)]
+          callee: convert(node.callee, scope),
+          arguments: [convert(node.arguments[0], scope)]
         }
       case "Identifier":
         if (!scope.has(node.name)) {

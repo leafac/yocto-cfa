@@ -93,6 +93,9 @@ test.each([
   [() => YJS`y`],
   [() => YJS`x => y`],
   [() => YJS`f => f(y)`],
+  [() => YJS`(y => y)(y)`],
 ])("Identifiers must be in scope", generator => {
   expect(generator).toThrow(new SyntaxError("The Identifier ‘y’ isn’t in scope"))
 })
+
+test.todo("Add support for interpolation")
