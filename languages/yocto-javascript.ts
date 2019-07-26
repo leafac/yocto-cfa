@@ -23,8 +23,8 @@ export interface Identifier {
 
 export type IdentifierName = string
 
-export function YJS(strings: TemplateStringsArray): Expression {
-  return convert(parse(strings[0]), new Set())
+export function YJS(literals: TemplateStringsArray, ...placeholders: string[]): Expression {
+  return convert(parse(String.raw(literals, ...placeholders)), new Set())
 
   function convert(node: Node, scope: Set<IdentifierName>): Expression {
     switch (node.type) {

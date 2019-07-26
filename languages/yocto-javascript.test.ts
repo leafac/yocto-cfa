@@ -98,4 +98,20 @@ test.each([
   expect(generator).toThrow(new SyntaxError("The Identifier ‘y’ isn’t in scope"))
 })
 
-test.todo("Add support for interpolation")
+test("Programs may be generated programmatically with interpolation", () => {
+  expect(YJS`${"x"} => x`).toMatchInlineSnapshot(`
+    Object {
+      "body": Object {
+        "name": "x",
+        "type": "Identifier",
+      },
+      "params": Array [
+        Object {
+          "name": "x",
+          "type": "Identifier",
+        },
+      ],
+      "type": "ArrowFunctionExpression",
+    }
+  `)
+})
