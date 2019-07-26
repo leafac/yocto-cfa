@@ -7,7 +7,7 @@ export function evaluate(expression: Expression): Value {
       const { params: [param], body } = evaluate(expression.callee)
       const argument = evaluate(expression.arguments[0])
       return evaluate(substitute(param, body, argument))
-    case "Identifier": throw new Error(`Unbound ‘${expression.name}’.`)
+    case "Identifier": throw new Error(`Unbound ‘${expression.name}’`)
   }
 }
 

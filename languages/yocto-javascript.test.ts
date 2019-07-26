@@ -22,4 +22,4 @@ test("ArrowFunctionExpression", () => {
   `)
 })
 
-test.todo("Error cases.")
+test.todo("Error cases")
