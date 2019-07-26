@@ -20,6 +20,13 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
-    "verbose": true
+    "verbose": true,
+    "globals": {
+      "ts-jest": {
+        "diagnostics": {
+          "ignoreCodes": ["TS151001"]
+        }
+      }
+    }
   }
 }
