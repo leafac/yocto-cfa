@@ -24,10 +24,6 @@ test("Substitution doesn’t affect a shadowed Identifier", () => {
   expect(evaluate(YJS`(x => x => x)(y => y)`)).toEqual(YJS`x => x`)
 })
 
-test("A program with an unbound Identifier throws an error", () => {
-  expect(() => evaluate(YJS`x`)).toThrow(new Error(`Unbound ‘x’`))
-})
-
 test("Evaluation may not terminate", () => {
   expect(() => evaluate(YJS`(f => f(f))(f => f(f))`))
     .toThrow(new RangeError("Maximum call stack size exceeded"))
