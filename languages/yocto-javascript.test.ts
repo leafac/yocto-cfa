@@ -57,9 +57,8 @@ test("CallExpression", () => {
 test.each([[() => YJS``], [() => YJS`(x => x); (x => x)`]])(
   "A Program must include exactly one Statement",
   generator => {
-    expect(generator).toThrow(
-      new SyntaxError("A Program must include exactly one Statement")
-    )
+    expect(generator)
+      .toThrow(new SyntaxError("A Program must include exactly one Statement"))
   }
 )
 
@@ -71,9 +70,8 @@ test("The Statement in a Program must be an ExpressionStatement", () => {
 test.each([[() => YJS`() => x`], [() => YJS`(x, y) => x`]])(
   "An ArrowFunctionExpression must include exactly one param",
   generator => {
-    expect(generator).toThrow(
-      new SyntaxError("An ArrowFunctionExpression must include exactly one param")
-    )
+    expect(generator)
+      .toThrow(new SyntaxError("An ArrowFunctionExpression must include exactly one param"))
   }
 )
 
@@ -82,12 +80,12 @@ test("The param in an ArrowFunctionExpression must be an Identifier", () => {
     .toThrow("The param in an ArrowFunctionExpression must be an Identifier")
 })
 
-test.each([
-  [() => YJS`f => f()`],
-  [() => YJS`f => f(f, f)`],
-])("A CallExpression must include exactly one argument", generator => {
-  expect(generator).toThrow(new SyntaxError("A CallExpression must include exactly one argument"))
-})
+test.each([[() => YJS`f => f()`], [() => YJS`f => f(f, f)`],])(
+  "A CallExpression must include exactly one argument",
+  generator => {
+    expect(generator).toThrow(new SyntaxError("A CallExpression must include exactly one argument"))
+  }
+)
 
 test.each([
   [() => YJS`y`],
