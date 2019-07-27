@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "test": "tsc && jest",
+    "test": "prettier --check 'src/**/*.ts' && tsc && jest",
     "test:watch": "tsc --watch & jest --watch",
     "dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
   },

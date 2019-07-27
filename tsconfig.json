@@ -4,6 +4,7 @@
     "module": "commonjs",
     "strict": true,
     "sourceMap": true,
-    "outDir": "lib",
+    "rootDir": "src",
+    "outDir": "lib"
   }
 }
