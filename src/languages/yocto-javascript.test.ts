@@ -2,20 +2,20 @@ import { YJS } from "./yocto-javascript";
 
 test("ArrowFunctionExpression", () => {
   expect(YJS`x => x`).toMatchInlineSnapshot(`
+    Object {
+      "body": Object {
+        "name": "x",
+        "type": "Identifier",
+      },
+      "params": Array [
         Object {
-          "body": Object {
-            "name": "x",
-            "type": "Identifier",
-          },
-          "params": Array [
-            Object {
-              "name": "x",
-              "type": "Identifier",
-            },
-          ],
-          "type": "ArrowFunctionExpression",
-        }
-    `);
+          "name": "x",
+          "type": "Identifier",
+        },
+      ],
+      "type": "ArrowFunctionExpression",
+    }
+  `);
 });
 
 test("CallExpression", () => {
