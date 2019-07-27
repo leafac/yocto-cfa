@@ -1,6 +1,9 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "strict": true
+    "module": "commonjs",
+    "strict": true,
+    "sourceMap": true,
+    "outDir": "lib",
   }
 }

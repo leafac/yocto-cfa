@@ -7,6 +7,6 @@ Yocto-CFA
 
 To run the tests locally, install [Node.js](https://nodejs.org/) and run `npm install-test` (to run the tests again `npm test` suffices).
 
-To build the dissertation, install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org), and run `npm run build:dissertation`.
+To build the dissertation, install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org), and run `npm run dissertation`.
 
 To work on the source code, install [Visual Studio Code](https://code.visualstudio.com) with the [LaTeX Workshop](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop) plugin.

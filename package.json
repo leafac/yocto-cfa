@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "test": "jest",
-    "test:watch": "npm run test -- --watchAll",
-    "build:dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
+    "test": "tsc && jest",
+    "test:watch": "tsc --watch & jest --watch",
+    "dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
   },
   "dependencies": {
     "esprima": "^4.0.1"
@@ -10,25 +10,13 @@
   "devDependencies": {
     "@types/esprima": "^4.0.2",
     "@types/jest": "^24.0.15",
-    "@types/prettier": "^1.18.0",
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
-    "ts-node": "^8.3.0",
     "typescript": "^3.5.3"
   },
   "jest": {
-    "preset": "ts-jest",
+    "rootDir": "lib",
     "testEnvironment": "node",
-    "verbose": true,
-    "globals": {
-      "ts-jest": {
-        "diagnostics": {
-          "ignoreCodes": [
-            "TS151001"
-          ]
-        }
-      }
-    }
+    "verbose": true
   }
 }
