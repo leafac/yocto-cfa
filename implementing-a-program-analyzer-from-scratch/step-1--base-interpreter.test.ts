@@ -1,4 +1,4 @@
-import { evaluate } from "./step-0--base-interpreter"
+import { evaluate } from "./step-1--base-interpreter"
 import { YJS } from "../languages/yocto-javascript"
 
 test("A function is a value", () => {
