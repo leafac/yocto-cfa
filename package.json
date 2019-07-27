@@ -1,9 +1,8 @@
 {
   "scripts": {
-    "build": "tsc",
     "lint": "prettier --write 'src/**/*.ts'",
-    "test": "prettier --check 'src/**/*.ts' && jest",
-    "test:watch": "jest --watch",
+    "test": "prettier --check 'src/**/*.ts' && tsc && jest",
+    "test:watch": "tsc --watch & jest --watch",
     "dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
   },
   "dependencies": {
