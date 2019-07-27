@@ -1,4 +1,5 @@
 % !TEX program = lualatex
+% !TEX options = --synctex 1 --interaction nonstopmode --file-line-error --shell-escape "%DOC%"
 % !BIB program = bibtex
 
 \documentclass[12pt, oneside]{book}
@@ -37,6 +38,8 @@
   BoldItalicFont = iosevka-term-slab-bolditalic.ttf
 ]
 \setmathfont{Asana-Math.otf}
+
+\usepackage{minted}
 
 \usepackage{fancyvrb}
 \fvset{commandchars = ◊«»}

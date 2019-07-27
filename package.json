@@ -2,7 +2,7 @@
   "scripts": {
     "test": "jest",
     "test:watch": "npm run test -- --watchAll",
-    "build:dissertation": "cd dissertation && lualatex yocto-cfa.tex && bibtex yocto-cfa && lualatex yocto-cfa.tex && lualatex yocto-cfa.tex"
+    "build:dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
   },
   "dependencies": {
     "esprima": "^4.0.1"

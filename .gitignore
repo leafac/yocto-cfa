@@ -12,3 +12,4 @@
 *.toc
 *.xmpdata
 *.xmpi
+_minted*
