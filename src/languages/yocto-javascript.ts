@@ -2,6 +2,7 @@ import { parseScript as parse } from "esprima";
 import { Node } from "estree";
 
 export type Expression = ArrowFunctionExpression | CallExpression | Identifier;
+
 export type Value = ArrowFunctionExpression;
 
 export interface ArrowFunctionExpression {

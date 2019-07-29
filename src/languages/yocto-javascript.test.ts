@@ -56,8 +56,8 @@ test("CallExpression", () => {
 
 test.each([[() => YJS``], [() => YJS`(x => x); (x => x)`]])(
   "A Program must include exactly one Statement",
-  generator => {
-    expect(generator).toThrow(
+  program => {
+    expect(program).toThrow(
       new SyntaxError("A Program must include exactly one Statement")
     );
   }
@@ -71,8 +71,8 @@ test("The Statement in a Program must be an ExpressionStatement", () => {
 
 test.each([[() => YJS`() => x`], [() => YJS`(x, y) => x`]])(
   "An ArrowFunctionExpression must include exactly one param",
-  generator => {
-    expect(generator).toThrow(
+  program => {
+    expect(program).toThrow(
       new SyntaxError(
         "An ArrowFunctionExpression must include exactly one param"
       )
@@ -82,14 +82,16 @@ test.each([[() => YJS`() => x`], [() => YJS`(x, y) => x`]])(
 
 test("The param in an ArrowFunctionExpression must be an Identifier", () => {
   expect(() => YJS`({x}) => x`).toThrow(
-    "The param in an ArrowFunctionExpression must be an Identifier"
+    new SyntaxError(
+      "The param in an ArrowFunctionExpression must be an Identifier"
+    )
   );
 });
 
 test.each([[() => YJS`f => f()`], [() => YJS`f => f(f, f)`]])(
   "A CallExpression must include exactly one argument",
-  generator => {
-    expect(generator).toThrow(
+  program => {
+    expect(program).toThrow(
       new SyntaxError("A CallExpression must include exactly one argument")
     );
   }
@@ -100,10 +102,8 @@ test.each([
   [() => YJS`x => y`],
   [() => YJS`f => f(y)`],
   [() => YJS`(y => y)(y)`]
-])("Identifiers must be in scope", generator => {
-  expect(generator).toThrow(
-    new SyntaxError("The Identifier ‘y’ isn’t in scope")
-  );
+])("Identifiers must be in scope", program => {
+  expect(program).toThrow(new SyntaxError("The Identifier ‘y’ isn’t in scope"));
 });
 
 test("Programs may be generated programmatically with interpolation", () => {
