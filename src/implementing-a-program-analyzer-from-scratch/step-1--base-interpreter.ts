@@ -13,7 +13,7 @@ export function evaluate(expression: Expression): Value {
       return evaluate(substitute(param, body, argument));
     case "Identifier":
       throw new EvalError(
-        `Identifier ${expression.name} not in scope (this should never happen because scope is checked when constructing the program)`
+        `Identifier ${expression.name} not in scope (this should never happen because the scope is checked when constructing the program)`
       );
   }
 }

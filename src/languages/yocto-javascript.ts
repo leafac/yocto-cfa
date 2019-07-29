@@ -1,7 +1,7 @@
 import { parseScript as parse } from "esprima";
 import { Node } from "estree";
 
-export type Expression = ArrowFunctionExpression | CallExpression | Identifier;
+export type Expression = Value | CallExpression | Identifier;
 
 export type Value = ArrowFunctionExpression;
 
@@ -24,13 +24,15 @@ export interface Identifier {
 
 export type IdentifierName = string;
 
+export type Scope = Set<IdentifierName>;
+
 export function YJS(
   literals: TemplateStringsArray,
   ...placeholders: string[]
 ): Expression {
   return convert(parse(String.raw(literals, ...placeholders)), new Set());
 
-  function convert(node: Node, scope: Set<IdentifierName>): Expression {
+  function convert(node: Node, scope: Scope): Expression {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1) {
