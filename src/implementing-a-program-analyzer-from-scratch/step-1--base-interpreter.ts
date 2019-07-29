@@ -12,7 +12,9 @@ export function evaluate(expression: Expression): Value {
       const argument = evaluate(expression.arguments[0]);
       return evaluate(substitute(param, body, argument));
     case "Identifier":
-      throw new EvalError(`Identifier ${expression.name} not in scope`);
+      throw new EvalError(
+        `Identifier ${expression.name} not in scope (this should never happen because scope is checked when constructing the program)`
+      );
   }
 }
 
