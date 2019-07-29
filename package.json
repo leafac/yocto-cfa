@@ -1,6 +1,9 @@
 {
+  "engines": {
+    "node": ">=12.6.0"
+  },
   "scripts": {
-    "lint": "prettier --write 'src/**/*.ts'",
+    "format": "prettier --write 'src/**/*.ts'",
     "test": "prettier --check 'src/**/*.ts' && tsc && jest",
     "test:watch": "tsc --watch & jest --watch",
     "dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
