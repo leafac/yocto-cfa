@@ -63,7 +63,6 @@ function run(state: State): Dump {
 
 function unload(dump: Dump): Value {
   const { function: function_, environment } = dump;
-   // FIXME:
   return traverse(function_, environment, new Set()) as typeof function_;
 
   function traverse(
