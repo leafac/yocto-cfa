@@ -24,7 +24,7 @@ export interface Identifier {
 
 export type IdentifierName = string;
 
-export type Environment = Set<IdentifierName>;
+export type IdentifierEnvironment = Set<IdentifierName>;
 
 export function YJS(
   literals: TemplateStringsArray,
@@ -32,15 +32,18 @@ export function YJS(
 ): Expression {
   return convert(parse(String.raw(literals, ...placeholders)), new Set());
 
-  function convert(node: Node, environment: Environment): Expression {
+  function convert(
+    node: Node,
+    identifierEnvironment: IdentifierEnvironment
+  ): Expression {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1) {
           throw new SyntaxError("A Program must include exactly one Statement");
         }
-        return convert(node.body[0], environment);
+        return convert(node.body[0], identifierEnvironment);
       case "ExpressionStatement":
-        return convert(node.expression, environment);
+        return convert(node.expression, identifierEnvironment);
       case "ArrowFunctionExpression":
         if (node.params.length !== 1) {
           throw new SyntaxError(
@@ -56,7 +59,10 @@ export function YJS(
         return {
           type: "ArrowFunctionExpression",
           params: [{ type: "Identifier", name: param.name }],
-          body: convert(node.body, new Set(environment).add(param.name))
+          body: convert(
+            node.body,
+            new Set(identifierEnvironment).add(param.name)
+          )
         };
       case "CallExpression":
         if (node.arguments.length !== 1) {
@@ -66,11 +72,11 @@ export function YJS(
         }
         return {
           type: "CallExpression",
-          callee: convert(node.callee, environment),
-          arguments: [convert(node.arguments[0], environment)]
+          callee: convert(node.callee, identifierEnvironment),
+          arguments: [convert(node.arguments[0], identifierEnvironment)]
         };
       case "Identifier":
-        if (!environment.has(node.name)) {
+        if (!identifierEnvironment.has(node.name)) {
           throw new SyntaxError(`Identifier ${node.name} not in scope`);
         }
         return {

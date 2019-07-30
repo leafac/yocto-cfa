@@ -1,23 +1,24 @@
 import {
   ArrowFunctionExpression,
-  Environment,
   Expression,
+  IdentifierEnvironment,
   IdentifierName,
   Value
 } from "../languages/yocto-javascript";
 
 type Closure = {
-  function: ArrowFunctionExpression;
-  closureEnvironment: ClosureEnvironment;
+  arrowFunctionExpression: ArrowFunctionExpression;
+  environment: Environment;
 };
 
-type ClosureEnvironment = Map<IdentifierName, Closure>;
+type Environment = Map<IdentifierName, Closure>;
 
 type State = {
   expression: Expression;
-  closureEnvironment: ClosureEnvironment;
+  environment: Environment;
 };
 
+// TODO: Turn Dump into object
 type Dump = Closure;
 
 export function evaluate(expression: Expression): Value {
@@ -25,35 +26,32 @@ export function evaluate(expression: Expression): Value {
 }
 
 function load(expression: Expression): State {
-  return { expression, closureEnvironment: new Map() };
+  return { expression, environment: new Map() };
 }
 
 function run(state: State): Dump {
-  const { expression, closureEnvironment } = state;
+  const { expression, environment } = state;
   switch (expression.type) {
     case "ArrowFunctionExpression":
-      return { function: expression, closureEnvironment };
+      return { arrowFunctionExpression: expression, environment };
     case "CallExpression":
       const {
-        function: {
+        arrowFunctionExpression: {
           params: [param],
           body
         },
-        closureEnvironment: calleeClosureEnvironment
-      } = run({ expression: expression.callee, closureEnvironment });
+        environment: calleeEnvironment
+      } = run({ expression: expression.callee, environment });
       const argument = run({
         expression: expression.arguments[0],
-        closureEnvironment
+        environment
       });
       return run({
         expression: body,
-        closureEnvironment: new Map(calleeClosureEnvironment).set(
-          param.name,
-          argument
-        )
+        environment: new Map(calleeEnvironment).set(param.name, argument)
       });
     case "Identifier":
-      return closureEnvironment.get(expression.name)!;
+      return environment.get(expression.name)!;
   }
 }
 
@@ -62,12 +60,15 @@ function unload(dump: Dump): Value {
 }
 
 function substituteNonlocals(closure: Closure): ArrowFunctionExpression {
-  const { function: function_, closureEnvironment } = closure;
-  return traverse(function_, new Set()) as ArrowFunctionExpression;
+  const { arrowFunctionExpression, environment } = closure;
+  return traverse(
+    arrowFunctionExpression,
+    new Set()
+  ) as ArrowFunctionExpression;
 
   function traverse(
     expression: Expression,
-    environment: Environment
+    identifierEnvironment: IdentifierEnvironment
   ): Expression {
     switch (expression.type) {
       case "ArrowFunctionExpression":
@@ -75,19 +76,19 @@ function substituteNonlocals(closure: Closure): ArrowFunctionExpression {
           ...expression,
           body: traverse(
             expression.body,
-            new Set(environment).add(expression.params[0].name)
+            new Set(identifierEnvironment).add(expression.params[0].name)
           )
         };
       case "CallExpression":
         return {
           ...expression,
-          callee: traverse(expression.callee, environment),
-          arguments: [traverse(expression.arguments[0], environment)]
+          callee: traverse(expression.callee, identifierEnvironment),
+          arguments: [traverse(expression.arguments[0], identifierEnvironment)]
         };
       case "Identifier":
-        return environment.has(expression.name)
+        return identifierEnvironment.has(expression.name)
           ? expression
-          : substituteNonlocals(closureEnvironment.get(expression.name)!);
+          : substituteNonlocals(environment.get(expression.name)!);
     }
   }
 }
