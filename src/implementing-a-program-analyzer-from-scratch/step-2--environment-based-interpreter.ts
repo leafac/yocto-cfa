@@ -63,10 +63,14 @@ function run(state: State): Dump {
 
 function unload(dump: Dump): Value {
   const { function: function_, environment } = dump;
-  // FIXME:
-  return traverse(function_, environment, new Set()) as typeof function_;
+  return substituteNonlocals(function_, environment, new Set());
 
-  function traverse(
+  function substituteNonlocals<T extends Expression>(
+    expression: T,
+    environment: Environment,
+    scope: Scope
+  ): T;
+  function substituteNonlocals(
     expression: Expression,
     environment: Environment,
     scope: Scope
@@ -75,7 +79,7 @@ function unload(dump: Dump): Value {
       case "ArrowFunctionExpression":
         return {
           ...expression,
-          body: traverse(
+          body: substituteNonlocals(
             expression.body,
             environment,
             new Set(scope).add(expression.params[0].name)
@@ -84,8 +88,10 @@ function unload(dump: Dump): Value {
       case "CallExpression":
         return {
           ...expression,
-          callee: traverse(expression.callee, environment, scope),
-          arguments: [traverse(expression.arguments[0], environment, scope)]
+          callee: substituteNonlocals(expression.callee, environment, scope),
+          arguments: [
+            substituteNonlocals(expression.arguments[0], environment, scope)
+          ]
         };
       case "Identifier":
         if (scope.has(expression.name)) {
