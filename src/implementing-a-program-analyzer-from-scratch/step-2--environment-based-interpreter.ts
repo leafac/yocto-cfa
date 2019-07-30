@@ -6,8 +6,6 @@ import {
   Value
 } from "../languages/yocto-javascript";
 
-// TODO: Only include the non-locals in the closure?
-
 type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
@@ -67,12 +65,14 @@ function unload(dump: Dump): Value {
     ...function_,
     body: substituteNonlocals(
       function_.body,
+      environment,
       new Set([function_.params[0].name])
     )
   };
 
   function substituteNonlocals(
     expression: Expression,
+    environment: Environment,
     scope: Scope
   ): Expression {
     switch (expression.type) {
@@ -81,15 +81,16 @@ function unload(dump: Dump): Value {
           ...expression,
           body: substituteNonlocals(
             expression.body,
+            environment,
             new Set(scope).add(expression.params[0].name)
           )
         };
       case "CallExpression":
         return {
           ...expression,
-          callee: substituteNonlocals(expression.callee, scope),
+          callee: substituteNonlocals(expression.callee, environment, scope),
           arguments: [
-            substituteNonlocals(expression.arguments[0], scope)
+            substituteNonlocals(expression.arguments[0], environment, scope)
           ]
         };
       case "Identifier":
@@ -100,7 +101,11 @@ function unload(dump: Dump): Value {
             `Identifier ${expression.name} not in Environment (this should never happen in a Dump resulting from run)`
           );
         } else {
-          return unload(environment.get(expression.name)!);
+          const {
+            function: function_,
+            environment: functionEnvironment
+          } = environment.get(expression.name)!;
+          return substituteNonlocals(function_, functionEnvironment, new Set());
         }
     }
   }
