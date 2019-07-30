@@ -63,16 +63,14 @@ function run(state: State): Dump {
 
 function unload(dump: Dump): Value {
   const { function: function_, environment } = dump;
-  return substituteNonlocals(function_, environment, new Set());
+  return substituteNonlocals(function_, new Set());
 
   function substituteNonlocals<T extends Expression>(
     expression: T,
-    environment: Environment,
     scope: Scope
   ): T;
   function substituteNonlocals(
     expression: Expression,
-    environment: Environment,
     scope: Scope
   ): Expression {
     switch (expression.type) {
@@ -81,16 +79,15 @@ function unload(dump: Dump): Value {
           ...expression,
           body: substituteNonlocals(
             expression.body,
-            environment,
             new Set(scope).add(expression.params[0].name)
           )
         };
       case "CallExpression":
         return {
           ...expression,
-          callee: substituteNonlocals(expression.callee, environment, scope),
+          callee: substituteNonlocals(expression.callee, scope),
           arguments: [
-            substituteNonlocals(expression.arguments[0], environment, scope)
+            substituteNonlocals(expression.arguments[0], scope)
           ]
         };
       case "Identifier":
