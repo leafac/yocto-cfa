@@ -24,23 +24,24 @@ export interface Identifier {
 
 export type IdentifierName = string;
 
-export type Scope = Set<IdentifierName>;
-
 export function YJS(
   literals: TemplateStringsArray,
   ...placeholders: string[]
 ): Expression {
   return convert(parse(String.raw(literals, ...placeholders)), new Set());
 
-  function convert(node: Node, scope: Scope): Expression {
+  function convert(
+    node: Node,
+    boundIdentifiers: Set<IdentifierName>
+  ): Expression {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1) {
           throw new SyntaxError("A Program must include exactly one Statement");
         }
-        return convert(node.body[0], scope);
+        return convert(node.body[0], boundIdentifiers);
       case "ExpressionStatement":
-        return convert(node.expression, scope);
+        return convert(node.expression, boundIdentifiers);
       case "ArrowFunctionExpression":
         if (node.params.length !== 1) {
           throw new SyntaxError(
@@ -56,7 +57,7 @@ export function YJS(
         return {
           type: "ArrowFunctionExpression",
           params: [{ type: "Identifier", name: param.name }],
-          body: convert(node.body, new Set(scope).add(param.name))
+          body: convert(node.body, new Set(boundIdentifiers).add(param.name))
         };
       case "CallExpression":
         if (node.arguments.length !== 1) {
@@ -66,19 +67,19 @@ export function YJS(
         }
         return {
           type: "CallExpression",
-          callee: convert(node.callee, scope),
-          arguments: [convert(node.arguments[0], scope)]
+          callee: convert(node.callee, boundIdentifiers),
+          arguments: [convert(node.arguments[0], boundIdentifiers)]
         };
       case "Identifier":
-        if (!scope.has(node.name)) {
-          throw new SyntaxError(`The Identifier ‘${node.name}’ isn’t in scope`);
+        if (!boundIdentifiers.has(node.name)) {
+          throw new SyntaxError(`Identifier ${node.name} not in scope`);
         }
         return {
           type: "Identifier",
           name: node.name
         };
       default:
-        throw new SyntaxError(`Unrecognized node of type ‘${node.type}’`);
+        throw new SyntaxError(`Unrecognized node of type ${node.type}`);
     }
   }
 }

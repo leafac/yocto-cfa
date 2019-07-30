@@ -65,7 +65,7 @@ test.each([[() => YJS``], [() => YJS`(x => x); (x => x)`]])(
 
 test("The Statement in a Program must be an ExpressionStatement", () => {
   expect(() => YJS`const x = (y => y)`).toThrow(
-    new SyntaxError("Unrecognized node of type ‘VariableDeclaration’")
+    new SyntaxError("Unrecognized node of type VariableDeclaration")
   );
 });
 
@@ -103,7 +103,7 @@ test.each([
   [() => YJS`f => f(y)`],
   [() => YJS`(y => y)(y)`]
 ])("Identifiers must be in scope", program => {
-  expect(program).toThrow(new SyntaxError("The Identifier ‘y’ isn’t in scope"));
+  expect(program).toThrow(new SyntaxError("Identifier y not in scope"));
 });
 
 test("Programs may be generated programmatically with interpolation", () => {

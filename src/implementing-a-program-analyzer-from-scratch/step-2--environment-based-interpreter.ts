@@ -2,7 +2,6 @@ import {
   ArrowFunctionExpression,
   Expression,
   IdentifierName,
-  Scope,
   Value
 } from "../languages/yocto-javascript";
 
@@ -50,63 +49,41 @@ function run(state: State): Dump {
         environment: new Map(functionEnvironment).set(param.name, argument)
       });
     case "Identifier":
-      if (!environment.has(expression.name)) {
-        throw new EvalError(
-          `Identifier ${expression.name} not in scope (this should never happen because the scope is checked when constructing the program)`
-        );
-      }
       return environment.get(expression.name)!;
   }
 }
 
 function unload(dump: Dump): Value {
-  const { function: function_, environment } = dump;
-  return {
-    ...function_,
-    body: substituteNonlocals(
-      function_.body,
-      environment,
-      new Set([function_.params[0].name])
-    )
-  };
+  return substituteNonlocals(dump);
+}
 
-  function substituteNonlocals(
+function substituteNonlocals(closure: Closure): ArrowFunctionExpression {
+  const { function: function_, environment } = closure;
+  return traverse(function_, new Set()) as ArrowFunctionExpression;
+
+  function traverse(
     expression: Expression,
-    environment: Environment,
-    scope: Scope
+    boundIdentifiers: Set<IdentifierName>
   ): Expression {
     switch (expression.type) {
       case "ArrowFunctionExpression":
         return {
           ...expression,
-          body: substituteNonlocals(
+          body: traverse(
             expression.body,
-            environment,
-            new Set(scope).add(expression.params[0].name)
+            new Set(boundIdentifiers).add(expression.params[0].name)
           )
         };
       case "CallExpression":
         return {
           ...expression,
-          callee: substituteNonlocals(expression.callee, environment, scope),
-          arguments: [
-            substituteNonlocals(expression.arguments[0], environment, scope)
-          ]
+          callee: traverse(expression.callee, boundIdentifiers),
+          arguments: [traverse(expression.arguments[0], boundIdentifiers)]
         };
       case "Identifier":
-        if (scope.has(expression.name)) {
-          return expression;
-        } else if (!environment.has(expression.name)) {
-          throw new EvalError(
-            `Identifier ${expression.name} not in Environment (this should never happen in a Dump resulting from run)`
-          );
-        } else {
-          const {
-            function: function_,
-            environment: functionEnvironment
-          } = environment.get(expression.name)!;
-          return substituteNonlocals(function_, functionEnvironment, new Set());
-        }
+        return boundIdentifiers.has(expression.name)
+          ? expression
+          : substituteNonlocals(environment.get(expression.name)!);
     }
   }
 }
