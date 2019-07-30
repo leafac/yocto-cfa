@@ -63,12 +63,14 @@ function run(state: State): Dump {
 
 function unload(dump: Dump): Value {
   const { function: function_, environment } = dump;
-  return substituteNonlocals(function_, new Set());
+  return {
+    ...function_,
+    body: substituteNonlocals(
+      function_.body,
+      new Set([function_.params[0].name])
+    )
+  };
 
-  function substituteNonlocals<T extends Expression>(
-    expression: T,
-    scope: Scope
-  ): T;
   function substituteNonlocals(
     expression: Expression,
     scope: Scope
