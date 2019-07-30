@@ -18,7 +18,6 @@ type State = {
   environment: Environment;
 };
 
-// TODO: Turn Dump into object
 type Dump = Closure;
 
 export function evaluate(expression: Expression): Value {
