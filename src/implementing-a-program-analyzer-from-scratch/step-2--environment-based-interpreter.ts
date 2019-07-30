@@ -1,5 +1,6 @@
 import {
   ArrowFunctionExpression,
+  Environment,
   Expression,
   IdentifierName,
   Value
@@ -7,14 +8,14 @@ import {
 
 type Closure = {
   function: ArrowFunctionExpression;
-  environment: Environment;
+  closureEnvironment: ClosureEnvironment;
 };
 
-type Environment = Map<IdentifierName, Closure>;
+type ClosureEnvironment = Map<IdentifierName, Closure>;
 
 type State = {
   expression: Expression;
-  environment: Environment;
+  closureEnvironment: ClosureEnvironment;
 };
 
 type Dump = Closure;
@@ -24,32 +25,35 @@ export function evaluate(expression: Expression): Value {
 }
 
 function load(expression: Expression): State {
-  return { expression, environment: new Map() };
+  return { expression, closureEnvironment: new Map() };
 }
 
 function run(state: State): Dump {
-  const { expression, environment } = state;
+  const { expression, closureEnvironment } = state;
   switch (expression.type) {
     case "ArrowFunctionExpression":
-      return { function: expression, environment };
+      return { function: expression, closureEnvironment };
     case "CallExpression":
       const {
         function: {
           params: [param],
           body
         },
-        environment: functionEnvironment
-      } = run({ expression: expression.callee, environment });
+        closureEnvironment: calleeClosureEnvironment
+      } = run({ expression: expression.callee, closureEnvironment });
       const argument = run({
         expression: expression.arguments[0],
-        environment
+        closureEnvironment
       });
       return run({
         expression: body,
-        environment: new Map(functionEnvironment).set(param.name, argument)
+        closureEnvironment: new Map(calleeClosureEnvironment).set(
+          param.name,
+          argument
+        )
       });
     case "Identifier":
-      return environment.get(expression.name)!;
+      return closureEnvironment.get(expression.name)!;
   }
 }
 
@@ -58,12 +62,12 @@ function unload(dump: Dump): Value {
 }
 
 function substituteNonlocals(closure: Closure): ArrowFunctionExpression {
-  const { function: function_, environment } = closure;
+  const { function: function_, closureEnvironment } = closure;
   return traverse(function_, new Set()) as ArrowFunctionExpression;
 
   function traverse(
     expression: Expression,
-    boundIdentifiers: Set<IdentifierName>
+    environment: Environment
   ): Expression {
     switch (expression.type) {
       case "ArrowFunctionExpression":
@@ -71,19 +75,19 @@ function substituteNonlocals(closure: Closure): ArrowFunctionExpression {
           ...expression,
           body: traverse(
             expression.body,
-            new Set(boundIdentifiers).add(expression.params[0].name)
+            new Set(environment).add(expression.params[0].name)
           )
         };
       case "CallExpression":
         return {
           ...expression,
-          callee: traverse(expression.callee, boundIdentifiers),
-          arguments: [traverse(expression.arguments[0], boundIdentifiers)]
+          callee: traverse(expression.callee, environment),
+          arguments: [traverse(expression.arguments[0], environment)]
         };
       case "Identifier":
-        return boundIdentifiers.has(expression.name)
+        return environment.has(expression.name)
           ? expression
-          : substituteNonlocals(environment.get(expression.name)!);
+          : substituteNonlocals(closureEnvironment.get(expression.name)!);
     }
   }
 }

@@ -24,24 +24,23 @@ export interface Identifier {
 
 export type IdentifierName = string;
 
+export type Environment = Set<IdentifierName>;
+
 export function YJS(
   literals: TemplateStringsArray,
   ...placeholders: string[]
 ): Expression {
   return convert(parse(String.raw(literals, ...placeholders)), new Set());
 
-  function convert(
-    node: Node,
-    boundIdentifiers: Set<IdentifierName>
-  ): Expression {
+  function convert(node: Node, environment: Environment): Expression {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1) {
           throw new SyntaxError("A Program must include exactly one Statement");
         }
-        return convert(node.body[0], boundIdentifiers);
+        return convert(node.body[0], environment);
       case "ExpressionStatement":
-        return convert(node.expression, boundIdentifiers);
+        return convert(node.expression, environment);
       case "ArrowFunctionExpression":
         if (node.params.length !== 1) {
           throw new SyntaxError(
@@ -57,7 +56,7 @@ export function YJS(
         return {
           type: "ArrowFunctionExpression",
           params: [{ type: "Identifier", name: param.name }],
-          body: convert(node.body, new Set(boundIdentifiers).add(param.name))
+          body: convert(node.body, new Set(environment).add(param.name))
         };
       case "CallExpression":
         if (node.arguments.length !== 1) {
@@ -67,11 +66,11 @@ export function YJS(
         }
         return {
           type: "CallExpression",
-          callee: convert(node.callee, boundIdentifiers),
-          arguments: [convert(node.arguments[0], boundIdentifiers)]
+          callee: convert(node.callee, environment),
+          arguments: [convert(node.arguments[0], environment)]
         };
       case "Identifier":
-        if (!boundIdentifiers.has(node.name)) {
+        if (!environment.has(node.name)) {
           throw new SyntaxError(`Identifier ${node.name} not in scope`);
         }
         return {
