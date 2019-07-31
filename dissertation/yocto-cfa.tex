@@ -255,6 +255,8 @@ TODO: Forward references to the kind of analyzer we build in §~2.
 
 TODO: Clarify that we aren’t talking about the kind of program analysis that ESLint does, for example. Or are we??
 
+TODO: Some analysis require user input (like type annotations or eslint comments), but ours doesn’t
+
 \section{Program Analysis}
 \label{section:program-analysis}
 
@@ -849,6 +851,8 @@ Not only can the analyzer predict that the original program does not trigger the
 
 \chapter{Building a State-of-the-Art Program Analysis from Scratch}
 \label{section:building-a-state-of-the-art-program-analysis-from-scratch}
+
+TODO: Have a version with operational semantics rules
 
 In this chapter, we start with an interpreter and modify it in small incremental steps to build an analyzer~(§~\ref{section:languages}–\ref{section-10--compute-kleene-fixed-point-algorithm-of-the-cache}). We present ideas with code, and you are encouraged to experiment with this code as you follow along, which may serve as a first introduction to the area of program analysis.
 
@@ -2417,6 +2421,10 @@ The Surface Language is the language in which we write our examples and tests. F
 
 \chapter{Related Work}
 \label{section:related-work}
+
+\begin{itemize}
+  \item The three ingredients for m-CFA (to really be polynomial): Store Widening, Top-Frames, and environment flattening
+\end{itemize}
 
 \begin{itemize}
   \item ADI isn’t context sensitive!
