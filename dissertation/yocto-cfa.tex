@@ -257,6 +257,8 @@ TODO: Clarify that we aren’t talking about the kind of program analysis that E
 
 TODO: Some analysis require user input (like type annotations or eslint comments), but ours doesn’t
 
+TODO: An example of why CFA is important: last paragraph in https://www.typescriptlang.org/docs/handbook/advanced-types.html\#type-guards-and-type-assertions
+
 \section{Program Analysis}
 \label{section:program-analysis}
 
@@ -1142,6 +1144,7 @@ The Surface Language is the language in which we write our examples and tests. F
 \section{Step 3: Introduce Indirection Through the Store}
 
 % TODO: Don’t thread the store, but merge the stores?
+% TODO: Another reason to introduce a store (besides removing the recursion in the closure data structure): allowing for mutable state (though we probably won’t implement it) (the environment still points to an address, but we update the address when the variable is mutated)
 
 \begin{itemize}
   \item Evaluate (\(eval\)) \& the tests stay the same, because the semantics is still the same. But both \(⇒\) and \(⇑\) change.
