@@ -123,3 +123,7 @@ test("Programs may be generated programmatically with interpolation", () => {
     }
   `);
 });
+
+test("Parsing errors are reported to the programmer", () => {
+  expect(() => YJS`x =>`).toThrow(new Error("Line 1: Unexpected end of input"));
+});
