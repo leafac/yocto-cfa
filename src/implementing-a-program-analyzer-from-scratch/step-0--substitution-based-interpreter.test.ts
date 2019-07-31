@@ -1,5 +1,5 @@
 import { YJS } from "../languages/yocto-javascript";
-import { evaluate } from "./step-1--base-interpreter";
+import { evaluate } from "./step-0--substitution-based-interpreter";
 
 test("A function is a value", () => {
   expect(evaluate(YJS`x => x`)).toEqual(YJS`x => x`);
