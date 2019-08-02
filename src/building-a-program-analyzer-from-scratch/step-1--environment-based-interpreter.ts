@@ -13,7 +13,7 @@ type Closure = {
 
 type Environment = Map<IdentifierName, Closure>;
 
-type State = {
+type Configuration = {
   expression: Expression;
   environment: Environment;
 };
@@ -24,12 +24,12 @@ export function evaluate(expression: Expression): Value {
   return unload(run(load(expression)));
 }
 
-function load(expression: Expression): State {
+function load(expression: Expression): Configuration {
   return { expression, environment: new Map() };
 }
 
-function run(state: State): Dump {
-  const { expression, environment } = state;
+function run(configuration: Configuration): Dump {
+  const { expression, environment } = configuration;
   switch (expression.type) {
     case "ArrowFunctionExpression":
       return { arrowFunctionExpression: expression, environment };
