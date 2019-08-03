@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.com/leafac/yocto-cfa.svg?branch=master)](https://travis-ci.com/leafac/yocto-cfa)
 
-# Yocto-CFA
+Yocto-CFA
+=========
 
 [**Leandro Facchinetti’s dissertation**](dissertation/yocto-cfa.pdf)
 
