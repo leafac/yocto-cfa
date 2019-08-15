@@ -1,7 +1,4 @@
 {
-  "engines": {
-    "node": ">=12.6.0"
-  },
   "scripts": {
     "format": "prettier --write 'src/**/*.ts'",
     "test": "prettier --check 'src/**/*.ts' && tsc && jest",
@@ -17,6 +14,9 @@
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
     "typescript": "^3.5.3"
+  },
+  "engines": {
+    "node": ">=12.6.0"
   },
   "jest": {
     "rootDir": "lib",
