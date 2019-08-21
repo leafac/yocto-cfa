@@ -1,9 +1,6 @@
-[![Build Status](https://travis-ci.com/leafac/yocto-cfa.svg?branch=master)](https://travis-ci.com/leafac/yocto-cfa)
+# Yocto-CFA
 
-Yocto-CFA
-=========
-
-[**Leandro Facchinetti’s dissertation**](dissertation/yocto-cfa.pdf)
+[PDF](https://github.com/leafac/yocto-cfa/raw/master/dissertation/yocto-cfa.pdf)
 
 To run the tests locally, install [Node.js](https://nodejs.org/) and run `npm install-test` (to run the tests again `npm test` suffices).
 
