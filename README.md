@@ -1,17 +1,12 @@
 # Yocto-CFA
 
-## Setup
+## Run Tests
 
 Install [Node.js](https://nodejs.org/) and run:
 
 ```console
 $ npm install
 $ npm run build
-```
-
-## Run Tests
-
-```console
 $ npm test
 ```
 
