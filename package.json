@@ -1,6 +1,5 @@
 {
   "scripts": {
-    "format": "prettier --write 'src/**/*.ts'",
     "build": "tsc",
     "test": "prettier --check 'src/**/*.ts' && jest",
     "test:watch": "tsc --watch & jest --watch",
