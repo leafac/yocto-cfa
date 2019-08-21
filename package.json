@@ -1,7 +1,8 @@
 {
   "scripts": {
     "format": "prettier --write 'src/**/*.ts'",
-    "test": "prettier --check 'src/**/*.ts' && tsc && jest",
+    "build": "tsc",
+    "test": "prettier --check 'src/**/*.ts' && jest",
     "test:watch": "tsc --watch & jest --watch",
     "dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
   },
@@ -14,9 +15,6 @@
     "jest": "^24.8.0",
     "prettier": "^1.18.2",
     "typescript": "^3.5.3"
-  },
-  "engines": {
-    "node": ">=12.6.0"
   },
   "jest": {
     "rootDir": "lib",
