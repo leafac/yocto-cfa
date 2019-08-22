@@ -1,9 +1,9 @@
 {
   "scripts": {
     "build": "tsc",
+    "build:dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex",
     "test": "prettier --check 'src/**/*.ts' && jest",
-    "test:watch": "tsc --watch & jest --watch",
-    "dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex"
+    "test:watch": "tsc --watch & jest --watch"
   },
   "dependencies": {
     "esprima": "^4.0.1"

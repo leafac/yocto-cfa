@@ -15,5 +15,5 @@ $ npm test
 In addition to Node.js, install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org), and run:
 
 ```console
-$ npm run dissertation
+$ npm run build:dissertation
 ```
