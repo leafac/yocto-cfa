@@ -1,13 +1,4 @@
-*.xmpi
-*.aux
-*.bbl
-*.blg
-*.fdb_latexmk
-*.fls
-*.lof
-*.log
-*.lot
-*.out
-*.pdf
-*.synctex.gz
-*.toc
+*
+!*.tex
+!*.bib
+!*.xmpdata
