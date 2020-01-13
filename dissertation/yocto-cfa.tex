@@ -1,3 +1,7 @@
+% !TEX program = lualatex
+% !TEX options = -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error "%DOC%"
+% % !BIB program = bibtex
+
 \documentclass[12pt, oneside]{book}
 
 \usepackage[a-1b]{pdfx}
@@ -9,10 +13,12 @@
 
 \pagestyle{plain}
 
-\usepackage{XCharter}
-\usepackage[scaled = 0.9]{FiraMono}
-\usepackage[xcharter, scaled = 1.1]{newtxmath}
-\usepackage[T1]{fontenc}
+\usepackage{fontspec, unicode-math}
+\setmainfont{XCharter}
+\setmonofont{FiraMono}[Scale = 0.9]
+\setmathfont{TeX Gyre Pagella Math}
+
+\usepackage{minted}
 
 \begin{document}
 
@@ -69,7 +75,12 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 
 \chapter{Introduction}
 
-The package that facilitates expressive syntax highlighting in LATEX using the powerful Pygments library. The package also provides options to customize the highlighted source code output \(e = myc^2\) using \verb|fa`ncy'v"r"b|.
+The package that facilitates expressive syntax highlighting in LATEX using the powerful Pygments library. The package also provides options to customize the highlighted source code output \(\forall e = myc^2\) using \verb|fa`nc~y'v"r"b|.
+
+\begin{minted}{typescript}
+return "ana~na `com' ";
+return "ana~na `com' ";
+\end{minted}
 
 \appendix
 
