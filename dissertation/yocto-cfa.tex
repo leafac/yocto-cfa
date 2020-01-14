@@ -1,6 +1,6 @@
 % !TEX program = lualatex
 % !TEX options = -shell-escape -synctex=1 -interaction=nonstopmode -file-line-error "%DOC%"
-% TODO: % !BIB program = bibtex
+% !BIB program = bibtex
 
 \documentclass[12pt, oneside]{book}
 
@@ -76,7 +76,17 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 
 \mainmatter
 
-% TODO
+% TODO: Introduction
+
+\chapter{Developing an Analyzer}
+
+% TODO: An overview of the rest of the section
+
+\section{The Analyzed Language: Yocto-JavaScript}
+
+Our first decision when developing an analyzer is what language it should analyze. This decision determines how difficult it is to develop the analyzer, because more features in the analyzed language make the analyzer more complex, but the impact of the analyzed language on the analyzer goes deeper than that. Two analyzers using the same analysis technique but analyzing different languages may perform differently, both in terms of precision and running time. One of the most notable examples of this is an analysis technique called \(k\)-CFA~\cite{k-cfa}, which may run slower on languages with higher-order functions than on languages with objects (\(k\)-CFA’s algorithmic complexity is exponential on languages with higher-order functions and polynomial on languages with objects)~\cite{m-cfa}.
+
+Our goal in this chapter is to introduce the techniques necessary to analyze higher-order functions and we want to keep the analyzer as simple as possible. An ideal analyzed language would have higher-order order functions as its \emph{only} feature, but no real-world language is as simple as that, so we restrict our analyzer to a \emph{subset} of a real-world language.
 
 \appendix
 
