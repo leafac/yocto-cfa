@@ -86,9 +86,23 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 
 \paragraph{The Importance of Choosing the Analyzed Language.}
 
-Our first decision when developing an analyzer is the analyzed language. This decision is important because the analyzed language determines how difficult it is to develop the analyzer—more features in the analyzed language require a more complicated analyzer. Also, the analyzed language may affect the analyzer’s precision and running time. One of the most notable examples of these effects may be observed with an analysis technique called \(k\)-CFA~\cite{k-cfa}: an analyzer using \(k\)-CFA that works over a language with higher-order functions may be slower than another using the exact same technique over a language with objects (the algorithmic complexity of the former is exponential; the latter, polynomial)~\cite{m-cfa}.
+Our first decision when developing an analyzer is the language that it analyzes. This decision is important because the analyzed language determines how difficult it is to develop the analyzer—more features in the analyzed language require a more elaborate analyzer. Also, the analyzed language may affect the analyzer’s precision and running time; for example, consider an analysis technique called \(k\)-CFA~\cite{k-cfa}: an analyzer using \(k\)-CFA on a language with higher-order functions may be slower than another analyzer using the same technique on a language with objects (the algorithmic complexity of the former is exponential; the latter, polynomial)~\cite{m-cfa}.
 
-Our goal in this chapter is to introduce the techniques necessary to analyze higher-order functions and we want to keep the analyzer as simple as possible. An ideal analyzed language would have higher-order order functions as its \emph{only} feature, but no real-world language is that simple, so we restrict our analyzer to work over only \emph{some features} of a real-world language. (Many papers take a different approach and design their own artificial little language, but this has several disadvantages. First, the language may be unfamiliar to the readers. Second, it prevents the reuse of existing infrastructure, for example, parsers, pretty-printers, and so forth. Third, it prevents the analyzer from being tested with real-world code written by programmers who have not been involved in the development of the analyzer. Fourth, the artificial language may not reflect the features that programmers actually use. Finally, this approach requires some work to be put into language design, but this is not a significant disadvantage because it is comparable to the work we must put into choosing which features from which real-world language to support.)
+Our options of analyzed language are:
+
+\begin{enumerate}
+  \item \textbf{An artificial little language of our own design.} This is the approach most commonly taken by papers. Its benefit is that the analyzed language can be tailored for the kinds of discussions the authors want to have in the paper, but this approach has many drawbacks: the language is unfamiliar to the readers; it becomes impossible to reuse existing infrastructure, for example, parsers, pretty-printers, and so forth; and the language may not reflect the features that programmers actually use.
+  
+  On top of that, perhaps the biggest issue with this approach has to do with \emph{evaluating} the analyzer. Often the only code in an artificial little language is written by the authors of the analyzer themselves. This code tends to be only small programs and it is difficult for the authors to ensure that they are not biased to put the analyzer in a good light. One common solution to this problem is to develop a compiler from an existing real-world language to the artificial little language, but this comes with its own problems: it is even more engineering effort; the compiler may introduce artifacts that affect the analyzer’s performance; and it becomes more difficult to make sense of the analyzer’s result in terms of the real-world language in which the test programs were written originally.
+  
+  Another issue with this approach is that it requires some effort to be put into language design, but this is not a significant disadvantage in relation to the other approaches below, because they require comparable effort to be put into choosing a real-world language and the appropriate subset of features to analyze.
+
+  \item \textbf{A real-world language.}
+
+  \item \textbf{A subset of the features from a real-world language.}
+\end{enumerate}
+
+We choose option 3.
 
 \paragraph{A Real-World Language to Analyze: JavaScript.}
 
