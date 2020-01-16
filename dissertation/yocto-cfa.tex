@@ -94,7 +94,7 @@ Unfortunately, JavaScript is a big language with many features besides higher-or
 
 JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. Yocto-JavaScript has only one kind of value: functions. Yocto-JavaScript functions are written as something called \emph{arrow function expressions}~\cite{arrow-function-expressions}; for example, \mintinline{js}{x => x} is a function of one parameter (before the \mintinline{js}{=>}) called \mintinline{js}{x}, and a body (after the \mintinline{js}{=>}) which consists of just a reference to the variable \mintinline{js}{x}. Yocto-JavaScript functions return the result of computing their body, so our example function simply returns whatever argument it was passed. Yocto-JavaScript functions are limited to have one parameter.
 
-Because an Yocto-JavaScript function is a value, it may be the return value of another function, or it may be the argument in a call to another function. For example, the function \mintinline{js}{y => y} is the return value of the function \mintinline{js}{x => (y => y)} and it is the argument in the call to the function \mintinline{js}{x => x} in \mintinline{js}{(x => x)(y => y)}. This ability to behave as values is what characterize these functions as \emph{higher-order}.
+Because an Yocto-JavaScript function is a value, it may be the return value of another function, or it may be the argument in a call to another function. For example, the function \mintinline{js}{y => y} is the return value of the function \mintinline{js}{x => (y => y)} and it is the argument in the call to the function \mintinline{js}{x => x} in \mintinline{js}{(x => x)(y => y)}. (This ability that functions have of behaving as values is what characterizes them as \emph{higher-order}.)
 
 \paragraph{Operations in Yocto-JavaScript.}
 
@@ -126,7 +126,7 @@ To carry out this translation, we \emph{encode} the features used by the origina
 
 With some effort, it is possible to encode any JavaScript feature in terms of Yocto-JavaScript features~\cite[§~6]{understanding-computation}.
 
-In technical terms, we say that Yocto-JavaScript is a representation of something called \emph{call-by-value \(\lambda\)-calculus}~\cite[§~6]{understanding-computation}), and we describe its computational power by saying that Yocto-JavaScript is \emph{Turing complete}~\cite[§~7]{understanding-computation}).
+(In technical terms, we say that Yocto-JavaScript is a representation of something called \emph{call-by-value \(\lambda\)-calculus}~\cite[§~6]{understanding-computation}), and we describe its computational power by saying that Yocto-JavaScript is \emph{Turing complete}~\cite[§~7]{understanding-computation}).)
 
 % TODO: Grammar.
 
