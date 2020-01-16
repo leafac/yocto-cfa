@@ -20,7 +20,7 @@
 
 \usepackage{minted}
 \usemintedstyle{vs}
-\setminted{fontsize = \footnotesize, baselinestretch = 1}
+\setminted{fontsize = \small, baselinestretch = 1}
 \setmintedinline{fontsize = \normalsize}
 
 \begin{document}
@@ -84,35 +84,34 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 
 \section{The Analyzed Language: Yocto-JavaScript}
 
-\paragraph{The Importance of Choosing the Analyzed Language.}
+Our first decision when developing an analyzer is which language it should analyze. This decision is important because the analyzed language may affect the precision and the running time of the analyzer. For example, there is an analysis technique called \(k\)-CFA~\cite{k-cfa} that may be slower when applied to languages with higher-order functions than when applied to languages with objects (the algorithmic complexity of the former is exponential and the latter is polynomial)~\cite{m-cfa}.
 
-Our first decision when developing an analyzer is which language it should analyze. This decision is important because the analyzed language may affect the analyzer’s precision and running time. Consider, for example, an analysis technique called \(k\)-CFA~\cite{k-cfa}: an analyzer using \(k\)-CFA on a language with higher-order functions may be slower than an analyzer using \(k\)-CFA on a language with objects (the algorithmic complexity of the former is exponential, of the latter, polynomial)~\cite{m-cfa}.
+In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, most popular languages support them: JavaScript, Java, Python, and so forth. From all these languages, we choose JavaScript because it is the most widely used programming language~\cite{stack-overflow-developer-survey, jet-brains-developer-survey} and because it is understood by most people, even those who do not use it regularly, so it makes for a good language of discourse.
 
-Our goal is to develop an analyzer for a language with higher-order functions, so an ideal analyzed …
+Unfortunately, JavaScript is a big language with many features besides higher-order functions, and if we tried to support all of them we would end up with an analyzer that is too complex. Instead, we choose to analyze only a subset of JavaScript features, namely the subset related to higher-order functions: we call it \emph{Yocto-JavaScript} (that is \(\mathrm{JavaScript} \times 10^{-24}\)).
 
-Ideally, the analyzed language would be a real-world language, for example, JavaScript or Java. Unfortunately, these languages have too many features, and an analyzer attempting to support of all of them would end up being too complex.
+\paragraph{Values in Yocto-JavaScript.}
 
-Our options of analyzed language are:
+JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. Yocto-JavaScript has only one kind of value: functions. Yocto-JavaScript functions are written as something called \emph{arrow function expressions}~\cite{arrow-function-expressions}, for example, \mintinline{js}{x => x} is a function with one parameter called \mintinline{js}{x} (before the \mintinline{js}{=>}) and a body which consists of just a reference to the variable \mintinline{js}{x} (after the \mintinline{js}{=>}). Yocto-JavaScript functions return the result of computing their body, so our example function simply returns whatever argument it was passed. Yocto-JavaScript functions are limited to a single argument.
 
-\begin{enumerate}
-\item \textbf{An artificial little language of our own design.} This is the approach that most papers take. Its benefit is that the analyzed language can be tailored for the kinds of discussions the authors want to have in the paper, but this approach has many drawbacks: the language is unfamiliar to the readers; it becomes impossible to reuse existing infrastructure, for example, parsers, pretty-printers, and so forth; and the language may not reflect the features that programmers actually use.
+\paragraph{Operations in Yocto-JavaScript.}
 
-On top of that, perhaps the biggest issue with this approach has to do with \emph{evaluating} the analyzer. Often the only code in an artificial little language is written by the authors of the analyzer themselves, and this code tends to be only small programs that do not exercise all the complex behavior an analyzer may exhibit. One common solution to this problem is to develop a compiler from an existing real-world language to the analyzed language, but this comes with its own problems: it is more engineering effort; the compiler may introduce artifacts that affect the analyzer’s performance; and it becomes more difficult to make sense of the analyzer’s outputs in terms of the original real-world language.
+JavaScript has many operations: numbers can be added together (for example, \mintinline{js}{29 + 1}), objects can have their properties accessed (for example, \mintinline{js}!{ name: "Leandro", age: 29 }.name!), and so forth. Yocto-JavaScript has only two operations: functions can be called and variables can be referenced.
 
-Another issue with this approach is that it requires effort to be put into language design, but this is not a significant disadvantage in relation to the other approaches below, because they require comparable effort to be put into choosing a real-world language and the appropriate subset of features to analyze.
+The following is an example of a function call:
 
-\item \textbf{A real-world language.} This approach would be ideal if it were practical, but real-world languages have too many features and the resulting analyzer would be too complex. Some analyzers work around this by simply ignoring language features that are considered too obscure and that would complicate the analysis too much. The most notable example of problematic feature is arbitrary code execution, for example, the \mintinline{js}{eval()} function in JavaScript that runs arbitrary code represented as a string~\cite{eval}. The problem with features such as \mintinline{js}{eval()} is that the analyzer would not have access to the code that it was supposed to analyze, so to remain sound (see §~\ref{TODO: Section in the Introduction about soundness and _soundiness_}) it would have to be conservative and produce results that would end up being too imprecise to be useful. An example of an analyzer that takes this approach is JSAI~\cite{jsai}, an analyzer for JavaScript that does not support \mintinline{js}{eval()}.
+\begin{minted}{js}
+(x => x)(y => y)
+\end{minted}
 
-But even if we leave aside problematic features such as \mintinline{js}{eval()}, real-world languages are still very complex. Some tools cope with this complexity by compiling programs in the real-world language into an artificial little language of their own design. As discussed above, this strategy has a few issues, but it is helpful nonetheless because the accidental complexity can be resolved by the compiler, leaving the analyzer to handle only the complexity that is essential to the analyzed language. Deciding whether some feature is accidental or essential complexity is a fine art that requires significant effort. One example of a tool that takes this approach is \(\lambda_{\mathit{JS}}\)~\cite{lambda-js}.
+The function being called is \mintinline{js}{x => x}, and the argument being passed to it is \mintinline{js}{y => y}—remember that functions are the only kind of value in Yocto-JavaScript, so the argument must be a function. As discussed above the \mintinline{js}{x => x} function simply returns whatever argument it was passed, so the result of the program is \mintinline{js}{y => y}.
 
-\item \textbf{A subset of the features from a real-world language.}
-\end{enumerate}
+The program above also includes examples of variable references: the \mintinline{js}{x} and \mintinline{js}{y} to the right of the respective \mintinline{js}{=>}.
 
-We choose option 3, which means we have to select a real-world language and then the subset of features from this language that we want to support in our analyzer.
+Parentheses indicate the precedence of the operations, for example, if \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h} are functions, then \mintinline{js}{f(g)(h)} means \mintinline{js}{f} gets called first with \mintinline{js}{g} as argument, and the result is called with \mintinline{js}{g} as argument
 
-\paragraph{A Real-World Language to Analyze: JavaScript.}
-
-From all the real-world languages we could choose, JavaScript is the best option. First, because it fulfills the prerequisite: it includes higher-order functions. Second, because it is the most used programming language in the world~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}
+% TODO: Grammar.
+% TODO: Expressive power.
 
 \appendix
 
