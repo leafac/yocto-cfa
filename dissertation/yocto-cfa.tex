@@ -128,7 +128,7 @@ With some effort, it is possible to encode \emph{all} JavaScript features in ter
 
 \paragraph{A Formal Grammar for Yocto-JavaScript.}
 
-The following is a formal grammar for Yocto-JavaScript in EBNF:
+The following is a grammar that formalizes the informal description of Yocto-JavaScript given above (in \emph{Backus–Naur Form}~(BNF)~\cite{bnf}~\cite[§~4.2]{dragon-book}):
 
 \begin{center}
 \begin{tabular}{rcl}
@@ -137,9 +137,8 @@ $x$ & ::= & \emph{<Variables>} \\
 \end{tabular}
 \end{center}
 
-% TODO: Grammar.
-% TODO: Example programs.
-% TODO: TypeScript as implementation language.
+A variable is any valid JavaScript identifier. An expression $e$ is a valid Yocto-JavaScript program if and only if it is closed.
+
 % TODO: Representation of grammar as TypeScript data types.
 
 \appendix
