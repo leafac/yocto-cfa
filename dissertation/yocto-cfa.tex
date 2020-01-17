@@ -83,20 +83,21 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 % TODO: An overview of the rest of the section
 
 \section{The Analyzed Language: Yocto-JavaScript}
+\label{the-analyzed-language-yocto-javascript}
 
 Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language may affect the precision and the running time of the analyzer. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
 
-In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, we have plenty of options to choose from, because most languages support higher-order functions: JavaScript, Java, Python, Ruby, and so forth. From all these languages, we choose JavaScript because it is the popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}.
+In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, we have plenty of options to choose from, because most languages support higher-order functions: JavaScript, Java, Python, Ruby, and so forth. From all these languages, we choose JavaScript because it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}.
 
 Unfortunately, JavaScript is a big language with many features besides higher-order functions, and if we tried to support all of them we would end up with an analyzer that is too complex. Instead, we define our own artificial little language based on the subset of JavaScript features that are related to higher-order functions. We call the resulting language \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
-\paragraph{Values in Yocto-JavaScript.}
+\subsection{Values in Yocto-JavaScript}
 
 JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript only supports one: functions. Yocto-JavaScript functions are written as something called \emph{arrow function expressions}~\cite{arrow-function-expressions}; for example, \mintinline{js}{x => x} is a function of one parameter (before the \mintinline{js}{=>}) called \mintinline{js}{x}, and a body (after the \mintinline{js}{=>}) which consists of just a reference to the variable \mintinline{js}{x}. Yocto-JavaScript functions return the result of computing their body, so our example function simply returns whatever argument it was passed. (This example function is called the \emph{identity} function.) Yocto-JavaScript functions are limited to have one parameter.
 
 Because an Yocto-JavaScript function is a value, it may be returned by another function, or it may be the argument of a call to another function. For example, in \mintinline{js}{x => (y => y)} the function \mintinline{js}{y => y} is the return value, and in \mintinline{js}{(x => x)(y => y)} the function \mintinline{js}{y => y} is the argument of the call to the function \mintinline{js}{x => x}. (This ability that functions have of behaving as values is what characterizes them as \emph{higher-order}.)
 
-\paragraph{Operations in Yocto-JavaScript.}
+\subsection{Operations in Yocto-JavaScript}
 
 JavaScript has many operations: numbers may be added together (for example, \mintinline{js}{29 + 1}), objects may have their properties accessed (for example, \mintinline{js}!{ name: "Leandro", age: 29 }.name!), and so forth. From all these operations, Yocto-JavaScript only supports two: functions may be called and variables may be referenced. Function calls are written as \mintinline{js}{f(a)}, where \mintinline{js}{f} is the function being called and \mintinline{js}{a} is the argument being passed to it.
 
@@ -116,7 +117,7 @@ We use parentheses to delimit function definitions and to indicate the order in 
 \item \mintinline{js}{f(g(h))}: In this case \mintinline{js}{g(h)} happens first, and the result is a function that is passed as argument to \mintinline{js}{f}.
 \end{enumerate}
 
-\paragraph{The Computational Power of Yocto-JavaScript.}
+\subsection{The Computational Power of Yocto-JavaScript}
 
 Yocto-JavaScript has very few features, which makes it an inconvenient language for programming, but it is ideal for our purpose of discussing the analysis of higher-order functions. Also, perhaps surprisingly, Yocto-JavaScript has the same computational power as JavaScript (and Java, Python, Ruby, and so forth), in the sense that any JavaScript program may be translated into an equivalent Yocto-JavaScript program.
 
@@ -126,7 +127,7 @@ With some effort, it is possible to encode \emph{all} JavaScript features in ter
 
 (In technical terms, we say that Yocto-JavaScript is a representation of something called \emph{call-by-value $\lambda$-calculus}~\cite[§~6]{understanding-computation}), and we describe its computational power by saying that Yocto-JavaScript is \emph{Turing complete}~\cite[§~7]{understanding-computation}).)
 
-\paragraph{A Formal Grammar for Yocto-JavaScript.}
+\subsection{A Formal Grammar for Yocto-JavaScript}
 
 The following is a grammar that formalizes the informal description of Yocto-JavaScript given above (in \emph{Backus–Naur Form}~(BNF)~\cite{bnf}~\cite[§~4.2]{dragon-book}):
 
@@ -139,7 +140,37 @@ $x$ & ::= & \emph{<Variables>} \\
 
 A variable is any valid JavaScript identifier. An expression $e$ is a valid Yocto-JavaScript program if and only if it is closed.
 
-% TODO: Representation of grammar as TypeScript data types.
+\section{The Analyzer Language: TypeScript}
+\label{the-analyzer-language-typescript}
+
+After choosing Yocto-JavaScript as our analyzed language (see §~\ref{the-analyzed-language-yocto-javascript}), the most important decision is the language in which to develop the analyzer itself. Despite our choice of analyzed language being based on JavaScript, we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. Still, from all these options, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes tools to manipulate JavaScript programs. But we want to be able to discuss the \emph{types} of data structures, functions, and so forth (see, for example, §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript programs}), and JavaScript does not have a way to express them, so instead we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, which is an extension of JavaScript with support for types.
+
+\section{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
+\label{a-parser-and-data-structures-to-represent-yocto-javascript programs}
+
+We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-javascript}) in TypeScript (see §~\ref{the-analyzer-language-typescript}) as strings, for example, \mintinline{ts}{"x => x"}. But our analyzer would be exceedingly complex if it tried to manipulate these strings directly, so as its first step the analyzer \emph{parses} the programs into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
+
+The following is an example of an Yocto-JavaScript program and the corresponding data structures that the analyzer uses to represent it:
+
+\begin{minted}{ts}
+x => x
+
+{
+  type: "ArrowFunctionExpression",
+  params: [
+    {
+      type: "Identifier",
+      name: "x"
+    }
+  ],
+  body: {
+    type: "Identifier",
+    name: "x"
+  }
+}
+\end{minted}
+
+% TODO: Esprima & ESTree (https://esprima.org, https://esprima.org/demo/parse.html, https://github.com/estree/estree, https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/estree/index.d.ts)
 
 \appendix
 
