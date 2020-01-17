@@ -84,11 +84,11 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 
 \section{The Analyzed Language: Yocto-JavaScript}
 
-Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language may affect the precision and the running time of the analyzer. For example, there is an analysis technique called \(k\)-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
+Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language may affect the precision and the running time of the analyzer. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
 
 In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, we have plenty of options to choose from, because most languages support higher-order functions: JavaScript, Java, Python, Ruby, and so forth. From all these languages, we choose JavaScript because it is the popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}.
 
-Unfortunately, JavaScript is a big language with many features besides higher-order functions, and if we tried to support all of them we would end up with an analyzer that is too complex. Instead, we define our own artificial little language based on the subset of JavaScript features that are related to higher-order functions. We call the resulting language \emph{Yocto-JavaScript} (\(\mathrm{JavaScript} \times 10^{-24}\)). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
+Unfortunately, JavaScript is a big language with many features besides higher-order functions, and if we tried to support all of them we would end up with an analyzer that is too complex. Instead, we define our own artificial little language based on the subset of JavaScript features that are related to higher-order functions. We call the resulting language \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
 \paragraph{Values in Yocto-JavaScript.}
 
@@ -102,13 +102,11 @@ JavaScript has many operations: numbers may be added together (for example, \min
 
 The following is an example of these operations: \mintinline{js}{(x => x)(y => y)}.
 
-In this program there is a function being called, \mintinline{js}{x => x}, and the argument being passed to it is \mintinline{js}{y => y} (functions are the only kind of value in Yocto-JavaScript, so the argument must itself be a function). As discussed above the \mintinline{js}{x => x} function simply returns whatever argument it was passed, so the result of the program is \mintinline{js}{y => y}.
+In this program there is a function being called, \mintinline{js}{x => x}, and an argument being passed to it, \mintinline{js}{y => y} (functions are the only kind of value in Yocto-JavaScript, so the argument must itself be a function). As discussed above the \mintinline{js}{x => x} function simply returns whatever argument it was passed, so the result of the program is \mintinline{js}{y => y}. In general, a call (for example, \mintinline{js}{f(a)}) may appear in the body of a function (for example, \mintinline{js}{f => f(a)}) and in part of another call, either in the position of the function being called (for example, \mintinline{js}{(f(a))(b)}) or in the position of the argument (for example, \mintinline{js}{g(f(a))}).
 
-The program above also includes examples of variable references: the \mintinline{js}{x} and \mintinline{js}{y} to the right of the respective \mintinline{js}{=>}. The only rule of variable references is that they must refer to variables that are defined; for example, in \mintinline{js}{x => x} the variable reference to \mintinline{js}{x} on the right of the \mintinline{js}{=>} is valid because \mintinline{js}{x} is defined on the left of the \mintinline{js}{=>}, but in \mintinline{js}{x => y} the variable reference to \mintinline{js}{y} on the right of the \mintinline{js}{=>} is invalid because \mintinline{js}{y} is undefined. A variable is only defined within the body of the function that defines it; for example, in \mintinline{js}{(x => y)(y => y)} the second reference to \mintinline{js}{y} on the right of the second \mintinline{js}{=>} is valid, because it is within the function that defines \mintinline{js}{y}, but the first reference to \mintinline{js}{y} on the right of the first \mintinline{js}{=>} is invalid. A variable is defined deep within the body of the function that defines it; for example, in \mintinline{js}{y => (x => y)} the reference to \mintinline{js}{y} is valid because it occurs deep within the body of the function that defines \mintinline{js}{y}.
+The example program above also includes variable references: the \mintinline{js}{x} and \mintinline{js}{y} to the right of the respective \mintinline{js}{=>}. The only rule of variable references is that they must refer to variables that are defined; for example, in \mintinline{js}{x => x} the variable reference to \mintinline{js}{x} on the right of the \mintinline{js}{=>} is valid because \mintinline{js}{x} is defined on the left of the \mintinline{js}{=>}, but in \mintinline{js}{x => y} the variable reference to \mintinline{js}{y} on the right of the \mintinline{js}{=>} is invalid because \mintinline{js}{y} is undefined. A variable is only defined within the body of the function that defines it; for example, in \mintinline{js}{(x => y)(y => y)} the second reference to \mintinline{js}{y} on the right of the second \mintinline{js}{=>} is valid, because it is within the function that defines \mintinline{js}{y}, but the first reference to \mintinline{js}{y} on the right of the first \mintinline{js}{=>} is invalid. A variable is defined deep within the body of the function that defines it; for example, in \mintinline{js}{y => (x => y)} the reference to \mintinline{js}{y} is valid because it occurs deep within the body of the function that defines \mintinline{js}{y}.
 
 (There are many technical terms related to this idea of where variables are defined. We say that a variable is \emph{in scope} in the body of the function that defines it. Similarly, the region of the program in which the variable is defined is called \emph{the scope} of the variable. Variable references that are in scope are said to be \emph{closed}, and we say that the whole program is \emph{closed} if all the variable references in it are close. Similarly, variable references that are not in scope are said to be \emph{open}, and a program with at least one open variable reference is \emph{open}.)
-
-% TODO: Function calls may occur in the operator position.
 
 We use parentheses to delimit function definitions and to indicate the order in which operations occur. For example, suppose \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h} are functions. There are at least two ways in which these functions may call one another:
 
@@ -126,20 +124,16 @@ To carry out this translation, we \emph{encode} the features used by the origina
 
 With some effort, it is possible to encode \emph{all} JavaScript features in terms of Yocto-JavaScript features~\cite[§~6]{understanding-computation}.
 
-(In technical terms, we say that Yocto-JavaScript is a representation of something called \emph{call-by-value \(\lambda\)-calculus}~\cite[§~6]{understanding-computation}), and we describe its computational power by saying that Yocto-JavaScript is \emph{Turing complete}~\cite[§~7]{understanding-computation}).)
+(In technical terms, we say that Yocto-JavaScript is a representation of something called \emph{call-by-value $\lambda$-calculus}~\cite[§~6]{understanding-computation}), and we describe its computational power by saying that Yocto-JavaScript is \emph{Turing complete}~\cite[§~7]{understanding-computation}).)
 
 \paragraph{A Formal Grammar for Yocto-JavaScript.}
 
 The following is a formal grammar for Yocto-JavaScript in EBNF:
 
 \begin{center}
-\begin{tabular}{rcll}
-\(e\) & \(::=\) & \(v | c | r\) & \emph{Expressions} \\
-\(v\) & \(::=\) & \(f\) & \emph{Values} \\
-\(f\) & \(::=\) & \(x \texttt{=>} e\) & \emph{Functions} \\
-\(c\) & \(::=\) & \(e\texttt{(}e\texttt{)}\) & \emph{Calls} \\
-\(r\) & \(::=\) & \(x\) & \emph{Variable References} \\
-\(x\) & \(::=\) & \emph{<Identifiers>} & \emph{Identifiers} \\
+\begin{tabular}{rcl}
+$e$ & ::= & $x\texttt{ => }e$ | $e\texttt{(}e\texttt{)}$ | $x$ \\
+$x$ & ::= & \emph{<Variables>} \\
 \end{tabular}
 \end{center}
 
