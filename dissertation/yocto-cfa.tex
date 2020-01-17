@@ -98,9 +98,9 @@ Because an Yocto-JavaScript function is a value, it may be returned by another f
 
 \paragraph{Operations in Yocto-JavaScript.}
 
-JavaScript has many operations: numbers may be added together (for example, \mintinline{js}{29 + 1}), objects may have their properties accessed (for example, \mintinline{js}!{ name: "Leandro", age: 29 }.name!), and so forth. From all these operations, Yocto-JavaScript only supports two: functions may be called and variables may be referenced.
+JavaScript has many operations: numbers may be added together (for example, \mintinline{js}{29 + 1}), objects may have their properties accessed (for example, \mintinline{js}!{ name: "Leandro", age: 29 }.name!), and so forth. From all these operations, Yocto-JavaScript only supports two: functions may be called and variables may be referenced. Function calls are written as \mintinline{js}{f(a)}, where \mintinline{js}{f} is the function being called and \mintinline{js}{a} is the argument being passed to it.
 
-The following is an example of these operations: \mintinline{js}{(x => x)(y => y)}.
+The following is an example of the two operations supported by Yocto-JavaScript: \mintinline{js}{(x => x)(y => y)}.
 
 In this program there is a function being called, \mintinline{js}{x => x}, and an argument being passed to it, \mintinline{js}{y => y} (functions are the only kind of value in Yocto-JavaScript, so the argument must itself be a function). As discussed above the \mintinline{js}{x => x} function simply returns whatever argument it was passed, so the result of the program is \mintinline{js}{y => y}. In general, a call (for example, \mintinline{js}{f(a)}) may appear in the body of a function (for example, \mintinline{js}{f => f(a)}) and in part of another call, either in the position of the function being called (for example, \mintinline{js}{(f(a))(b)}) or in the position of the argument (for example, \mintinline{js}{g(f(a))}).
 
