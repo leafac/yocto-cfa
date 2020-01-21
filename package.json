@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "build": "tsc",
+    "build:dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex",
+    "test": "prettier --check 'code/**/*.ts' && tsc && jest"
+  },
+  "dependencies": {
+    "esprima": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.9.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.5"
+  },
+  "jest": {
+    "rootDir": "lib",
+    "testEnvironment": "node",
+    "verbose": true
+  }
+}
