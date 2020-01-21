@@ -150,7 +150,7 @@ After choosing Yocto-JavaScript as our analyzed language (see §~\ref{the-analyz
 \section{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
 \label{a-parser-and-data-structures-to-represent-yocto-javascript programs}
 
-We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-javascript}) in TypeScript (see §~\ref{the-analyzer-language-typescript}) as strings, for example, \mintinline{ts}{"x => x"}. But our analyzer would be exceedingly complex if it tried to manipulate these strings directly, so as its first step the analyzer \emph{parses} the programs into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
+We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-javascript}) in TypeScript (see §~\ref{the-analyzer-language-typescript}) as strings, for example, \mintinline{ts}{"x => x"}. But our analyzer would be exceedingly complex if it tried to manipulate these strings directly, so as its first step our analyzer \emph{parses} the programs into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
 
 The following is an example of an Yocto-JavaScript program and the corresponding data structures that the analyzer uses to represent it:
 
@@ -190,7 +190,10 @@ The following is an example of an Yocto-JavaScript program and the corresponding
 }
 \end{minted}
 
-% TODO: Esprima & ESTree (https://esprima.org, https://esprima.org/demo/parse.html, https://github.com/estree/estree, https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/estree/index.d.ts)
+We choose to represent Yocto-JavaScript programs with the data structures in the example above because they follow a standard called ESTree~\cite{estree}. ESTree is also used by other tools in the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, which we reuse to implement our Yocto-JavaScript parser. To explore the parser further, refer to the Esprima interactive online demonstration~\cite{esprima-demonstration}, which shows the data structures produced by a program as it is being typed. Our Yocto-JavaScript parser simply…
+
+% TODO: Appendix: Yocto-JavaScript parser
+% TODO: Data structure definitions
 
 \appendix
 
