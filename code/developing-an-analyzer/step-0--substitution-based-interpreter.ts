@@ -28,11 +28,11 @@ export function parse(input: string): Expression {
     throw new Error(
       "‘Program’ has a ‘body’ that isn’t an ‘ExpressionStatement’."
     );
-  return checkAndCleanup(program.body[0].expression, []);
+  return checkAndCleanup(program.body[0].expression, new Set<string>());
 
   function checkAndCleanup(
     node: ESTree.Node,
-    variablesInScope: string[]
+    definedVariables: Set<string>
   ): Expression {
     switch (node.type) {
       case "ArrowFunctionExpression":
@@ -52,10 +52,10 @@ export function parse(input: string): Expression {
               name: node.params[0].name
             }
           ],
-          body: checkAndCleanup(node.body, [
-            ...variablesInScope,
-            node.params[0].name
-          ])
+          body: checkAndCleanup(
+            node.body,
+            new Set([...definedVariables, node.params[0].name])
+          )
         };
       case "CallExpression":
         if (node.arguments.length !== 1)
@@ -64,11 +64,11 @@ export function parse(input: string): Expression {
           );
         return {
           type: node.type,
-          callee: checkAndCleanup(node.callee, variablesInScope),
-          arguments: [checkAndCleanup(node.arguments[0], variablesInScope)]
+          callee: checkAndCleanup(node.callee, definedVariables),
+          arguments: [checkAndCleanup(node.arguments[0], definedVariables)]
         };
       case "Identifier":
-        if (!variablesInScope.includes(node.name))
+        if (!definedVariables.has(node.name))
           throw new Error(`Variable reference to ‘${node.name}’ not in scope.`);
         return {
           type: node.type,
