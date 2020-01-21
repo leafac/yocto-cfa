@@ -155,20 +155,38 @@ We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-java
 The following is an example of an Yocto-JavaScript program and the corresponding data structures that the analyzer uses to represent it:
 
 \begin{minted}{ts}
-x => x
+(x => x)(y => y)
 
 {
-  type: "ArrowFunctionExpression",
-  params: [
-    {
-      type: "Identifier",
-      name: "x"
+  "type": "CallExpression",
+  "callee": {
+    "type": "ArrowFunctionExpression",
+    "params": [
+      {
+        "type": "Identifier",
+        "name": "x"
+      }
+    ],
+    "body": {
+      "type": "Identifier",
+      "name": "x"
     }
-  ],
-  body: {
-    type: "Identifier",
-    name: "x"
-  }
+  },
+  "arguments": [
+    {
+      "type": "ArrowFunctionExpression",
+      "params": [
+        {
+          "type": "Identifier",
+          "name": "y"
+        }
+      ],
+      "body": {
+        "type": "Identifier",
+        "name": "y"
+      }
+    }
+  ]
 }
 \end{minted}
 
