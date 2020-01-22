@@ -1,7 +1,25 @@
 import { parse } from "./step-0--substitution-based-interpreter";
 
 describe("parser", () => {
-  test("a valid program", () => {
+  test("the simplest program possible", () => {
+    expect(parse("x => x")).toMatchInlineSnapshot(`
+      Object {
+        "body": Object {
+          "name": "x",
+          "type": "Identifier",
+        },
+        "params": Array [
+          Object {
+            "name": "x",
+            "type": "Identifier",
+          },
+        ],
+        "type": "ArrowFunctionExpression",
+      }
+    `);
+  });
+
+  test("a program illustrating all Yocto-JavaScript features", () => {
     expect(parse("(x => x)(y => y)")).toMatchInlineSnapshot(`
       Object {
         "arguments": Array [

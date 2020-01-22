@@ -16,7 +16,6 @@
   },
   "jest": {
     "rootDir": "lib",
-    "testEnvironment": "node",
-    "verbose": true
+    "testEnvironment": "node"
   }
 }
