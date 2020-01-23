@@ -28,11 +28,11 @@ export function parse(input: string): Expression {
     throw new Error(
       "‘Program’ has a ‘body’ that isn’t an ‘ExpressionStatement’."
     );
-  return checkAndClean(program.body[0].expression);
+  return checkAndClean(program.body[0].expression, new Set<string>());
 
   function checkAndClean(
     node: ESTree.Node,
-    definedVariables = new Set<string>()
+    definedVariables: Set<string>
   ): Expression {
     switch (node.type) {
       case "ArrowFunctionExpression":
