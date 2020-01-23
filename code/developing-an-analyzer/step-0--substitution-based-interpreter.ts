@@ -28,11 +28,11 @@ export function parse(input: string): Expression {
     throw new Error(
       "‘Program’ has a ‘body’ that isn’t an ‘ExpressionStatement’."
     );
-  return checkAndCleanup(program.body[0].expression, new Set<string>());
+  return checkAndClean(program.body[0].expression);
 
-  function checkAndCleanup(
+  function checkAndClean(
     node: ESTree.Node,
-    definedVariables: Set<string>
+    definedVariables = new Set<string>()
   ): Expression {
     switch (node.type) {
       case "ArrowFunctionExpression":
@@ -52,7 +52,7 @@ export function parse(input: string): Expression {
               name: node.params[0].name
             }
           ],
-          body: checkAndCleanup(
+          body: checkAndClean(
             node.body,
             new Set([...definedVariables, node.params[0].name])
           )
@@ -64,8 +64,8 @@ export function parse(input: string): Expression {
           );
         return {
           type: node.type,
-          callee: checkAndCleanup(node.callee, definedVariables),
-          arguments: [checkAndCleanup(node.arguments[0], definedVariables)]
+          callee: checkAndClean(node.callee, definedVariables),
+          arguments: [checkAndClean(node.arguments[0], definedVariables)]
         };
       case "Identifier":
         if (!definedVariables.has(node.name))
