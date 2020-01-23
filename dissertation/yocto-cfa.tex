@@ -151,9 +151,9 @@ After choosing Yocto-JavaScript as our analyzed language (see §~\ref{the-analyz
 \section{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
 \label{a-parser-and-data-structures-to-represent-yocto-javascript programs}
 
-We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-javascript}) in TypeScript (see §~\ref{the-analyzer-language-typescript}) as strings, for example, \mintinline{ts}{"x => x"}. But our analyzer would be exceedingly complex if it tried to manipulate these strings directly, so as its first step our analyzer \emph{parses} the programs into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
+We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-javascript}) in TypeScript (see §~\ref{the-analyzer-language-typescript}) as strings, for example, \mintinline{ts}{"x => x"}. Our analyzer would be exceedingly complex if it tried to manipulate these strings directly, so it converts them into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
 
-The following are two examples of an Yocto-JavaScript programs and the corresponding data structures that the analyzer uses to represent them:
+The following are two examples of Yocto-JavaScript programs and the corresponding data structures that the analyzer uses to represent them:
 
 \begin{minted}{ts}
 x => x
