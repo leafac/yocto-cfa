@@ -6,19 +6,15 @@
 
 ![](https://github.com/leafac/yocto-cfa/workflows/Main/badge.svg)
 
+# Build Dissertation
+
+Install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org). Run `make` on the `dissertation` folder. The dissertation will be at `dissertation/yocto-cfa.pdf`.
+
 # Run Tests
 
-Install [Node.js](https://nodejs.org/) and run:
+Install [Node.js](https://nodejs.org/). Run the following on the `code` folder:
 
 ```console
 $ npm install
 $ npm test
-```
-
-# Build Dissertation
-
-In addition to Node.js, install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org), and run:
-
-```console
-$ npm run build:dissertation
 ```

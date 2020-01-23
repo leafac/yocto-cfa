@@ -1,8 +1,7 @@
 {
   "scripts": {
     "build": "tsc",
-    "build:dissertation": "cd dissertation && lualatex --shell-escape yocto-cfa.tex && bibtex yocto-cfa && lualatex --shell-escape yocto-cfa.tex && lualatex --shell-escape yocto-cfa.tex",
-    "test": "prettier --check 'code/**/*.ts' && tsc && jest"
+    "test": "prettier --check 'src/**/*.ts' && tsc && jest"
   },
   "dependencies": {
     "esprima": "^4.0.1"
