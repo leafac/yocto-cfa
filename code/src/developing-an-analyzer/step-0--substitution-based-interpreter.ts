@@ -79,3 +79,48 @@ export function parse(input: string): Expression {
     }
   }
 }
+
+type Value = ArrowFunctionExpression;
+
+export function evaluate(expression: Expression): Value {
+  switch (expression.type) {
+    case "ArrowFunctionExpression":
+      return expression;
+    case "CallExpression":
+      const calledFunction = evaluate(expression.callee);
+      const argument = evaluate(expression.arguments[0]);
+      return evaluate(
+        substitute(calledFunction.body, calledFunction.params[0].name, argument)
+      );
+    case "Identifier":
+      throw new Error(`Undefined variable ‘${expression.name}’.`);
+  }
+
+  function substitute(
+    expression: Expression,
+    name: string,
+    argument: Value
+  ): Expression {
+    return traverse(expression);
+
+    function traverse(expression: Expression): Expression {
+      switch (expression.type) {
+        case "ArrowFunctionExpression":
+          if (expression.params[0].name === name) return expression;
+          return {
+            ...expression,
+            body: traverse(expression.body)
+          };
+        case "CallExpression":
+          return {
+            ...expression,
+            callee: traverse(expression.callee),
+            arguments: [traverse(expression.arguments[0])]
+          };
+        case "Identifier":
+          if (expression.name === name) return argument;
+          return expression;
+      }
+    }
+  }
+}
