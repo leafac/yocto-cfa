@@ -239,7 +239,11 @@ This concludes the preliminary work necessary to start building the series of in
 
 \section{Step 0: Substitution-Based Interpreter}
 
-% TODO
+We start the series of interpreters that lead to our analyzer with an interpreter that simply executes Yocto-JavaScript programs. This interpreter is the source of truth against which we will compare the output of our analyzer: the analyzer must be able to predict what the interpreter produces. The interpreter we develop in this section behaves the same as a JavaScript interpreter. (In technical terms, this characterizes the interpreter we build in this step as a \emph{concrete} interpreter, as opposed to the \emph{abstract} interpreter that will be our analyzer.)
+
+There are many techniques with which to develop an interpreter, and we start with the simplest one, called \emph{substitution-based interpreter} because it works by substituting values where variable references occur.
+
+% f(x) = x + 1     f(29) = 29 + 1        f(29) = 30
 
 \appendix
 

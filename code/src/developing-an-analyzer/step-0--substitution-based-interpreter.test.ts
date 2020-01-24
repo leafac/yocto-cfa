@@ -134,4 +134,10 @@ describe("evaluate()", () => {
       evaluate({ type: "Identifier", name: "x" });
     }).toThrow("Undefined variable ‘x’.");
   });
+
+  test("a program that doesn’t terminate", () => {
+    expect(() => {
+      evaluate(parse("(f => f(f))(f => f(f))"));
+    }).toThrow("Maximum call stack size exceeded");
+  });
 });
