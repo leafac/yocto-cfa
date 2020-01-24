@@ -208,7 +208,7 @@ x => x
 }
 \end{minted}
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}. ESTree is also used by other tools in the JavaScript ecosystem, and by following the specification we may reuse them. In particular, we reuse a parser for JavaScript called Esprima~\cite{esprima}. To explore Esprima and ESTree, refer to the Esprima interactive online demonstration~\cite{esprima-demonstration}. The details of how the Yocto-JavaScript parser is implemented and how it uses Esprima are deferred to §~\ref{the-yocto-javascript-parser-in-detail}.
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}. ESTree is also used by other tools in the JavaScript ecosystem, and by following the specification we may reuse them. In particular, we may reuse a parser for JavaScript called Esprima~\cite{esprima}. To explore Esprima and ESTree, refer to the Esprima interactive online demonstration~\cite{esprima-demonstration}. The details of how the Yocto-JavaScript parser is implemented and how it uses Esprima are deferred to §~\ref{the-yocto-javascript-parser-in-detail}.
 
 The following are the definitions of data structures produced by the Yocto-JavaScript parser:
 
@@ -233,7 +233,7 @@ interface Identifier {
 }
 \end{minted}
 
-These definitions are written as TypeScript types. They correspond to the elements in the Yocto-JavaScript grammar (see §~\ref{a-formal-grammar-for-yocto-javascript}). They are adapted from the ESTree specification to include only the features supported by Yocto-JavaScript.
+These definitions are written as TypeScript types adapted from the ESTree specification to include only the features supported by Yocto-JavaScript. The definitions correspond to elements of the Yocto-JavaScript grammar (see §~\ref{a-formal-grammar-for-yocto-javascript}); for example, \mintinline{ts}{Expression} corresponds to $e$.
 
 \appendix
 
