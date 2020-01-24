@@ -87,40 +87,32 @@ export function evaluate(expression: Expression): Value {
     case "ArrowFunctionExpression":
       return expression;
     case "CallExpression":
-      const calledFunction = evaluate(expression.callee);
+      const {
+        params: [{ name }],
+        body
+      } = evaluate(expression.callee);
       const argument = evaluate(expression.arguments[0]);
-      return evaluate(
-        substitute(calledFunction.body, calledFunction.params[0].name, argument)
-      );
+      return evaluate(substitute(body));
+      function substitute(expression: Expression): Expression {
+        switch (expression.type) {
+          case "ArrowFunctionExpression":
+            if (expression.params[0].name === name) return expression;
+            return {
+              ...expression,
+              body: substitute(expression.body)
+            };
+          case "CallExpression":
+            return {
+              ...expression,
+              callee: substitute(expression.callee),
+              arguments: [substitute(expression.arguments[0])]
+            };
+          case "Identifier":
+            if (expression.name === name) return argument;
+            return expression;
+        }
+      }
     case "Identifier":
       throw new Error(`Undefined variable ‘${expression.name}’.`);
-  }
-
-  function substitute(
-    expression: Expression,
-    name: string,
-    argument: Value
-  ): Expression {
-    return traverse(expression);
-
-    function traverse(expression: Expression): Expression {
-      switch (expression.type) {
-        case "ArrowFunctionExpression":
-          if (expression.params[0].name === name) return expression;
-          return {
-            ...expression,
-            body: traverse(expression.body)
-          };
-        case "CallExpression":
-          return {
-            ...expression,
-            callee: traverse(expression.callee),
-            arguments: [traverse(expression.arguments[0])]
-          };
-        case "Identifier":
-          if (expression.name === name) return argument;
-          return expression;
-      }
-    }
   }
 }
