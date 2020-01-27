@@ -149,7 +149,7 @@ An expression $e$ is a valid Yocto-JavaScript program if and only if it is close
 \section{The Analyzer Language: TypeScript}
 \label{The Analyzer Language: TypeScript}
 
-After choosing Yocto-JavaScript as our analyzed language (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our choice of analyzed language being based on JavaScript, we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. Still, from all these options, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes tools to manipulate JavaScript programs. But we want to be able to discuss the \emph{types} of data structures, functions, and so forth (see, for example, §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}), and JavaScript does not have a way to express them, so instead we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, which is an extension of JavaScript with support for types.
+After choosing Yocto-JavaScript as our analyzed language (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite choosing an analyzed language based on JavaScript (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. From all these languages, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs. But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we need to do (see, for example, §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}), so instead of JavaScript we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, an extension of JavaScript with support for types.
 
 \section{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
 \label{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
@@ -209,7 +209,7 @@ The Yocto-JavaScript parser is implemented as a function called \mintinline{ts}{
 
 We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}. ESTree is also used by other tools in the JavaScript ecosystem, in particular, it is produced by a parser for JavaScript called Esprima~\cite{esprima}, which we reuse to implement \mintinline{ts}{parse()}. To explore Esprima and ESTree, refer to the Esprima interactive online demonstration~\cite{esprima-demonstration}. The details of how \mintinline{ts}{parse()} is implemented and how it reuses Esprima are deferred to §~\ref{The Yocto-JavaScript Parser in Detail}.
 
-The following are the definitions of data structures produced by \mintinline{ts}{parse()}:
+The following are definitions of the data structures produced by \mintinline{ts}{parse()}:
 
 \begin{minted}{ts}
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -241,7 +241,7 @@ This concludes the preliminary work necessary to start the series of steps that 
 
 Our first step toward an analyzer is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs as a regular JavaScript interpreter. This is a good starting point because in the end the outputs of this interpreter are the ground truth against which we will validate the outputs of our analyzer.
 
-There are several techniques to develop an interpreter, and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in called function body with the argument. This is similar to how we reason about function application in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (In technical terms, we are developing something called a \emph{substitution-based interpreter}.)
+There are several techniques to develop an interpreter and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the called function body with the argument. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (In technical terms, we are developing something called a \emph{substitution-based interpreter}.)
 
 \subsection{The Skeleton}
 
@@ -274,7 +274,7 @@ export function evaluate(expression: Expression): Value {
 }
 \end{minted}
 
-The first thing that \mintinline{ts}{evaluate()} has to do is determine the type of \mintinline{ts}{expression} it is given:
+The first thing that \mintinline{ts}{evaluate()} has to do is to determine which type of \mintinline{ts}{expression} it is given:
 
 \begin{minted}{ts}
 export function evaluate(expression: Expression): Value {
@@ -330,7 +330,7 @@ y => y
 \end{minted}
 \end{description}
 
-In this case the \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is a \mintinline{ts}{CallExpression} in which both the \mintinline{ts}{callee} and the \mintinline{ts}{argument} are \mintinline{ts}{ArrowFunctionExpression}s. We…
+In this case the \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is a \mintinline{ts}{CallExpression} in which both the \mintinline{ts}{callee} and the \mintinline{ts}{argument} are \mintinline{ts}{ArrowFunctionExpression}s. We use \emph{destructuring assignment}~\cite{destructuring-assignment} to unpack these data structures, which we will use in subsequent sections, but for the example program above it suffices to return the \mintinline{ts}{argument}:
 
 \begin{minted}{ts}
 case "CallExpression":
@@ -339,14 +339,33 @@ case "CallExpression":
     expression.arguments[0].type !== "ArrowFunctionExpression"
   )
     throw "TODO";
-  return expression.arguments[0];
+  const {
+    params: [{ name }],
+    body
+  } = expression.callee;
+  const argument = expression.arguments[0];
+  return argument;
 \end{minted}
 
-In the listing above we deconstruct the \mintinline{ts}{callee} and the \mintinline{ts}{argument}, but we do not use them in any meaningful way; we simply return the \mintinline{ts}{argument}. This is enough to evaluate the program \mintinline{js}{(x => x)(y => y)} correctly.
+\subsection{A Call in Which Substitution Must Occur Within Another Function}
 
-Next, consider a program in which the substitution of the variable \mintinline{js}{x} must occur within another function definition, for example, \mintinline{js}{(x => z => x)(y => y)}. In this case, we expect the interpreter to substitute the \mintinline{js}{x} in \mintinline{js}{z => x} with \mintinline{js}{y => y}, resulting in \mintinline{js}{z => y => y}. In general, references to the variable to substitute may occur anywhere in the body of the called function, so we define an auxiliary function called \mintinline{ts}{substitute()} to traverse the body looking for these references and performing the substitution:
+\begin{description}
+\item [Example program:] ~
 
-\begin{minted}{ts}
+\begin{minted}{js}
+(x => z => x)(y => y)
+\end{minted}
+
+\item [Expected output:] ~
+
+\begin{minted}{js}
+z => y => y
+\end{minted}
+\end{description}
+
+As illustrated by the program above, substitution may occur deep within the called function body, so we define an auxiliary function called \mintinline{ts}{substitute()} which traverses the body looking for variable references and substituting them:
+
+\begin{minted}[highlightlines = 12-18]{ts}
 case "CallExpression":
   if (
     expression.callee.type !== "ArrowFunctionExpression" ||
@@ -392,14 +411,32 @@ case "ArrowFunctionExpression":
   };
 \end{minted}
 
-After this recursive call, \mintinline{ts}{substitute()} reaches the case in which the \mintinline{ts}{expression} is an \mintinline{ts}{Identifier}. When this happens, \mintinline{ts}{substitute()} simply returns the \mintinline{ts}{argument}:
+After this recursive call, \mintinline{ts}{substitute()} reaches the case in which the \mintinline{ts}{expression} is a variable reference (an \mintinline{ts}{Identifier}). When this happens, \mintinline{ts}{substitute()} performs the substitution by returning the \mintinline{ts}{argument}:
 
 \begin{minted}{ts}
 case "Identifier":
   return argument;
 \end{minted}
 
-This definition of \mintinline{ts}{substitute()} is still incomplete, but it is enough to interpret the program we are considering: \mintinline{js}{(x => z => x)(y => y)}. To use
+\subsection{A Call in Which Substitution Must Stop Because of Shadowing}
+
+\begin{description}
+\item [Example program:] ~
+
+\begin{minted}{js}
+(x => x => x)(y => y)
+\end{minted}
+
+\item [Expected output:] ~
+
+\begin{minted}{js}
+x => x
+\end{minted}
+\end{description}
+
+In the program above, there are two options for the variable reference \mintinline{ts}{x} on the right of the second \mintinline{ts}{=>}: it may refer to the first (outer) \mintinline{ts}{x} on the left of the first \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{ts}{x} on the left of the second \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => x}.
+
+Currently, our \mintinline{ts}{substitute()} function is implementing the first option, but this leads to a serious issue: we are not able to reason about \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. (In technical terms, we say that the first option defeats something called \emph{local reasoning} and that the second option exhibits a behavior called \emph{shadowing}, because the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x}.)
 
 % TODO: A listing of the whole implementation.
 % TODO: Inference rules for interpreter.

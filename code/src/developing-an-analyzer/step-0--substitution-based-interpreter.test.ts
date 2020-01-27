@@ -91,22 +91,22 @@ describe("evaluate()", () => {
     ["an Expression that is already a Value", "x => x", "x => x"],
     ["a call involving immediate functions", "(x => x)(y => y)", "y => y"],
     [
-      "a call in which substitution needs to happen within another function definition",
+      "a call in which substitution must occur within another function",
       "(x => z => x)(y => y)",
       "z => y => y"
     ],
     [
-      "a call in which substitution needs to stop because of shadowing",
+      "a call in which substitution must stop because of shadowing",
       "(x => x => x)(y => y)",
       "x => x"
     ],
     [
-      "a call in which substitution needs to happen within another call",
+      "a call in which substitution must occur within another call",
       "(x => z => x(x))(y => y)",
       "z => (y => y)(y => y)"
     ],
     [
-      "a call in which substitution needs to stop because the variable doesn’t match",
+      "a call in which substitution must stop because the variable doesn’t match",
       "(x => z => z(z))(y => y)",
       "z => z(z)"
     ],
