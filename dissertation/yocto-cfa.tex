@@ -84,7 +84,7 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 % TODO: An overview of the rest of the section
 
 \section{The Analyzed Language: Yocto-JavaScript}
-\label{the-analyzed-language-yocto-javascript}
+\label{The Analyzed Language: Yocto-JavaScript}
 
 Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language may affect the precision and the running time of the analyzer. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
 
@@ -127,12 +127,12 @@ Yocto-JavaScript has very few features, which makes it an inconvenient language 
 
 To carry out this translation, we \emph{encode} the features used by the original JavaScript program in terms of features supported by Yocto-JavaScript. For example, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript, which only allows for functions of one parameter, but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, we may encode \mintinline{js}{f(a, b)} as \mintinline{js}{(f(a))(b)}. (This technique is called \emph{currying}.)
 
-With some effort, it is possible to encode \emph{all} JavaScript features in terms of Yocto-JavaScript features (see §~\ref{encoding-javascript-features-in-yocto-javascript}).
+With some effort, it is possible to encode \emph{all} JavaScript features in terms of Yocto-JavaScript features (see §~\ref{Encoding JavaScript Features in Yocto-JavaScript}).
 
 (In technical terms, we say that Yocto-JavaScript is a representation of something called \emph{call-by-value $\lambda$-calculus}~\cite[§~6]{understanding-computation}), and we describe its computational power by saying that Yocto-JavaScript is \emph{Turing complete}~\cite[§~7]{understanding-computation}.)
 
 \subsection{A Formal Grammar for Yocto-JavaScript}
-\label{a-formal-grammar-for-yocto-javascript}
+\label{A Formal Grammar for Yocto-JavaScript}
 
 The following is a grammar that formalizes the informal description of Yocto-JavaScript given above (in \emph{Backus–Naur Form}~(BNF)~\cite{bnf}~\cite[§~4.2]{dragon-book}):
 
@@ -146,14 +146,14 @@ $x$ & ::= & \emph{<A Valid JavaScript Identifier>} & Variables \\
 An expression $e$ is a valid Yocto-JavaScript program if and only if it is closed.
 
 \section{The Analyzer Language: TypeScript}
-\label{the-analyzer-language-typescript}
+\label{The Analyzer Language: TypeScript}
 
-After choosing Yocto-JavaScript as our analyzed language (see §~\ref{the-analyzed-language-yocto-javascript}), we must decide in which language to develop the analyzer itself. Despite our choice of analyzed language being based on JavaScript, we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. Still, from all these options, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes tools to manipulate JavaScript programs. But we want to be able to discuss the \emph{types} of data structures, functions, and so forth (see, for example, §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs}), and JavaScript does not have a way to express them, so instead we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, which is an extension of JavaScript with support for types.
+After choosing Yocto-JavaScript as our analyzed language (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our choice of analyzed language being based on JavaScript, we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. Still, from all these options, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes tools to manipulate JavaScript programs. But we want to be able to discuss the \emph{types} of data structures, functions, and so forth (see, for example, §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}), and JavaScript does not have a way to express them, so instead we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, which is an extension of JavaScript with support for types.
 
 \section{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
-\label{a-parser-and-data-structures-to-represent-yocto-javascript-programs}
+\label{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
 
-We write Yocto-JavaScript programs (see §~\ref{the-analyzed-language-yocto-javascript}) in TypeScript (see §~\ref{the-analyzer-language-typescript}) as strings (for example, \mintinline{ts}{"x => x"}), but manipulating these strings directly would be exceedingly complex, so we convert them into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
+We write Yocto-JavaScript programs (see §~\ref{The Analyzed Language: Yocto-JavaScript}) in TypeScript (see §~\ref{The Analyzer Language: TypeScript}) as strings (for example, \mintinline{ts}{"x => x"}), but manipulating these strings directly would be exceedingly complex, so we convert them into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
 
 The following are two examples of Yocto-JavaScript programs and their corresponding data structures:
 
@@ -209,7 +209,7 @@ x => x
 }
 \end{minted}
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}. ESTree is also used by other tools in the JavaScript ecosystem, and by following the specification we may reuse them. In particular, we may reuse a parser for JavaScript called Esprima~\cite{esprima}. To explore Esprima and ESTree, refer to the Esprima interactive online demonstration~\cite{esprima-demonstration}. The details of how the Yocto-JavaScript parser is implemented and how it uses Esprima are deferred to §~\ref{the-yocto-javascript-parser-in-detail}.
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}. ESTree is also used by other tools in the JavaScript ecosystem, and by following the specification we may reuse them. In particular, we may reuse a parser for JavaScript called Esprima~\cite{esprima}. To explore Esprima and ESTree, refer to the Esprima interactive online demonstration~\cite{esprima-demonstration}. The details of how the Yocto-JavaScript parser is implemented and how it uses Esprima are deferred to §~\ref{The Yocto-JavaScript Parser in Detail}.
 
 The following are the definitions of data structures produced by the Yocto-JavaScript parser:
 
@@ -234,7 +234,7 @@ interface Identifier {
 }
 \end{minted}
 
-These definitions are written as TypeScript types adapted from the ESTree specification to include only the features supported by Yocto-JavaScript. The definitions correspond to elements of the Yocto-JavaScript grammar (see §~\ref{a-formal-grammar-for-yocto-javascript}); for example, \mintinline{ts}{Expression} corresponds to $e$.
+These definitions are written as TypeScript types adapted from the ESTree specification to include only the features supported by Yocto-JavaScript. The definitions correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.
 
 This concludes the preliminary work necessary to start building the series of interpreters that lead to our analyzer.
 
@@ -246,7 +246,7 @@ There are several techniques to develop an interpreter, and in this step we use 
 
 This technique is similar to how we reason about function application in mathematics. For example, given the function definition $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$.
 
-Our interpreter is defined as a function called \mintinline{ts}{evaluate()}. The only parameter to the \mintinline{ts}{evaluate()} function is the \mintinline{ts}{Expression} to interpret, which typically is the result of calling the parser (see §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs}). The output of the \mintinline{ts}{evaluate()} function is a \mintinline{ts}{Value}, and the only kind of \mintinline{ts}{Value} in Yocto-JavaScript is a function (\mintinline{ts}{ArrowFunctionExpression}) (see §~\ref{Values in Yocto-JavaScript} and §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs}):
+Our interpreter is defined as a function called \mintinline{ts}{evaluate()}. The only parameter to the \mintinline{ts}{evaluate()} function is the \mintinline{ts}{Expression} to interpret, which typically is the result of calling the parser (see §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}). The output of the \mintinline{ts}{evaluate()} function is a \mintinline{ts}{Value}, and the only kind of \mintinline{ts}{Value} in Yocto-JavaScript is a function (\mintinline{ts}{ArrowFunctionExpression}) (see §~\ref{Values in Yocto-JavaScript} and §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}):
 
 \begin{minted}{ts}
 type Value = ArrowFunctionExpression;
@@ -256,20 +256,19 @@ export function evaluate(expression: Expression): Value {
 }
 \end{minted}
 
-% TODO: Change labels so it isn’t necessary to lowercase & remove punctuation.
 % TODO: Inference rules for interpreter.
 
 \appendix
 
 \chapter{Encoding JavaScript Features in Yocto-JavaScript}
-\label{encoding-javascript-features-in-yocto-javascript}
+\label{Encoding JavaScript Features in Yocto-JavaScript}
 
 % TODO: \cite[§~6]{understanding-computation}
 
 \chapter{The Yocto-JavaScript Parser in Detail}
-\label{the-yocto-javascript-parser-in-detail}
+\label{The Yocto-JavaScript Parser in Detail}
 
-See §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs} for an introduction on the Yocto-JavaScript parser. This section describes its implementation.
+See §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs} for an introduction on the Yocto-JavaScript parser. This section describes its implementation.
 
 Most of the parsing work is done by a library called Esprima~\cite{esprima}, which is a parser for JavaScript that produces data structures following the ESTree~\cite{estree} specification. Esprima is also responsible for detecting syntax errors; for example, it detects that the program \mintinline{js}{x =>} is missing the function body. The rest of the Yocto-JavaScript parser checks whether the parsed program uses only the JavaScript features that are supported by Yocto-JavaScript; for example, it disallows the function \mintinline{js}{(x, y) => x} because it has multiple parameters. The parser also checks that all variable references refer to variables that are defined; for example, it disallows the program \mintinline{js}{x => y} because \mintinline{js}{y} is undefined. Finally, the parser cleans the data structures generated by Esprima, removing information that the analyzer does not need, for example, the location information relating the data structures back to their corresponding segments in the original input string.
 
@@ -340,7 +339,7 @@ export function parse(input: string): Expression {
 \begin{description}
 \item [Line~1:]
 
-The parser is defined as a function called \mintinline{ts}{parse()}, which receives the program to be parsed as a \mintinline{ts}{string} called \mintinline{ts}{input}, and produces an \mintinline{ts}{Expression} (see §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs} for the definition of \mintinline{ts}{Expression} and the other data structures generated by the Yocto-JavaScript parser).
+The parser is defined as a function called \mintinline{ts}{parse()}, which receives the program to be parsed as a \mintinline{ts}{string} called \mintinline{ts}{input}, and produces an \mintinline{ts}{Expression} (see §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs} for the definition of \mintinline{ts}{Expression} and the other data structures generated by the Yocto-JavaScript parser).
 
 \item [Line~2:]
 
@@ -408,7 +407,7 @@ For an example of how \mintinline{ts}{checkAndClean()} detects a problem in a va
 
 \item [Lines~25–37, 43–47, 51–54:]
 
-To clean the data structures produced by Esprima and remove information that is not required by the analyzer, we explicitly reconstruct the data structures (see §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs} for the definition of the data structures).
+To clean the data structures produced by Esprima and remove information that is not required by the analyzer, we explicitly reconstruct the data structures (see §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures).
 \end{description}
 
 The following is an example of how to use the parser (the \mintinline{ts}{>} represents the console):
