@@ -89,7 +89,7 @@ describe("parse()", () => {
 describe("evaluate()", () => {
   test.each([
     ["an Expression that is already a Value", "x => x", "x => x"],
-    ["an immediate call", "(x => x)(y => y)", "y => y"],
+    ["a call involving immediate functions", "(x => x)(y => y)", "y => y"],
     [
       "a call in which substitution needs to happen within another function definition",
       "(x => z => x)(y => y)",
