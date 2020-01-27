@@ -246,7 +246,7 @@ There are several techniques to develop an interpreter, and in this step we use 
 
 This technique is similar to how we reason about function application in mathematics. For example, given the function definition $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$.
 
-Our interpreter is defined as a function called \mintinline{ts}{evaluate()} that receives the \mintinline{ts}{Expression} to interpret (typically, this \mintinline{ts}{Expression} is the result of calling the parser; see §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs}) and produces a \mintinline{ts}{Value}:
+Our interpreter is defined as a function called \mintinline{ts}{evaluate()}. The only parameter to the \mintinline{ts}{evaluate()} function is the \mintinline{ts}{Expression} to interpret, which typically is the result of calling the parser (see §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs}). The output of the \mintinline{ts}{evaluate()} function is a \mintinline{ts}{Value}, and the only kind of \mintinline{ts}{Value} in Yocto-JavaScript is a function (\mintinline{ts}{ArrowFunctionExpression}) (see §~\ref{Values in Yocto-JavaScript} and §~\ref{a-parser-and-data-structures-to-represent-yocto-javascript-programs}):
 
 \begin{minted}{ts}
 type Value = ArrowFunctionExpression;
@@ -256,9 +256,8 @@ export function evaluate(expression: Expression): Value {
 }
 \end{minted}
 
-As discussed in §~\ref{Values in Yocto-JavaScript}…
-
 % TODO: Change labels so it isn’t necessary to lowercase & remove punctuation.
+% TODO: Inference rules for interpreter.
 
 \appendix
 
