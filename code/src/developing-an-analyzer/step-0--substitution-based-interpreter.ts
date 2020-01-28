@@ -87,32 +87,49 @@ export function evaluate(expression: Expression): Value {
     case "ArrowFunctionExpression":
       return expression;
     case "CallExpression":
+      if (
+        expression.callee.type !== "ArrowFunctionExpression" ||
+        expression.arguments[0].type !== "ArrowFunctionExpression"
+      )
+        throw "TODO";
       const {
         params: [{ name }],
         body
-      } = evaluate(expression.callee);
-      const argument = evaluate(expression.arguments[0]);
-      return evaluate(substitute(body));
+      } = expression.callee;
+      //     const {
+      //       params: [{ name }],
+      //       body
+      //     } = evaluate(expression.callee);
+      const argument = expression.arguments[0];
+      const bodyAfterSubstitution = substitute(body);
+      if (bodyAfterSubstitution.type !== "ArrowFunctionExpression")
+        throw "TODO";
+      return bodyAfterSubstitution;
+      //     const argument = evaluate(expression.arguments[0]);
+      //     return evaluate(substitute(body));
       function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
-            if (expression.params[0].name === name) return expression;
+            //           if (expression.params[0].name === name) return expression;
             return {
               ...expression,
               body: substitute(expression.body)
             };
           case "CallExpression":
-            return {
-              ...expression,
-              callee: substitute(expression.callee),
-              arguments: [substitute(expression.arguments[0])]
-            };
+            throw "TODO";
+          //           return {
+          //             ...expression,
+          //             callee: substitute(expression.callee),
+          //             arguments: [substitute(expression.arguments[0])]
+          //           };
           case "Identifier":
-            if (expression.name === name) return argument;
-            return expression;
+            return argument;
+          //           if (expression.name === name) return argument;
+          //           return expression;
         }
       }
     case "Identifier":
-      throw new Error(`Undefined variable ‘${expression.name}’.`);
+      throw "TODO";
+    //     throw new Error(`Undefined variable ‘${expression.name}’.`);
   }
 }
