@@ -1,3 +1,5 @@
+import { parseScript } from "esprima";
+import { generate } from "escodegen";
 import { parse, evaluate } from "./step-0--substitution-based-interpreter";
 
 describe("parse()", () => {
@@ -126,7 +128,9 @@ describe("evaluate()", () => {
       "y => y"
     ]
   ])("%s", (description, input, expectedOutput) => {
-    expect(evaluate(input)).toEqual(parse(expectedOutput));
+    expect(generate(parseScript(evaluate(input)))).toEqual(
+      generate(parseScript(expectedOutput))
+    );
   });
 
   test("a program that doesn’t terminate", () => {

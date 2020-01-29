@@ -4,9 +4,11 @@
     "test": "prettier --check 'src/**/*.ts' && tsc && jest"
   },
   "dependencies": {
+    "escodegen": "^1.13.0",
     "esprima": "^4.0.1"
   },
   "devDependencies": {
+    "@types/escodegen": "0.0.6",
     "@types/esprima": "^4.0.2",
     "@types/jest": "^24.9.0",
     "jest": "^24.9.0",

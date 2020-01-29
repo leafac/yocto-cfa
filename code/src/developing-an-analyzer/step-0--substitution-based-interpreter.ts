@@ -1,5 +1,6 @@
-import { parseScript } from "esprima";
 import * as ESTree from "estree";
+import { parseScript } from "esprima";
+import { generate } from "escodegen";
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
 
@@ -80,10 +81,9 @@ export function parse(input: string): Expression {
   }
 }
 
-type Value = ArrowFunctionExpression;
-
-export function evaluate(input: string): Value {
-  return step(parse(input));
+export function evaluate(input: string): string {
+  return generate(step(parse(input)));
+  type Value = ArrowFunctionExpression;
   function step(expression: Expression): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
