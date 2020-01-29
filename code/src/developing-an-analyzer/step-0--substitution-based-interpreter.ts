@@ -80,9 +80,31 @@ export function parse(input: string): Expression {
     }
   }
 }
-
+// TODO: Custom exception: UnsupportedYoctoJavaScriptFeature
 export function evaluate(input: string): string {
-  return generate(step(parse(input)));
+  const program = parseScript(input, {}, node => {
+    switch (node.type) {
+      case "Program":
+        if (node.body.length !== 1) throw new Error("TODO");
+        if (node.body[0].type !== "ExpressionStatement") throw new Error("TODO");
+        break;
+      case "ExpressionStatement":
+        break;
+      case "ArrowFunctionExpression":
+        if (node.params.length !== 1) throw new Error("TODO");
+        if (node.params[0].type !== "Identifier") throw new Error("TODO");
+        break;
+      case "CallExpression":
+        if (node.arguments.length !== 1) throw new Error("TODO");
+        break;
+      case "Identifier":
+        break;
+      default:
+        throw new Error("TODO");
+    }
+  });
+  const expression = (program as any).body[0].expression as Expression;
+  return generate(step(expression));
   type Value = ArrowFunctionExpression;
   function step(expression: Expression): Value {
     switch (expression.type) {
