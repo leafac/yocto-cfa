@@ -231,16 +231,30 @@ This concludes the preliminary work necessary to start the series of steps that 
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
 
-Our first step toward an analyzer is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs as a regular JavaScript interpreter. This is a good starting point because in the end the outputs of this interpreter are the ground truth against which we will validate the outputs of our analyzer.
+Our first step toward an analyzer is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs as a regular JavaScript interpreter. This is a good starting point because the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer we end up developing.
 
 There are several techniques to develop an interpreter and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the called function body with the argument. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (In technical terms, we are developing something called a \emph{substitution-based interpreter}.)
 
 \subsection{The Skeleton}
 
-Our interpreter is defined as a function called \mintinline{ts}{evaluate()}. The only parameter to \mintinline{ts}{evaluate()} is an \mintinline{ts}{Expression}, which typically is the output of the parser (see §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}). The output of \mintinline{ts}{evaluate()} is a \mintinline{ts}{Value}, which in Yocto-JavaScript is a function (see §~\ref{Values in Yocto-JavaScript}). The following is an example of how to use \mintinline{ts}{evaluate()}:
+Our interpreter is defined as a function called \mintinline{ts}{evaluate()}. The only parameter to \mintinline{ts}{evaluate()} is a \mintinline{ts}{string} representing a Yocto-JavaScript program. The output of \mintinline{ts}{evaluate()} is a \mintinline{ts}{Value} (recall from §~\ref{Values in Yocto-JavaScript} that functions are the only kind of value in Yocto-JavaScript). The following are two examples of how to use \mintinline{ts}{evaluate()}:
 
 \begin{minted}{ts}
-> evaluate(parse("(x => x)(y => y)"))
+> evaluate("x => x")
+{
+  "type": "ArrowFunctionExpression",
+  "params": [
+    {
+      "type": "Identifier",
+      "name": "x"
+    }
+  ],
+  "body": {
+    "type": "Identifier",
+    "name": "x"
+  }
+}
+> evaluate("(x => x)(y => y)")
 {
   "type": "ArrowFunctionExpression",
   "params": [
