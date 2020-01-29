@@ -95,26 +95,42 @@ Unfortunately, JavaScript is a big language with many features besides higher-or
 \subsection{Values in Yocto-JavaScript}
 \label{Values in Yocto-JavaScript}
 
-JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript only supports one: functions. Yocto-JavaScript functions are written as something called \emph{arrow function expressions}~\cite{arrow-function-expressions}; for example, \mintinline{js}{x => x} is a function of one parameter (before the \mintinline{js}{=>}) called \mintinline{js}{x}, and a body (after the \mintinline{js}{=>}) which consists of just a reference to the variable \mintinline{js}{x}. Yocto-JavaScript functions return the result of computing their body, so our example function simply returns whatever argument it is passed. (This example function is called the \emph{identity} function.)
+JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript only supports one: functions.
 
-Yocto-JavaScript functions are limited to one parameter.
+A Yocto-JavaScript function is written as \verb!<parameter> => <body>!, for example, \mintinline{js}{x => x}, in which the \verb!<parameter>! is called \mintinline{js}{x} and the \verb!<body>! is simply a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). (This way of writing functions is something called \emph{arrow function expressions}~\cite{arrow-function-expressions}, and the example function that was given is called the \emph{identity} function.)
 
-Because an Yocto-JavaScript function is a value, it may be returned by another function, or it may be the argument of a call. For example, in \mintinline{js}{x => (y => y)} the function \mintinline{js}{y => y} is the return value, and in \mintinline{js}{f(y => y)} it is the argument of the call to a hypothetical function \mintinline{js}{f}. (This ability that functions have of behaving as values is what characterizes them as \emph{higher-order}.)
+An Yocto-JavaScript function must have exactly one parameter.
 
 \subsection{Operations in Yocto-JavaScript}
 \label{Operations in Yocto-JavaScript}
 
-JavaScript has many operations: numbers may be added together (for example, \mintinline{js}{29 + 1}), objects may have their properties accessed (for example, \mintinline{js}!{ name: "Leandro", age: 29 }.name!), and so forth. From all these operations, Yocto-JavaScript only supports two: functions may be called and variables may be referenced. Function calls are written as \mintinline{js}{f(a)}, where \mintinline{js}{f} is the function being called and \mintinline{js}{a} is the argument being passed to it.
+JavaScript has many operations: strings may have its characters accessed (for example, \mintinline{js}{"Leandro"[2]}), numbers may be added together (for example, \mintinline{js}{29 + 1}), and so forth. From all these operations, Yocto-JavaScript only supports two: functions may be called and variables may be referenced.
 
-The following is an example of the two operations supported by Yocto-JavaScript: \mintinline{js}{(x => x)(y => y)}.
+A function call is written as \verb!<function>(<argument>)!, for example, \mintinline{js}{f(a)}, in which the \verb!<function>! is a hypothetical function \mintinline{js}{f} and the \verb!<argument>! is a hypothetical argument \mintinline{js}{a}.
 
-In this program there is a function being called, \mintinline{js}{x => x}, and an argument being passed to it, \mintinline{js}{y => y} (functions are the only kind of value in Yocto-JavaScript, so the argument must be a function itself). As discussed in §~\ref{Values in Yocto-JavaScript}, the \mintinline{js}{x => x} function simply returns whatever argument it is passed, so the result of our example program is \mintinline{js}{y => y}. In general, a call (for example, \mintinline{js}{f(a)}) may appear in the body of a function (for example, \mintinline{js}{f => f(a)}) or as part of another call, either in the position of the function being called (for example, \mintinline{js}{(f(a))(b)}) or in the position of the argument (for example, \mintinline{js}{g(f(a))}).
+An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see §~\ref{Values in Yocto-JavaScript}).
 
-The example program above also includes variable references: the \mintinline{js}{x} and \mintinline{js}{y} to the right of their respective \mintinline{js}{=>}. The only rule of variable references is that they must refer to variables that are defined; for example, in \mintinline{js}{x => x} the variable reference to \mintinline{js}{x} on the right of the \mintinline{js}{=>} is valid because \mintinline{js}{x} is defined on the left of the \mintinline{js}{=>}, but in \mintinline{js}{x => y} the variable reference to \mintinline{js}{y} on the right of the \mintinline{js}{=>} is invalid because \mintinline{js}{y} is undefined. A variable is only defined within the body of the function that defines it; for example, in \mintinline{js}{(x => y)(y => y)} the second reference to \mintinline{js}{y} on the right of the second \mintinline{js}{=>} is valid, because it is within the function that defines \mintinline{js}{y}, but the first reference to \mintinline{js}{y} on the right of the first \mintinline{js}{=>} is invalid. A variable is defined deep within the body of the function that defines it; for example, in \mintinline{js}{y => (x => y)} the reference to \mintinline{js}{y} is valid because it occurs deep within the body of the function that defines \mintinline{js}{y}.
+A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
 
-(There are many technical terms related to this idea of where variables are defined. We say that a variable is \emph{in scope} in the body of the function that defines it. Similarly, the region of the program in which the variable is defined is called \emph{the scope} of the variable. Variable references that are in scope are said to be \emph{closed}, and we say that the whole program is \emph{closed} if all the variable references in it are closed. Conversely, variable references that are not in scope are said to be \emph{open}, and a program with at least one open variable reference is \emph{open}.)
+The following is a complete Yocto-JavaScript program that exemplifies these two operations:
+
+\begin{minted}{js}
+(x => x)(y => y)
+\end{minted}
+
+At the top level, this program is a call in which the \mintinline{js}{<function>} is \mintinline{js}{x => x} and the \mintinline{js}{<argument>} is \mintinline{js}{y => y}.
+
+Yocto-JavaScript functions return the result of computing their \mintinline{js}{<body>}, so when called our example function simply returns whatever argument it is passed (see §~\ref{Operations in Yocto-JavaScript} for more on function calls). 
+
+In this program there is a function being called, \mintinline{js}{x => x}, and an argument being passed to it, \mintinline{js}{y => y} (functions are the only kind of value in Yocto-JavaScript (see §~\ref{Values in Yocto-JavaScript}), so the argument must be a function itself). As discussed in §~\ref{Values in Yocto-JavaScript}, the \mintinline{js}{x => x} function simply returns whatever argument it is passed, so the result of our example program is \mintinline{js}{y => y}. In general, a call (for example, \mintinline{js}{f(a)}) may appear in the body of a function (for example, \mintinline{js}{f => f(a)}) or as part of another call, either in the position of the function being called (for example, \mintinline{js}{(f(a))(b)}) or in the position of the argument (for example, \mintinline{js}{g(f(a))}).
+
+SINGLE ARGUMENT
+
+The example program above also includes variable references: the \mintinline{js}{x} and \mintinline{js}{y} to the right of their respective \mintinline{js}{=>}.
 
 We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed (the \emph{precedence} of the operations). For example, there are at least two ways in which hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h} may call one another: \mintinline{js}{(f(g))(h)}, in which case \mintinline{js}{f(g)} happens first, and the result is a function that is called with \mintinline{js}{h}; and \mintinline{js}{f(g(h))}, in which case \mintinline{js}{g(h)} happens first, and the result is passed as argument to \mintinline{js}{f}.
+
+Because an Yocto-JavaScript function is a value, it may be returned by another function, or it may be the argument of a call. For example, in \mintinline{js}{x => (y => y)} the function \mintinline{js}{y => y} is the return value, and in \mintinline{js}{f(y => y)} it is the argument of the call to a hypothetical function \mintinline{js}{f}. (This ability that functions have of behaving as values is what characterizes them as \emph{higher-order}.)
 
 \subsection{The Computational Power of Yocto-JavaScript}
 
