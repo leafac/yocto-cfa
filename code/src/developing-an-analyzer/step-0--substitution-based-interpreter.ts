@@ -89,50 +89,35 @@ export function evaluate(input: string): Value {
       case "ArrowFunctionExpression":
         return expression;
       case "CallExpression":
-        if (
-          expression.callee.type !== "ArrowFunctionExpression" ||
-          expression.arguments[0].type !== "ArrowFunctionExpression"
-        )
-          throw "TODO";
         const {
           params: [{ name }],
           body
-        } = expression.callee;
-        //     const {
-        //       params: [{ name }],
-        //       body
-        //     } = step(expression.callee);
-        const argument = expression.arguments[0];
-        const bodyAfterSubstitution = substitute(body);
-        if (bodyAfterSubstitution.type !== "ArrowFunctionExpression")
-          throw "TODO";
-        return bodyAfterSubstitution;
-        //     const argument = step(expression.arguments[0]);
-        //     return step(substitute(body));
+        } = step(expression.callee);
+        const argument = step(expression.arguments[0]);
+        return step(substitute(body));
         function substitute(expression: Expression): Expression {
           switch (expression.type) {
             case "ArrowFunctionExpression":
-              //           if (expression.params[0].name === name) return expression;
+              if (expression.params[0].name === name) return expression;
               return {
                 ...expression,
                 body: substitute(expression.body)
               };
             case "CallExpression":
-              throw "TODO";
-            //           return {
-            //             ...expression,
-            //             callee: substitute(expression.callee),
-            //             arguments: [substitute(expression.arguments[0])]
-            //           };
+              return {
+                ...expression,
+                callee: substitute(expression.callee),
+                arguments: [substitute(expression.arguments[0])]
+              };
             case "Identifier":
-              return argument;
-            //           if (expression.name === name) return argument;
-            //           return expression;
+              if (expression.name === name) return argument;
+              return expression;
           }
         }
       case "Identifier":
-        throw "TODO";
-      //     throw new Error(`The parser already checks for references to undefined variables.`);
+        throw new Error(
+          `The parser already checks for references to undefined variables.`
+        );
     }
   }
 }
