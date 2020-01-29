@@ -1,141 +1,109 @@
 import { parseScript } from "esprima";
 import { generate } from "escodegen";
-import { parse, evaluate } from "./step-0--substitution-based-interpreter";
+import { evaluate } from "./step-0--substitution-based-interpreter";
 
-describe("parse()", () => {
-  test("the simplest program", () => {
-    expect(parse("x => x")).toMatchInlineSnapshot(`
-      Object {
-        "body": Object {
-          "name": "x",
-          "type": "Identifier",
-        },
-        "params": Array [
-          Object {
-            "name": "x",
-            "type": "Identifier",
-          },
-        ],
-        "type": "ArrowFunctionExpression",
-      }
-    `);
-  });
+describe("A Parser and Data Structures to Represent Yocto-JavaScript Programs", () => {
+  testEvaluateError("Line 1: Unexpected end of input", "x =>");
 
-  test("a program illustrating all Yocto-JavaScript features", () => {
-    expect(parse("(x => x)(y => y)")).toMatchInlineSnapshot(`
-      Object {
-        "arguments": Array [
-          Object {
-            "body": Object {
-              "name": "y",
-              "type": "Identifier",
-            },
-            "params": Array [
-              Object {
-                "name": "y",
-                "type": "Identifier",
-              },
-            ],
-            "type": "ArrowFunctionExpression",
-          },
-        ],
-        "callee": Object {
-          "body": Object {
-            "name": "x",
-            "type": "Identifier",
-          },
-          "params": Array [
-            Object {
-              "name": "x",
-              "type": "Identifier",
-            },
-          ],
-          "type": "ArrowFunctionExpression",
-        },
-        "type": "CallExpression",
-      }
-    `);
-  });
+  testEvaluateError(
+    "Unsupported Yocto-JavaScript feature: Program with multiple statements",
+    "x => x; y => y"
+  );
 
-  test.each([
-    ["Line 1: Unexpected end of input", "x =>"],
-    [
-      "‘Program’ has a ‘body’ whose length isn’t exactly one.",
-      "x => x; y => y"
-    ],
-    [
-      "‘Program’ has a ‘body’ that isn’t an ‘ExpressionStatement’.",
-      "const f = x => x;"
-    ],
-    [
-      "‘ArrowFunctionExpression’ doesn’t have exactly one ‘param’.",
-      "(x, y) => x"
-    ],
-    [
-      "‘ArrowFunctionExpression’ has a ‘param’ that isn’t an ‘Identifier’.",
-      "([x, y]) => x"
-    ],
-    [
-      "‘CallExpression’ doesn’t have exactly one ‘argument’.",
-      "f => a => b => f(a, b)"
-    ],
-    ["Variable reference to ‘y’ not in scope.", "x => y"],
-    [`Invalid node type: ‘Literal’.`, "29"]
-  ])("error case: %s", (error, input) => {
-    expect(() => {
-      parse(input);
-    }).toThrow(error);
-  });
+  testEvaluateError(
+    "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments",
+    "f => a => b => f(a, b)"
+  );
+
+  testEvaluateError(`Unsupported Yocto-JavaScript feature: Literal`, "29");
+
+  testEvaluateError(
+    `Unsupported Yocto-JavaScript feature: VariableDeclarator`,
+    "const f = x => x"
+  );
+
+  testEvaluateError(
+    "Unsupported Yocto-JavaScript feature: SequenceExpression",
+    "(x, y) => x"
+  );
+
+  testEvaluateError(
+    "Unsupported Yocto-JavaScript feature: ArrayExpression",
+    "([x, y]) => x"
+  );
 });
 
-describe("evaluate()", () => {
-  test.each([
-    ["an Expression that is already a Value", "x => x", "x => x"],
-    ["a call involving immediate functions", "(x => x)(y => y)", "y => y"],
-    [
-      "a call in which substitution must occur within another function",
-      "(x => z => x)(y => y)",
-      "z => y => y"
-    ],
-    [
-      "a call in which substitution must stop because of shadowing",
-      "(x => x => x)(y => y)",
-      "x => x"
-    ],
-    [
-      "a call in which substitution must occur within another call",
-      "(x => z => x(x))(y => y)",
-      "z => (y => y)(y => y)"
-    ],
-    [
-      "a call in which substitution must stop because the variable doesn’t match",
-      "(x => z => z(z))(y => y)",
-      "z => z(z)"
-    ],
-    [
-      "a call in which the argument isn’t immediate",
-      "(x => x)((z => z)(y => y))",
-      "y => y"
-    ],
-    [
-      "a call in which the function isn’t immediate",
-      "((z => z)(x => x))(y => y)",
-      "y => y"
-    ],
-    [
-      "a call after which more work is necessary",
-      "(x => (z => z)(x))(y => y)",
-      "y => y"
-    ]
-  ])("%s", (description, input, expectedOutput) => {
+describe("Interpreter", () => {
+  testEvaluate("an Expression that is already a Value", "x => x", "x => x");
+
+  testEvaluate(
+    "a call involving immediate functions",
+    "(x => x)(y => y)",
+    "y => y"
+  );
+
+  testEvaluate(
+    "a call in which substitution must occur within another function",
+    "(x => z => x)(y => y)",
+    "z => y => y"
+  );
+
+  testEvaluate(
+    "a call in which substitution must stop because of shadowing",
+    "(x => x => x)(y => y)",
+    "x => x"
+  );
+
+  testEvaluate(
+    "a call in which substitution must occur within another call",
+    "(x => z => x(x))(y => y)",
+    "z => (y => y)(y => y)"
+  );
+
+  testEvaluate(
+    "a call in which substitution must stop because the variable doesn’t match",
+    "(x => z => z(z))(y => y)",
+    "z => z(z)"
+  );
+
+  testEvaluate(
+    "a call in which the argument isn’t immediate",
+    "(x => x)((z => z)(y => y))",
+    "y => y"
+  );
+
+  testEvaluate(
+    "a call in which the function isn’t immediate",
+    "((z => z)(x => x))(y => y)",
+    "y => y"
+  );
+
+  testEvaluate(
+    "a call after which more work is necessary",
+    "(x => (z => z)(x))(y => y)",
+    "y => y"
+  );
+
+  testEvaluateError("Reference to undefined variable: y", "(x => y)(y => y)");
+
+  testEvaluateError(
+    "Maximum call stack size exceeded",
+    "(f => f(f))(f => f(f))"
+  );
+});
+
+function testEvaluate(name: string, input: string, expectedOutput: string) {
+  test(name, () => {
     expect(generate(parseScript(evaluate(input)))).toEqual(
       generate(parseScript(expectedOutput))
     );
   });
+}
 
-  test("a program that doesn’t terminate", () => {
+function testEvaluateError(name: string, input: string) {
+  test(name, () => {
     expect(() => {
-      evaluate("(f => f(f))(f => f(f))");
-    }).toThrow("Maximum call stack size exceeded");
+      evaluate(input);
+    }).toThrow(name);
   });
-});
+}

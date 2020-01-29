@@ -1,4 +1,3 @@
-import * as ESTree from "estree";
 import { parseScript } from "esprima";
 import { generate } from "escodegen";
 
@@ -21,93 +20,36 @@ interface Identifier {
   name: string;
 }
 
-export function parse(input: string): Expression {
-  const program = parseScript(input);
-  if (program.body.length !== 1)
-    throw new Error("‘Program’ has a ‘body’ whose length isn’t exactly one.");
-  if (program.body[0].type !== "ExpressionStatement")
-    throw new Error(
-      "‘Program’ has a ‘body’ that isn’t an ‘ExpressionStatement’."
-    );
-  return checkAndClean(program.body[0].expression, new Set<string>());
+type Value = ArrowFunctionExpression;
 
-  function checkAndClean(
-    node: ESTree.Node,
-    definedVariables: Set<string>
-  ): Expression {
-    switch (node.type) {
-      case "ArrowFunctionExpression":
-        if (node.params.length !== 1)
-          throw new Error(
-            "‘ArrowFunctionExpression’ doesn’t have exactly one ‘param’."
-          );
-        if (node.params[0].type !== "Identifier")
-          throw new Error(
-            "‘ArrowFunctionExpression’ has a ‘param’ that isn’t an ‘Identifier’."
-          );
-        return {
-          type: node.type,
-          params: [
-            {
-              type: node.params[0].type,
-              name: node.params[0].name
-            }
-          ],
-          body: checkAndClean(
-            node.body,
-            new Set([...definedVariables, node.params[0].name])
-          )
-        };
-      case "CallExpression":
-        if (node.arguments.length !== 1)
-          throw new Error(
-            "‘CallExpression’ doesn’t have exactly one ‘argument’."
-          );
-        return {
-          type: node.type,
-          callee: checkAndClean(node.callee, definedVariables),
-          arguments: [checkAndClean(node.arguments[0], definedVariables)]
-        };
-      case "Identifier":
-        if (!definedVariables.has(node.name))
-          throw new Error(`Variable reference to ‘${node.name}’ not in scope.`);
-        return {
-          type: node.type,
-          name: node.name
-        };
-      default:
-        throw new Error(`Invalid node type: ‘${node.type}’.`);
-    }
-  }
-}
-// TODO: Custom exception: UnsupportedYoctoJavaScriptFeature
 export function evaluate(input: string): string {
   const program = parseScript(input, {}, node => {
     switch (node.type) {
       case "Program":
-        if (node.body.length !== 1) throw new Error("TODO");
-        if (node.body[0].type !== "ExpressionStatement")
-          throw new Error("TODO");
+        if (node.body.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
+          );
         break;
       case "ExpressionStatement":
         break;
       case "ArrowFunctionExpression":
-        if (node.params.length !== 1) throw new Error("TODO");
-        if (node.params[0].type !== "Identifier") throw new Error("TODO");
         break;
       case "CallExpression":
-        if (node.arguments.length !== 1) throw new Error("TODO");
+        if (node.arguments.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+          );
         break;
       case "Identifier":
         break;
       default:
-        throw new Error("TODO");
+        throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
     }
   });
   const expression = (program as any).body[0].expression as Expression;
   const value = step(expression);
   return generate(value);
-  type Value = ArrowFunctionExpression;
   function step(expression: Expression): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
@@ -139,9 +81,7 @@ export function evaluate(input: string): string {
           }
         }
       case "Identifier":
-        throw new Error(
-          `The parser already checks for references to undefined variables.`
-        );
+        throw new Error(`Reference to undefined variable: ${expression.name}`);
     }
   }
 }
