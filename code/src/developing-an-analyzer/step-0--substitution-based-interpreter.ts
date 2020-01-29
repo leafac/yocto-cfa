@@ -2,6 +2,10 @@ import { parseScript } from "esprima";
 import { generate } from "escodegen";
 import { format } from "prettier";
 
+export function evaluate(input: string): string {
+  return prettyPrint(step(parse(input)));
+}
+
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
 
 interface ArrowFunctionExpression {
@@ -50,10 +54,6 @@ function parse(input: string): Expression {
 }
 
 type Value = ArrowFunctionExpression;
-
-export function evaluate(input: string): string {
-  return prettyPrint(step(parse(input)));
-}
 
 function step(expression: Expression): Value {
   switch (expression.type) {
