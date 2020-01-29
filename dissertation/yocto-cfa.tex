@@ -149,12 +149,14 @@ $x$ & ::= & \emph{<A Valid JavaScript Identifier>} & Variables \\
 \section{The Analyzer Language: TypeScript}
 \label{The Analyzer Language: TypeScript}
 
-After choosing Yocto-JavaScript as our analyzed language (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite choosing an analyzed language based on JavaScript (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. From all these languages, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript (and therefore Yocto-JavaScript) programs. But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we need to do (see, for example, §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}), so instead of JavaScript we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, an extension of JavaScript with support for types.
+After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite choosing an analyzed language based on JavaScript (see §~\ref{The Analyzed Language: Yocto-JavaScript}), we could develop the analyzer in another language (Java, Python, Ruby, and so forth), because the analyzer simply treats Yocto-JavaScript programs as data. From all these languages, JavaScript offers some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript (and therefore Yocto-JavaScript) programs. But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we need to do (see, for example, §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}), so instead of JavaScript we choose to implement our analyzer in \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}, an extension of JavaScript with support for types.
 
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
 
-Having chosen Yocto-JavaScript as the analyzed language (see §~\ref{The Analyzed Language: Yocto-JavaScript}) and TypeScript as the language in which to develop the analyzer itself (see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of steps in its development.
+Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of steps in its development.
+
+% TODO: Say that we’re starting with an interpreter.
 
 \subsection{Architecture}
 
