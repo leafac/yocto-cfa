@@ -20,9 +20,7 @@ interface Identifier {
   name: string;
 }
 
-type Value = ArrowFunctionExpression;
-
-export function evaluate(input: string): string {
+function parse(input: string): Expression {
   const program = parseScript(input, {}, node => {
     switch (node.type) {
       case "Program":
@@ -47,9 +45,17 @@ export function evaluate(input: string): string {
         throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
     }
   });
-  const expression = (program as any).body[0].expression as Expression;
-  const value = step(expression);
-  return generate(value);
+  return (program as any).body[0].expression as Expression;
+}
+
+function prettyPrint(expression: Expression): string {
+  return generate(expression);
+}
+
+type Value = ArrowFunctionExpression;
+
+export function evaluate(input: string): string {
+  return prettyPrint(step(parse(input)));
   function step(expression: Expression): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
