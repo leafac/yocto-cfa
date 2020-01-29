@@ -90,6 +90,6 @@ function step(expression: Expression): Value {
   }
 }
 
-function prettyPrint(expression: Expression): string {
-  return format(generate(expression), { parser: "babel", semi: false }).trim();
+function prettyPrint(value: Value): string {
+  return format(generate(value), { parser: "babel", semi: false }).trim();
 }
