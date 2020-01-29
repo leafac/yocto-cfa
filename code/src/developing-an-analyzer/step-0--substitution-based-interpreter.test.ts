@@ -126,18 +126,12 @@ describe("evaluate()", () => {
       "y => y"
     ]
   ])("%s", (description, input, expectedOutput) => {
-    expect(evaluate(parse(input))).toEqual(parse(expectedOutput));
-  });
-
-  test("a variable reference to an undefined variable", () => {
-    expect(() => {
-      evaluate({ type: "Identifier", name: "x" });
-    }).toThrow("Undefined variable ‘x’.");
+    expect(evaluate(input)).toEqual(parse(expectedOutput));
   });
 
   test("a program that doesn’t terminate", () => {
     expect(() => {
-      evaluate(parse("(f => f(f))(f => f(f))"));
+      evaluate("(f => f(f))(f => f(f))");
     }).toThrow("Maximum call stack size exceeded");
   });
 });
