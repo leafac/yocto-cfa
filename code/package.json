@@ -5,14 +5,15 @@
   },
   "dependencies": {
     "escodegen": "^1.13.0",
-    "esprima": "^4.0.1"
+    "esprima": "^4.0.1",
+    "prettier": "^1.19.1"
   },
   "devDependencies": {
     "@types/escodegen": "0.0.6",
     "@types/esprima": "^4.0.2",
     "@types/jest": "^24.9.0",
+    "@types/prettier": "^1.19.0",
     "jest": "^24.9.0",
-    "prettier": "^1.19.1",
     "typescript": "^3.7.5"
   },
   "jest": {

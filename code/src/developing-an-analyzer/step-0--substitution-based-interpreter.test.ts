@@ -1,8 +1,6 @@
-import { parseScript } from "esprima";
-import { generate } from "escodegen";
 import { evaluate } from "./step-0--substitution-based-interpreter";
 
-describe("A Parser and Data Structures to Represent Yocto-JavaScript Programs", () => {
+describe("parse()", () => {
   testEvaluateError("Line 1: Unexpected end of input", "x =>");
 
   testEvaluateError(
@@ -33,7 +31,7 @@ describe("A Parser and Data Structures to Represent Yocto-JavaScript Programs", 
   );
 });
 
-describe("Interpreter", () => {
+describe("evaluate()", () => {
   testEvaluate("an Expression that is already a Value", "x => x", "x => x");
 
   testEvaluate(
@@ -94,9 +92,7 @@ describe("Interpreter", () => {
 
 function testEvaluate(name: string, input: string, expectedOutput: string) {
   test(name, () => {
-    expect(generate(parseScript(evaluate(input)))).toEqual(
-      generate(parseScript(expectedOutput))
-    );
+    expect(evaluate(input)).toEqual(expectedOutput);
   });
 }
 
