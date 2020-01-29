@@ -86,7 +86,8 @@ export function evaluate(input: string): string {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1) throw new Error("TODO");
-        if (node.body[0].type !== "ExpressionStatement") throw new Error("TODO");
+        if (node.body[0].type !== "ExpressionStatement")
+          throw new Error("TODO");
         break;
       case "ExpressionStatement":
         break;
@@ -104,7 +105,8 @@ export function evaluate(input: string): string {
     }
   });
   const expression = (program as any).body[0].expression as Expression;
-  return generate(step(expression));
+  const value = step(expression);
+  return generate(value);
   type Value = ArrowFunctionExpression;
   function step(expression: Expression): Value {
     switch (expression.type) {
