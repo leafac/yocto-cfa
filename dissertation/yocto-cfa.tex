@@ -86,9 +86,9 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 \section{The Analyzed Language: Yocto-JavaScript}
 \label{The Analyzed Language: Yocto-JavaScript}
 
-Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language may affect the precision and the running time of the analyzer. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
+Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language influences how difficult it is to build the analyzer, and it may also affect the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
 
-In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, most languages support higher-order functions, so we have plenty of options from which to choose: JavaScript, Java, Python, Ruby, and so forth. From all these languages, we choose JavaScript because it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}.
+In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, most languages support higher-order functions, so we have plenty of options: JavaScript, Java, Python, Ruby, and so forth. From all these languages, we choose JavaScript because it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}.
 
 Unfortunately, JavaScript is a big language with many features besides higher-order functions, and an analyzer that tried to support all of them would be too complex. We address this issue by defining our own artificial little language based on a subset of JavaScript features that are related to higher-order functions. We call the resulting language \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
@@ -99,7 +99,7 @@ Unfortunately, JavaScript is a big language with many features besides higher-or
 
 JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript only supports one: functions.
 
-An Yocto-JavaScript function is written as \verb!<parameter> => <body>!, for example, \mintinline{js}{x => x}, in which the \verb!<parameter>! is called \mintinline{js}{x} and the \verb!<body>! is simply a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). (This notation for writing functions is something called \emph{arrow function expressions}~\cite{arrow-function-expressions}. The function given as example is called the \emph{identity} function. Being treated as values is what characterizes functions as \emph{higher-order}.)
+An Yocto-JavaScript function is written as \verb!<parameter> => <body>!, for example, \mintinline{js}{x => x}, in which the \verb!<parameter>! is called \mintinline{js}{x} and the \verb!<body>! is simply a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). Because an Yocto-JavaScript function is a value, it may be passed as an argument in a function call, or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript} for more on function calls). (This notation for writing functions is something called \emph{arrow function expressions}~\cite{arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of being treated as values is what characterizes these functions as \emph{higher-order}.)
 
 An Yocto-JavaScript function must have exactly one parameter.
 
@@ -114,13 +114,13 @@ An Yocto-JavaScript function call must have exactly one argument (because an Yoc
 
 A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
 
-The following is a complete Yocto-JavaScript program that exemplifies all the operations that are supported:
+The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
 \begin{minted}{js}
 (x => x)(y => y)
 \end{minted}
 
-At the top level, this program is a call in which the \verb!<function>! is \mintinline{js}{x => x} and the \verb!<argument>! is \mintinline{js}{y => y}. When called, an Yocto-JavaScript function returns the result of computing its \verb!<body>!, and the \verb!<body>! of \mintinline{js}{x => x} is simply a reference to the variable \mintinline{js}{x}, so \mintinline{js}{x => x} is a function that returns its argument unchanged, and the final result of the example program above is \mintinline{js}{y => y}.
+At the top level, this program is a call in which the \verb!<function>! is \mintinline{js}{x => x} and the \verb!<argument>! is \mintinline{js}{y => y}. When called, an Yocto-JavaScript function returns the result of computing its \verb!<body>!, and the \verb!<body>! of \mintinline{js}{x => x} is simply a reference to the variable \mintinline{js}{x}, so \mintinline{js}{x => x} is a function that returns its argument unchanged, and the final result of the example above is \mintinline{js}{y => y}.
 
 In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the \verb!<body>! of a function definition, or as the \verb!<function>! or \verb!<argument>! of a call.
 
@@ -128,9 +128,9 @@ We use parentheses to resolve ambiguities on where function definitions start an
 
 \subsection{The Computational Power of Yocto-JavaScript}
 
-Yocto-JavaScript has very few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? Is there something that we may compute in JavaScript (or Java, Python, Ruby, and so forth) that is impossible to compute in Yocto-JavaScript? Perhaps surprisingly, the answer is negative: all these languages are equivalent in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}. (We say that these languages are equivalent in \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective the \emph{expressive power}~\cite{expressive-power} of a language is more important, because it indicates how convenient the language is to use. Yocto-JavaScript is remarkably inexpressive, and therefore inconvenient for programming.)
+Yocto-JavaScript has very few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? Is there something that we may compute in JavaScript (or Java, Python, Ruby, and so forth) that is impossible to compute in Yocto-JavaScript? Perhaps surprisingly, the answer is negative: all these languages are equivalent in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}. (We say that these languages are equivalent in \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective the features that a language supports (its \emph{expressive power}~\cite{expressive-power}) is more important, because it indicates how convenient the language is to use. Yocto-JavaScript is remarkably inexpressive, and therefore inconvenient for programming.)
 
-As an example of how to carry out the translation from a real-world language into Yocto-JavaScript, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, we may encode \mintinline{js}{f(a, b)} as \mintinline{js}{(f(a))(b)}. (This technique is called \emph{currying}.)
+As an example of how to carry out the translation from a real-world language into Yocto-JavaScript, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript, which only supports functions of one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, we may encode \mintinline{js}{f(a, b)} as \mintinline{js}{(f(a))(b)}. (This technique is called \emph{currying}.)
 
 \subsection{A Formal Grammar for Yocto-JavaScript}
 \label{A Formal Grammar for Yocto-JavaScript}
@@ -168,7 +168,7 @@ The following are two examples of how to use \mintinline{ts}{evaluate()} (the \m
 "y => y"
 \end{minted}
 
-The implementation of \mintinline{ts}{evaluate()} is broken into three parts called \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()}:
+The implementation of \mintinline{ts}{evaluate()} is separated in three parts called \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()}:
 
 \begin{minted}{ts}
 export function evaluate(input: string): string {
@@ -176,43 +176,127 @@ export function evaluate(input: string): string {
 }
 \end{minted}
 
-The \mintinline{ts}{load()} function prepares the \mintinline{ts}{input} for interpretation, for example, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{unload()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In later steps the implementations of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()} will change, but the architecture and the implementation of \mintinline{ts}{evaluate()} will remain the same. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{load()} to §~\ref{TODO} and \mintinline{ts}{unload()} to §~\ref{TODO}.
+The \mintinline{ts}{load()} function prepares the \mintinline{ts}{input} for interpretation, for example, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{unload()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In later steps the implementation of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()} will change, but the architecture and the implementation of \mintinline{ts}{evaluate()} will remain the same. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{load()} to §~\ref{Step 0: Loader} and \mintinline{ts}{unload()} to §~\ref{Step 0: Unloader}.
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 
-The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string. While this representation is convenient for humans to write and read, it would be inconvenient for \mintinline{ts}{run()} to manipulate directly, because it is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective, it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing).
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}). While these strings are convenient for humans to write and read, they would be inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of its \emph{text}: from \mintinline{ts}{run()}’s perspective, it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{load()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Loader}).
 
-* * *
+The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them:
 
-We begin to implement \mintinline{ts}{evaluate()} by declaring the input and output types (we use \mintinline{ts}{throw} as a placeholder for code that has not been written yet to prevent the TypeScript compiler from signaling errors):
+\begin{minted}{ts}
+x => x
+
+{
+  "type": "ArrowFunctionExpression",
+  "params": [
+    {
+      "type": "Identifier",
+      "name": "x"
+    }
+  ],
+  "body": {
+    "type": "Identifier",
+    "name": "x"
+  }
+}
+
+(x => x)(y => y)
+
+{
+  "type": "CallExpression",
+  "callee": {
+    "type": "ArrowFunctionExpression",
+    "params": [
+      {
+        "type": "Identifier",
+        "name": "x"
+      }
+    ],
+    "body": {
+      "type": "Identifier",
+      "name": "x"
+    }
+  },
+  "arguments": [
+    {
+      "type": "ArrowFunctionExpression",
+      "params": [
+        {
+          "type": "Identifier",
+          "name": "y"
+        }
+      ],
+      "body": {
+        "type": "Identifier",
+        "name": "y"
+      }
+    }
+  ]
+}
+\end{minted}
+
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse existing tools from the JavaScript ecosystem (see §~\ref{Step 0: Loader} and §~\ref{Step 0: Unloader}).
+
+In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
+
+\begin{minted}{ts}
+type Expression = ArrowFunctionExpression | CallExpression | Identifier;
+
+interface ArrowFunctionExpression {
+  type: "ArrowFunctionExpression";
+  params: [Identifier];
+  body: Expression;
+}
+
+interface CallExpression {
+  type: "CallExpression";
+  callee: Expression;
+  arguments: [Expression];
+}
+
+interface Identifier {
+  type: "Identifier";
+  name: string;
+}
+\end{minted}
+
+(The definitions above correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.)
+
+In later steps various aspects of the interpreter will change, from the interpretation techniques that we use to the types of outputs that the interpreter produces, but these data structures used to represent Yocto-JavaScript programs will remain the same.
+
+\subsection{Runner Structure}
+\label{Runner Structure}
+
+As mentioned in §~\ref{Data Structures to Represent Yocto-JavaScript Programs}, the \mintinline{ts}{run()} function receives as parameter an Yocto-JavaScript program represented as an \mintinline{ts}{Expression}. The \mintinline{ts}{run()} function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see §~\ref{Values in Yocto-JavaScript}) (we use \mintinline{ts}{throw} as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
 \begin{minted}{ts}
 type Value = ArrowFunctionExpression;
 
-export function evaluate(expression: Expression): Value {
-  throw "TODO";
+function run(expression: Expression): Value {
+  throw new Error("NOT IMPLEMENTED YET");
 }
 \end{minted}
 
-The first thing that \mintinline{ts}{evaluate()} has to do is to determine which type of \mintinline{ts}{expression} it is given:
+The first thing that \mintinline{ts}{run()} has to do is to determine which type of \mintinline{ts}{expression} it is given:
 
-\begin{minted}{ts}
-export function evaluate(expression: Expression): Value {
+\begin{minted}[highlightlines = 2-9]{ts}
+function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
-      throw "TODO";
+      throw new Error("NOT IMPLEMENTED YET");
     case "CallExpression":
-      throw "TODO";
+      throw new Error("NOT IMPLEMENTED YET");
     case "Identifier":
-      throw "TODO";
+      throw new Error("NOT IMPLEMENTED YET");
   }
 }
 \end{minted}
 
-In the sections below we fill in these placeholders step-by-step by considering example programs of increasing complexity.
+In the sections below we fill in these placeholders step by step by considering example programs of increasing complexity.
 
-There are several techniques to develop an interpreter and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the called function body with the argument. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (In technical terms, we are developing something called a \emph{big-step, substitution-based interpreter}.)
+* * *
 
 \subsection{An Expression That Is Already a Value}
 
@@ -238,6 +322,8 @@ case "ArrowFunctionExpression":
 \end{minted}
 
 \subsection{A Call Involving Immediate Functions}
+
+There are several techniques to develop an interpreter and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the called function body with the argument. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (In technical terms, we are developing something called a \emph{big-step, substitution-based interpreter}.)
 
 \begin{description}
 \item [Example program:] ~
@@ -361,236 +447,20 @@ In the program above, there are two options for the variable reference \mintinli
 
 Currently, our \mintinline{ts}{substitute()} function is implementing the first option, but this leads to a serious issue: we are not able to reason about \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. (In technical terms, we say that the first option defeats something called \emph{local reasoning} and that the second option exhibits a behavior called \emph{shadowing}, because the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x}.)
 
-% TODO: A listing of the whole implementation.
-% TODO: Inference rules for interpreter.
+\subsection{Loader}
+\label{Step 0: Loader}
+
+% TODO: (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
+
+\subsection{Unloader}
+\label{Step 0: Unloader}
+
+% TODO
+
+% TODO: § A listing of the whole implementation.
+% TODO: § Inference rules for interpreter.
 
 \appendix
-
-\section{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
-\label{A Parser and Data Structures to Represent Yocto-JavaScript Programs}
-
-We write Yocto-JavaScript programs (see §~\ref{The Analyzed Language: Yocto-JavaScript}) in TypeScript (see §~\ref{The Analyzer Language: TypeScript}) as strings (for example, \mintinline{ts}{"x => x"}), but manipulating these strings directly would be exceedingly complex, so we convert them into more convenient data structures. (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
-
-The Yocto-JavaScript parser is implemented as a function called \mintinline{ts}{parse()}. The details of how \mintinline{ts}{parse()} is implemented are deferred to §~\ref{The Yocto-JavaScript Parser in Detail}, but the following are two examples of how it is used and what data structures it outputs (the \mintinline{ts}{>} represents the console):
-
-\begin{minted}{ts}
-> parse("x => x")
-{
-  "type": "ArrowFunctionExpression",
-  "params": [
-    {
-      "type": "Identifier",
-      "name": "x"
-    }
-  ],
-  "body": {
-    "type": "Identifier",
-    "name": "x"
-  }
-}
-> parse("(x => x)(y => y)")
-{
-  "type": "CallExpression",
-  "callee": {
-    "type": "ArrowFunctionExpression",
-    "params": [
-      {
-        "type": "Identifier",
-        "name": "x"
-      }
-    ],
-    "body": {
-      "type": "Identifier",
-      "name": "x"
-    }
-  },
-  "arguments": [
-    {
-      "type": "ArrowFunctionExpression",
-      "params": [
-        {
-          "type": "Identifier",
-          "name": "y"
-        }
-      ],
-      "body": {
-        "type": "Identifier",
-        "name": "y"
-      }
-    }
-  ]
-}
-\end{minted}
-
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}. In general, \mintinline{ts}{parse()} may produce data structures of the following types (written as TypeScript types that are adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
-
-\begin{minted}{ts}
-type Expression = ArrowFunctionExpression | CallExpression | Identifier;
-
-interface ArrowFunctionExpression {
-  type: "ArrowFunctionExpression";
-  params: [Identifier];
-  body: Expression;
-}
-
-interface CallExpression {
-  type: "CallExpression";
-  callee: Expression;
-  arguments: [Expression];
-}
-
-interface Identifier {
-  type: "Identifier";
-  name: string;
-}
-\end{minted}
-
-The definitions above correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.
-
-\chapter{The Yocto-JavaScript Parser in Detail}
-\label{The Yocto-JavaScript Parser in Detail}
-
-See §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs} for an introduction to the Yocto-JavaScript parser. This section describes its implementation in detail.
-
-Most of the work of parsing Yocto-JavaScript programs is deferred to a JavaScript parser called Esprima~\cite{esprima}, which produces data structures following the ESTree specification~\cite{estree} (refer to the Esprima interactive online demonstration~\cite{esprima-demonstration} to explore Esprima and ESTree further). Esprima is also responsible for detecting syntax errors; for example, it detects that the program \mintinline{js}{x =>} is missing the function body. The rest of the Yocto-JavaScript parser checks whether the parsed program uses only the JavaScript features that are supported by Yocto-JavaScript; for example, it disallows the function \mintinline{js}{(x, y) => x} because it has multiple parameters. The parser also checks that all variable references refer to variables that are defined; for example, it disallows the program \mintinline{js}{x => y} because \mintinline{js}{y} is undefined. Finally, the parser cleans the data structures generated by Esprima, removing information that the analyzer does not need, for example, the location information relating the data structures back to their corresponding segments in the original input string.
-
-The following is the implementation of the Yocto-JavaScript parser:
-
-\begin{minted}[linenos]{ts}
-export function parse(input: string): Expression {
-  const program = parseScript(input);
-  if (program.body.length !== 1)
-    throw new Error("‘Program’ has a ‘body’ whose length isn’t exactly one.");
-  if (program.body[0].type !== "ExpressionStatement")
-    throw new Error(
-      "‘Program’ has a ‘body’ that isn’t an ‘ExpressionStatement’."
-    );
-  return checkAndClean(program.body[0].expression, new Set<string>());
-
-  function checkAndClean(
-    node: ESTree.Node,
-    definedVariables: Set<string>
-  ): Expression {
-    switch (node.type) {
-      case "ArrowFunctionExpression":
-        if (node.params.length !== 1)
-          throw new Error(
-            "‘ArrowFunctionExpression’ doesn’t have exactly one ‘param’."
-          );
-        if (node.params[0].type !== "Identifier")
-          throw new Error(
-            "‘ArrowFunctionExpression’ has a ‘param’ that isn’t an ‘Identifier’."
-          );
-        return {
-          type: node.type,
-          params: [
-            {
-              type: node.params[0].type,
-              name: node.params[0].name
-            }
-          ],
-          body: checkAndClean(
-            node.body,
-            new Set([...definedVariables, node.params[0].name])
-          )
-        };
-      case "CallExpression":
-        if (node.arguments.length !== 1)
-          throw new Error(
-            "‘CallExpression’ doesn’t have exactly one ‘argument’."
-          );
-        return {
-          type: node.type,
-          callee: checkAndClean(node.callee, definedVariables),
-          arguments: [checkAndClean(node.arguments[0], definedVariables)]
-        };
-      case "Identifier":
-        if (!definedVariables.has(node.name))
-          throw new Error(`Variable reference to ‘${node.name}’ not in scope.`);
-        return {
-          type: node.type,
-          name: node.name
-        };
-      default:
-        throw new Error(`Invalid node type: ‘${node.type}’.`);
-    }
-  }
-}
-\end{minted}
-
-\begin{description}
-\item [Line~1:]
-
-The parser is defined as a function called \mintinline{ts}{parse()}, which receives the program to be parsed as a \mintinline{ts}{string} called \mintinline{ts}{input}, and produces an \mintinline{ts}{Expression} (see §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs} for the definition of \mintinline{ts}{Expression} and the other data structures generated by the Yocto-JavaScript parser).
-
-\item [Line~2:]
-
-Call the Esprima \mintinline{ts}{parseScript()} function which produces ESTree-compliant data structures for the program. This function throws an exception in case the \mintinline{ts}{input} has a syntax error; for example, \mintinline{js}{x =>}, which is missing the function body.
-
-\item [Lines~3–8:]
-
-Check whether the top-level \mintinline{ts}{program} is using only features supported by Yocto-JavaScript.
-
-\begin{description}
-\item [Lines~3–4:]
-
-The \mintinline{ts}{program} must include only one \mintinline{ts}{Statement}; for example, \mintinline{js}{x => x; y => y} is disallowed.
-
-\item [Lines~5–8:]
-
-The sole \mintinline{ts}{Statement} must be an \mintinline{ts}{ExpressionStatement}; for example, \mintinline{js}{x => x} is allowed because it is an \mintinline{ts}{ExpressionStatement}, but \mintinline{js}{const f = x => x} is disallowed because it is a \mintinline{ts}{VariableDeclaration}.
-\end{description}
-
-\item [Line~9:]
-
-Extract the sole \mintinline{ts}{Expression} from within the \mintinline{ts}{program}, which is the only part that the analyzer needs, and call the auxiliary function \mintinline{ts}{checkAndClean()} (see below).
-
-\item [Lines~11–14:]
-
-The \mintinline{ts}{checkAndClean()} auxiliary function traverses the data structures generated by Esprima to perform three tasks: check that the features used by the parsed program are supported by Yocto-JavaScript, check that all variable references are for variables which are defined, and remove information that the analyzer does not need. (This traversal is an example of something called \emph{syntax-directed translation}~\cite[§~2]{dragon-book}.)
-
-The \mintinline{ts}{checkAndClean()} function receives two parameters: \mintinline{ts}{node}, which is a data structure generated by Esprima (so called because it forms a tree); and \mintinline{ts}{definedVariables}, which is a set of variables defined where \mintinline{ts}{node} appears and is used for checking variable references (see below).
-
-\item [Lines~15, 16, 38, 48, 55, 33–36, 45–46:]
-
-On a high level, the \mintinline{ts}{checkAndClean()} function works by detecting the type of \mintinline{ts}{Node} it is given (Lines~15, 16, 38, 48, 55), performing some checks (see below), and then calling itself recursively with parts of the \mintinline{ts}{node} (Lines~33–36, 45–46). The recursive calls guarantee that \mintinline{ts}{checkAndClean()} visits every part of the data structure.
-
-\item [Lines~17–24, 39–42, 49–50, 56:]
-
-After \mintinline{ts}{checkAndClean()} determines the type of \mintinline{ts}{node}, it checks whether the program is using only the features supported by Yocto-JavaScript, throwing an exception otherwise.
-
-\begin{description}
-\item [Lines~17–20:]
-
-A function definition must include exactly one parameter; for example, \mintinline{js}{(x, y) => x} is disallowed.
-
-\item [Lines~21–24:]
-
-The parameter in a function definition must be an \mintinline{ts}{Identifier}; for example, \mintinline{js}{([x, y]) => x} is disallowed because the parameter is an \mintinline{ts}{ArrayPattern}.
-
-\item [Lines~39–42:]
-
-A function call must include exactly one argument; for example, \mintinline{js}{f => a => b => f(a, b)} is disallowed.
-
-\item [Lines~49–50:]
-
-Variable references must refer to variables that are defined (see below).
-
-\item [Lines~56:]
-
-Any type of \mintinline{ts}{Node} that has not been listed is not supported by Yocto-JavaScript, for example, \mintinline{ts}{29}, which is a \mintinline{ts}{Literal}.
-\end{description}
-
-\item [Lines~13, 9, 35, 45–46, 49:]
-
-To check that all variable references refer to defined variables, the \mintinline{ts}{checkAndClean()} function maintains a set of \mintinline{ts}{definedVariables} (Line~13). This set starts empty (Line~9) and is augmented when encountering a function definition (Line~35). The set is then checked when encountering a variable reference (Line~49). Other types of \mintinline{ts}{Node} that are not related to either defining or referencing variables pass \mintinline{ts}{definedVariables} unchanged on the recursive calls to \mintinline{ts}{checkAndClean()}; in Yocto-JavaScript this only happens in one case, function calls (Lines~45–46), but in languages with more features most types of \mintinline{ts}{Node} are in this category, for example, those that would be produced by \mintinline{js}{+}, \mintinline{js}{-}, \mintinline{js}{if}, and so forth.
-
-For an example of how \mintinline{ts}{checkAndClean()} detects a problem in a variable reference, consider the program \mintinline{js}{x => y}. The set \mintinline{ts}{definedVariables} starts empty and is augmented with \mintinline{js}{x} upon encountering the function definition, but then \mintinline{ts}{checkAndClean()} visits the variable reference to \mintinline{ts}{y} in the function body, which it cannot find in \mintinline{ts}{definedVariables}, and it throws an exception.
-
-\item [Lines~25–37, 43–47, 51–54:]
-
-To clean the data structures produced by Esprima and remove information that is not required by the analyzer, we explicitly reconstruct the data structures (see §~\ref{A Parser and Data Structures to Represent Yocto-JavaScript Programs}).
-\end{description}
 
 \backmatter
 

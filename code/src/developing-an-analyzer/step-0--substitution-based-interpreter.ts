@@ -30,37 +30,48 @@ type Value = ArrowFunctionExpression;
 function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
-      return expression;
+      throw new Error("NOT IMPLEMENTED YET");
     case "CallExpression":
-      const {
-        params: [{ name }],
-        body
-      } = run(expression.callee);
-      const argument = run(expression.arguments[0]);
-      return run(substitute(body));
-      function substitute(expression: Expression): Expression {
-        switch (expression.type) {
-          case "ArrowFunctionExpression":
-            if (expression.params[0].name === name) return expression;
-            return {
-              ...expression,
-              body: substitute(expression.body)
-            };
-          case "CallExpression":
-            return {
-              ...expression,
-              callee: substitute(expression.callee),
-              arguments: [substitute(expression.arguments[0])]
-            };
-          case "Identifier":
-            if (expression.name === name) return argument;
-            return expression;
-        }
-      }
+      throw new Error("NOT IMPLEMENTED YET");
     case "Identifier":
-      throw new Error(`Reference to undefined variable: ${expression.name}`);
+      throw new Error("NOT IMPLEMENTED YET");
   }
 }
+
+// function run(expression: Expression): Value {
+//   switch (expression.type) {
+//     case "ArrowFunctionExpression":
+//       return expression;
+//     case "CallExpression":
+//       const {
+//         params: [{ name }],
+//         body
+//       } = run(expression.callee);
+//       const argument = run(expression.arguments[0]);
+//       return run(substitute(body));
+//       function substitute(expression: Expression): Expression {
+//         switch (expression.type) {
+//           case "ArrowFunctionExpression":
+//             if (expression.params[0].name === name) return expression;
+//             return {
+//               ...expression,
+//               body: substitute(expression.body)
+//             };
+//           case "CallExpression":
+//             return {
+//               ...expression,
+//               callee: substitute(expression.callee),
+//               arguments: [substitute(expression.arguments[0])]
+//             };
+//           case "Identifier":
+//             if (expression.name === name) return argument;
+//             return expression;
+//         }
+//       }
+//     case "Identifier":
+//       throw new Error(`Reference to undefined variable: ${expression.name}`);
+//   }
+// }
 
 function load(input: string): Expression {
   const program = parseScript(input, {}, node => {
