@@ -3,7 +3,7 @@ import { generate } from "escodegen";
 import { format } from "prettier";
 
 export function evaluate(input: string): string {
-  return prettyPrint(step(parse(input)));
+  return unload(run(load(input)));
 }
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -25,37 +25,9 @@ interface Identifier {
   name: string;
 }
 
-function parse(input: string): Expression {
-  const program = parseScript(input, {}, node => {
-    switch (node.type) {
-      case "Program":
-        if (node.body.length !== 1)
-          throw new Error(
-            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
-          );
-        break;
-      case "ExpressionStatement":
-        break;
-      case "ArrowFunctionExpression":
-        break;
-      case "CallExpression":
-        if (node.arguments.length !== 1)
-          throw new Error(
-            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
-          );
-        break;
-      case "Identifier":
-        break;
-      default:
-        throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
-    }
-  });
-  return (program as any).body[0].expression as Expression;
-}
-
 type Value = ArrowFunctionExpression;
 
-function step(expression: Expression): Value {
+function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
       return expression;
@@ -63,9 +35,9 @@ function step(expression: Expression): Value {
       const {
         params: [{ name }],
         body
-      } = step(expression.callee);
-      const argument = step(expression.arguments[0]);
-      return step(substitute(body));
+      } = run(expression.callee);
+      const argument = run(expression.arguments[0]);
+      return run(substitute(body));
       function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
@@ -90,6 +62,35 @@ function step(expression: Expression): Value {
   }
 }
 
-function prettyPrint(value: Value): string {
+function load(input: string): Expression {
+  const program = parseScript(input, {}, node => {
+    switch (node.type) {
+      case "Program":
+        if (node.body.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
+          );
+        break;
+      case "ExpressionStatement":
+        break;
+      case "ArrowFunctionExpression":
+        break;
+      case "CallExpression":
+        if (node.arguments.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+          );
+        break;
+      case "Identifier":
+        break;
+      default:
+        throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
+    }
+  });
+  const expression = (program as any).body[0].expression as Expression;
+  return expression;
+}
+
+function unload(value: Value): string {
   return format(generate(value), { parser: "babel", semi: false }).trim();
 }
