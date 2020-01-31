@@ -152,7 +152,7 @@ After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
 
-Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start. Our first step is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs that would be produced a regular JavaScript interpreter. This is a good starting point because the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer we end up developing.
+Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of steps in its construction. The first step is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs that would be produced a regular JavaScript interpreter. This is a good starting point because the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer we end up developing.
 
 \subsection{Architecture}
 \label{Architecture}
@@ -176,7 +176,7 @@ export function evaluate(input: string): string {
 }
 \end{minted}
 
-The \mintinline{ts}{load()} function prepares the \mintinline{ts}{input} for interpretation, for example, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{unload()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In later steps the implementation of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()} will change, but the architecture and the implementation of \mintinline{ts}{evaluate()} will remain the same. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{load()} to §~\ref{Step 0: Loader} and \mintinline{ts}{unload()} to §~\ref{Step 0: Unloader}.
+The \mintinline{ts}{load()} function prepares the \mintinline{ts}{input} for interpretation, for example, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{unload()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In later steps the implementation of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()} will change, but the architecture and therefore the implementation of \mintinline{ts}{evaluate()} will remain the same. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{load()} to §~\ref{Step 0: Loader} and \mintinline{ts}{unload()} to §~\ref{Step 0: Unloader}.
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
@@ -264,7 +264,7 @@ interface Identifier {
 
 (The definitions above correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.)
 
-In later steps various aspects of the interpreter will change, from the interpretation techniques that we use to the types of outputs that the interpreter produces, but these data structures used to represent Yocto-JavaScript programs will remain the same.
+In later steps various aspects of the interpreter will change, including parts of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()}, but the data structures used to represent Yocto-JavaScript programs will remain the same.
 
 \subsection{Runner Structure}
 \label{Runner Structure}
@@ -296,23 +296,25 @@ function run(expression: Expression): Value {
 
 In the sections below we fill in these placeholders step by step by considering example programs of increasing complexity.
 
-* * *
+\subsection{An Expression That Already Is a Value}
 
-\subsection{An Expression That Is Already a Value}
-
-\begin{description}
-\item [Example program:] ~
+\paragraph{Example program:}
 
 \begin{minted}{js}
 x => x
 \end{minted}
 
-\item [Expected output:] ~
+\paragraph{Current output:}
+
+\begin{minted}{js}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output:}
 
 \begin{minted}{js}
 x => x
 \end{minted}
-\end{description}
 
 The \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is already a \mintinline{ts}{Value}, which may be returned unchanged:
 
