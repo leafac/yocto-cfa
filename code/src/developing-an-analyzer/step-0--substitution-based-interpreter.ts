@@ -55,7 +55,11 @@ function run(expression: Expression): Value {
               body: substitute(expression.body)
             };
           case "CallExpression":
-            throw new Error("NOT IMPLEMENTED YET");
+            return {
+              ...expression,
+              callee: substitute(expression.callee),
+              arguments: [substitute(expression.arguments[0])]
+            };
           case "Identifier":
             if (expression.name !== parameter) return expression;
             return argument;

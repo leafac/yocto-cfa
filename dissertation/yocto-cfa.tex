@@ -516,11 +516,11 @@ x => x
 
 \paragraph{}
 
-In the program above, there are two options for the variable reference \mintinline{ts}{x} on the right of the second \mintinline{ts}{=>}: it may refer to the first (outer) \mintinline{ts}{x} on the left of the first \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{ts}{x} on the left of the second \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => x}.
+In the program above, there are two options for the variable reference \mintinline{ts}{x} on the right of the second \mintinline{ts}{=>}: it may refer to the first (outer) \mintinline{ts}{x} on the left of the first \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{ts}{x} on the left of the second \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => x}. (In technical terms, we say that the second option exhibits a behavior called \emph{shadowing}, in which the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x} because there is no way to refer to it.)
 
-Currently, our \mintinline{ts}{substitute()} function is implementing the first option, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. (In technical terms, we say that the first option defeats something called \emph{local reasoning}, and that the second option exhibits a behavior called \emph{shadowing}, in which the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x}.)
+Currently \mintinline{ts}{substitute()} is implementing the first option, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. (In technical terms, we say that this defeats something called \emph{local reasoning}.)
 
-To carry out this change, we change \mintinline{ts}{substitute()}’s behavior when encountering a function definition: if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is substituting, then \mintinline{ts}{subsitute()} simply returns that function definition unchanged, which prevents further substitution:
+We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition: if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is substituting, then it simply returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in that case):
 
 \begin{minted}[highlightlines = {2}]{ts}
 case "ArrowFunctionExpression":
@@ -528,6 +528,39 @@ case "ArrowFunctionExpression":
   return {
     ...expression,
     body: substitute(expression.body)
+  };
+\end{minted}
+
+\section{Substitution in Function Calls}
+
+\paragraph{Example program:}
+
+\begin{minted}{js}
+(x => z => x(x))(y => y)
+\end{minted}
+
+\paragraph{Current output:}
+
+\begin{minted}{js}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{js}
+z => (y => y)(y => y)
+\end{minted}
+
+\paragraph{}
+
+This case is similar to §~\ref{Substitution in Function Definitions}: all \mintinline{ts}{substitute()} has to do is continue traversing the function call recursively:
+
+\begin{minted}[highlightlines = {2-6}]{ts}
+case "CallExpression":
+  return {
+    ...expression,
+    callee: substitute(expression.callee),
+    arguments: [substitute(expression.arguments[0])]
   };
 \end{minted}
 
