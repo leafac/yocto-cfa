@@ -30,8 +30,13 @@ type Value = ArrowFunctionExpression;
 function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
-      throw new Error("NOT IMPLEMENTED YET");
+      return expression;
     case "CallExpression":
+      if (
+        expression.callee.type !== "ArrowFunctionExpression" ||
+        expression.arguments[0].type !== "ArrowFunctionExpression"
+      )
+        throw new Error("NOT IMPLEMENTED YET");
       throw new Error("NOT IMPLEMENTED YET");
     case "Identifier":
       throw new Error("NOT IMPLEMENTED YET");

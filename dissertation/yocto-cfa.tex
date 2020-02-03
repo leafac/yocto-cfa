@@ -152,14 +152,14 @@ After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
 
-Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of steps in its construction. The first step is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs that would be produced a regular JavaScript interpreter. This is a good starting point because the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer we end up developing.
+Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of steps in the development of the analyzer. The first Step is an interpreter that simply executes Yocto-JavaScript programs and produces the same outputs that would be produced a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
 
 \subsection{Architecture}
 \label{Architecture}
 
-Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives an Yocto-JavaScript program represented as a string and returns the result of running it. (The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs.)
+Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it. (The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs.)
 
-The following are two examples of how to use \mintinline{ts}{evaluate()} (the \mintinline{ts}{>} represents the console):
+The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of this Step (the \mintinline{ts}{>} represents the console):
 
 \begin{minted}{ts}
 > evaluate("x => x")
@@ -181,7 +181,7 @@ The \mintinline{ts}{load()} function prepares the \mintinline{ts}{input} for int
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 
-The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}). While these strings are convenient for humans to write and read, they would be inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of its \emph{text}: from \mintinline{ts}{run()}’s perspective, it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{load()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Loader}).
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}). While a string is convenient for humans to write and read, it would be inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of its \emph{text}: from \mintinline{ts}{run()}’s perspective, it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{load()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Loader} for \mintinline{ts}{load()}’s implementation).
 
 The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them:
 
@@ -237,9 +237,9 @@ x => x
 }
 \end{minted}
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse existing tools from the JavaScript ecosystem (see §~\ref{Step 0: Loader} and §~\ref{Step 0: Unloader}).
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Step 0: Loader} and §~\ref{Step 0: Unloader}).
 
-In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
+In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types specification~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
 
 \begin{minted}{ts}
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -316,6 +316,8 @@ NOT IMPLEMENTED YET
 x => x
 \end{minted}
 
+\paragraph{}
+
 The \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is already a \mintinline{ts}{Value}, which may be returned unchanged:
 
 \begin{minted}{ts}
@@ -325,21 +327,39 @@ case "ArrowFunctionExpression":
 
 \subsection{A Call Involving Immediate Functions}
 
-There are several techniques to develop an interpreter and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the called function body with the argument. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (In technical terms, we are developing something called a \emph{big-step, substitution-based interpreter}.)
-
-\begin{description}
-\item [Example program:] ~
+\paragraph{Example program:}
 
 \begin{minted}{js}
 (x => x)(y => y)
 \end{minted}
 
-\item [Expected output (see §~\ref{Operations in Yocto-JavaScript}):] ~
+\paragraph{Current output:}
+
+\begin{minted}{js}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output (see §~\ref{Operations in Yocto-JavaScript}):}
 
 \begin{minted}{js}
 y => y
 \end{minted}
-\end{description}
+
+\paragraph{}
+
+Interpreting function calls is the main task of our interpreter. There are several techniques to do this and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the body of the function that was called with the argument that was provided. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (This technique is what characterizes the interpreter in this Step as \emph{substitution-based}.)
+
+In the example we are considering both the \verb!<function>! (\mintinline{js}{x => x}) and the \verb!<argument>! (\mintinline{js}{y => y}) are immediate functions:
+
+\begin{minted}[highlightlines = 2-6]{ts}
+case "CallExpression":
+  if (
+    expression.callee.type !== "ArrowFunctionExpression" ||
+    expression.arguments[0].type !== "ArrowFunctionExpression"
+  )
+    throw new Error("NOT IMPLEMENTED YET");
+  throw new Error("NOT IMPLEMENTED YET");
+\end{minted}
 
 In this case the \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is a \mintinline{ts}{CallExpression} in which both the \mintinline{ts}{callee} and the \mintinline{ts}{argument} are \mintinline{ts}{ArrowFunctionExpression}s. We use \emph{destructuring assignment}~\cite{destructuring-assignment} to unpack these data structures, which we will use in subsequent sections, but for the example program above it suffices to return the \mintinline{ts}{argument}:
 
@@ -448,6 +468,8 @@ x => x
 In the program above, there are two options for the variable reference \mintinline{ts}{x} on the right of the second \mintinline{ts}{=>}: it may refer to the first (outer) \mintinline{ts}{x} on the left of the first \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{ts}{x} on the left of the second \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => x}.
 
 Currently, our \mintinline{ts}{substitute()} function is implementing the first option, but this leads to a serious issue: we are not able to reason about \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. (In technical terms, we say that the first option defeats something called \emph{local reasoning} and that the second option exhibits a behavior called \emph{shadowing}, because the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x}.)
+
+% TODO: big-step
 
 \subsection{Loader}
 \label{Step 0: Loader}
