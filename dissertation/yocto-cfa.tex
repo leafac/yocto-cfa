@@ -306,7 +306,7 @@ x => x
 
 \paragraph{Current output:}
 
-\begin{minted}{js}
+\begin{minted}{text}
 NOT IMPLEMENTED YET
 \end{minted}
 
@@ -336,7 +336,7 @@ case "ArrowFunctionExpression":
 
 \paragraph{Current output:}
 
-\begin{minted}{js}
+\begin{minted}{text}
 NOT IMPLEMENTED YET
 \end{minted}
 
@@ -541,7 +541,7 @@ case "ArrowFunctionExpression":
 
 \paragraph{Current output:}
 
-\begin{minted}{js}
+\begin{minted}{text}
 NOT IMPLEMENTED YET
 \end{minted}
 
@@ -562,6 +562,134 @@ case "CallExpression":
     callee: substitute(expression.callee),
     arguments: [substitute(expression.arguments[0])]
   };
+\end{minted}
+
+\section{An Argument That Is Not Immediate}
+\label{An Argument That Is Not Immediate}
+
+\paragraph{Example program:}
+
+\begin{minted}{js}
+(x => x)((z => z)(y => y))
+\end{minted}
+
+\paragraph{Current output:}
+
+\begin{minted}{text}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{js}
+y => y
+\end{minted}
+
+\paragraph{}
+
+In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we may also remove the check that the argument is an immediate function definition):
+
+\begin{minted}[highlightlines = {2-3, 5}]{ts}
+case "CallExpression":
+  if (expression.callee.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  // ...
+  const argument = run(expression.arguments[0]);
+  // ...
+\end{minted}
+
+\section{A Function That Is Not Immediate}
+\label{A Function That Is Not Immediate}
+
+\paragraph{Example program:}
+
+\begin{minted}{js}
+((z => z)(x => x))(y => y)
+\end{minted}
+
+\paragraph{Current output:}
+
+\begin{minted}{text}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{js}
+y => y
+\end{minted}
+
+\paragraph{}
+
+This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same (note the removal of another check):
+
+\begin{minted}[highlightlines = {2-5}]{ts}
+case "CallExpression":
+  const {
+    params: [{ name: parameter }],
+    body
+  } = run(expression.callee);
+  // ...
+\end{minted}
+
+\section{Continuing to Run After a Function Call}
+
+\paragraph{Example program:}
+
+\begin{minted}{js}
+(x => (z => z)(x))(y => y)
+\end{minted}
+
+\paragraph{Current output:}
+
+\begin{minted}{text}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{js}
+y => y
+\end{minted}
+
+\paragraph{}
+
+This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may not be an immediate function, and more work is required to interpret it. We solve this with another recursive call to \mintinline{ts}{evaluate()} (note the removal of yet another check, which rendered the \mintinline{ts}{substitutedBody} variable superfluous):
+
+\begin{minted}[highlightlines = {3}]{ts}
+case "CallExpression":
+  // ...
+  return run(substitute(body));
+  // ...
+\end{minted}
+
+\section{A Reference to an Undefined Variable}
+
+\paragraph{Example program:}
+
+\begin{minted}{js}
+(x => y)(y => y)
+\end{minted}
+
+\paragraph{Current output:}
+
+\begin{minted}{text}
+NOT IMPLEMENTED YET
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{text}
+Reference to undefined variable: y
+\end{minted}
+
+\paragraph{}
+
+The only case in which \mintinline{ts}{run()} may encounter a variable reference directly is if the referenced variable is undefined, otherwise \mintinline{ts}{substitute()} would have already substituted it (see §~\ref{A A Call Involving Immediate Functions}–§~\ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
+
+\begin{minted}[highlightlines = {2}]{ts}
+case "Identifier":
+  throw new Error(`Reference to undefined variable: ${expression.name}`);
 \end{minted}
 
 % TODO: big-step
