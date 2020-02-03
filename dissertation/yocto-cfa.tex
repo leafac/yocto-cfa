@@ -281,7 +281,7 @@ function run(expression: Expression): Value {
 
 The first thing that \mintinline{ts}{run()} has to do is to determine which type of \mintinline{ts}{expression} it is given:
 
-\begin{minted}[highlightlines = 2-9]{ts}
+\begin{minted}[highlightlines = {2-9}]{ts}
 function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
@@ -320,12 +320,13 @@ x => x
 
 The \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is already a \mintinline{ts}{Value}, which may be returned unchanged:
 
-\begin{minted}{ts}
+\begin{minted}[highlightlines = {2}]{ts}
 case "ArrowFunctionExpression":
   return expression;
 \end{minted}
 
 \subsection{A Call Involving Immediate Functions}
+\label{A Call Involving Immediate Functions}
 
 \paragraph{Example program:}
 
@@ -349,9 +350,9 @@ y => y
 
 Interpreting function calls is the main task of our interpreter. There are several techniques to do this and in this step we use one of the simplest: when the interpreter encounters a function call, it substitutes variable references in the body of the function that was called with the argument that was provided. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. (This technique is what characterizes the interpreter in this Step as \emph{substitution-based}.)
 
-In the example we are considering both the \verb!<function>! (\mintinline{js}{x => x}) and the \verb!<argument>! (\mintinline{js}{y => y}) are immediate functions:
+In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to operations such as other function calls or variable references:
 
-\begin{minted}[highlightlines = 2-6]{ts}
+\begin{minted}[highlightlines = {2-6}]{ts}
 case "CallExpression":
   if (
     expression.callee.type !== "ArrowFunctionExpression" ||
@@ -361,80 +362,79 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 \end{minted}
 
-In this case the \mintinline{ts}{expression} given to \mintinline{ts}{evaluate()} is a \mintinline{ts}{CallExpression} in which both the \mintinline{ts}{callee} and the \mintinline{ts}{argument} are \mintinline{ts}{ArrowFunctionExpression}s. We use \emph{destructuring assignment}~\cite{destructuring-assignment} to unpack these data structures, which we will use in subsequent sections, but for the example program above it suffices to return the \mintinline{ts}{argument}:
+The function that is called simply returns the argument unchanged (see §~\ref{Operations in Yocto-JavaScript}):
 
-\begin{minted}{ts}
+\begin{minted}[highlightlines = {7-8}]{ts}
 case "CallExpression":
   if (
     expression.callee.type !== "ArrowFunctionExpression" ||
     expression.arguments[0].type !== "ArrowFunctionExpression"
   )
-    throw "TODO";
-  const {
-    params: [{ name }],
-    body
-  } = expression.callee;
+    throw new Error("NOT IMPLEMENTED YET");
   const argument = expression.arguments[0];
   return argument;
 \end{minted}
 
-\subsection{A Call in Which Substitution Must Occur Within Another Function}
+\subsection{Substitution in Function Definitions}
 
-\begin{description}
-\item [Example program:] ~
+\paragraph{Example program:}
 
 \begin{minted}{js}
 (x => z => x)(y => y)
 \end{minted}
 
-\item [Expected output:] ~
+\paragraph{Current output:}
+
+\begin{minted}{js}
+y => y
+\end{minted}
+
+\paragraph{Desired output (see §~\ref{Operations in Yocto-JavaScript}):}
 
 \begin{minted}{js}
 z => y => y
 \end{minted}
-\end{description}
 
-As illustrated by the program above, substitution may occur deep within the called function body, so we define an auxiliary function called \mintinline{ts}{substitute()} which traverses the body looking for variable references and substituting them:
+\paragraph{}
 
-\begin{minted}[highlightlines = 12-18]{ts}
+Our implementation in §~\ref{A Call Involving Immediate Functions} works in the example given there, but it is far from working in the general case: it does not even consider the body of the called function, always returning the argument unchanged, which explains the current output of the example program above. What the interpreter must do is traverse the body of the called function looking for relevant variable references and substitute them. We unpack the called function using something called \emph{destructuring assignment}~\cite{destructuring-assignment} and implement this traversal with an auxiliary function called \mintinline{ts}{substitute()}:
+
+\begin{minted}[highlightlines = {7-10, 12-15}]{ts}
 case "CallExpression":
   if (
     expression.callee.type !== "ArrowFunctionExpression" ||
     expression.arguments[0].type !== "ArrowFunctionExpression"
   )
-    throw "TODO";
+    throw new Error("NOT IMPLEMENTED YET");
   const {
     params: [{ name }],
     body
   } = expression.callee;
   const argument = expression.arguments[0];
-  const bodyAfterSubstitution = substitute(body);
-  if (bodyAfterSubstitution.type !== "ArrowFunctionExpression")
-    throw "TODO";
-  return bodyAfterSubstitution;
-  function substitute(expression: Expression): Expression {
-    throw "TODO";
+  return substitute(body);
+  function substitute(expression: Expression): Value {
+    throw new Error("NOT IMPLEMENTED YET");
   }
 \end{minted}
 
-Similar to \mintinline{ts}{evaluate()} itself, \mintinline{ts}{substitute()} also starts by determining the type of \mintinline{ts}{expression}:
+Similar to \mintinline{ts}{run()} itself, \mintinline{ts}{substitute()} starts by determining which type of \mintinline{ts}{expression} was passed to it:
 
-\begin{minted}{ts}
-function substitute(expression: Expression): Expression {
+\begin{minted}[highlightlines = {2-9}]{ts}
+function substitute(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
-      throw "TODO";
+      throw new Error("NOT IMPLEMENTED YET");
     case "CallExpression":
-      throw "TODO";
+      throw new Error("NOT IMPLEMENTED YET");
     case "Identifier":
-      throw "TODO";
+      throw new Error("NOT IMPLEMENTED YET");
   }
 }
 \end{minted}
 
-When \mintinline{ts}{substitute()} encounters an \mintinline{ts}{ArrowFunctionExpression}, it must continue the substitution in the body of that function; for example, in the program we are considering, when \mintinline{ts}{substitute()} encounters \mintinline{js}{z => x} it must continue the substitution in the function body: \mintinline{js}{x}. We achieve that with a recursive call to \mintinline{ts}{substitute()}:
+When \mintinline{ts}{substitute()} starts traversing the \mintinline{ts}{body}, the \mintinline{ts}{expression} is an \mintinline{ts}{ArrowFunctionExpression}, \mintinline{js}{z => x}, and we want substitution to proceed deeper, to find and substitute \mintinline{js}{x}, so we call \mintinline{ts}{substitute()} recursively (we use a feature called \emph{spread syntax}~\cite{spread-syntax} to build an \mintinline{ts}{expression} based on the existing one with a new \mintinline{ts}{body}):
 
-\begin{minted}{ts}
+\begin{minted}[highlightlines = {2-9}]{ts}
 case "ArrowFunctionExpression":
   return {
     ...expression,
@@ -442,9 +442,9 @@ case "ArrowFunctionExpression":
   };
 \end{minted}
 
-After this recursive call, \mintinline{ts}{substitute()} reaches the case in which the \mintinline{ts}{expression} is a variable reference (an \mintinline{ts}{Identifier}). When this happens, \mintinline{ts}{substitute()} performs the substitution by returning the \mintinline{ts}{argument}:
+After this recursive call, \mintinline{ts}{substitute()} reaches the case in which the \mintinline{ts}{expression} is a variable reference (an \mintinline{ts}{Identifier}): \mintinline{js}{x}. When this happens, \mintinline{ts}{substitute()} performs the substitution by returning the \mintinline{ts}{argument}:
 
-\begin{minted}{ts}
+\begin{minted}[highlightlines = {2}]{ts}
 case "Identifier":
   return argument;
 \end{minted}
