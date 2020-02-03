@@ -15,18 +15,14 @@ describe("run()", () => {
     "z => y => y"
   );
 
+  testEvaluate("Name Mismatch", "(x => z => z)(y => y)", "z => z");
+
   testEvaluate("Name Reuse", "(x => x => x)(y => y)", "x => x");
 
   testEvaluate(
     "Substitution in Function Calls",
     "(x => z => x(x))(y => y)",
     "z => (y => y)(y => y)"
-  );
-
-  testEvaluate(
-    "Substitution in Variable References That Do Not Match",
-    "(x => z => z(z))(y => y)",
-    "z => z(z)"
   );
 
   testEvaluate(

@@ -376,6 +376,7 @@ case "CallExpression":
 \end{minted}
 
 \subsection{Substitution in Function Definitions}
+\label{Substitution in Function Definitions}
 
 \paragraph{Example program:}
 
@@ -389,7 +390,7 @@ case "CallExpression":
 y => y
 \end{minted}
 
-\paragraph{Desired output (see §~\ref{Operations in Yocto-JavaScript}):}
+\paragraph{Desired output:}
 
 \begin{minted}{js}
 z => y => y
@@ -407,7 +408,7 @@ case "CallExpression":
   )
     throw new Error("NOT IMPLEMENTED YET");
   const {
-    params: [{ name }],
+    params: [{ name: parameter }],
     body
   } = expression.callee;
   const argument = expression.arguments[0];
@@ -449,21 +450,57 @@ case "Identifier":
   return argument;
 \end{minted}
 
-\subsection{A Call in Which Substitution Must Stop Because of Shadowing}
+\subsection{Name Mismatch}
 
-\begin{description}
-\item [Example program:] ~
-
-\begin{minted}{js}
-(x => x => x)(y => y)
-\end{minted}
-
-\item [Expected output:] ~
+\paragraph{Example program:}
 
 \begin{minted}{js}
-x => x
+(x => z => z)(y => y)
 \end{minted}
-\end{description}
+
+\paragraph{Current output:}
+
+\begin{minted}{js}
+z => y => y
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{js}
+z => z
+\end{minted}
+
+\paragraph{}
+
+The implementation in §~\ref{Substitution in Function Definitions} succeeds in traversing the body of the called function, but it is substituting \emph{all} variable references, regardless of whether they refer to the parameter of the called function, which explains why it is substituting the \mintinline{js}{z} in the body even though the parameter is \mintinline{js}{x}. To fix this, we simply check whether the variable reference matches the parameter, and if it does not we prevent substitution from happening by retuning the variable reference unchanged:
+
+\begin{minted}[highlightlines = {2}]{ts}
+case "Identifier":
+  if (expression.name !== parameter) return expression;
+  return expression;
+\end{minted}
+
+But this leads to a problem with the type of \mintinline{ts}{substitute()}: it is not guaranteed to return a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may return any type of \mintinline{ts}{Expression}, for example, variable references:
+
+\begin{minted}[highlightlines = {6-10}]{ts}
+function run(expression: Expression): Value {
+  switch (expression.type) {
+    // ...
+    case "CallExpression":
+      // ...
+      const substitutedBody = substitute(body);
+      if (substitutedBody.type !== "ArrowFunctionExpression")
+        throw new Error("NOT IMPLEMENTED YET");
+      return substitutedBody;
+      function substitute(expression: Expression): Expression {
+        // ...
+      }
+    // ...
+  }
+}
+\end{minted}
+
+* * *
 
 In the program above, there are two options for the variable reference \mintinline{ts}{x} on the right of the second \mintinline{ts}{=>}: it may refer to the first (outer) \mintinline{ts}{x} on the left of the first \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{ts}{x} on the left of the second \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => x}.
 

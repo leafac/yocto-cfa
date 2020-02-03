@@ -38,12 +38,15 @@ function run(expression: Expression): Value {
       )
         throw new Error("NOT IMPLEMENTED YET");
       const {
-        params: [{ name }],
+        params: [{ name: parameter }],
         body
       } = expression.callee;
       const argument = expression.arguments[0];
-      return substitute(body);
-      function substitute(expression: Expression): Value {
+      const substitutedBody = substitute(body);
+      if (substitutedBody.type !== "ArrowFunctionExpression")
+        throw new Error("NOT IMPLEMENTED YET");
+      return substitutedBody;
+      function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
             return {
@@ -53,6 +56,7 @@ function run(expression: Expression): Value {
           case "CallExpression":
             throw new Error("NOT IMPLEMENTED YET");
           case "Identifier":
+            if (expression.name !== parameter) return expression;
             return argument;
         }
       }
