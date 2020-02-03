@@ -477,34 +477,59 @@ The implementation in §~\ref{Substitution in Function Definitions} succeeds in 
 \begin{minted}[highlightlines = {2}]{ts}
 case "Identifier":
   if (expression.name !== parameter) return expression;
-  return expression;
+  return argument;
 \end{minted}
 
 But this leads to a problem with the type of \mintinline{ts}{substitute()}: it is not guaranteed to return a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may return any type of \mintinline{ts}{Expression}, for example, variable references. We fix this by changing \mintinline{ts}{substitute()}’s type:
 
-\begin{minted}[highlightlines = {6-10}]{ts}
-function run(expression: Expression): Value {
-  switch (expression.type) {
-    // ...
-    case "CallExpression":
-      // ...
-      const substitutedBody = substitute(body);
-      if (substitutedBody.type !== "ArrowFunctionExpression")
-        throw new Error("NOT IMPLEMENTED YET");
-      return substitutedBody;
-      function substitute(expression: Expression): Expression {
-        // ...
-      }
+\begin{minted}[highlightlines = {3-7}]{ts}
+case "CallExpression":
+  // ...
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
     // ...
   }
-}
 \end{minted}
 
-* * *
+\subsection{Name Reuse}
+
+\paragraph{Example program:}
+
+\begin{minted}{js}
+(x => x => x)(y => y)
+\end{minted}
+
+\paragraph{Current output:}
+
+\begin{minted}{js}
+x => y => y
+\end{minted}
+
+\paragraph{Desired output:}
+
+\begin{minted}{js}
+x => x
+\end{minted}
+
+\paragraph{}
 
 In the program above, there are two options for the variable reference \mintinline{ts}{x} on the right of the second \mintinline{ts}{=>}: it may refer to the first (outer) \mintinline{ts}{x} on the left of the first \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{ts}{x} on the left of the second \mintinline{ts}{=>}, in which case the output of the program would be \mintinline{js}{x => x}.
 
-Currently, our \mintinline{ts}{substitute()} function is implementing the first option, but this leads to a serious issue: we are not able to reason about \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. (In technical terms, we say that the first option defeats something called \emph{local reasoning} and that the second option exhibits a behavior called \emph{shadowing}, because the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x}.)
+Currently, our \mintinline{ts}{substitute()} function is implementing the first option, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{ts}{x => x} independently; we must know where it appears and whether a variable called \mintinline{ts}{x} is already defined there. We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. (In technical terms, we say that the first option defeats something called \emph{local reasoning}, and that the second option exhibits a behavior called \emph{shadowing}, in which the outer \mintinline{ts}{x} is \emph{shadowed} by the inner \mintinline{ts}{x}.)
+
+To carry out this change, we change \mintinline{ts}{substitute()}’s behavior when encountering a function definition: if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is substituting, then \mintinline{ts}{subsitute()} simply returns that function definition unchanged, which prevents further substitution:
+
+\begin{minted}[highlightlines = {2}]{ts}
+case "ArrowFunctionExpression":
+  if (expression.params[0].name === parameter) return expression;
+  return {
+    ...expression,
+    body: substitute(expression.body)
+  };
+\end{minted}
 
 % TODO: big-step
 
