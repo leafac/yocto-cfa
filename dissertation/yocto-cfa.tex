@@ -480,7 +480,7 @@ case "Identifier":
   return expression;
 \end{minted}
 
-But this leads to a problem with the type of \mintinline{ts}{substitute()}: it is not guaranteed to return a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may return any type of \mintinline{ts}{Expression}, for example, variable references:
+But this leads to a problem with the type of \mintinline{ts}{substitute()}: it is not guaranteed to return a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may return any type of \mintinline{ts}{Expression}, for example, variable references. We fix this by changing \mintinline{ts}{substitute()}’s type:
 
 \begin{minted}[highlightlines = {6-10}]{ts}
 function run(expression: Expression): Value {
