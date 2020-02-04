@@ -297,6 +297,7 @@ function run(expression: Expression): Value {
 In the sections below we fill in these placeholders step by step by considering example programs of increasing complexity.
 
 \subsection{An Expression That Already Is a Value}
+\label{An Expression That Already Is a Value}
 
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -515,7 +516,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-\noindent In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition):
+\noindent In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call returns it unchanged; see §~\ref{An Expression That Already Is a Value}):
 
 \begin{minted}[highlightlines = {3-4, 9}]{ts}
 // run()
@@ -565,8 +566,6 @@ case "CallExpression":
   }
 \end{minted}
 
-% TODO: STOPPED HERE
-
 \subsection{Continuing to Run After a Function Call}
 \label{Continuing to Run After a Function Call}
 
@@ -577,14 +576,20 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-\noindent This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may not be an immediate function, and more work is required to interpret it. We solve this with another recursive call to \mintinline{ts}{evaluate()} (note the removal of yet another check, which rendered the \mintinline{ts}{substitutedBody} variable superfluous):
+\noindent This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (note the removal of yet another check, making the \mintinline{ts}{substitutedBody} variable unnecessary and allowing us to inline it):
 
-\begin{minted}[highlightlines = {4}]{ts}
+\begin{minted}[highlightlines = {8}]{ts}
 // run()
 case "CallExpression":
-  // ...
+  const {
+    params: [{ name: parameter }],
+    body
+  } = run(expression.callee);
+  const argument = run(expression.arguments[0]);
   return run(substitute(body));
-  // ...
+  function substitute(expression: Expression): Expression {
+    // ...
+  }
 \end{minted}
 
 \subsection{A Reference to an Undefined Variable}

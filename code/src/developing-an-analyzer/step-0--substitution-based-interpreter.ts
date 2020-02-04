@@ -37,10 +37,7 @@ function run(expression: Expression): Value {
         body
       } = run(expression.callee);
       const argument = run(expression.arguments[0]);
-      const substitutedBody = substitute(body);
-      if (substitutedBody.type !== "ArrowFunctionExpression")
-        throw new Error("NOT IMPLEMENTED YET");
-      return substitutedBody;
+      return run(substitute(body));
       function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
@@ -61,44 +58,9 @@ function run(expression: Expression): Value {
         }
       }
     case "Identifier":
-      throw new Error("NOT IMPLEMENTED YET");
+      throw new Error(`Reference to undefined variable: ${expression.name}`);
   }
 }
-
-// function run(expression: Expression): Value {
-//   switch (expression.type) {
-//     case "ArrowFunctionExpression":
-//       return expression;
-//     case "CallExpression":
-//       const {
-//         params: [{ name: parameter }],
-//         body
-//       } = run(expression.callee);
-//       const argument = run(expression.arguments[0]);
-//       return run(substitute(body));
-//       function substitute(expression: Expression): Expression {
-//         switch (expression.type) {
-//           case "ArrowFunctionExpression":
-//             if (expression.params[0].name === parameter) return expression;
-//             return {
-//               ...expression,
-//               body: substitute(expression.body)
-//             };
-//           case "CallExpression":
-//             return {
-//               ...expression,
-//               callee: substitute(expression.callee),
-//               arguments: [substitute(expression.arguments[0])]
-//             };
-//           case "Identifier":
-//             if (expression.name !== parameter) return expression;
-//             return argument;
-//         }
-//       }
-//     case "Identifier":
-//       throw new Error(`Reference to undefined variable: ${expression.name}`);
-//   }
-// }
 
 function load(input: string): Expression {
   const program = parseScript(input, {}, node => {
