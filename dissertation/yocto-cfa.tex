@@ -547,7 +547,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-\noindent This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call \mintinline{ts}{run()} recursively (note the removal of the check of whether the function was immediate):
+\noindent This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call \mintinline{ts}{run()} recursively (we also remove the check of whether the function is immediate):
 
 \begin{minted}[highlightlines = {6}]{ts}
 // run()
@@ -576,7 +576,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-\noindent This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (note the removal of yet another check, making the \mintinline{ts}{substitutedBody} variable unnecessary and allowing us to inline it):
+\noindent This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (we also remove yet another check, which allows us to inline the \mintinline{ts}{substitutedBody} variable):
 
 \begin{minted}[highlightlines = {8}]{ts}
 // run()
