@@ -505,8 +505,6 @@ case "CallExpression":
   };
 \end{minted}
 
-% TODO: STOPPED HERE
-
 \subsection{An Argument That Is Not Immediate}
 \label{An Argument That Is Not Immediate}
 
@@ -517,16 +515,25 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-\noindent In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we may also remove the check that the argument is an immediate function definition):
+\noindent In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition):
 
-\begin{minted}[highlightlines = {3-4, 6}]{ts}
+\begin{minted}[highlightlines = {3-4, 9}]{ts}
 // run()
 case "CallExpression":
   if (expression.callee.type !== "ArrowFunctionExpression")
     throw new Error("NOT IMPLEMENTED YET");
-  // ...
+  const {
+    params: [{ name: parameter }],
+    body
+  } = expression.callee;
   const argument = run(expression.arguments[0]);
-  // ...
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
+    // ...
+  }
 \end{minted}
 
 \subsection{A Function That Is Not Immediate}
@@ -539,7 +546,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-\noindent This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same (note the removal of another check):
+\noindent This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call \mintinline{ts}{run()} recursively (note the removal of the check of whether the function was immediate):
 
 \begin{minted}[highlightlines = {6}]{ts}
 // run()
@@ -548,8 +555,17 @@ case "CallExpression":
     params: [{ name: parameter }],
     body
   } = run(expression.callee);
-  // ...
+  const argument = run(expression.arguments[0]);
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
+    // ...
+  }
 \end{minted}
+
+% TODO: STOPPED HERE
 
 \subsection{Continuing to Run After a Function Call}
 \label{Continuing to Run After a Function Call}
