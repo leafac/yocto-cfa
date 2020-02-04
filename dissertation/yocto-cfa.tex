@@ -537,6 +537,8 @@ case "CallExpression":
   }
 \end{minted}
 
+(In technical terms, this technique of calling \mintinline{ts}{run()} recursively to produce an immediate function characterizes the interpreter as \emph{big-step}.)
+
 \subsection{A Function That Is Not Immediate}
 \label{A Function That Is Not Immediate}
 
@@ -609,7 +611,7 @@ case "Identifier":
   throw new Error(`Reference to undefined variable: ${expression.name}`);
 \end{minted}
 
-% TODO: A _frozen_ reference to an undefined variable is fine.
+Note that if the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript’s behavior.
 
 \subsection{The Entire Runner}
 
@@ -651,8 +653,6 @@ function run(expression: Expression): Value {
   }
 }
 \end{minted}
-
-% TODO: big-step
 
 \subsection{Loader}
 \label{Step 0: Loader}
