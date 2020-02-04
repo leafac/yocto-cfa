@@ -299,7 +299,7 @@ In the sections below we fill in these placeholders step by step by considering 
 \subsection{An Expression That Already Is a Value}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{x => x} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{x => x} \\
 \end{tabular}
@@ -317,7 +317,7 @@ case "ArrowFunctionExpression":
 \label{A Call Involving Immediate Functions}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
@@ -356,7 +356,7 @@ case "CallExpression":
 \label{Substitution in Function Definitions}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{y => y} & \mintinline{js}{z => y => y} \\
 \end{tabular}
@@ -420,13 +420,13 @@ case "Identifier":
 \subsection{Name Mismatch}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => z => z)(y => y)} & \mintinline{js}{z => y => y} & \mintinline{js}{z => z} \\
 \end{tabular}
 \end{center}
 
-\noindent The implementation in §~\ref{Substitution in Function Definitions} succeeds in traversing the body of the called function, but it is substituting \emph{all} variable references, regardless of whether they refer to the parameter of the called function, which explains why it is substituting the \mintinline{js}{z} in the body even though the parameter is \mintinline{js}{x}. To fix this, we simply check whether the variable reference matches the parameter, and if it does not we prevent substitution from happening by retuning the variable reference unchanged:
+\noindent The implementation in §~\ref{Substitution in Function Definitions} succeeds in traversing the body of the called function, but it is substituting \emph{all} variable references, regardless of whether they refer to the parameter of the called function, which explains why it is substituting the \mintinline{js}{z} in the body even though the parameter is \mintinline{js}{x}. To fix this, we check whether the variable reference matches the parameter, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
@@ -435,7 +435,7 @@ case "Identifier":
   return argument;
 \end{minted}
 
-But this leads to a problem with the type of \mintinline{ts}{substitute()}: it is no longer guaranteed to return a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may return any type of \mintinline{ts}{Expression}, for example, variable references. We fix this by changing \mintinline{ts}{substitute()}’s return type:
+This leads to a problem with the return type of \mintinline{ts}{substitute()}: it is no longer guaranteed to be a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may be any type of \mintinline{ts}{Expression}, for example, variable references. We fix this by changing \mintinline{ts}{substitute()}’s return type:
 
 \begin{minted}[highlightlines = {13-17}]{ts}
 // run()
@@ -459,12 +459,10 @@ case "CallExpression":
   }
 \end{minted}
 
-% STOPPED HERE
-
 \subsection{Name Reuse}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => x => x)(y => y)} & \mintinline{js}{x => y => y} & \mintinline{js}{x => x} \\
 \end{tabular}
@@ -472,9 +470,9 @@ case "CallExpression":
 
 \noindent In the program above, there are two options for the variable reference \mintinline{js}{x} on the right of the second \mintinline{js}{=>}: it may refer to the first (outer) \mintinline{js}{x} on the left of the first \mintinline{js}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{js}{x} on the left of the second \mintinline{js}{=>}, in which case the output of the program would be \mintinline{js}{x => x}. (In technical terms, we say that the second option exhibits a behavior called \emph{shadowing}, in which the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x} because there is no way to refer to the outer \mintinline{js}{x}.)
 
-Currently \mintinline{ts}{substitute()} is implementing the first option, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently; we must know where it appears and whether a variable called \mintinline{js}{x} is already defined there. (In technical terms, we say that this defeats something called \emph{local reasoning}.)
+Currently \mintinline{ts}{substitute()} is implementing the first option, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently, but must know where it appears and whether a variable called \mintinline{js}{x} is already defined there. (In technical terms, we say that this defeats something called \emph{local reasoning}.)
 
-We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition: if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is substituting, then it simply returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in that case):
+We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the second option, which is also implemented by JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is substituting, then it simply returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in this case):
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
@@ -489,7 +487,7 @@ case "ArrowFunctionExpression":
 \subsection{Substitution in Function Calls}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => z => x(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
 \end{tabular}
@@ -507,11 +505,13 @@ case "CallExpression":
   };
 \end{minted}
 
+% TODO: STOPPED HERE
+
 \subsection{An Argument That Is Not Immediate}
 \label{An Argument That Is Not Immediate}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => x)((z => z)(y => y))} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
@@ -533,7 +533,7 @@ case "CallExpression":
 \label{A Function That Is Not Immediate}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{((z => z)(x => x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
@@ -555,7 +555,7 @@ case "CallExpression":
 \label{Continuing to Run After a Function Call}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => (z => z)(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
@@ -574,7 +574,7 @@ case "CallExpression":
 \subsection{A Reference to an Undefined Variable}
 
 \begin{center}
-\begin{tabular}{lll}
+\begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
 \mintinline{js}{(x => y)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{text}{Reference to undefined variable: y} \\
 \end{tabular}

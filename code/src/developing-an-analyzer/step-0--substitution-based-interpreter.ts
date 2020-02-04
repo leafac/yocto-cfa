@@ -49,12 +49,17 @@ function run(expression: Expression): Value {
       function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
+            if (expression.params[0].name === parameter) return expression;
             return {
               ...expression,
               body: substitute(expression.body)
             };
           case "CallExpression":
-            throw new Error("NOT IMPLEMENTED YET");
+            return {
+              ...expression,
+              callee: substitute(expression.callee),
+              arguments: [substitute(expression.arguments[0])]
+            };
           case "Identifier":
             if (expression.name !== parameter) return expression;
             return argument;
