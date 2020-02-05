@@ -94,7 +94,7 @@ In this dissertation we are interested in analysis techniques for higher-order f
 
 Unfortunately, JavaScript is a big language with many features besides higher-order functions, and an analyzer that tried to support all of them would be too complex. We address this issue by defining our own artificial little language based on a subset of JavaScript features related to higher-order functions, which we call \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
-(In technical terms, we say that Yocto-JavaScript is a representation of something called the \emph{call-by-value $\lambda$-calculus}~\cite[§~6]{understanding-computation}).)
+(In technical terms, we say that Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}).)
 
 \subsection{Values in Yocto-JavaScript}
 \label{Values in Yocto-JavaScript}
@@ -515,7 +515,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => x)((z => z)(y => y))} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{(x => z => x)((a => a)(y => y))} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -541,6 +541,8 @@ case "CallExpression":
 \end{minted}
 
 (In technical terms, this technique of calling \mintinline{ts}{run()} recursively to produce an immediate function characterizes the interpreter as \emph{big-step}.)
+
+(We could have decided \emph{not} to call \mintinline{ts}{run()} recursively to interpret the argument into a value. In this case, the argument would only be interpreted if it was \emph{used}, either as a function (see §~\ref{A Function That Is Not Immediate}) or as the result of the program (see §~\ref{Continuing to Run After a Function Call}). There are languages that do this, most notably Haskell, and they are called \emph{call-by-name}, or \emph{call-by-need}, the difference being that the an argument may be computed multiple times in a call-by-name language if it appears multiple times in the body of the called function, but in a call-by-need language an argument is guaranteed to be computed at most once. Yocto-JavaScript, JavaScript itself, and most other popular programming languages follow the approach presented in this section, which is known as \emph{call-by-value}~\cite{call-by-name-call-by-value-and-the-lambda-calculus}.)
 
 \subsection{A Function That Is Not Immediate}
 \label{A Function That Is Not Immediate}

@@ -27,8 +27,8 @@ describe("run()", () => {
 
   testEvaluate(
     "An Argument That Is Not Immediate",
-    "(x => x)((z => z)(y => y))",
-    "y => y"
+    "(x => z => x)((a => a)(y => y))",
+    "z => y => y"
   );
 
   testEvaluate(
