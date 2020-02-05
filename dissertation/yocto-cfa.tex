@@ -23,6 +23,8 @@
 \setminted{fontsize = \small, baselinestretch = 1}
 \setmintedinline{fontsize = \normalsize}
 
+\usepackage{mathpartir}
+
 \begin{document}
 
 \frontmatter
@@ -677,7 +679,27 @@ Definitional interpreters have some advantages: they are easier to understand fo
 
 The following is an operational semantics for Yocto-JavaScript:
 
-% TODO: § Inference rules for interpreter.
+\begin{center}
+\begin{tabular}{rcll}
+$v$ & ::= & $x\texttt{ => }e$ & Values \\
+\end{tabular}
+\end{center}
+
+\begin{mathpar}
+\inferrule
+{ }
+{v \Rightarrow v}
+
+\inferrule
+{
+  e_{f} \Rightarrow x_{p}\texttt{ => }e_{b} \\
+  e_{a} \Rightarrow v_{a} \\
+  e_{b}[x_{p} \backslash v_{a}] \Rightarrow v
+}
+{e_{f}\texttt{(}e_{a}\texttt{)} \Rightarrow v}
+\end{mathpar}
+
+% TODO: Substitution function
 
 \subsection{Loader}
 \label{Step 0: Loader}
