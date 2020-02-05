@@ -675,7 +675,7 @@ This is what we expect from an interpreter, but not from an analyzer: we expect 
 
 What we accomplished in this section is more than defining an interpreter for Yocto-JavaScript; we also defined a formal specification of the \emph{semantics} of the Yocto-JavaScript language: an Yocto-JavaScript program means what the interpreter produces for it. This technique for defining the meaning of a language is called a \emph{definitional interpreter}~\cite{definitional-interpreters}.
 
-Definitional interpreters have some advantages: they are easier to understand for most programmers, and they are executable. But definitional interpreters also have one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript, which is a big and complicated language. To address this, there are other techniques for defining the semantics of a programming language that do not depend on other programming languages. In this section we use one of these techniques called an \emph{operational semantics}.
+Definitional interpreters have some advantages: they are easier to understand for most programmers, and they are executable. But definitional interpreters also have one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript, which is a big and complicated language. To address this, there are other techniques for defining the semantics of a programming language that do not depend on another programming language. In this section we use one of these techniques called an \emph{operational semantics}.
 
 The following is an operational semantics for Yocto-JavaScript:
 
