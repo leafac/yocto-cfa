@@ -127,6 +127,7 @@ In general, all kinds of Yocto-JavaScript expressions (function definitions, fun
 We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed (something called the \emph{precedence} of the operations). For example, there are at least two ways in which hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h} may call one another: \mintinline{js}{(f(g))(h)}, in which case \mintinline{js}{f(g)} happens first, and the result is a function that is called with \mintinline{js}{h}; and \mintinline{js}{f(g(h))}, in which case \mintinline{js}{g(h)} happens first, and the result is passed as argument to \mintinline{js}{f}.
 
 \subsection{The Computational Power of Yocto-JavaScript}
+\label{The Computational Power of Yocto-JavaScript}
 
 Yocto-JavaScript has very few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? Is there something that we may compute in JavaScript (or Java, Python, Ruby, and so forth) that is impossible to compute in Yocto-JavaScript? Perhaps surprisingly, the answer is negative: all these languages are equivalent in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}. (We say that these languages are equivalent in \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective the features that a language supports (its \emph{expressive power}~\cite{expressive-power}) are more important, because they indicate how convenient the language is to use. Yocto-JavaScript is remarkably inexpressive, and therefore inconvenient for programming.)
 
@@ -614,10 +615,11 @@ case "Identifier":
 Note that if the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript’s behavior.
 
 \subsection{The Entire Runner}
+\label{The Entire Runner}
 
 The implementation of the \mintinline{ts}{run()} function is complete:
 
-\begin{minted}{ts}
+\begin{minted}[linenos]{ts}
 function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
@@ -654,6 +656,29 @@ function run(expression: Expression): Value {
 }
 \end{minted}
 
+\subsection{A Program That Does Not Terminate}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\mintinline{js}{(f => f(f))(f => f(f))} & \mintinline{text}{DOES NOT TERMINATE} & \mintinline{text}{DOES NOT TERMINATE} \\
+\end{tabular}
+\end{center}
+
+\noindent Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), and some programs do not terminate. Consider the first time that \mintinline{js}{run()} is called with the example program above. Both the called function and the argument are immediate functions (they are both the function \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 9 and 10) simply return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 11) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 11) leads to an infinite loop.
+
+This is what we expect from an interpreter, but not from an analyzer: we expect the analyzer to always terminate. In the next steps we will transform this interpreter to turn it into an analyzer, and one of the main issues we will address is termination.
+
+\subsection{An Operational Semantics for the Interpreter}
+
+What we accomplished in this section is more than defining an interpreter for Yocto-JavaScript; we also defined a formal specification of the \emph{semantics} of the Yocto-JavaScript language: an Yocto-JavaScript program means what the interpreter produces for it. This technique for defining the meaning of a language is called a \emph{definitional interpreter}~\cite{definitional-interpreters}.
+
+Definitional interpreters have some advantages: they are easier to understand for most programmers, and they are executable. But definitional interpreters also have one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript, which is a big and complicated language. To address this, there are other techniques for defining the semantics of a programming language that do not depend on other programming languages. In this section we use one of these techniques called an \emph{operational semantics}.
+
+The following is an operational semantics for Yocto-JavaScript:
+
+% TODO: § Inference rules for interpreter.
+
 \subsection{Loader}
 \label{Step 0: Loader}
 
@@ -663,8 +688,6 @@ function run(expression: Expression): Value {
 \label{Step 0: Unloader}
 
 % TODO
-
-% TODO: § Inference rules for interpreter.
 
 \appendix
 
