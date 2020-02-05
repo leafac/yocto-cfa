@@ -692,9 +692,9 @@ $v$ & ::= & $x\texttt{ => }e$ & Values \\
 
 \inferrule
 {
-  e_{f} \Rightarrow x_{p}\texttt{ => }e_{b} \\
-  e_{a} \Rightarrow v_{a} \\
-  e_{b}[x_{p} \backslash v_{a}] \Rightarrow v
+e_{f} \Rightarrow x_{p}\texttt{ => }e_{b} \\
+e_{a} \Rightarrow v_{a} \\
+e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
 }
 {e_{f}\texttt{(}e_{a}\texttt{)} \Rightarrow v}
 \end{mathpar}
