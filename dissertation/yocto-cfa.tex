@@ -711,11 +711,50 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \label{Step 0: Loader}
 
 % TODO: (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
+% TODO: \cite{esprima}, \cite{esprima-demonstration}
+
+\begin{minted}[linenos]{ts}
+function load(input: string): Expression {
+  const program = parseScript(input, {}, verifyFeatures);
+  const expression = (program as any).body[0].expression as Expression;
+  return expression;
+  function verifyFeatures(node: Node): void {
+    switch (node.type) {
+      case "Program":
+        if (node.body.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
+          );
+        break;
+      case "ExpressionStatement":
+        break;
+      case "ArrowFunctionExpression":
+        break;
+      case "CallExpression":
+        if (node.arguments.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+          );
+        break;
+      case "Identifier":
+        break;
+      default:
+        throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
+    }
+  }
+}
+\end{minted}
 
 \subsection{Unloader}
 \label{Step 0: Unloader}
 
 % TODO
+
+\begin{minted}{ts}
+function unload(value: Value): string {
+  return format(generate(value), { parser: "babel", semi: false }).trim();
+}
+\end{minted}
 
 \appendix
 

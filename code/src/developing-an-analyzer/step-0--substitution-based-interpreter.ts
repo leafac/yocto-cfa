@@ -1,4 +1,5 @@
 import { parseScript } from "esprima";
+import { Node } from "estree";
 import { generate } from "escodegen";
 import { format } from "prettier";
 
@@ -63,7 +64,10 @@ function run(expression: Expression): Value {
 }
 
 function load(input: string): Expression {
-  const program = parseScript(input, {}, node => {
+  const program = parseScript(input, {}, verifyFeatures);
+  const expression = (program as any).body[0].expression as Expression;
+  return expression;
+  function verifyFeatures(node: Node): void {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1)
@@ -86,9 +90,7 @@ function load(input: string): Expression {
       default:
         throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
     }
-  });
-  const expression = (program as any).body[0].expression as Expression;
-  return expression;
+  }
 }
 
 function unload(value: Value): string {
