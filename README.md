@@ -4,7 +4,7 @@
 
 [Source](https://github.com/leafac/yocto-cfa)
 
-![](https://github.com/leafac/yocto-cfa/workflows/Main/badge.svg)
+![Main](https://github.com/leafac/yocto-cfa/workflows/Main/badge.svg)
 
 # Build Dissertation
 
