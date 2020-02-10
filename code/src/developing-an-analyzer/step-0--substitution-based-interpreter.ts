@@ -4,7 +4,7 @@ import { generate } from "escodegen";
 import { format } from "prettier";
 
 export function evaluate(input: string): string {
-  return unload(run(load(input)));
+  return prettify(run(parse(input)));
 }
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -63,7 +63,7 @@ function run(expression: Expression): Value {
   }
 }
 
-function load(input: string): Expression {
+function parse(input: string): Expression {
   const program = parseScript(input, {}, verifyFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
@@ -93,6 +93,6 @@ function load(input: string): Expression {
   }
 }
 
-function unload(value: Value): string {
+function prettify(value: Value): string {
   return format(generate(value), { parser: "babel", semi: false }).trim();
 }

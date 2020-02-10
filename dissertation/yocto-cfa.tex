@@ -139,7 +139,11 @@ The order in which operations are computed is something called their \emph{prece
 \subsection{The Computational Power of Yocto-JavaScript}
 \label{The Computational Power of Yocto-JavaScript}
 
-Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}.
+Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+All these languages are said to be equivalent in terms of \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}.
+\end{mdframed}
 
 As an example of how to carry out this translation, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript, which supports only functions of one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time, for example, \mintinline{js}{f(a, b)} may be encoded as \mintinline{js}{(f(a))(b)}.
 
@@ -147,9 +151,7 @@ As an example of how to carry out this translation, consider a JavaScript functi
 This translation technique for functions with multiple arguments is called \emph{currying}~\cite[page~163]{understanding-computation}.
 \end{mdframed}
 
-% TODO: STOPPED HERE
-
-We say that these languages are equivalent in \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective there are other language properties that are more important: Does the language promote writing code of better quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, one would write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness~\cite{expressive-power} that go beyond personal preferences and anecdotal evidence.) Despite having the same computational power as other languages, Yocto-JavaScript fares bad in all other aspects: it is remarkably unproductive and inexpressive.
+For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective there are other language properties that are more important: Does the language promote writing programs of higher quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness~\cite{expressive-power} without resorting to personal preference and anecdotal evidence.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
 
 \subsection{A Formal Grammar for Yocto-JavaScript}
 \label{A Formal Grammar for Yocto-JavaScript}
@@ -168,7 +170,7 @@ $x$ & ::= & \emph{<A Valid JavaScript Identifier>} & Variables \\
 \section{The Analyzer Language: TypeScript}
 \label{The Analyzer Language: TypeScript}
 
-After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, but the analyzer may be developed in any language (JavaScript, Java, Python, Ruby, and so forth) because it treats the analyzed program as data. Yet, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Step 0: Loader} and §~\ref{Step 0: Unloader}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}.
+After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, but the analyzer may be developed in any language (JavaScript, Java, Python, Ruby, and so forth) because it treats the analyzed program as data. Yet, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Step 0: Parser} and §~\ref{Step 0: Prettifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}.
 
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
@@ -178,7 +180,11 @@ Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed 
 \subsection{Architecture}
 \label{Architecture}
 
-Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it. (The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs.)
+Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
+
+\begin{mdframed}[frametitle = {Advanced}]
+The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs.
+\end{mdframed}
 
 The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of this Step (the \mintinline{ts}{>} represents the console):
 
@@ -189,26 +195,25 @@ The following are two examples of how we will be able to use \mintinline{ts}{eva
 "y => y"
 \end{minted}
 
-The implementation of \mintinline{ts}{evaluate()} is separated in three parts called \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()}:
+The implementation of \mintinline{ts}{evaluate()} is separated into three parts called \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()}:
 
 \begin{minted}{ts}
 export function evaluate(input: string): string {
-  return unload(run(load(input)));
+  return prettify(run(parse(input)));
 }
 \end{minted}
 
-The \mintinline{ts}{load()} function prepares the \mintinline{ts}{input} for interpretation, for example, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{unload()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In later steps the implementation of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()} will change, but the architecture and therefore the implementation of \mintinline{ts}{evaluate()} will remain the same. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{load()} to §~\ref{Step 0: Loader} and \mintinline{ts}{unload()} to §~\ref{Step 0: Unloader}.
+The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{parse()} to §~\ref{Step 0: Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 
-The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}). While a string is convenient for humans to write and read, it would be inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of its \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{load()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Loader} for \mintinline{ts}{load()}’s implementation).
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Parser} for \mintinline{ts}{parse()}’s implementation).
 
 The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them:
 
 \begin{minted}{ts}
-x => x
-
+> parse("x => x")
 {
   "type": "ArrowFunctionExpression",
   "params": [
@@ -223,8 +228,7 @@ x => x
   }
 }
 
-(x => x)(y => y)
-
+> parse("(x => x)(y => y)")
 {
   "type": "CallExpression",
   "callee": {
@@ -258,7 +262,7 @@ x => x
 }
 \end{minted}
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Step 0: Loader} and §~\ref{Step 0: Unloader}).
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Step 0: Parser} and §~\ref{Step 0: Prettifier}).
 
 In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
 
@@ -285,7 +289,7 @@ interface Identifier {
 
 (The definitions above correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.)
 
-In later steps various aspects of the interpreter will change, including parts of \mintinline{ts}{load()}, \mintinline{ts}{run()}, and \mintinline{ts}{unload()}, but the data structures used to represent Yocto-JavaScript programs will remain the same.
+In later steps various aspects of the interpreter will change, including parts of \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()}, but the data structures used to represent Yocto-JavaScript programs will remain the same.
 
 \subsection{Runner Structure}
 \label{Runner Structure}
@@ -728,7 +732,7 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{tabular}
 
 \subsection{Loader}
-\label{Step 0: Loader}
+\label{Step 0: Parser}
 
 % TODO: (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
 % TODO: \cite{esprima}, \cite{esprima-demonstration}
@@ -766,7 +770,7 @@ function load(input: string): Expression {
 \end{minted}
 
 \subsection{Unloader}
-\label{Step 0: Unloader}
+\label{Step 0: Prettifier}
 
 % TODO: \cite{esprima} \cite{esprima-demonstration}
 

@@ -51,7 +51,7 @@ describe("run()", () => {
   );
 });
 
-describe("load()", () => {
+describe("parse()", () => {
   testEvaluateError("Line 1: Unexpected end of input", "x =>");
 
   testEvaluateError(
