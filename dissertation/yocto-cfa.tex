@@ -20,7 +20,10 @@
 \setminted{fontsize = \small, baselinestretch = 1}
 \setmintedinline{fontsize = \normalsize}
 
-\usepackage{graphicx, mathpartir, framed}
+\usepackage[framemethod = tikz, roundcorner = 3pt]{mdframed}
+
+\usepackage{graphicx}
+\usepackage{mathpartir}
 
 \begin{document}
 
@@ -91,11 +94,9 @@ In this dissertation we are interested in analysis techniques for higher-order f
 
 Unfortunately, JavaScript is a big language with many features besides higher-order functions and an analyzer that tried to support all of them would be too complex. To keep our analyzer tractable, it supports only a subset of JavaScript features that are related to higher-order functions. We call this subset \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
-\begin{leftbar}
-\noindent \textbf{Technical Term}
-
-\noindent Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}.
-\end{leftbar}
+\begin{mdframed}[frametitle = Technical Term]
+Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}.
+\end{mdframed}
 
 \subsection{Values in Yocto-JavaScript}
 \label{Values in Yocto-JavaScript}
