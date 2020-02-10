@@ -11,8 +11,8 @@
 \pagestyle{plain}
 
 \usepackage{fontspec, unicode-math}
-\setmainfont{XCharter}
-\setmonofont{FiraMono}[Scale = 0.9]
+\setmainfont{Charter}
+\setmonofont{Menlo}[Scale = 0.9]
 \setmathfont{TeX Gyre Pagella Math}
 
 \usepackage{minted}
@@ -197,6 +197,10 @@ The following are two examples of how we will be able to use \mintinline{ts}{eva
 
 The implementation of \mintinline{ts}{evaluate()} is separated into three parts called \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()}:
 
+\begin{center}
+\includegraphics{images/architecture.pdf}
+\end{center}
+
 \begin{minted}{ts}
 export function evaluate(input: string): string {
   return prettify(run(parse(input)));
@@ -210,10 +214,13 @@ The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for in
 
 The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Parser} for \mintinline{ts}{parse()}’s implementation).
 
-The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them:
+The following are two examples of Yocto-JavaScript programs followed by a high-level graphical representation and a low-level textual representation of their corresponding data structures:
 
 \begin{minted}{ts}
 > parse("x => x")
+\end{minted}
+\includegraphics{images/data-structures-to-represent-yocto-javascript-programs/function.pdf}
+\begin{minted}{ts}
 {
   "type": "ArrowFunctionExpression",
   "params": [
@@ -227,8 +234,13 @@ The following are two examples of Yocto-JavaScript programs followed by the data
     "name": "x"
   }
 }
+\end{minted}
 
+\begin{minted}{ts}
 > parse("(x => x)(y => y)")
+\end{minted}
+\includegraphics{images/data-structures-to-represent-yocto-javascript-programs/call.pdf}
+\begin{minted}{ts}
 {
   "type": "CallExpression",
   "callee": {
