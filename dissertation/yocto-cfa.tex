@@ -20,10 +20,10 @@
 \setminted{fontsize = \small, baselinestretch = 1}
 \setmintedinline{fontsize = \normalsize}
 
-\usepackage[framemethod = tikz, roundcorner = 3pt]{mdframed}
-
 \usepackage{graphicx}
 \usepackage{mathpartir}
+
+\usepackage[framemethod = tikz, roundcorner = 3pt]{mdframed}
 
 \begin{document}
 
@@ -88,13 +88,15 @@ Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 \section{The Analyzed Language: Yocto-JavaScript}
 \label{The Analyzed Language: Yocto-JavaScript}
 
-Our first decision when developing an analyzer is which language it should analyze. This is important because the analyzed language influences how difficult it is to build the analyzer, and it may also affect the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects (the algorithmic complexity of the former is exponential; of the latter, polynomial)~\cite{m-cfa}.
+Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, a feature which is supported by most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
-In this dissertation we are interested in analysis techniques for higher-order functions. Fortunately, most languages support higher-order functions, so we have plenty of options: JavaScript, Java, Python, Ruby, and so forth. From all these languages, we choose JavaScript because it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}.
+From all these options, we would like to choose JavaScript because it is the most popular language among programmers~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, but it has many features besides higher-order functions that would complicate our analyzer. To keep the development of the analyzer tractable, we support only a \emph{subset} of JavaScript features that are related to higher-order functions, resulting in a language that we call \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
-Unfortunately, JavaScript is a big language with many features besides higher-order functions and an analyzer that tried to support all of them would be too complex. To keep our analyzer tractable, it supports only a subset of JavaScript features that are related to higher-order functions. We call this subset \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
+\begin{mdframed}[frametitle = {Advanced}]
+On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial~\cite{m-cfa}.
+\end{mdframed}
 
-\begin{mdframed}[frametitle = Technical Term]
+\begin{mdframed}[frametitle = {Technical Terms}]
 Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}.
 \end{mdframed}
 
@@ -103,20 +105,18 @@ Yocto-JavaScript is a representation of something called the \emph{$\lambda$-cal
 
 JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
 
-An Yocto-JavaScript function is written as \verb!<parameter> => <body>!, for example, \mintinline{js}{x => x}, in which the \verb!<parameter>! is called \mintinline{js}{x} and the \verb!<body>! is a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call, or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript} for more on function calls). (This notation for writing functions is something called \emph{arrow function expressions}~\cite{arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of acting as values is what characterizes these functions as \emph{higher-order}.)
+An Yocto-JavaScript function is written as \verb!<parameter> => <body>!, for example, \mintinline{js}{x => x}, in which the \verb!<parameter>! is called \mintinline{js}{x} and the \verb!<body>! is a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript} for more on function calls).
 
-An Yocto-JavaScript function must have exactly one parameter.
+\begin{mdframed}[frametitle = {Technical Terms}]
+The notation we use for writing functions is something called \emph{arrow function expressions}~\cite{arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of acting as values is what characterizes these functions as \emph{higher-order}.
+\end{mdframed}
 
 \subsection{Operations in Yocto-JavaScript}
 \label{Operations in Yocto-JavaScript}
 
 JavaScript has many operations: strings may have its characters accessed (for example, \mintinline{js}{"Leandro"[2]}, which results in \mintinline{js}{"a"}), numbers may be added together (for example, \mintinline{js}{29 + 1}, which results in \mintinline{js}{30}), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
 
-A function call is written as \verb!<function>(<argument>)!, for example, \mintinline{js}{f(a)}, in which the \verb!<function>! is a hypothetical function \mintinline{js}{f} and the \verb!<argument>! is a hypothetical argument \mintinline{js}{a}.
-
-An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see §~\ref{Values in Yocto-JavaScript}).
-
-A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
+A function call is written as \verb!<function>(<argument>)!, for example, \mintinline{js}{f(a)}, in which the \verb!<function>! is a hypothetical function \mintinline{js}{f} and the \verb!<argument>! is a hypothetical argument \mintinline{js}{a}. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see §~\ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
 
 The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
@@ -128,14 +128,28 @@ This program is a function call in which the \verb!<function>! is \mintinline{js
 
 In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the \verb!<body>! of a function definition, or as the \verb!<function>! or \verb!<argument>! of a call (for example, in the program \mintinline{js}{(f(a))(b)} the function call \mintinline{js}{f(a)} appears as the \verb!<function>! of a call).
 
-We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed (something called the \emph{precedence} of the operations). For example, there are at least two ways in which hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h} may call one another: \mintinline{js}{(f(g))(h)}, in which case \mintinline{js}{f(g)} happens first, and the result is a function that is called with \mintinline{js}{h}; and \mintinline{js}{f(g(h))}, in which case \mintinline{js}{g(h)} happens first, and the result is passed as argument to \mintinline{js}{f}.
+We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, there are at least two ways in which hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h} may call one another: \mintinline{js}{(f(g))(h)}, in which case \mintinline{js}{f(g)} happens first, and the result is a function that is called with \mintinline{js}{h}; and \mintinline{js}{f(g(h))}, in which case \mintinline{js}{g(h)} happens first, and the result is passed as argument to \mintinline{js}{f}.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The order in which operations are computed is something called their \emph{precedence}, and operations that happen first are said to have \emph{higher precedence}.
+\end{mdframed}
+
+\begin{mdframed}[frametitle = {Advanced}]
 
 \subsection{The Computational Power of Yocto-JavaScript}
 \label{The Computational Power of Yocto-JavaScript}
 
-Yocto-JavaScript has very few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? Is there something that we may compute in JavaScript (or Java, Python, Ruby, and so forth) which is impossible to compute in Yocto-JavaScript? Perhaps surprisingly, the answer is negative: all these languages are equivalent in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}. (We say that these languages are equivalent in \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective there are other language properties that are more important: Does the language promote writing code of better quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, one would write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness~\cite{expressive-power} that go beyond personal preferences and anecdotal evidence.) Despite having the same computational power as other languages, Yocto-JavaScript fares bad in all other aspects: it is remarkably unproductive and inexpressive.)
+Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}.
 
-As an example of how to carry out the translation from a real-world language into Yocto-JavaScript, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript, which only supports functions of one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, we may encode \mintinline{js}{f(a, b)} as \mintinline{js}{(f(a))(b)}. (This technique is called \emph{currying}.)
+As an example of how to carry out this translation, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript, which supports only functions of one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time, for example, \mintinline{js}{f(a, b)} may be encoded as \mintinline{js}{(f(a))(b)}.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+This translation technique for functions with multiple arguments is called \emph{currying}~\cite[page~163]{understanding-computation}.
+\end{mdframed}
+
+% TODO: STOPPED HERE
+
+We say that these languages are equivalent in \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that from a programmer’s perspective there are other language properties that are more important: Does the language promote writing code of better quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, one would write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness~\cite{expressive-power} that go beyond personal preferences and anecdotal evidence.) Despite having the same computational power as other languages, Yocto-JavaScript fares bad in all other aspects: it is remarkably unproductive and inexpressive.
 
 \subsection{A Formal Grammar for Yocto-JavaScript}
 \label{A Formal Grammar for Yocto-JavaScript}
@@ -148,6 +162,8 @@ $e$ & ::= & $x\texttt{ => }e$ | $e\texttt{(}e\texttt{)}$ | $x$ & Expressions \\
 $x$ & ::= & \emph{<A Valid JavaScript Identifier>} & Variables \\
 \end{tabular}
 \end{center}
+
+\end{mdframed}
 
 \section{The Analyzer Language: TypeScript}
 \label{The Analyzer Language: TypeScript}
