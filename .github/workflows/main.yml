@@ -10,8 +10,6 @@ jobs:
           root_file: yocto-cfa.tex
           working_directory: dissertation
           extra_system_packages: py-pygments
-      - run: checkcites yocto-cfa.aux
-        working-directory: dissertation
       - uses: actions/upload-artifact@v1
         with:
           name: Dissertation PDF
