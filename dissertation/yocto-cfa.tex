@@ -559,7 +559,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call returns it unchanged; see §~\ref{An Expression That Already Is a Value}):
+In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call returns it unchanged; see §~\ref{An Expression That Already Is a Value}):
 
 \begin{minted}[highlightlines = {3-4, 9}]{ts}
 // run()
