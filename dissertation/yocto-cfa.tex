@@ -399,7 +399,11 @@ case "CallExpression":
 
 The implementation in §~\ref{A Call Involving Immediate Functions} works for the example given there, but it is far from working in general: it does not even consider the body of the called function, always returning the argument unchanged, which explains the current output of the example program above. What the interpreter must do is traverse the body of the called function looking for variable references and substituting them. We unpack the called function using something called \emph{destructuring assignment}~\cite{destructuring-assignment} and setup the traversal with an auxiliary function called \mintinline{ts}{substitute()}:
 
-\begin{minted}[highlightlines = {8-11, 13-16}]{ts}
+\begin{center}
+\includegraphics{images/substitute.pdf}
+\end{center}
+
+\begin{minted}[highlightlines = {8-11, 13-19}]{ts}
 // run()
 case "CallExpression":
   if (
@@ -412,8 +416,11 @@ case "CallExpression":
     body
   } = expression.callee;
   const argument = expression.arguments[0];
-  return substitute(body);
-  function substitute(expression: Expression): Value {
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
     throw new Error("NOT IMPLEMENTED YET");
   }
 \end{minted}
@@ -421,7 +428,7 @@ case "CallExpression":
 Similar to \mintinline{ts}{run()} itself, \mintinline{ts}{substitute()} starts by determining which type of \mintinline{ts}{expression} is passed to it:
 
 \begin{minted}[highlightlines = {2-9}]{ts}
-function substitute(expression: Expression): Value {
+function substitute(expression: Expression): Expression {
   switch (expression.type) {
     case "ArrowFunctionExpression":
       throw new Error("NOT IMPLEMENTED YET");
@@ -468,30 +475,6 @@ The implementation in §~\ref{Substitution in Function Definitions} succeeds in 
 case "Identifier":
   if (expression.name !== parameter) return expression;
   return argument;
-\end{minted}
-
-This leads to a problem with the return type of \mintinline{ts}{substitute()}: it is no longer guaranteed to be a \mintinline{ts}{Value}, as declared in §~\ref{Substitution in Function Definitions}, but may be any type of \mintinline{ts}{Expression}, for example, variable references. We fix this by changing \mintinline{ts}{substitute()}’s return type:
-
-\begin{minted}[highlightlines = {13-17}]{ts}
-// run()
-case "CallExpression":
-  if (
-    expression.callee.type !== "ArrowFunctionExpression" ||
-    expression.arguments[0].type !== "ArrowFunctionExpression"
-  )
-    throw new Error("NOT IMPLEMENTED YET");
-  const {
-    params: [{ name: parameter }],
-    body
-  } = expression.callee;
-  const argument = expression.arguments[0];
-  const substitutedBody = substitute(body);
-  if (substitutedBody.type !== "ArrowFunctionExpression")
-    throw new Error("NOT IMPLEMENTED YET");
-  return substitutedBody;
-  function substitute(expression: Expression): Expression {
-    // ...
-  }
 \end{minted}
 
 \subsection{Name Reuse}
