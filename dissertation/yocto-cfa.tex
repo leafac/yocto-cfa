@@ -166,7 +166,7 @@ After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
 
-Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of steps in the development of the analyzer. The first Step is an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
+Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of Steps in the development of the analyzer. The first Step is an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
 
 \subsection{Architecture}
 \label{Architecture}
@@ -174,7 +174,7 @@ Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed 
 Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
 
 \begin{mdframed}[frametitle = {Advanced}]
-The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs.
+The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs~\cite{eval}.
 \end{mdframed}
 
 The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of this Step (the \mintinline{ts}{>} represents the console):
@@ -198,7 +198,7 @@ export function evaluate(input: string): string {
 }
 \end{minted}
 
-The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections we address the implementation of \mintinline{ts}{run()} first, deferring \mintinline{ts}{parse()} to §~\ref{Step 0: Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
+The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Step 0: Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
@@ -296,10 +296,17 @@ The definitions above correspond to elements of the Yocto-JavaScript grammar (se
 
 In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.
 
-\subsection{Runner Structure}
-\label{Runner Structure}
+\subsection{An Expression That Already Is a Value}
+\label{An Expression That Already Is a Value}
 
-As mentioned in §~\ref{Data Structures to Represent Yocto-JavaScript Programs}, the \mintinline{ts}{run()} function receives as parameter an Yocto-JavaScript program represented as an \mintinline{ts}{Expression}. The \mintinline{ts}{run()} function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see §~\ref{Values in Yocto-JavaScript}), so me start the implementation of \mintinline{ts}{run()} with the following (we use \mintinline{ts}{throw} as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\mintinline{js}{x => x} & — & \mintinline{js}{x => x} \\
+\end{tabular}
+\end{center}
+
+We start the definition of \mintinline{ts}{run()} by considering the example above. As mentioned in §~\ref{Data Structures to Represent Yocto-JavaScript Programs}, the \mintinline{ts}{run()} function receives as parameter an Yocto-JavaScript program represented as an \mintinline{ts}{Expression}. The \mintinline{ts}{run()} function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see §~\ref{Values in Yocto-JavaScript}), so we start the implementation of \mintinline{ts}{run()} with the following (we use \mintinline{ts}{throw} as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
 \begin{minted}{ts}
 type Value = ArrowFunctionExpression;
@@ -324,19 +331,7 @@ function run(expression: Expression): Value {
 }
 \end{minted}
 
-In the sections below we fill in these placeholders step by step by considering example programs of increasing complexity.
-
-\subsection{An Expression That Already Is a Value}
-\label{An Expression That Already Is a Value}
-
-\begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{x => x} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{x => x} \\
-\end{tabular}
-\end{center}
-
-The \mintinline{ts}{expression} already is a \mintinline{ts}{Value}, so it may be returned unchanged:
+In our current example, the \mintinline{ts}{expression} already is a \mintinline{ts}{Value}, so it may be returned unchanged:
 
 \begin{minted}[highlightlines = {3}]{ts}
 // run()
@@ -354,13 +349,13 @@ case "ArrowFunctionExpression":
 \end{tabular}
 \end{center}
 
-Interpreting function calls is the main task of our interpreter. There are several techniques to do this and in this Step we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in §~\ref{Substitution in Function Calls}.
+Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in this Step we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in §~\ref{Substitution in Function Calls}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 This technique for interpreting function calls is what characterizes our interpreter in this Step as a \emph{substitution-based interpreter}.
 \end{mdframed}
 
-In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
+In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case for now:
 
 \begin{minted}[highlightlines = {3-7}]{ts}
 // run()
@@ -373,9 +368,9 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 \end{minted}
 
-The function that is called in our example (\mintinline{js}{x => x}) returns the argument unchanged (see §~\ref{Operations in Yocto-JavaScript}), so the following is sufficient to make this specific case work:
+Next, we unpack the called function (using something called \emph{destructuring assignment}~\cite{destructuring-assignment}) and the argument:
 
-\begin{minted}[highlightlines = {8-9}]{ts}
+\begin{minted}[highlightlines = {8-12}]{ts}
 // run()
 case "CallExpression":
   if (
@@ -383,27 +378,17 @@ case "CallExpression":
     expression.arguments[0].type !== "ArrowFunctionExpression"
   )
     throw new Error("NOT IMPLEMENTED YET");
+  const {
+    params: [{ name: parameter }],
+    body
+  } = expression.callee;
   const argument = expression.arguments[0];
-  return argument;
+  throw new Error("NOT IMPLEMENTED YET");
 \end{minted}
 
-\subsection{Substitution in Function Definitions}
-\label{Substitution in Function Definitions}
+Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} that implements the traversal of the \mintinline{ts}{body} which looking for references to \mintinline{ts}{parameter} and substituting them:
 
-\begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{y => y} & \mintinline{js}{z => y => y} \\
-\end{tabular}
-\end{center}
-
-The implementation in §~\ref{A Call Involving Immediate Functions} works for the example given there, but it is far from working in general: it does not even consider the body of the called function, always returning the argument unchanged, which explains the current output of the example program above. What the interpreter must do is traverse the body of the called function looking for variable references and substituting them. We unpack the called function using something called \emph{destructuring assignment}~\cite{destructuring-assignment} and setup the traversal with an auxiliary function called \mintinline{ts}{substitute()}:
-
-\begin{center}
-\includegraphics{images/substitute.pdf}
-\end{center}
-
-\begin{minted}[highlightlines = {8-11, 13-19}]{ts}
+\begin{minted}[highlightlines = {13-19}]{ts}
 // run()
 case "CallExpression":
   if (
@@ -440,7 +425,33 @@ function substitute(expression: Expression): Expression {
 }
 \end{minted}
 
-When \mintinline{ts}{substitute()} starts traversing the \mintinline{ts}{body}, the \mintinline{ts}{expression} is an \mintinline{ts}{ArrowFunctionExpression} (\mintinline{js}{z => x}), and we want substitution to proceed deeper to find and substitute \mintinline{js}{x}, so we call \mintinline{ts}{substitute()} recursively (we use a feature called \emph{spread syntax}~\cite{spread-syntax} to build an \mintinline{ts}{expression} based on the existing one with a new \mintinline{ts}{body}):
+In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an \mintinline{ts}{Identifier}, and it must be substituted with the \mintinline{ts}{argument}:
+
+\begin{center}
+\includegraphics{images/a-call-involving-immediate-functions.pdf}
+\end{center}
+
+\begin{minted}[highlightlines = {3}]{ts}
+// substitute()
+case "Identifier":
+  return argument;
+\end{minted}
+
+\subsection{Substitution in Function Definitions}
+\label{Substitution in Function Definitions}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\mintinline{js}{(x => z => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\end{tabular}
+\end{center}
+
+When \mintinline{ts}{substitute()} (see §~\ref{A Call Involving Immediate Functions}) starts traversing the \mintinline{ts}{body} of the example above, the \mintinline{ts}{expression} is an \mintinline{ts}{ArrowFunctionExpression} (\mintinline{js}{z => x}), and we want substitution to proceed deeper to find and substitute \mintinline{js}{x}, so we call \mintinline{ts}{substitute()} recursively (we use a feature called \emph{spread syntax}~\cite{spread-syntax} to build an \mintinline{ts}{expression} based on the existing one with a new \mintinline{ts}{body}):
+
+\begin{center}
+\includegraphics{images/substitution-in-function-definitions.pdf}
+\end{center}
 
 \begin{minted}[highlightlines = {3-6}]{ts}
 // substitute()
@@ -449,14 +460,6 @@ case "ArrowFunctionExpression":
     ...expression,
     body: substitute(expression.body)
   };
-\end{minted}
-
-After this recursive call, \mintinline{ts}{substitute()} reaches the case in which the \mintinline{ts}{expression} is a variable reference (an \mintinline{ts}{Identifier}): \mintinline{js}{x}. When this happens, \mintinline{ts}{substitute()} performs the substitution by returning the \mintinline{ts}{argument}:
-
-\begin{minted}[highlightlines = {3}]{ts}
-// substitute()
-case "Identifier":
-  return argument;
 \end{minted}
 
 \subsection{Name Mismatch}
@@ -468,7 +471,7 @@ case "Identifier":
 \end{tabular}
 \end{center}
 
-The implementation in §~\ref{Substitution in Function Definitions} succeeds in traversing the body of the called function, but it is substituting \emph{all} variable references, regardless of whether they refer to the parameter of the called function, which explains why in the example above it is substituting the \mintinline{js}{z} even though the parameter is \mintinline{js}{x}. To fix this, we check whether the variable reference matches the parameter, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
+The implementation of \mintinline{ts}{substitute()} in the case of \mintinline{ts}{Identifier} introduced in §~\ref{A Call Involving Immediate Functions} \emph{always} substitutes variable references, regardless of whether they refer to the \mintinline{ts}{parameter} of the called function. For example, in the program above \mintinline{ts}{substitute()} is substituting the \mintinline{js}{z} even though the \mintinline{ts}{parameter} is \mintinline{js}{x}. To fix this, we check whether the variable reference matches the \mintinline{ts}{parameter}, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
@@ -542,7 +545,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call returns it unchanged; see §~\ref{An Expression That Already Is a Value}):
+In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the argument unchanged; see §~\ref{An Expression That Already Is a Value}):
 
 \begin{minted}[highlightlines = {3-4, 9}]{ts}
 // run()
@@ -563,9 +566,13 @@ case "CallExpression":
   }
 \end{minted}
 
-(In technical terms, this technique of calling \mintinline{ts}{run()} recursively to produce an immediate function characterizes the interpreter as \emph{big-step}.)
+\begin{mdframed}[frametitle = {Technical Terms}]
+This technique of calling \mintinline{ts}{run()} recursively to produce an immediate function for the argument characterizes the interpreter as \emph{big-step}.
+\end{mdframed}
 
-(We could have decided \emph{not} to call \mintinline{ts}{run()} recursively to interpret the argument into a value. In this case, the argument would only be interpreted if it was \emph{used}, either as a function (see §~\ref{A Function That Is Not Immediate}) or as the result of the program (see §~\ref{Continuing to Run After a Function Call}); for example, the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. There are languages that do this, most notably Haskell, and they are called \emph{call-by-name}, or \emph{call-by-need}, the difference being that the an argument may be computed multiple times in a call-by-name language if it appears multiple times in the body of the called function, but in a call-by-need language an argument is guaranteed to be computed at most once. Yocto-JavaScript, JavaScript itself, and most other popular programming languages follow the approach presented in this section, which is known as \emph{call-by-value}~\cite{call-by-name-call-by-value-and-the-lambda-calculus}.)
+\begin{mdframed}[frametitle = {Advanced}]
+We could have decided \emph{not} to call \mintinline{ts}{run()} recursively to interpret the argument into a value. In this case, the argument would only be interpreted if it was \emph{used}, either as a function (see §~\ref{A Function That Is Not Immediate}) or as the result of the program (see §~\ref{Continuing to Run After a Function Call}); for example, the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. There are languages that do this, most notably Haskell, and they are called \emph{call-by-name}, or \emph{call-by-need}, the difference being that in a call-by-name language the an argument may be computed multiple times if it appears multiple times in the body of the called function, but in a call-by-need language an argument is guaranteed to be computed at most once. Yocto-JavaScript, JavaScript itself, and most other popular programming languages follow the approach presented in this section, which is known as \emph{call-by-value}~\cite{call-by-name-call-by-value-and-the-lambda-calculus}.
+\end{mdframed}
 
 \subsection{A Function That Is Not Immediate}
 \label{A Function That Is Not Immediate}
@@ -606,7 +613,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (we also remove yet another check, which allows us to inline the \mintinline{ts}{substitutedBody} variable):
+This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (we also remove yet another check and inline the \mintinline{ts}{substitutedBody} variable):
 
 \begin{minted}[highlightlines = {8}]{ts}
 // run()
@@ -694,9 +701,11 @@ function run(expression: Expression): Value {
 
 Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), and some programs do not terminate. Consider the first time that \mintinline{js}{run()} is called with the example program above. Both the called function and the argument are immediate functions (they are both the function \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 9 and 10) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 11) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 11) leads to an infinite loop.
 
-This is what we expect from an interpreter, but not from an analyzer: we expect the analyzer to always terminate. In the next steps we will transform this interpreter to turn it into an analyzer, and one of the main issues we will address is termination.
+This is what we expect from an interpreter, but not from an analyzer: we expect the analyzer to always terminate. In the next Steps we will transform this interpreter to turn it into an analyzer, and one of the main issues we will address is termination.
 
+\begin{mdframed}[frametitle = {Advanced}]
 \subsection{An Operational Semantics for the Interpreter}
+\label{An Operational Semantics for the Interpreter}
 
 What we accomplished in this section is more than defining an interpreter for Yocto-JavaScript; we also defined a formal specification of the \emph{semantics} of the Yocto-JavaScript language: an Yocto-JavaScript program means what the interpreter produces for it. This technique for defining the meaning of a language is called a \emph{definitional interpreter}~\cite{definitional-interpreters}.
 
@@ -731,6 +740,7 @@ $(e_{f}\texttt{(}e_{a}\texttt{)})[x_{p} \backslash v_{a}]$ & = & $(e_{f}[x_{p} \
 $x[x_{p} \backslash v_{a}]$ & = & $x$ & if $x \neq x_{p}$ \\
 $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{tabular}
+\end{mdframed}
 
 \subsection{Loader}
 \label{Step 0: Parser}
