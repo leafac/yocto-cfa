@@ -435,6 +435,10 @@ function substitute(expression: Expression): Expression {
 
 In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an \mintinline{ts}{Identifier}, and it must be substituted with the \mintinline{ts}{argument}:
 
+\begin{center}
+\includegraphics{images/a-call-involving-immediate-functions.pdf}
+\end{center}
+
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
 case "Identifier":
