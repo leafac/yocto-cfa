@@ -64,10 +64,10 @@ function run(expression: Expression): Value {
 }
 
 function parse(input: string): Expression {
-  const program = parseScript(input, {}, verifyFeatures);
+  const program = parseScript(input, {}, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
-  function verifyFeatures(node: Node): void {
+  function checkFeatures(node: Node): void {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1)

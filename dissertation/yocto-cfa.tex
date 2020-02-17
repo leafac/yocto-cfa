@@ -165,7 +165,7 @@ $x$ & ::= & \emph{<A Valid JavaScript Identifier>} & Variables \\
 \section{The Analyzer Language: TypeScript}
 \label{The Analyzer Language: TypeScript}
 
-After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, but that does not restrict our choice of language in which to develop the analyzer because the analyzer treats the analyzed program as data, so it could be developed in any language: JavaScript, Java, Python, Ruby, and so forth. Still, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Step 0: Parser} and §~\ref{Step 0: Prettifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}.
+After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, but that does not restrict our choice of language in which to develop the analyzer because the analyzer treats the analyzed program as data, so it could be developed in any language: JavaScript, Java, Python, Ruby, and so forth. Still, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Parser} and §~\ref{Step 0: Prettifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}.
 
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
@@ -202,12 +202,16 @@ export function evaluate(input: string): string {
 }
 \end{minted}
 
-The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Step 0: Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
+The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 
-The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Step 0: Parser} for \mintinline{ts}{parse()}’s implementation).
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The process of converting a program represented as a string into more convenient data structures is known as \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.
+\end{mdframed}
 
 The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them, first in a high-level graphical representation and then in an equivalent low-level textual representation:
 
@@ -269,7 +273,7 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 }
 \end{minted}
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Step 0: Parser} and §~\ref{Step 0: Prettifier}).
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Parser} and §~\ref{Step 0: Prettifier}).
 
 In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
 
@@ -758,18 +762,19 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{center}
 \end{mdframed}
 
-\subsection{Loader}
-\label{Step 0: Parser}
+\subsection{Parser}
+\label{Parser}
 
-% TODO: (This is a process called \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.)
-% TODO: \cite{esprima}, \cite{esprima-demonstration}
+The parser is responsible for converting a Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the reasoning and the definition of the data structures). We choose to represent Yocto-JavaScript programs using data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
+
+Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
 \begin{minted}[linenos]{ts}
-function load(input: string): Expression {
-  const program = parseScript(input, {}, verifyFeatures);
+function parse(input: string): Expression {
+  const program = parseScript(input, {}, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
-  function verifyFeatures(node: Node): void {
+  function checkFeatures(node: Node): void {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1)
@@ -796,13 +801,55 @@ function load(input: string): Expression {
 }
 \end{minted}
 
-\subsection{Unloader}
+\begin{description}
+\item [Line 1:]
+
+The parser is defined as function called \mintinline{ts}{parse()}, which receives the program \mintinline{ts}{input} represented as a \mintinline{ts}{string} and returns an \mintinline{ts}{Expression} (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
+
+\item [Line 2:]
+
+Call the Esprima function \mintinline{ts}{parseScript()}, which parses the \mintinline{ts}{input} as if it were a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body. We pass as argument to \mintinline{ts}{parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
+
+\item [Line 3:]
+
+Extract the single \mintinline{ts}{Expression} from within the \mintinline{ts}{Program} returned by \mintinline{ts}{parseScript()}. The \mintinline{ts}{as <something>} forms sidestep the TypeScript type checker and assert that the \mintinline{ts}{expression} is of the correct type. This is safe to do because of \mintinline{ts}{checkFeatures()}.
+
+\item [Line 5:]
+
+The \mintinline{ts}{checkFeatures()} function, which is passed to Esprima’s \mintinline{ts}{parseScript()} is called with every fragment of data structure used to represent the program. These fragments are called \emph{nodes}, because the data structure forms a \emph{tree}, also known as the \emph{Abstract Syntax Tree}~(AST) of the program (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{checkFeatures()} does not return anything (\mintinline{ts}{void}); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+
+\item [Lines 6, 7, 13, 15, 17, 23, 25:]
+
+Similar to \mintinline{ts}{run()} and \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}), \mintinline{ts}{checkFeatures()} starts by determining which type of \mintinline{ts}{Node} it is given.
+
+\item [Lines 8–11:]
+
+Check that the \mintinline{ts}{Program} contains a single statement. This prevents programs such as \mintinline{js}{x => x; y => y}.
+
+\item [Lines 13, 15:]
+
+\mintinline{ts}{ExpressionStatement}s and \mintinline{ts}{ArrowFunctionExpression}s are supported in Yocto-JavaScript unconditionally. We could check that the \mintinline{ts}{ArrowFunctionExpression} includes only one parameter which is a variable, as opposed to a pattern such as \mintinline{js}{[x, y]}, but this is not necessary because Esprima already calls \mintinline{ts}{checkFeatures()} with other unsupported \mintinline{ts}{node}s that subsume these cases. For example, in the program \mintinline{js}{(x, y) => x}, which is a function of multiple parameters, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{SequenceExpression}. Similarly, in the program \mintinline{js}{([x, y]) => x}, which is a function in which the parameter is a pattern, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{ArrayExpression}.
+
+\item [Lines 18–21:]
+
+Check that the \mintinline{ts}{CallExpression} contains a single argument. This prevents programs such as \mintinline{js}{f(a, b)}.
+
+\item [Line 23:]
+
+\mintinline{ts}{Identifier}s are supported in Yocto-JavaScript unconditionally. Note that an \mintinline{ts}{Identifier} may be an expression or the parameter of an \mintinline{ts}{ArrowFunctionExpression}.
+
+\item [Line 26:]
+
+Any type of \mintinline{ts}{Node} that has not been explicitly allowed is not supported by Yocto-JavaScript. This includes programs such as \mintinline{js}{29} (\mintinline{ts}{Literal}) and \mintinline{js}{const f = x => x} (\mintinline{ts}{VariableDeclarator}).
+\end{description}
+
+\subsection{Prettifier}
 \label{Step 0: Prettifier}
 
 % TODO: \cite{esprima} \cite{esprima-demonstration}
 
 \begin{minted}{ts}
-function unload(value: Value): string {
+function prettify(value: Value): string {
   return format(generate(value), { parser: "babel", semi: false }).trim();
 }
 \end{minted}

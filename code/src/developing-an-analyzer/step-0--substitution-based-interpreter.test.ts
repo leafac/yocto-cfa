@@ -60,18 +60,6 @@ describe("parse()", () => {
   );
 
   testEvaluateError(
-    "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments",
-    "f => a => b => f(a, b)"
-  );
-
-  testEvaluateError(`Unsupported Yocto-JavaScript feature: Literal`, "29");
-
-  testEvaluateError(
-    `Unsupported Yocto-JavaScript feature: VariableDeclarator`,
-    "const f = x => x"
-  );
-
-  testEvaluateError(
     "Unsupported Yocto-JavaScript feature: SequenceExpression",
     "(x, y) => x"
   );
@@ -79,6 +67,18 @@ describe("parse()", () => {
   testEvaluateError(
     "Unsupported Yocto-JavaScript feature: ArrayExpression",
     "([x, y]) => x"
+  );
+
+  testEvaluateError(
+    "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments",
+    "f(a, b)"
+  );
+
+  testEvaluateError(`Unsupported Yocto-JavaScript feature: Literal`, "29");
+
+  testEvaluateError(
+    `Unsupported Yocto-JavaScript feature: VariableDeclarator`,
+    "const f = x => x"
   );
 });
 
