@@ -509,7 +509,7 @@ Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads
 We say that the problem with Option~1 is that it defeats something called \emph{local reasoning}. We say that Option~2 exhibits a behavior called \emph{shadowing}, and that the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x}, because there is no way to refer to the outer \mintinline{js}{x} from the body of the inner function.
 \end{mdframed}
 
-We avoid this issue by modifying \mintinline{ts}{substitute()} to implement the Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is substituting, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in this case):
+We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in this case):
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
@@ -553,7 +553,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the argument unchanged; see §~\ref{An Expression That Already Is a Value}):
+In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the immediate function unchanged; see §~\ref{An Expression That Already Is a Value}):
 
 \begin{minted}[highlightlines = {3-4, 9}]{ts}
 // run()
@@ -579,7 +579,7 @@ This technique of calling \mintinline{ts}{run()} recursively to produce an immed
 \end{mdframed}
 
 \begin{mdframed}[frametitle = {Advanced}]
-We could have decided \emph{not} to call \mintinline{ts}{run()} recursively to interpret the argument into a value. In this case, the argument would only be interpreted if it was \emph{used}, either as a function (see §~\ref{A Function That Is Not Immediate}) or as the result of the program (see §~\ref{Continuing to Run After a Function Call}); for example, the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. There are languages that do this, most notably Haskell, and they are called \emph{call-by-name}, or \emph{call-by-need}, the difference being that in a call-by-name language the an argument may be computed multiple times if it appears multiple times in the body of the called function, but in a call-by-need language an argument is guaranteed to be computed at most once. Yocto-JavaScript, JavaScript itself, and most other popular programming languages follow the approach presented in this section, which is known as \emph{call-by-value}~\cite{call-by-name-call-by-value-and-the-lambda-calculus}.
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a \emph{call-by-value} language~\cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, the most notable exception being Haskell, which is a \emph{call-by-need} language. In a call-by-need language the argument is only interpreted if it is \emph{needed}, for example, if it is used in the function position of another call (see §~\ref{A Function That Is Not Immediate}), or if it is the result of the program (see §~\ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. There is yet another policy for when to interpret arguments called \emph{call-by-name}: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
 \end{mdframed}
 
 \subsection{A Function That Is Not Immediate}
@@ -662,6 +662,8 @@ Note that if the reference to an undefined variable occurs in the body of a func
 The implementation of the \mintinline{ts}{run()} function is complete:
 
 \begin{minted}[linenos]{ts}
+type Value = ArrowFunctionExpression;
+
 function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
@@ -707,25 +709,27 @@ function run(expression: Expression): Value {
 \end{tabular}
 \end{center}
 
-Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), and some programs do not terminate. Consider the first time that \mintinline{js}{run()} is called with the example program above. Both the called function and the argument are immediate functions (they are both the function \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 9 and 10) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 11) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 11) leads to an infinite loop.
+Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above: the first time that \mintinline{js}{run()} is called on it, both the called function and the argument are immediate functions (they are both the function \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 11 and 12) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 13) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 13) leads to an infinite loop.
 
-This is what we expect from an interpreter, but not from an analyzer: we expect the analyzer to always terminate. In the next Steps we will transform this interpreter to turn it into an analyzer, and one of the main issues we will address is termination.
+This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will transform this interpreter to turn it into an analyzer, and one of the main issues we will address is termination.
 
 \begin{mdframed}[frametitle = {Advanced}]
 \subsection{An Operational Semantics for the Interpreter}
 \label{An Operational Semantics for the Interpreter}
 
-What we accomplished in this section is more than defining an interpreter for Yocto-JavaScript; we also defined a formal specification of the \emph{semantics} of the Yocto-JavaScript language: an Yocto-JavaScript program means what the interpreter produces for it. This technique for defining the meaning of a language is called a \emph{definitional interpreter}~\cite{definitional-interpreters}.
+What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript, we also defined formally the \emph{meaning} of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the \emph{semantics} of the language, and there are several techniques to specify semantics; the one we are using so far is known as a \emph{definitional interpreter}~\cite{definitional-interpreters}.
 
-Definitional interpreters have some advantages: they are easier to understand for most programmers, and they are executable. But definitional interpreters also have one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining the semantics of a programming language that do not depend on another programming language. In this section we use one of these techniques called an \emph{operational semantics}~\cite{operational-semantics}.
+A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, other techniques for defining the semantics do not depend on other programming languages. In this section we introduce one of these techniques called an \emph{operational semantics}~\cite{operational-semantics, semantics-engineering, pl}.
 
-The following is an operational semantics for Yocto-JavaScript:
+First, we extend the grammar from §~\ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type \mintinline{ts}{Value} (see §~\ref{The Entire Runner}, line 1):
 
 \begin{center}
 \begin{tabular}{rcll}
 $v$ & ::= & $x\texttt{ => }e$ & Values \\
 \end{tabular}
 \end{center}
+
+Next, we provide \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
 \inferrule
@@ -741,6 +745,9 @@ e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
 {e_{f}\texttt{(}e_{a}\texttt{)} \Rightarrow v}
 \end{mathpar}
 
+Finally, we provide a \emph{metafunction} that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, lines 14–32):
+
+\begin{center}
 \begin{tabular}{rcll}
 $(x\texttt{ => }e)[x_{p} \backslash v_{a}]$ & = & $x\texttt{ => }(e[x_{p} \backslash v_{a}])$ & if $x \neq x_{p}$ \\
 $(x_{p}\texttt{ => }e)[x_{p} \backslash v_{a}]$ & = & $x_{p}\texttt{ => }e$ & \\
@@ -748,6 +755,7 @@ $(e_{f}\texttt{(}e_{a}\texttt{)})[x_{p} \backslash v_{a}]$ & = & $(e_{f}[x_{p} \
 $x[x_{p} \backslash v_{a}]$ & = & $x$ & if $x \neq x_{p}$ \\
 $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{tabular}
+\end{center}
 \end{mdframed}
 
 \subsection{Loader}
