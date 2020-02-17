@@ -359,7 +359,7 @@ Interpreting function calls is the main responsibility of our interpreter. There
 This technique for interpreting function calls is what characterizes our interpreter in this Step as a \emph{substitution-based interpreter}.
 \end{mdframed}
 
-In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case for now:
+In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
 \begin{minted}[highlightlines = {3-7}]{ts}
 // run()
@@ -390,7 +390,11 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 \end{minted}
 
-Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} that implements the traversal of the \mintinline{ts}{body} which looking for references to \mintinline{ts}{parameter} and substituting them:
+Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} that implements the traversal of the \mintinline{ts}{body} looking for references to \mintinline{ts}{parameter} and substituting them:
+
+\begin{center}
+\includegraphics{images/substitute.pdf}
+\end{center}
 
 \begin{minted}[highlightlines = {13-19}]{ts}
 // run()
@@ -430,10 +434,6 @@ function substitute(expression: Expression): Expression {
 \end{minted}
 
 In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an \mintinline{ts}{Identifier}, and it must be substituted with the \mintinline{ts}{argument}:
-
-\begin{center}
-\includegraphics{images/a-call-involving-immediate-functions.pdf}
-\end{center}
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
