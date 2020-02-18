@@ -2,9 +2,10 @@ import { parseScript } from "esprima";
 import { Node } from "estree";
 import { generate } from "escodegen";
 import { format } from "prettier";
+import { Map } from "immutable";
 
 export function evaluate(input: string): PrettyValue {
-  return prettify(run(parse(input), new Map()));
+  return prettify(run(parse(input), Map()));
 }
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -51,7 +52,7 @@ function run(expression: Expression, environment: Environment): Value {
       return run(
         body,
         // TODO: Double-check that tests cover the common mistake of saying ‘environment’ on the line below.
-        new Map([...functionEnvironment, [parameter, argument]])
+        functionEnvironment.set(parameter, argument)
       );
     case "Identifier":
       const { name } = expression;
@@ -102,8 +103,6 @@ function prettify(value: Value): PrettyValue {
       parser: "babel",
       semi: false
     }).trim(),
-    environment: new Map(
-      [...value.environment].map(([name, value]) => [name, prettify(value)])
-    )
+    environment: value.environment.map(prettify)
   };
 }
