@@ -36,6 +36,7 @@ interface Closure {
 
 type Environment = Map<string, Value>;
 
+// TODO: Wrap arguments in an State object.
 function run(expression: Expression, environment: Environment): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
