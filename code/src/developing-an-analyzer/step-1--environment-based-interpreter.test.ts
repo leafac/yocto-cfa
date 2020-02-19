@@ -2,49 +2,109 @@ import { evaluate } from "./step-1--environment-based-interpreter";
 
 describe("run()", () => {
   test("§ An Expression That Already Is a Value", () => {
-    expect(evaluate("x => x")).toMatchInlineSnapshot(`"x => x"`);
+    expect(evaluate("x => x")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "x => x",
+      }
+    `);
   });
 
   test("§ A Call Involving Immediate Functions", () => {
-    expect(evaluate("(x => x)(y => y)")).toMatchInlineSnapshot(`"y => y"`);
+    expect(evaluate("(x => x)(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "y => y",
+      }
+    `);
   });
 
   test("§ Substitution in Function Definitions", () => {
-    expect(evaluate("(x => z => x)(y => y)")).toMatchInlineSnapshot(
-      `"z => y => y"`
-    );
+    expect(evaluate("(x => z => x)(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {
+          "x": Object {
+            "environment": Immutable.Map {},
+            "function": "y => y",
+          },
+        },
+        "function": "z => x",
+      }
+    `);
   });
 
   test("§ Name Mismatch", () => {
-    expect(evaluate("(x => z => z)(y => y)")).toMatchInlineSnapshot(`"z => z"`);
+    expect(evaluate("(x => z => z)(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {
+          "x": Object {
+            "environment": Immutable.Map {},
+            "function": "y => y",
+          },
+        },
+        "function": "z => z",
+      }
+    `);
   });
 
   test("§ Name Reuse", () => {
-    expect(evaluate("(x => x => x)(y => y)")).toMatchInlineSnapshot(`"x => x"`);
+    expect(evaluate("(x => x => x)(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {
+          "x": Object {
+            "environment": Immutable.Map {},
+            "function": "y => y",
+          },
+        },
+        "function": "x => x",
+      }
+    `);
   });
 
   test("§ Substitution in Function Calls", () => {
-    expect(evaluate("(x => z => x(x))(y => y)")).toMatchInlineSnapshot(
-      `"z => (y => y)(y => y)"`
-    );
+    expect(evaluate("(x => z => x(x))(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {
+          "x": Object {
+            "environment": Immutable.Map {},
+            "function": "y => y",
+          },
+        },
+        "function": "z => x(x)",
+      }
+    `);
   });
 
   test("§ An Argument That Is Not Immediate", () => {
-    expect(evaluate("(x => z => x)((a => a)(y => y))")).toMatchInlineSnapshot(
-      `"z => y => y"`
-    );
+    expect(evaluate("(x => z => x)((a => a)(y => y))")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {
+          "x": Object {
+            "environment": Immutable.Map {},
+            "function": "y => y",
+          },
+        },
+        "function": "z => x",
+      }
+    `);
   });
 
   test("§ A Function That Is Not Immediate", () => {
-    expect(evaluate("((z => z)(x => x))(y => y)")).toMatchInlineSnapshot(
-      `"y => y"`
-    );
+    expect(evaluate("((z => z)(x => x))(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "y => y",
+      }
+    `);
   });
 
   test("§ Continuing to Run After a Function Call", () => {
-    expect(evaluate("(x => (z => z)(x))(y => y)")).toMatchInlineSnapshot(
-      `"y => y"`
-    );
+    expect(evaluate("(x => (z => z)(x))(y => y)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "y => y",
+      }
+    `);
   });
 
   test("§ A Reference to an Undefined Variable", () => {
@@ -53,7 +113,12 @@ describe("run()", () => {
     }).toThrowErrorMatchingInlineSnapshot(
       `"Reference to undefined variable: y"`
     );
-    expect(evaluate("x => y")).toMatchInlineSnapshot(`"x => y"`);
+    expect(evaluate("x => y")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "x => y",
+      }
+    `);
   });
 
   test("§ A Program That Does Not Terminate", () => {
