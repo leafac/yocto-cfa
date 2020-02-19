@@ -53,7 +53,7 @@ describe("run()", () => {
     }).toThrowErrorMatchingInlineSnapshot(
       `"Reference to undefined variable: y"`
     );
-    expect(evaluate("x => y")).toMatchInlineSnapshot("x => y", `"x => y"`);
+    expect(evaluate("x => y")).toMatchInlineSnapshot(`"x => y"`);
   });
 
   test("§ A Program That Does Not Terminate", () => {
