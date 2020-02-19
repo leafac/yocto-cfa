@@ -1,97 +1,101 @@
 import { evaluate } from "./step-0--substitution-based-interpreter";
 
 describe("run()", () => {
-  testEvaluate("An Expression That Already Is a Value", "x => x", "x => x");
+  test("§ An Expression That Already Is a Value", () => {
+    expect(evaluate("x => x")).toEqual("x => x");
+  });
 
-  testEvaluate(
-    "A Call Involving Immediate Functions",
-    "(x => x)(y => y)",
-    "y => y"
-  );
+  test("§ A Call Involving Immediate Functions", () => {
+    expect(evaluate("(x => x)(y => y)")).toEqual("y => y");
+  });
 
-  testEvaluate(
-    "Substitution in Function Definitions",
-    "(x => z => x)(y => y)",
-    "z => y => y"
-  );
+  test("§ Substitution in Function Definitions", () => {
+    expect(evaluate("(x => z => x)(y => y)")).toEqual("z => y => y");
+  });
 
-  testEvaluate("Name Mismatch", "(x => z => z)(y => y)", "z => z");
+  test("§ Name Mismatch", () => {
+    expect(evaluate("(x => z => z)(y => y)")).toEqual("z => z");
+  });
 
-  testEvaluate("Name Reuse", "(x => x => x)(y => y)", "x => x");
+  test("§ Name Reuse", () => {
+    expect(evaluate("(x => x => x)(y => y)")).toEqual("x => x");
+  });
 
-  testEvaluate(
-    "Substitution in Function Calls",
-    "(x => z => x(x))(y => y)",
-    "z => (y => y)(y => y)"
-  );
+  test("§ Substitution in Function Calls", () => {
+    expect(evaluate("(x => z => x(x))(y => y)")).toEqual(
+      "z => (y => y)(y => y)"
+    );
+  });
 
-  testEvaluate(
-    "An Argument That Is Not Immediate",
-    "(x => z => x)((a => a)(y => y))",
-    "z => y => y"
-  );
+  test("§ An Argument That Is Not Immediate", () => {
+    expect(evaluate("(x => z => x)((a => a)(y => y))")).toEqual("z => y => y");
+  });
 
-  testEvaluate(
-    "A Function That Is Not Immediate",
-    "((z => z)(x => x))(y => y)",
-    "y => y"
-  );
+  test("§ A Function That Is Not Immediate", () => {
+    expect(evaluate("((z => z)(x => x))(y => y)")).toEqual("y => y");
+  });
 
-  testEvaluate(
-    "Continuing to Run After a Function Call",
-    "(x => (z => z)(x))(y => y)",
-    "y => y"
-  );
+  test("§ Continuing to Run After a Function Call", () => {
+    expect(evaluate("(x => (z => z)(x))(y => y)")).toEqual("y => y");
+  });
 
-  testEvaluateError("Reference to undefined variable: y", "(x => y)(y => y)");
+  test("§ A Reference to an Undefined Variable", () => {
+    expect(() => {
+      evaluate("(x => y)(y => y)");
+    }).toThrow("Reference to undefined variable: y");
+  });
 
-  testEvaluateError(
-    "Maximum call stack size exceeded",
-    "(f => f(f))(f => f(f))"
-  );
+  test("§ A Program That Does Not Terminate", () => {
+    expect(() => {
+      evaluate("(f => f(f))(f => f(f))");
+    }).toThrow("Maximum call stack size exceeded");
+  });
 });
 
 describe("parse()", () => {
-  testEvaluateError("Line 1: Unexpected end of input", "x =>");
-
-  testEvaluateError(
-    "Unsupported Yocto-JavaScript feature: Program with multiple statements",
-    "x => x; y => y"
-  );
-
-  testEvaluateError(
-    "Unsupported Yocto-JavaScript feature: SequenceExpression",
-    "(x, y) => x"
-  );
-
-  testEvaluateError(
-    "Unsupported Yocto-JavaScript feature: ArrayExpression",
-    "([x, y]) => x"
-  );
-
-  testEvaluateError(
-    "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments",
-    "f(a, b)"
-  );
-
-  testEvaluateError(`Unsupported Yocto-JavaScript feature: Literal`, "29");
-
-  testEvaluateError(
-    `Unsupported Yocto-JavaScript feature: VariableDeclarator`,
-    "const f = x => x"
-  );
-});
-
-function testEvaluate(name: string, input: string, expectedOutput: string) {
-  test(name, () => {
-    expect(evaluate(input)).toEqual(expectedOutput);
-  });
-}
-
-function testEvaluateError(name: string, input: string) {
-  test(name, () => {
+  test("Syntax error", () => {
     expect(() => {
-      evaluate(input);
-    }).toThrow(name);
+      evaluate("x =>");
+    }).toThrow("Line 1: Unexpected end of input");
   });
-}
+
+  test("Program with multiple statements", () => {
+    expect(() => {
+      evaluate("x => x; y => y");
+    }).toThrow(
+      "Unsupported Yocto-JavaScript feature: Program with multiple statements"
+    );
+  });
+
+  test("Function of multiple parameters", () => {
+    expect(() => {
+      evaluate("(x, y) => x");
+    }).toThrow("Unsupported Yocto-JavaScript feature: SequenceExpression");
+  });
+
+  test("Function with parameter that is a pattern", () => {
+    expect(() => {
+      evaluate("([x, y]) => x");
+    }).toThrow("Unsupported Yocto-JavaScript feature: ArrayExpression");
+  });
+
+  test("Call with multiple arguments", () => {
+    expect(() => {
+      evaluate("f(a, b)");
+    }).toThrow(
+      "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+    );
+  });
+
+  test("Number", () => {
+    expect(() => {
+      evaluate("29");
+    }).toThrow("Unsupported Yocto-JavaScript feature: Literal");
+  });
+
+  test("Variable declaration", () => {
+    expect(() => {
+      evaluate("const f = x => x");
+    }).toThrow("Unsupported Yocto-JavaScript feature: VariableDeclarator");
+  });
+});
