@@ -6,6 +6,11 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+      - uses: xu-cheng/latex-action@master
+        with:
+          root_file: yocto-cfa.tex
+          working_directory: dissertation
+          extra_system_packages: "py-pygments"
       - run: |
           npm ci
           npm test
