@@ -10,6 +10,10 @@ jobs:
           root_file: yocto-cfa.tex
           working_directory: dissertation
           extra_system_packages: "py-pygments"
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Dissertation
+          path: dissertation/yocto-cfa.pdf
       - uses: actions/setup-node@v1
       - run: |
           npm ci
