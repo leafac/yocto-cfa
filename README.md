@@ -18,7 +18,7 @@ The dissertation will be at `dissertation/yocto-cfa.pdf`.
 
 ## Edit Images
 
-The images in the dissertation are drawn with [macOS Keynote](https://www.apple.com/keynote/). Edit them, export as a PDF called `dissertation/images.pdf` and run:
+The images in the dissertation are drawn with [macOS Keynote](https://www.apple.com/keynote/). Edit them, export as a PDF called `dissertation/images.pdf`, and run:
 
 ```console
 $ (cd dissertation && pdfcrop images.pdf images.pdf)
