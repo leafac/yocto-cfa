@@ -2,18 +2,36 @@
 
 **[Leandro Facchinetti](https://www.leafac.com)’s dissertation**
 
-[Dissertation PDF](dissertation/yocto-cfa.pdf)
+[**Dissertation**](dissertation/yocto-cfa.pdf) • [**Source**](https://github.com/leafac/yocto-cfa) • ![Main](https://github.com/leafac/yocto-cfa/workflows/Main/badge.svg)
 
-[Source](https://github.com/leafac/yocto-cfa)
+# Dissertation
 
-![Main](https://github.com/leafac/yocto-cfa/workflows/Main/badge.svg)
+## Build
 
-# Build Dissertation
+Install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org), and run:
 
-Install [LaTeX](https://www.latex-project.org), [Pygments](http://pygments.org), and the fonts Palatino and Courier New (they’re installed by default in macOS). In the `dissertation` folder, run `latexmk`. The dissertation will be at `dissertation/yocto-cfa.pdf`.
+```console
+$ (cd dissertation && latexmk)
+```
 
-The images in the dissertation are drawn with [macOS Keynote](https://www.apple.com/keynote/). After modifying them, export as a PDF called `dissertation/images.pdf` and, in the `dissertation` folder, run `pdfcrop dissertation/images.pdf dissertation/images.pdf`.
+The dissertation will be at `dissertation/yocto-cfa.pdf`.
 
-# Run Tests
+## Edit Images
 
-Install [Node.js](https://nodejs.org/). In the `code` folder, run `npm install` followed by `npm test`.
+The images in the dissertation are drawn with [macOS Keynote](https://www.apple.com/keynote/). Edit them, export as a PDF called `dissertation/images.pdf` and run:
+
+```console
+$ (cd dissertation && pdfcrop images.pdf images.pdf)
+```
+
+Then build the dissertation again (see [§ Build](#build)).
+
+# Code
+
+## Run Tests
+
+Install [Node.js](https://nodejs.org/) and run:
+
+```console
+$ (cd code && npm install && npm test)
+```
