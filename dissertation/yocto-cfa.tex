@@ -193,7 +193,7 @@ The following are two examples of how we will be able to use \mintinline{ts}{eva
 The implementation of \mintinline{ts}{evaluate()} is separated into three parts called \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()}:
 
 \begin{center}
-\includegraphics[page = 2]{images-pdfa.pdf}
+\includegraphics[page = 1]{images.pdf}
 \end{center}
 
 \begin{minted}{ts}
@@ -218,7 +218,7 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 \begin{minted}{ts}
 > parse("x => x")
 \end{minted}
-\includegraphics[page = 3]{images-pdfa.pdf}
+\includegraphics[page = 2]{images.pdf}
 \begin{minted}{ts}
 {
   "type": "ArrowFunctionExpression",
@@ -238,7 +238,7 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 \begin{minted}{ts}
 > parse("(x => x)(y => y)")
 \end{minted}
-\includegraphics[page = 4]{images-pdfa.pdf}
+\includegraphics[page = 3]{images.pdf}
 \begin{minted}{ts}
 {
   "type": "CallExpression",
@@ -397,7 +397,7 @@ case "CallExpression":
 Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} that implements the traversal of the \mintinline{ts}{body} looking for references to \mintinline{ts}{parameter} and substituting them:
 
 \begin{center}
-\includegraphics[page = 5]{images-pdfa.pdf}
+\includegraphics[page = 4]{images.pdf}
 \end{center}
 
 \begin{minted}[highlightlines = {13-19}]{ts}
@@ -440,7 +440,7 @@ function substitute(expression: Expression): Expression {
 In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an \mintinline{ts}{Identifier}, and it must be substituted with the \mintinline{ts}{argument}:
 
 \begin{center}
-\includegraphics[page = 6]{images-pdfa.pdf}
+\includegraphics[page = 5]{images.pdf}
 \end{center}
 
 \begin{minted}[highlightlines = {3}]{ts}
@@ -462,7 +462,7 @@ case "Identifier":
 When \mintinline{ts}{substitute()} (see §~\ref{A Call Involving Immediate Functions}) starts traversing the \mintinline{ts}{body} of the example above, the \mintinline{ts}{expression} is an \mintinline{ts}{ArrowFunctionExpression} (\mintinline{js}{z => x}), and we want substitution to proceed deeper to find and substitute \mintinline{js}{x}, so we call \mintinline{ts}{substitute()} recursively (we use a feature called \emph{spread syntax}~\cite{spread-syntax} to build an \mintinline{ts}{expression} based on the existing one with a new \mintinline{ts}{body}):
 
 \begin{center}
-\includegraphics[page = 7]{images-pdfa.pdf}
+\includegraphics[page = 6]{images.pdf}
 \end{center}
 
 \begin{minted}[highlightlines = {3-6}]{ts}
@@ -504,7 +504,7 @@ case "Identifier":
 In the program above, there are two options for the variable reference \mintinline{js}{x} on the right of the second \mintinline{js}{=>}: it may refer to the first (outer) \mintinline{js}{x} on the left of the first \mintinline{js}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{js}{x} on the left of the second \mintinline{js}{=>}, in which case the output of the program would be \mintinline{js}{x => x}:
 
 \begin{center}
-\includegraphics[page = 8]{images-pdfa.pdf}
+\includegraphics[page = 7]{images.pdf}
 \end{center}
 
 Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently; we must know where it appears and whether a variable called \mintinline{js}{x} is already defined there.
