@@ -52,6 +52,7 @@ function run(expression: Expression, environment: Environment): Value {
       return run(
         body,
         // TODO: Double-check that tests cover the common mistake of saying ‘environment’ on the line below.
+        // TODO: Add example: ‘((x => x => x)(y => y))(z => z)’.
         functionEnvironment.set(parameter, argument)
       );
     case "Identifier":

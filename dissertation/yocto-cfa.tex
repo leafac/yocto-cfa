@@ -10,10 +10,10 @@
 
 \pagestyle{plain}
 
-\usepackage{fontspec, unicode-math}
-\setmainfont{IBM Plex Serif}
-\setmonofont{IBM Plex Mono}
-\setmathfont{Asana Math}
+\usepackage{fontspec}
+\setmainfont{Palatino}
+\setmonofont{Courier}
+% TODO: unicode-math \setmathfont{texgyrepagella-math.otf}
 
 \usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
 
@@ -55,25 +55,25 @@ Baltimore, Maryland\\August 2020
 \thispagestyle{empty}
 \clearpage
 
-\chapter{Abstract}
+% TODO: \chapter{Abstract}
 
-% TODO
+% Not more than 350 words
 
-\paragraph{Primary Reader and Advisor:}
+% \paragraph{Primary Reader and Advisor:}
 
-Dr.~Scott Fraser Smith.
+% Dr.~Scott Fraser Smith.
 
-\paragraph{Readers:}
+% \paragraph{Readers:}
 
-Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
+% Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
 
-\chapter{Acknowledgements}
+% TODO: \chapter{Acknowledgements}
 
-% TODO
+% TODO: \chapter{Dedication}
 
 \tableofcontents
-\listoftables
-\listoffigures
+% TODO: \listoftables
+% TODO: \listoffigures
 
 \mainmatter
 
@@ -494,8 +494,6 @@ case "Identifier":
 
 \subsection{Name Reuse}
 
-% TODO: Add example: ‘((x => x => x)(y => y))(z => z)’
-
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
@@ -856,17 +854,16 @@ function prettify(value: Value): string {
 }
 \end{minted}
 
-% TODO: Test PDF/a compliance on Adobe.
+% TODO: Test PDF/A compliance in Adobe Acrobat Pro’s Preflight.
+% TODO: Check compliance with library.
 
-\appendix
+% TODO: \appendix
 
 \backmatter
 
 \bibliographystyle{plain}
 \bibliography{\jobname}
 
-\chapter{Biographical Statement}
-
-% TODO
+% TODO: \chapter{Biographical Statement}
 
 \end{document}
