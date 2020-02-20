@@ -133,7 +133,15 @@ describe("run()", () => {
     }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
   });
 
-  // TODO: Add an example to capture the intent of static vs dynamic scoping. Test by using ‘environment’ instead of ‘functionEnvironment’ on line 52 of the implementation.
+  test("§ A Function Body Is Evaluated with the Environment under Which Its Closure Is Created", () => {
+    expect(evaluate("(f => (x => f(x))(b => b))((x => y => x)(a => a))"))
+      .toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "a => a",
+      }
+    `);
+  });
 });
 
 describe("parse()", () => {
