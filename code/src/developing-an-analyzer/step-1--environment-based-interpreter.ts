@@ -49,17 +49,12 @@ function run(expression: Expression, environment: Environment): Value {
         environment: functionEnvironment
       } = run(expression.callee, environment);
       const argument = run(expression.arguments[0], environment);
-      return run(
-        body,
-        // TODO: Double-check that tests cover the common mistake of saying ‘environment’ on the line below.
-        // TODO: Add example: ‘((x => x => x)(y => y))(z => z)’.
-        functionEnvironment.set(parameter, argument)
-      );
+      return run(body, functionEnvironment.set(parameter, argument));
     case "Identifier":
-      const { name } = expression;
-      if (!environment.has(name))
-        throw new Error(`Reference to undefined variable: ${name}`);
-      return environment.get(name)!;
+      const value = environment.get(expression.name);
+      if (value === undefined)
+        throw new Error(`Reference to undefined variable: ${expression.name}`);
+      return value;
   }
 }
 

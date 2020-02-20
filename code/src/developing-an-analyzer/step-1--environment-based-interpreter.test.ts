@@ -59,6 +59,12 @@ describe("run()", () => {
         "function": "x => x",
       }
     `);
+    expect(evaluate("(x => x => x)(y => y)(z => z)")).toMatchInlineSnapshot(`
+      Object {
+        "environment": Immutable.Map {},
+        "function": "z => z",
+      }
+    `);
   });
 
   test("§ Substitution in Function Calls", () => {
@@ -126,6 +132,8 @@ describe("run()", () => {
       evaluate("(f => f(f))(f => f(f))");
     }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
   });
+
+  // TODO: Add an example to capture the intent of static vs dynamic scoping. Test by using ‘environment’ instead of ‘functionEnvironment’ on line 52 of the implementation.
 });
 
 describe("parse()", () => {
