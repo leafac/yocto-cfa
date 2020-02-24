@@ -29,10 +29,10 @@ type Identifier = {
 
 type Value = Closure;
 
-interface Closure {
+type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
-}
+};
 
 type Environment = Map<string, Value>;
 
@@ -88,10 +88,10 @@ function parse(input: string): Expression {
   }
 }
 
-interface PrettyValue {
+type PrettyValue = {
   function: string;
   environment: Map<string, PrettyValue>;
-}
+};
 
 function prettify(value: Value): PrettyValue {
   return {
