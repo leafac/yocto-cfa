@@ -280,22 +280,22 @@ In general, the data structures used to represent Yocto-JavaScript programs are 
 \begin{minted}{ts}
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
 
-interface ArrowFunctionExpression {
+type ArrowFunctionExpression = {
   type: "ArrowFunctionExpression";
   params: [Identifier];
   body: Expression;
-}
+};
 
-interface CallExpression {
+type CallExpression = {
   type: "CallExpression";
   callee: Expression;
   arguments: [Expression];
-}
+};
 
-interface Identifier {
+type Identifier = {
   type: "Identifier";
   name: string;
-}
+};
 \end{minted}
 
 \begin{mdframed}[frametitle = {Advanced}]

@@ -9,22 +9,22 @@ export function evaluate(input: string): string {
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
 
-interface ArrowFunctionExpression {
+type ArrowFunctionExpression = {
   type: "ArrowFunctionExpression";
   params: [Identifier];
   body: Expression;
-}
+};
 
-interface CallExpression {
+type CallExpression = {
   type: "CallExpression";
   callee: Expression;
   arguments: [Expression];
-}
+};
 
-interface Identifier {
+type Identifier = {
   type: "Identifier";
   name: string;
-}
+};
 
 type Value = ArrowFunctionExpression;
 
