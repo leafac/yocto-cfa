@@ -387,7 +387,7 @@ case "CallExpression":
   )
     throw new Error("NOT IMPLEMENTED YET");
   const {
-    params: [{ name: parameter }],
+    params: [parameter],
     body
   } = expression.callee;
   const argument = expression.arguments[0];
@@ -409,7 +409,7 @@ case "CallExpression":
   )
     throw new Error("NOT IMPLEMENTED YET");
   const {
-    params: [{ name: parameter }],
+    params: [parameter],
     body
   } = expression.callee;
   const argument = expression.arguments[0];
@@ -488,7 +488,7 @@ The implementation of \mintinline{ts}{substitute()} in the case of \mintinline{t
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
 case "Identifier":
-  if (expression.name !== parameter) return expression;
+  if (expression.name !== parameter.name) return expression;
   return argument;
 \end{minted}
 
@@ -518,7 +518,7 @@ We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Opti
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
 case "ArrowFunctionExpression":
-  if (expression.params[0].name === parameter) return expression;
+  if (expression.params[0].name === parameter.name) return expression;
   return {
     ...expression,
     body: substitute(expression.body)
@@ -565,7 +565,7 @@ case "CallExpression":
   if (expression.callee.type !== "ArrowFunctionExpression")
     throw new Error("NOT IMPLEMENTED YET");
   const {
-    params: [{ name: parameter }],
+    params: [parameter],
     body
   } = expression.callee;
   const argument = run(expression.arguments[0]);
@@ -602,7 +602,7 @@ This is the dual of §~\ref{An Argument That Is Not Immediate} for the called fu
 // run()
 case "CallExpression":
   const {
-    params: [{ name: parameter }],
+    params: [parameter],
     body
   } = run(expression.callee);
   const argument = run(expression.arguments[0]);
@@ -631,7 +631,7 @@ This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Func
 // run()
 case "CallExpression":
   const {
-    params: [{ name: parameter }],
+    params: [parameter],
     body
   } = run(expression.callee);
   const argument = run(expression.arguments[0]);
@@ -674,7 +674,7 @@ function run(expression: Expression): Value {
       return expression;
     case "CallExpression":
       const {
-        params: [{ name: parameter }],
+        params: [parameter],
         body
       } = run(expression.callee);
       const argument = run(expression.arguments[0]);
@@ -682,7 +682,7 @@ function run(expression: Expression): Value {
       function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
-            if (expression.params[0].name === parameter) return expression;
+            if (expression.params[0].name === parameter.name) return expression;
             return {
               ...expression,
               body: substitute(expression.body)
@@ -694,7 +694,7 @@ function run(expression: Expression): Value {
               arguments: [substitute(expression.arguments[0])]
             };
           case "Identifier":
-            if (expression.name !== parameter) return expression;
+            if (expression.name !== parameter.name) return expression;
             return argument;
         }
       }

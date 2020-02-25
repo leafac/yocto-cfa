@@ -34,7 +34,7 @@ function run(expression: Expression): Value {
       return expression;
     case "CallExpression":
       const {
-        params: [{ name: parameter }],
+        params: [parameter],
         body
       } = run(expression.callee);
       const argument = run(expression.arguments[0]);
@@ -42,7 +42,7 @@ function run(expression: Expression): Value {
       function substitute(expression: Expression): Expression {
         switch (expression.type) {
           case "ArrowFunctionExpression":
-            if (expression.params[0].name === parameter) return expression;
+            if (expression.params[0].name === parameter.name) return expression;
             return {
               ...expression,
               body: substitute(expression.body)
@@ -54,7 +54,7 @@ function run(expression: Expression): Value {
               arguments: [substitute(expression.arguments[0])]
             };
           case "Identifier":
-            if (expression.name !== parameter) return expression;
+            if (expression.name !== parameter.name) return expression;
             return argument;
         }
       }
