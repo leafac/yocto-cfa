@@ -204,6 +204,8 @@ export function evaluate(input: string): string {
 
 The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
 
+In later Steps the implementations of \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()} will change, but the architecture and therefore the implementation of \mintinline{ts}{evaluate()} will remain the same.
+
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 

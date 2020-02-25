@@ -2,10 +2,10 @@ import { parseScript } from "esprima";
 import { Node } from "estree";
 import { generate } from "escodegen";
 import { format } from "prettier";
-import { Map } from "immutable";
+import { Map, Record, RecordOf } from "immutable";
 
-export function evaluate(input: string): PrettyValue {
-  return prettify(run(parse(input), Map()));
+export function evaluate(input: string): string {
+  return prettify(run(parse(input)));
 }
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -29,32 +29,37 @@ type Identifier = {
 
 type Value = Closure;
 
-type Closure = {
+type Closure = RecordOf<{
   function: ArrowFunctionExpression;
   environment: Environment;
-};
+}>;
 
-type Environment = Map<string, Value>;
+type Environment = Map<Identifier["name"], Value>;
 
-function run(expression: Expression, environment: Environment): Value {
-  switch (expression.type) {
-    case "ArrowFunctionExpression":
-      return { function: expression, environment };
-    case "CallExpression":
-      const {
-        function: {
-          params: [{ name: parameter }],
-          body
-        },
-        environment: functionEnvironment
-      } = run(expression.callee, environment);
-      const argument = run(expression.arguments[0], environment);
-      return run(body, functionEnvironment.set(parameter, argument));
-    case "Identifier":
-      const value = environment.get(expression.name);
-      if (value === undefined)
-        throw new Error(`Reference to undefined variable: ${expression.name}`);
-      return value;
+function run(expression: Expression): Value {
+  return step(expression, Map());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return Closure({ function: expression, environment });
+      case "CallExpression":
+        const {
+          function: {
+            params: [parameter],
+            body
+          },
+          environment: functionEnvironment
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(body, functionEnvironment.set(parameter.name, argument));
+      case "Identifier":
+        const value = environment.get(expression.name);
+        if (value === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return value;
+    }
   }
 }
 
@@ -88,17 +93,22 @@ function parse(input: string): Expression {
   }
 }
 
-type PrettyValue = {
-  function: string;
-  environment: Map<string, PrettyValue>;
-};
-
-function prettify(value: Value): PrettyValue {
-  return {
-    function: format(generate(value.function), {
-      parser: "babel",
-      semi: false
-    }).trim(),
-    environment: value.environment.map(prettify)
-  };
+function prettify(value: Value): string {
+  return JSON.stringify(
+    value,
+    (key, value) => {
+      if (value.type !== undefined)
+        return format(generate(value), {
+          parser: "babel",
+          semi: false
+        }).trim();
+      return value;
+    },
+    2
+  );
 }
+
+const Closure = (Record({
+  function: undefined,
+  environment: undefined
+}) as unknown) as (p: Closure extends Record<infer T> ? T : never) => Closure;
