@@ -2,7 +2,6 @@ import { parseScript } from "esprima";
 import { Node } from "estree";
 import { generate } from "escodegen";
 import { format } from "prettier";
-import { Map, Record, RecordOf } from "immutable";
 
 export function evaluate(input: string): string {
   return prettify(run(parse(input)));
@@ -29,19 +28,19 @@ type Identifier = {
 
 type Value = Closure;
 
-type Closure = RecordOf<{
+type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
-}>;
+};
 
 type Environment = Map<Identifier["name"], Value>;
 
 function run(expression: Expression): Value {
-  return step(expression, Map());
+  return step(expression, new Map());
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
-        return Closure({ function: expression, environment });
+        return { function: expression, environment };
       case "CallExpression":
         const {
           function: {
@@ -51,7 +50,10 @@ function run(expression: Expression): Value {
           environment: functionEnvironment
         } = step(expression.callee, environment);
         const argument = step(expression.arguments[0], environment);
-        return step(body, functionEnvironment.set(parameter.name, argument));
+        return step(
+          body,
+          new Map(functionEnvironment).set(parameter.name, argument)
+        );
       case "Identifier":
         const value = environment.get(expression.name);
         if (value === undefined)
@@ -102,13 +104,9 @@ function prettify(value: Value): string {
           parser: "babel",
           semi: false
         }).trim();
+      if (value instanceof Map) return [...value];
       return value;
     },
     2
   );
 }
-
-const Closure = (Record({
-  function: undefined,
-  environment: undefined
-}) as unknown) as (p: Closure extends Record<infer T> ? T : never) => Closure;
