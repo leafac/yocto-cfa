@@ -14,7 +14,7 @@
     "@types/jest": "^24.9.0",
     "@types/prettier": "^1.19.0",
     "jest": "^24.9.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.2"
   },
   "jest": {
     "rootDir": "lib",
