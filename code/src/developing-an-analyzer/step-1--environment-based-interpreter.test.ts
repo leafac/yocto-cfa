@@ -5,7 +5,7 @@ describe("run()", () => {
     expect(evaluate("x => x")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"x => x\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
@@ -14,7 +14,7 @@ describe("run()", () => {
     expect(evaluate("(x => x)(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"y => y\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
@@ -23,15 +23,12 @@ describe("run()", () => {
     expect(evaluate("(x => z => x)(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"z => x\\",
-        \\"environment\\": [
-          [
-            \\"x\\",
-            {
-              \\"function\\": \\"y => y\\",
-              \\"environment\\": []
-            }
-          ]
-        ]
+        \\"environment\\": {
+          \\"x\\": {
+            \\"function\\": \\"y => y\\",
+            \\"environment\\": {}
+          }
+        }
       }"
     `);
   });
@@ -40,15 +37,12 @@ describe("run()", () => {
     expect(evaluate("(x => z => z)(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"z => z\\",
-        \\"environment\\": [
-          [
-            \\"x\\",
-            {
-              \\"function\\": \\"y => y\\",
-              \\"environment\\": []
-            }
-          ]
-        ]
+        \\"environment\\": {
+          \\"x\\": {
+            \\"function\\": \\"y => y\\",
+            \\"environment\\": {}
+          }
+        }
       }"
     `);
   });
@@ -57,21 +51,18 @@ describe("run()", () => {
     expect(evaluate("(x => x => x)(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"x => x\\",
-        \\"environment\\": [
-          [
-            \\"x\\",
-            {
-              \\"function\\": \\"y => y\\",
-              \\"environment\\": []
-            }
-          ]
-        ]
+        \\"environment\\": {
+          \\"x\\": {
+            \\"function\\": \\"y => y\\",
+            \\"environment\\": {}
+          }
+        }
       }"
     `);
     expect(evaluate("(x => x => x)(y => y)(z => z)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"z => z\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
@@ -80,15 +71,12 @@ describe("run()", () => {
     expect(evaluate("(x => z => x(x))(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"z => x(x)\\",
-        \\"environment\\": [
-          [
-            \\"x\\",
-            {
-              \\"function\\": \\"y => y\\",
-              \\"environment\\": []
-            }
-          ]
-        ]
+        \\"environment\\": {
+          \\"x\\": {
+            \\"function\\": \\"y => y\\",
+            \\"environment\\": {}
+          }
+        }
       }"
     `);
   });
@@ -97,15 +85,12 @@ describe("run()", () => {
     expect(evaluate("(x => z => x)((a => a)(y => y))")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"z => x\\",
-        \\"environment\\": [
-          [
-            \\"x\\",
-            {
-              \\"function\\": \\"y => y\\",
-              \\"environment\\": []
-            }
-          ]
-        ]
+        \\"environment\\": {
+          \\"x\\": {
+            \\"function\\": \\"y => y\\",
+            \\"environment\\": {}
+          }
+        }
       }"
     `);
   });
@@ -114,7 +99,7 @@ describe("run()", () => {
     expect(evaluate("((z => z)(x => x))(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"y => y\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
@@ -123,7 +108,7 @@ describe("run()", () => {
     expect(evaluate("(x => (z => z)(x))(y => y)")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"y => y\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
@@ -137,7 +122,7 @@ describe("run()", () => {
     expect(evaluate("x => y")).toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"x => y\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
@@ -153,7 +138,7 @@ describe("run()", () => {
       .toMatchInlineSnapshot(`
       "{
         \\"function\\": \\"a => a\\",
-        \\"environment\\": []
+        \\"environment\\": {}
       }"
     `);
   });
