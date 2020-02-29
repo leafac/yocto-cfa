@@ -2,7 +2,7 @@
 
 **[Leandro Facchinetti](https://www.leafac.com)’s dissertation**
 
-[**Dissertation**](dissertation/yocto-cfa.pdf) • [**Source**](https://github.com/leafac/yocto-cfa) • ![Main](https://github.com/leafac/yocto-cfa/workflows/Main/badge.svg)
+[**Dissertation**](dissertation/yocto-cfa.pdf) • [**Source**](https://github.com/leafac/yocto-cfa) • ![.github/workflows/main.yml](https://github.com/leafac/www.leafac.com/workflows/.github/workflows/main.yml/badge.svg)
 
 # Dissertation
 
