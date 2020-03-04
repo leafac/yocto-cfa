@@ -2,7 +2,7 @@ import { parseScript } from "esprima";
 import { Node } from "estree";
 import { generate } from "escodegen";
 import { format } from "prettier";
-import { Map, Record, RecordOf } from "immutable";
+import { MapDeepEqual } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
   return prettify(run(parse(input)));
@@ -29,19 +29,19 @@ type Identifier = {
 
 type Value = Closure;
 
-type Closure = RecordOf<{
+type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
-}>;
+};
 
-type Environment = Map<Identifier["name"], Value>;
+type Environment = MapDeepEqual<Identifier["name"], Value>;
 
 function run(expression: Expression): Value {
-  return step(expression, Map());
+  return step(expression, new MapDeepEqual());
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
-        return Closure({ function: expression, environment });
+        return { function: expression, environment };
       case "CallExpression":
         const {
           function: {
@@ -53,7 +53,7 @@ function run(expression: Expression): Value {
         const argument = step(expression.arguments[0], environment);
         return step(
           body,
-          Map(functionEnvironment).set(parameter.name, argument)
+          new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
         );
       case "Identifier":
         const value = environment.get(expression.name);
@@ -110,8 +110,3 @@ function prettify(value: Value): string {
     2
   );
 }
-
-const Closure = Record({
-  function: (undefined as unknown) as ArrowFunctionExpression,
-  environment: (undefined as unknown) as Environment
-}) as (values: Closure extends RecordOf<infer T> ? T : never) => Closure;

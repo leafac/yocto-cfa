@@ -3,9 +3,9 @@
     "test": "tsc && jest && prettier --check 'src/**'"
   },
   "dependencies": {
+    "collections-deep-equal": "^1.0.0",
     "escodegen": "^1.13.0",
     "esprima": "^4.0.1",
-    "immutable": "^4.0.0-rc.12",
     "prettier": "^1.19.1"
   },
   "devDependencies": {
