@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "build": "tsc",
-    "test": "prettier --check 'src/**/*.ts' && tsc && jest"
+    "test": "tsc && jest && prettier --check 'src/**'"
   },
   "dependencies": {
     "escodegen": "^1.13.0",
