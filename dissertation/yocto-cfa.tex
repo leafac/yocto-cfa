@@ -18,7 +18,7 @@
 \usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
 
 \usepackage{minted}
-\usemintedstyle{vs}
+\renewcommand{\MintedPygmentize}{./shiki.js}
 \setminted{fontsize = \footnotesize, baselinestretch = 1.2}
 \setmintedinline{fontsize = \normalsize}
 
@@ -355,7 +355,7 @@ case "ArrowFunctionExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{(x => x)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -457,7 +457,7 @@ case "Identifier":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\mintinline{js}{(x => z => x)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -533,7 +533,7 @@ case "ArrowFunctionExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => z => x(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
+\mintinline{js}{(x => z => x(x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
 \end{tabular}
 \end{center}
 
@@ -555,7 +555,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => z => x)((a => a)(y => y))} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\mintinline{js}{(x => z => x)((a => a)(y => y))} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -594,7 +594,7 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{((z => z)(x => x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{((z => z)(x => x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -623,7 +623,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => (z => z)(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{(x => (z => z)(x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -648,7 +648,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(x => y)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{text}{Reference to undefined variable: y} \\
+\mintinline{js}{(x => y)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \texttt{Reference to undefined variable: y} \\
 \end{tabular}
 \end{center}
 
@@ -711,7 +711,7 @@ function run(expression: Expression): Value {
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
-\mintinline{js}{(f => f(f))(f => f(f))} & \mintinline{text}{DOES NOT TERMINATE} & \mintinline{text}{DOES NOT TERMINATE} \\
+\mintinline{js}{(f => f(f))(f => f(f))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
 

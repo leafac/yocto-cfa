@@ -8,10 +8,10 @@
 
 ## Build
 
-Install [LaTeX](https://www.latex-project.org) and [Pygments](http://pygments.org), and run:
+Install [LaTeX](https://www.latex-project.org) and [Node.js](https://nodejs.org/), and run:
 
 ```console
-$ (cd dissertation && latexmk)
+$ (cd dissertation && npm install && latexmk)
 ```
 
 The dissertation will be at `dissertation/yocto-cfa.pdf`.
