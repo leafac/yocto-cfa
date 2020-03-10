@@ -1,16 +1,30 @@
 #!/usr/bin/env node
-// TODO: Get rid of async/await
-// TODO: Destruct process.argv
 (async function() {
   const fs = require("fs");
   const shiki = require("shiki");
 
   // fs.appendFileSync("debug.json", JSON.stringify(process.argv, null, 2));
-  if (process.argv[2] === "-S") process.exit(0);
+  const [
+    _node,
+    _shiki,
+    _l,
+    language,
+    _f,
+    _latex,
+    _P,
+    _commandprefix,
+    _F,
+    _tokenmerge,
+    _o,
+    outputPath,
+    inputPath
+  ] = process.argv;
+  if (_l !== "-l") process.exit(0);
 
-  const input = fs.readFileSync(process.argv[12], "utf-8");
+  const input = fs.readFileSync(inputPath, "utf-8");
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
-  const tokens = highlighter.codeToThemedTokens(input, process.argv[3]);
+  const tokens = highlighter.codeToThemedTokens(input, language);
+  // fs.appendFileSync("debug.json", JSON.stringify(tokens, null, 2));
   const latex = tokens
     .map(line =>
       line
@@ -26,7 +40,7 @@
     .join("\n");
 
   fs.writeFileSync(
-    process.argv[11],
+    outputPath,
     `\\begin{Verbatim}[commandchars=\\\\\\\{\\\}]\n${latex}\\end{Verbatim}\n`
   );
 })();

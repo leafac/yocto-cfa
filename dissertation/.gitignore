@@ -11,3 +11,4 @@ _minted-*
 *.synctex(busy)
 *.synctex.gz
 *.toc
+*.pyg
