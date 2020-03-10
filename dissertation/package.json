@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "shiki": "^0.1.6"
+    "shiki-latex": "^1.0.0"
   }
 }
