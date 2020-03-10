@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-
-// require("fs").appendFileSync("debug.txt", JSON.stringify(process.argv, null, 2));
-if (process.argv[2] === "-S") process.exit(0);
+// TODO: Get rid of async/await
+// TODO: Destruct process.argv
 (async function() {
   const fs = require("fs");
   const shiki = require("shiki");
+
+  // fs.appendFileSync("debug.json", JSON.stringify(process.argv, null, 2));
+  if (process.argv[2] === "-S") process.exit(0);
 
   const input = fs.readFileSync(process.argv[12], "utf-8");
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
