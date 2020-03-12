@@ -7,7 +7,7 @@ jobs:
       - uses: actions/setup-node@v1
       - run: |
           sudo apt update
-          sudo apt install --yes texlive
+          sudo apt install --yes texlive-full
           npm ci
           latexmk
         working-directory: dissertation
