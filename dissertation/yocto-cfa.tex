@@ -731,11 +731,11 @@ $v$ & ::= & $x\texttt{ => }e$ & Values \\
 Next, we provide \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
-\inferrule
+\inferrule [Value]
 { }
 {v \Rightarrow v}
 
-\inferrule
+\inferrule [Function Call]
 {
 e_{f} \Rightarrow x_{p}\texttt{ => }e_{b} \\
 e_{a} \Rightarrow v_{a} \\
