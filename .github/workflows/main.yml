@@ -1,5 +1,20 @@
 on: push
 jobs:
+  dissertation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: |
+          sudo apt update
+          sudo apt install --yes texlive
+          npm ci
+          latexmk
+        working-directory: dissertation
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Dissertation
+          path: dissertation/yocto-cfa.pdf
   code:
     runs-on: ubuntu-latest
     steps:
