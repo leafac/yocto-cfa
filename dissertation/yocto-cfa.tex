@@ -10,7 +10,10 @@
 
 \usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
 
-\usepackage{XCharter}
+\usepackage{fontspec, unicode-math}
+\setmainfont{Charter}
+\setmonofont{Menlo}[Scale = MatchLowercase]
+\setmathfont{Asana Math}
 
 \usepackage{minted}
 \renewcommand{\MintedPygmentize}{./node_modules/.bin/shiki-minted}
@@ -150,7 +153,7 @@ The description of Yocto-JavaScript given so far has been informal; the followin
 
 \begin{center}
 \begin{tabular}{rcll}
-$e$ & ::= & $x\texttt{ => }e$ $|$ $e\texttt{(}e\texttt{)}$ $|$ $x$ & Expressions \\
+$e$ & ::= & $x\texttt{ => }e$ | $e\texttt{(}e\texttt{)}$ | $x$ & Expressions \\
 $x$ & ::= & \texttt{<A Valid JavaScript Identifier>} & Variables \\
 \end{tabular}
 \end{center}
@@ -733,11 +736,11 @@ $v$ & ::= & $x\texttt{ => }e$ & Values \\
 Next, we provide \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
-\inferrule [Value]
+\inferrule
 { }
 {v \Rightarrow v}
 
-\inferrule [Function Call]
+\inferrule
 {
 e_{f} \Rightarrow x_{p}\texttt{ => }e_{b} \\
 e_{a} \Rightarrow v_{a} \\

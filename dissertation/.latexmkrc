@@ -1,2 +1,2 @@
 $pdf_mode = 1;
-$pdflatex = 'pdflatex %O -shell-escape %S';
+$pdflatex = 'lualatex %O -shell-escape %S';
