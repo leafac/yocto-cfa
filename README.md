@@ -4,9 +4,21 @@
 
 [**Dissertation**](dissertation/yocto-cfa.pdf) • [**Source**](https://github.com/leafac/yocto-cfa) • ![.github/workflows/main.yml](https://github.com/leafac/www.leafac.com/workflows/.github/workflows/main.yml/badge.svg)
 
+# Code
+
+## Run Tests
+
+Install [Node.js](https://nodejs.org/) and run:
+
+```console
+$ (cd code && npm install && npm test)
+```
+
 # Dissertation
 
 ## Build
+
+You must use macOS to build the LaTeX document because it uses system fonts.
 
 Install [LaTeX](https://www.latex-project.org) and [Node.js](https://nodejs.org/), and run:
 
@@ -25,13 +37,3 @@ $ (cd dissertation && pdfcrop images.pdf images.pdf)
 ```
 
 Then build the dissertation again (see [§ Build](#build)).
-
-# Code
-
-## Run Tests
-
-Install [Node.js](https://nodejs.org/) and run:
-
-```console
-$ (cd code && npm install && npm test)
-```

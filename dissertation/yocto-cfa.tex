@@ -90,7 +90,7 @@ Our first decision when developing an analyzer is which language it should analy
 From all these options, we would like to choose JavaScript because it is the most popular language among programmers~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a \emph{subset} of JavaScript features that are related to higher-order functions, resulting in a language that we call \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
 \begin{mdframed}[frametitle = {Advanced}]
-On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer's precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial~\cite{m-cfa}.
+On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial~\cite{m-cfa}.
 \end{mdframed}
 
 \begin{mdframed}[frametitle = {Technical Terms}]
@@ -207,7 +207,7 @@ In later Steps the implementations of \mintinline{ts}{parse()}, \mintinline{ts}{
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 
-The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}'s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}'s implementation).
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 The process of converting a program represented as a string into more convenient data structures is known as \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.
@@ -513,7 +513,7 @@ Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads
 We say that the problem with Option~1 is that it defeats something called \emph{local reasoning}. We say that Option~2 exhibits a behavior called \emph{shadowing}, and that the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x}, because there is no way to refer to the outer \mintinline{js}{x} from the body of the inner function.
 \end{mdframed}
 
-We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}'s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in this case):
+We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in this case):
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
@@ -658,7 +658,7 @@ case "Identifier":
   throw new Error(`Reference to undefined variable: ${expression.name}`);
 \end{minted}
 
-Note that if the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript's behavior.
+Note that if the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript’s behavior.
 
 \subsection{The Entire Runner}
 \label{The Entire Runner}
@@ -816,7 +816,7 @@ Extract the single \mintinline{ts}{Expression} from within the \mintinline{ts}{P
 
 \item [Line 5:]
 
-The \mintinline{ts}{checkFeatures()} function, which is passed to Esprima's \mintinline{ts}{parseScript()} is called with every fragment of data structure used to represent the program. These fragments are called \emph{nodes}, because the data structure as a whole forms a \emph{tree}, also known as the \emph{Abstract Syntax Tree}~(AST) of the program (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{checkFeatures()} does not return anything (\mintinline{ts}{void}); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+The \mintinline{ts}{checkFeatures()} function, which is passed to Esprima’s \mintinline{ts}{parseScript()} is called with every fragment of data structure used to represent the program. These fragments are called \emph{nodes}, because the data structure as a whole forms a \emph{tree}, also known as the \emph{Abstract Syntax Tree}~(AST) of the program (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{checkFeatures()} does not return anything (\mintinline{ts}{void}); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
 
 \item [Lines 6, 7, 13, 15, 17, 23, 25:]
 
@@ -856,7 +856,7 @@ function prettify(value: Value): string {
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
-% TODO: Test PDF/A compliance in Adobe Acrobat Pro's Preflight.
+% TODO: Test PDF/A compliance in Adobe Acrobat Pro’s Preflight.
 % TODO: Check compliance with library.
 
 % TODO: \appendix
