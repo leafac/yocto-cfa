@@ -18,7 +18,7 @@ $ (cd code && npm install && npm test)
 
 ## Build
 
-You must use macOS to build the LaTeX document because it uses system fonts.
+**Note:** You must use macOS to build the LaTeX document because it uses system fonts.
 
 Install [LaTeX](https://www.latex-project.org) and [Node.js](https://nodejs.org/), and run:
 
@@ -26,11 +26,11 @@ Install [LaTeX](https://www.latex-project.org) and [Node.js](https://nodejs.org/
 $ (cd dissertation && npm install && latexmk)
 ```
 
-The dissertation will be at `dissertation/yocto-cfa.pdf`.
+You may find the generated PDF at [`dissertation/yocto-cfa.pdf`](dissertation/yocto-cfa.pdf).
 
 ## Edit Images
 
-The images in the dissertation are drawn with [macOS Keynote](https://www.apple.com/keynote/). Edit them, export as a PDF called `dissertation/images.pdf`, and run:
+The images in the dissertation are drawn with [Keynote](https://www.apple.com/keynote/) on macOS. Edit them, export as a PDF called `dissertation/images.pdf`, and run:
 
 ```console
 $ (cd dissertation && pdfcrop images.pdf images.pdf)
