@@ -103,7 +103,7 @@ Yocto-JavaScript is a representation of something called the \emph{$\lambda$-cal
 
 JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
 
-An Yocto-JavaScript function is written as \verb!<parameter> => <body>!, for example, \mintinline{js}{x => x}, in which the \verb!<parameter>! is called \mintinline{js}{x} and the \verb!<body>! is a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript}). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript}).
+An Yocto-JavaScript function is written as \mintinline{js}{<parameter> => <body>}, for example, \mintinline{js}{x => x}, in which the \mintinline{js}{<parameter>} is called \mintinline{js}{x} and the \mintinline{js}{<body>} is a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript} for more on function calls).
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 The notation we use for writing functions is something called \emph{arrow function expressions}~\cite{arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of acting as values is what characterizes these functions as \emph{higher-order}.
@@ -114,7 +114,7 @@ The notation we use for writing functions is something called \emph{arrow functi
 
 JavaScript has many operations: strings may have its characters accessed (for example, \mintinline{js}{"Leandro"[2]}, which results in \mintinline{js}{"a"}), numbers may be added together (for example, \mintinline{js}{29 + 1}, which results in \mintinline{js}{30}), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
 
-A function call is written as \verb!<function>(<argument>)!, for example, \mintinline{js}{f(a)}, in which the \verb!<function>! is a hypothetical function \mintinline{js}{f} and the \verb!<argument>! is a hypothetical argument \mintinline{js}{a}. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see §~\ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
+A function call is written as \mintinline{js}{<function>(<argument>)}, for example, \mintinline{js}{f(a)}, in which the \mintinline{js}{<function>} is a hypothetical function \mintinline{js}{f} and the \mintinline{js}{<argument>} is a hypothetical argument \mintinline{js}{a}. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see §~\ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
 
 The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
@@ -122,9 +122,9 @@ The following is a complete Yocto-JavaScript program that exemplifies all the su
 (x => x)(y => y)
 \end{minted}
 
-This program is a function call in which the \verb!<function>! is \mintinline{js}{x => x} and the \verb!<argument>! is \mintinline{js}{y => y}. When called, an Yocto-JavaScript function returns the result of computing its \verb!<body>! and the \verb!<body>! of \mintinline{js}{x => x} is a reference to the variable \mintinline{js}{x}, so \mintinline{js}{x => x} is a function that returns its argument unchanged and the final result of the example above is \mintinline{js}{y => y}.
+This program is a function call in which the \mintinline{js}{<function>} is \mintinline{js}{x => x} and the \mintinline{js}{<argument>} is \mintinline{js}{y => y}. When called, an Yocto-JavaScript function returns the result of computing its \mintinline{js}{<body>} and the \mintinline{js}{<body>} of \mintinline{js}{x => x} is a reference to the variable \mintinline{js}{x}, so \mintinline{js}{x => x} is a function that returns its argument unchanged and the final result of the example above is \mintinline{js}{y => y}.
 
-In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the \verb!<body>! of a function definition, or as the \verb!<function>! or \verb!<argument>! of a call (for example, in the program \mintinline{js}{(f(a))(b)} the function call \mintinline{js}{f(a)} appears as the \verb!<function>! of a call).
+In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the \mintinline{js}{<body>} of a function definition, or as the \mintinline{js}{<function>} or \mintinline{js}{<argument>} of a call; for example, in the program \mintinline{js}{(f(a))(b)} the function call \mintinline{js}{f(a)} appears as the \mintinline{js}{<function>} of a call.
 
 We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h}, in \mintinline{js}{(f(g))(h)} the call \mintinline{js}{f(g)} happens first and the result is a function that is called with \mintinline{js}{h}, and in \mintinline{js}{f(g(h))} the call \mintinline{js}{g(h)} happens first and the result is passed as argument to \mintinline{js}{f}.
 
@@ -137,15 +137,15 @@ The order in which operations are computed is something called their \emph{prece
 \subsection{The Computational Power of Yocto-JavaScript}
 \label{The Computational Power of Yocto-JavaScript}
 
-Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one language may be translated into an equivalent program in any other language~\cite[§~6]{understanding-computation}.
+Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages~\cite[§~6]{understanding-computation}.
 
-As an example of how to carry out this translation, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript, which supports only functions of one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time, for example, \mintinline{js}{f(a, b)} may be encoded as \mintinline{js}{(f(a))(b)}.
+As an example of how to carry out this translation, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, \mintinline{js}{f(a, b)} may be encoded as \mintinline{js}{(f(a))(b)}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 All the languages we are considering are said to be equivalent in terms of \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. The translation technique for functions with multiple arguments is called \emph{currying}~\cite[page~163]{understanding-computation}.
 \end{mdframed}
 
-For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers may be more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence~\cite{expressive-power}.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
+For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence~\cite{expressive-power}.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
 
 \subsection{A Formal Grammar for Yocto-JavaScript}
 \label{A Formal Grammar for Yocto-JavaScript}
@@ -164,7 +164,7 @@ $x$ & ::= & \texttt{<A Valid JavaScript Identifier>} & Variables \\
 \section{The Analyzer Language: TypeScript}
 \label{The Analyzer Language: TypeScript}
 
-After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, but that does not restrict our choice of language in which to develop the analyzer because the analyzer treats the analyzed program as data, so it could be developed in any language: JavaScript, Java, Python, Ruby, and so forth. Still, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Parser} and §~\ref{Step 0: Prettifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}.
+After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our analyzed language being based on JavaScript, we may choose to develop the analyzer in any language (for example, JavaScript, Java, Python, Ruby, and so forth), because the analyzer treats the analyzed program as data. Still, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Parser} and §~\ref{Step 0: Prettifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript, typescript-deep-dive, understanding-typescript}.
 
 \section{Step 0: Substitution-Based Interpreter}
 \label{Step 0: Substitution-Based Interpreter}
@@ -177,7 +177,7 @@ Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed 
 Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
 
 \begin{mdframed}[frametitle = {Advanced}]
-The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs~\cite{eval}.
+The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}~\cite{eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript.
 \end{mdframed}
 
 The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of this Step (the \mintinline{ts}{>} represents the console):
@@ -201,7 +201,7 @@ export function evaluate(input: string): string {
 }
 \end{minted}
 
-The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
+The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
 
 In later Steps the implementations of \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()} will change, but the architecture and therefore the implementation of \mintinline{ts}{evaluate()} will remain the same.
 
@@ -310,7 +310,7 @@ In later Steps almost everything about the interpreter will change, but the data
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{x => x} & — & \mintinline{js}{x => x} \\
 \end{tabular}
 \end{center}
@@ -353,7 +353,7 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => x)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
@@ -455,7 +455,7 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => z => x)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
@@ -479,7 +479,7 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => z => z)(y => y)} & \mintinline{js}{z => y => y} & \mintinline{js}{z => z} \\
 \end{tabular}
 \end{center}
@@ -497,7 +497,7 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => x => x)(y => y)} & \mintinline{js}{x => y => y} & \mintinline{js}{x => x} \\
 \end{tabular}
 \end{center}
@@ -531,7 +531,7 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => z => x(x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
 \end{tabular}
 \end{center}
@@ -553,7 +553,7 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => z => x)((a => a)(y => y))} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
@@ -592,7 +592,7 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{((z => z)(x => x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
@@ -621,7 +621,7 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => (z => z)(x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
@@ -646,7 +646,7 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => y)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \texttt{Reference to undefined variable: y} \\
 \end{tabular}
 \end{center}
@@ -709,7 +709,7 @@ function run(expression: Expression): Value {
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Desired Output} \\
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(f => f(f))(f => f(f))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
