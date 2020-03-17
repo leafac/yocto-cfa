@@ -203,7 +203,7 @@ export function evaluate(input: string): string {
 
 The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{prettify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{prettify()} to §~\ref{Step 0: Prettifier}.
 
-In later Steps the implementations of \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{prettify()} will change, but the architecture and therefore the implementation of \mintinline{ts}{evaluate()} will remain the same.
+In later Steps the implementations of \mintinline{ts}{run()} and \mintinline{ts}{prettify()} will change, but the architecture and therefore the implementations of \mintinline{ts}{evaluate()} and \mintinline{ts}{parse()} will remain the same.
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
@@ -584,7 +584,7 @@ This technique of calling \mintinline{ts}{run()} recursively to produce an immed
 \end{mdframed}
 
 \begin{mdframed}[frametitle = {Advanced}]
-The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a \emph{call-by-value} language~\cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, the most notable exception being Haskell, which is a \emph{call-by-need} language. In a call-by-need language the argument is only interpreted if it is \emph{needed}, for example, if it is used in the function position of another call (see §~\ref{A Function That Is Not Immediate}), or if it is the result of the program (see §~\ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. There is yet another policy for when to interpret arguments called \emph{call-by-name}: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a \emph{call-by-value} language~\cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a \emph{call-by-need} language. In a call-by-need language the argument is interpreted only if it is \emph{needed}, for example, if it is used in the function position of another call (see §~\ref{A Function That Is Not Immediate}), or if it is the result of the program (see §~\ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. And there is yet another policy for when to interpret arguments called \emph{call-by-name}: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
 \end{mdframed}
 
 \subsection{A Function That Is Not Immediate}
@@ -716,15 +716,15 @@ function run(expression: Expression): Value {
 
 Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above: on the first call to \mintinline{js}{run()} both the called function and the argument are immediate functions (they are both \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 11 and 12) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 13) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 13) leads to an infinite loop.
 
-This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will transform this interpreter to turn it into an analyzer, and one of the main issues we will address is termination.
+This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will turn the interpreter from this Step into an analyzer, and one of the main issues we will address is termination.
 
 \begin{mdframed}[frametitle = {Advanced}]
 \subsection{An Operational Semantics for the Interpreter}
 \label{An Operational Semantics for the Interpreter}
 
-What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript, we also defined formally the \emph{meaning} of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the \emph{semantics} of the language, and there are several techniques to specify semantics; the one we are using so far is known as a \emph{definitional interpreter}~\cite{definitional-interpreters}.
+What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript; we also defined formally the \emph{meaning} of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the \emph{semantics} of the language, and there are several techniques to specify semantics; the one we are using so far is known as a \emph{definitional interpreter}~\cite{definitional-interpreters}.
 
-A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, other techniques for defining semantics do not depend on other programming languages, and in this section we introduce one of them: \emph{operational semantics}~\cite{operational-semantics, semantics-engineering, pl}.
+A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: \emph{operational semantics}~\cite{operational-semantics, semantics-engineering, pl}.
 
 First, we extend the grammar from §~\ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type \mintinline{ts}{Value} (see §~\ref{The Entire Runner}, line 1):
 
@@ -734,7 +734,7 @@ $v$ & ::= & $x\texttt{ => }e$ & Values \\
 \end{tabular}
 \end{center}
 
-Next, we provide \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 3–36):
+Next, we define a \emph{relation} $e \Rightarrow v$ using \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
 \inferrule
@@ -750,7 +750,7 @@ e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
 {e_{f}\texttt{(}e_{a}\texttt{)} \Rightarrow v}
 \end{mathpar}
 
-Finally, we provide a \emph{metafunction} that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, lines 14–32):
+Finally, we define a \emph{metafunction} $e[x \backslash v] = e$ that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, lines 14–32):
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -766,7 +766,7 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \subsection{Parser}
 \label{Parser}
 
-The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the reasoning and the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
+The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} for the reasoning and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
 
 Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
@@ -829,7 +829,7 @@ Check that the \mintinline{ts}{Program} contains a single statement. This preven
 
 \item [Lines 13, 15:]
 
-\mintinline{ts}{ExpressionStatement}s and \mintinline{ts}{ArrowFunctionExpression}s are supported in Yocto-JavaScript unconditionally. We could check that the \mintinline{ts}{ArrowFunctionExpression} includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as \mintinline{js}{[x, y]}, for example), but this would be redundant because Esprima already calls \mintinline{ts}{checkFeatures()} with other unsupported \mintinline{ts}{node}s that subsume these cases. For example, in the program \mintinline{js}{(x, y) => x}, which is a function of multiple parameters, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{SequenceExpression}. Similarly, in the program \mintinline{js}{([x, y]) => x}, which is a function in which the parameter is a pattern, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{ArrayExpression}.
+\mintinline{ts}{ExpressionStatement}s and \mintinline{ts}{ArrowFunctionExpression}s are supported in Yocto-JavaScript unconditionally. We could check that the \mintinline{ts}{ArrowFunctionExpression} includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as \mintinline{js}{[x, y]}, for example), but this would be redundant because Esprima already calls \mintinline{ts}{checkFeatures()} with other unsupported \mintinline{ts}{node}s that subsume these cases. For example, given the program \mintinline{js}{(x, y) => x}, which is a function of multiple parameters, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{SequenceExpression}. Similarly, given the program \mintinline{js}{([x, y]) => x}, which is a function in which the parameter is a pattern, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{ArrayExpression}.
 
 \item [Lines 18–21:]
 
@@ -844,10 +844,12 @@ Check that the \mintinline{ts}{CallExpression} contains a single argument. This 
 All other types of \mintinline{ts}{Node} are not supported by Yocto-JavaScript. This includes programs such as \mintinline{js}{29} (\mintinline{ts}{Literal}) and \mintinline{js}{const f = x => x} (\mintinline{ts}{VariableDeclarator}).
 \end{description}
 
+In later Steps almost everything about the interpreter will change, but the parser will remain the same.
+
 \subsection{Prettifier}
 \label{Step 0: Prettifier}
 
-The prettifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture}). Similar to the parser (see §~\ref{Parser}), we may implement the prettifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to produce a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the prettifier:
+The prettifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture}). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the prettifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the prettifier:
 
 \begin{minted}{ts}
 function prettify(value: Value): string {
@@ -856,9 +858,6 @@ function prettify(value: Value): string {
 \end{minted}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
-
-% TODO: Test PDF/A compliance in Adobe Acrobat Pro’s Preflight.
-% TODO: Check compliance with library.
 
 % TODO: \appendix
 
