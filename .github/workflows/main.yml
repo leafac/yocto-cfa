@@ -5,7 +5,5 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
-      - run: |
-          npm ci
-          npm test
+      - run: npm install-ci-test
         working-directory: code
