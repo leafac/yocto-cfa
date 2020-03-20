@@ -11,7 +11,7 @@
 Install [Node.js](https://nodejs.org/) and run:
 
 ```console
-$ (cd code && npm install && npm test)
+$ (cd code && npm install-test)
 ```
 
 # Dissertation
