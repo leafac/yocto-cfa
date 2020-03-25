@@ -867,6 +867,12 @@ The interpreter we developed in Step~0 may not terminate for some programs (for 
 To visualize this process, consider the following program which is a variation on the program covered from §~\ref{A Program That Does Not Terminate}:
 
 \begin{minted}{js}
+const F = f => f(f)(f(f));
+
+F(F);
+F(F)(F(F));
+F(F)(F(F))(F(F));
+F(F)(F(F))(F(F))(F(F));
 \end{minted}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
