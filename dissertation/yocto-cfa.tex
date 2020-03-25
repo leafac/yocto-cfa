@@ -772,10 +772,10 @@ Our strategy to implement the Yocto-JavaScript parser is to delegate most of the
 
 \begin{minted}[linenos]{ts}
 function parse(input: string): Expression {
-  const program = parseScript(input, {}, checkFeatures);
+  const program = esprima.parseScript(input, {}, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
-  function checkFeatures(node: Node): void {
+  function checkFeatures(node: estree.Node): void {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1)
@@ -809,19 +809,19 @@ The parser is defined as a function called \mintinline{ts}{parse()}, which recei
 
 \item [Line 2:]
 
-Call the Esprima function \mintinline{ts}{parseScript()}, which parses the \mintinline{ts}{input} as if it were a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body. We pass as argument to \mintinline{ts}{parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
+Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as if it were a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body. We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
 \item [Line 3:]
 
-Extract the single \mintinline{ts}{Expression} from within the \mintinline{ts}{Program} returned by \mintinline{ts}{parseScript()}. The \mintinline{ts}{as <something>} forms sidestep the TypeScript type checker and assert that the \mintinline{ts}{expression} is of the correct type. This is safe to do because of \mintinline{ts}{checkFeatures()}.
+Extract the single \mintinline{ts}{Expression} from within the \mintinline{ts}{Program} returned by \mintinline{ts}{esprima.parseScript()}. The \mintinline{ts}{as <something>} forms sidestep the TypeScript type checker and assert that the \mintinline{ts}{expression} is of the correct type. This is safe to do because of \mintinline{ts}{checkFeatures()}.
 
 \item [Line 5:]
 
-The \mintinline{ts}{checkFeatures()} function, which is passed to Esprima’s \mintinline{ts}{parseScript()} is called with every fragment of data structure used to represent the program. These fragments are called \emph{nodes}, because the data structure as a whole forms a \emph{tree}, also known as the \emph{Abstract Syntax Tree}~(AST) of the program (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{checkFeatures()} does not return anything (\mintinline{ts}{void}); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+The \mintinline{ts}{checkFeatures()} function, which is passed to \mintinline{ts}{esprima.parseScript()} is called with every fragment of data structure used to represent the program. These fragments are called \emph{nodes}, because the data structure as a whole forms a \emph{tree}, also known as the \emph{Abstract Syntax Tree}~(AST) of the program (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{checkFeatures()} does not return anything (\mintinline{ts}{void}); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
 
 \item [Lines 6, 7, 13, 15, 17, 23, 25:]
 
-Similar to \mintinline{ts}{run()} and \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}), \mintinline{ts}{checkFeatures()} starts by determining which type of \mintinline{ts}{Node} it is given.
+Similar to \mintinline{ts}{run()} and \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}), \mintinline{ts}{checkFeatures()} starts by determining which type of \mintinline{ts}{estree.Node} it is given.
 
 \item [Lines 8–11:]
 
@@ -841,7 +841,7 @@ Check that the \mintinline{ts}{CallExpression} contains a single argument. This 
 
 \item [Line 26:]
 
-All other types of \mintinline{ts}{Node} are not supported by Yocto-JavaScript. This includes programs such as \mintinline{js}{29} (\mintinline{ts}{Literal}) and \mintinline{js}{const f = x => x} (\mintinline{ts}{VariableDeclarator}).
+All other types of \mintinline{ts}{estree.Node} are not supported by Yocto-JavaScript. This includes programs such as \mintinline{js}{29} (\mintinline{ts}{estree.Literal}) and \mintinline{js}{const f = x => x} (\mintinline{ts}{estree.VariableDeclarator}).
 \end{description}
 
 In later Steps almost everything about the interpreter will change, but the parser will remain the same.
@@ -853,7 +853,9 @@ The prettifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{r
 
 \begin{minted}{ts}
 function prettify(value: Value): string {
-  return format(generate(value), { parser: "babel", semi: false }).trim();
+  return prettier
+    .format(escodegen.generate(value), { parser: "babel", semi: false })
+    .trim();
 }
 \end{minted}
 

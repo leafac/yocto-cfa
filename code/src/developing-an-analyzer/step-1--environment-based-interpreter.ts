@@ -1,7 +1,7 @@
-import { parseScript } from "esprima";
-import { Node } from "estree";
-import { generate } from "escodegen";
-import { format } from "prettier";
+import esprima from "esprima";
+import estree from "estree";
+import escodegen from "escodegen";
+import prettier from "prettier";
 import { MapDeepEqual } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
@@ -67,10 +67,10 @@ function run(expression: Expression): Value {
 }
 
 function parse(input: string): Expression {
-  const program = parseScript(input, {}, checkFeatures);
+  const program = esprima.parseScript(input, {}, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
-  function checkFeatures(node: Node): void {
+  function checkFeatures(node: estree.Node): void {
     switch (node.type) {
       case "Program":
         if (node.body.length !== 1)
@@ -101,10 +101,12 @@ function prettify(value: Value): string {
     value,
     (key, value) => {
       if (value.type !== undefined)
-        return format(generate(value), {
-          parser: "babel",
-          semi: false
-        }).trim();
+        return prettier
+          .format(escodegen.generate(value), {
+            parser: "babel",
+            semi: false
+          })
+          .trim();
       return value;
     },
     2
