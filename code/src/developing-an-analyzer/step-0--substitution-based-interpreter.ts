@@ -1,7 +1,7 @@
-import esprima from "esprima";
-import estree from "estree";
-import escodegen from "escodegen";
-import prettier from "prettier";
+import * as esprima from "esprima";
+import * as estree from "estree";
+import * as escodegen from "escodegen";
+import * as prettier from "prettier";
 
 export function evaluate(input: string): string {
   return prettify(run(parse(input)));
