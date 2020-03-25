@@ -706,6 +706,7 @@ function run(expression: Expression): Value {
 \end{minted}
 
 \subsection{A Program That Does Not Terminate}
+\label{A Program That Does Not Terminate}
 
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -766,7 +767,7 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \subsection{Parser}
 \label{Parser}
 
-The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} for the reasoning and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
+The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} for a high-level view of the architecture and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
 
 Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
@@ -849,7 +850,7 @@ In later Steps almost everything about the interpreter will change, but the pars
 \subsection{Prettifier}
 \label{Step 0: Prettifier}
 
-The prettifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture}). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the prettifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the prettifier:
+The prettifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the prettifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the prettifier:
 
 \begin{minted}{ts}
 function prettify(value: Value): string {
@@ -857,6 +858,15 @@ function prettify(value: Value): string {
     .format(escodegen.generate(value), { parser: "babel", semi: false })
     .trim();
 }
+\end{minted}
+
+\section{Step 1: Environment-Based Interpreter}
+
+The interpreter we developed in Step~0 may not terminate for some programs (for example, see §~\ref{A Program That Does Not Terminate}). As we progress toward an analyzer, one of our main goals is to guarantee termination: even if the analyzer takes a long time working on a program, we want to make sure that it would eventually finish. In Step~0, the source of non-termination is that the interpreter is constantly producing new expressions as the result of substitution. These new expressions, in turn, must be evaluated, which may produce yet more new expressions.
+
+To visualize this process, consider the following program which is a variation on the program covered from §~\ref{A Program That Does Not Terminate}:
+
+\begin{minted}{js}
 \end{minted}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
