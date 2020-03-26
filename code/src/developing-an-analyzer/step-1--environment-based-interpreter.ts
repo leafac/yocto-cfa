@@ -5,7 +5,7 @@ import * as prettier from "prettier";
 import { MapDeepEqual } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
-  return prettify(run(parse(input)));
+  return stringify(run(parse(input)));
 }
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -96,7 +96,7 @@ function parse(input: string): Expression {
   }
 }
 
-function prettify(value: Value): string {
+function stringify(value: Value): string {
   return JSON.stringify(
     value,
     (key, value) => {
