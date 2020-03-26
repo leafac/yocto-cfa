@@ -866,20 +866,33 @@ function stringify(value: Value): string {
 
 \section{Step 1: Environment-Based Interpreter}
 
-As we progress toward an analyzer, one of our main goals is to guarantee termination: even if the analyzer works for a long time on a program, we want to make sure that it would eventually finish. The interpreter we developed in Step~0 does not have that guarantee. It may start interpreting an expression and produce another expression as the result of substitution; it then starts interpreting this other expression only for substitution to produce yet another expression; and so on.
+In §~\ref{A Program That Does Not Terminate} there was an example of a program for which the interpreter we developed in Step~0 (see §~\ref{Step 0: Substitution-Based Interpreter}) would not terminate. Moving forward, as we turn the interpreter into an analyzer, one of our main goals is to guarantee termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
 
-In §~\ref{A Program That Does Not Terminate} there was an example of the simplest non-terminating program in Yocto-JavaScript, and the expressions produced as the result of substitution were always the same as the original: \mintinline{js}{(f => f(f))(f => f(f))}. At first glance, it may seem as if we could detect non-termination by simply checking if the expressions we are asked to evaluate are repeating. Unfortunately, that is insufficient, because some programs do not terminate and never produce the same expression twice.
+The source of potential non-termination in the interpreter we developed in Step~0 is that substitution is constantly creating new expressions, which in turn must themselves be interpreted and may produce yet more expressions, and so forth. In most cases the interpreter eventually finds expressions that may be evaluated immediately without further substitution (for example, it may find a function definition, which is already a value) and the interpretation ends, but in some cases the process goes on forever.
 
-% TODO: TURING COMPLETE: HALTING PROBLEM
+In the example program from §~\ref{A Program That Does Not Terminate} (\mintinline{js}{(f => f(f))(f => f(f))}), the expression that is the result of substitution is the same as the initial expression, so at first glance it may seem as if we could detect non-termination simply by checking whether we are asking the interpreter to evaluate an expression that it has already tried to evaluate before. Unfortunately, the problem is more difficult, because there are programs for which interpretation does not terminate and never produce the same expression twice. For example, consider the program below:
 
 \begin{minted}{js}
-const F = f => f(f)(f(f));
-
-F(F);
-F(F)(F(F));
-F(F)(F(F))(F(F));
-F(F)(F(F))(F(F))(F(F));
+(f => (f(f))(f(f)))(f => (f(f))(f(f)))
 \end{minted}
+
+This program is is a variation on the program from §~\ref{A Program That Does Not Terminate} in which each variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. When evaluating this program, the result of the first substitution is the following expression:
+
+\begin{minted}{js}
+(f => (f(f))(f(f)))(f => (f(f))(f(f)))((f => (f(f))(f(f)))(f => (f(f))(f(f))))
+\end{minted}
+
+To make this easier to read, let \mintinline{js}{F} stand for \mintinline{js}{f => (f(f))(f(f))}. We can rewrite the original program above and the substitutions that follow from evaluating it as:
+
+\begin{minted}{js}
+(F(F))
+(F(F))(F(F))
+(F(F))(F(F))(F(F))
+(F(F))(F(F))(F(F))(F(F))
+           ...
+\end{minted}
+
+% TODO: TURING COMPLETE: HALTING PROBLEM
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
