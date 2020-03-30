@@ -55,12 +55,6 @@ describe("run()", () => {
     );
     expect(evaluate("x => y")).toMatchInlineSnapshot(`"x => y"`);
   });
-
-  test("§ A Program That Does Not Terminate", () => {
-    expect(() => {
-      evaluate("(f => f(f))(f => f(f))");
-    }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
-  });
 });
 
 describe("parse()", () => {
@@ -117,4 +111,13 @@ describe("parse()", () => {
       `"Unsupported Yocto-JavaScript feature: VariableDeclarator"`
     );
   });
+});
+
+test("§ Programs That Do Not Terminate", () => {
+  expect(() => {
+    evaluate("(f => f(f))(f => f(f))");
+  }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
+  expect(() => {
+    evaluate("(f => (f(f))(f(f)))(f => (f(f))(f(f)))");
+  }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });

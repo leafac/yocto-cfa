@@ -141,22 +141,6 @@ describe("run()", () => {
       }"
     `);
   });
-
-  test("§ A Program That Does Not Terminate", () => {
-    expect(() => {
-      evaluate("(f => f(f))(f => f(f))");
-    }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
-  });
-
-  test("§ A Function Body Is Evaluated with the Environment under Which Its Closure Is Created", () => {
-    expect(evaluate("(f => (x => f(x))(b => b))((x => y => x)(a => a))"))
-      .toMatchInlineSnapshot(`
-      "{
-        \\"function\\": \\"a => a\\",
-        \\"environment\\": []
-      }"
-    `);
-  });
 });
 
 describe("parse()", () => {
@@ -213,4 +197,23 @@ describe("parse()", () => {
       `"Unsupported Yocto-JavaScript feature: VariableDeclarator"`
     );
   });
+});
+
+test("§ Programs That Do Not Terminate", () => {
+  expect(() => {
+    evaluate("(f => f(f))(f => f(f))");
+  }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
+  expect(() => {
+    evaluate("(f => (f(f))(f(f)))(f => (f(f))(f(f)))");
+  }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
+});
+
+test("§ A Function Body Is Evaluated with the Environment under Which Its Closure Is Created", () => {
+  expect(evaluate("(f => (x => f(x))(b => b))((x => y => x)(a => a))"))
+    .toMatchInlineSnapshot(`
+    "{
+      \\"function\\": \\"a => a\\",
+      \\"environment\\": []
+    }"
+  `);
 });

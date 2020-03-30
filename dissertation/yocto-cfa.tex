@@ -705,24 +705,6 @@ function run(expression: Expression): Value {
 }
 \end{minted}
 
-\subsection{A Program That Does Not Terminate}
-\label{A Program That Does Not Terminate}
-
-\begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(f => f(f))(f => f(f))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
-\end{tabular}
-\end{center}
-
-\begin{mdframed}[frametitle = {Technical Terms}]
-This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of the $\Omega$-combinator is also known as the \emph{$U$-combinator} ($\Omega = U(U)$).
-\end{mdframed}
-
-Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript: on the first call to \mintinline{js}{run()} both the called function and the argument are immediate functions (they are both \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 11 and 12) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 13) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 13) leads to an infinite loop.
-
-This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will turn the interpreter from this Step into an analyzer, and one of the main issues we will address is termination.
-
 \begin{mdframed}[frametitle = {Advanced}]
 \subsection{An Operational Semantics for the Interpreter}
 \label{An Operational Semantics for the Interpreter}
@@ -864,7 +846,24 @@ function stringify(value: Value): string {
 }
 \end{minted}
 
-\section{Step 1: Environment-Based Interpreter}
+\subsection{Programs That Do Not Terminate}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
+\mintinline{js}{(f => f(f))(f => f(f))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
+\end{tabular}
+\end{center}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of the $\Omega$-combinator is also known as the \emph{$U$-combinator} ($\Omega = U(U)$).
+\end{mdframed}
+
+Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript: on the first call to \mintinline{js}{run()} both the called function and the argument are immediate functions (they are both \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 11 and 12) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 13) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 13) leads to an infinite loop.
+
+This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will turn the interpreter from this Step into an analyzer, and one of the main issues we will address is termination.
+
+% ---
 
 In §~\ref{A Program That Does Not Terminate} there was an example of a program for which the interpreter we developed in Step~0 (see §~\ref{Step 0: Substitution-Based Interpreter}) would not terminate. Moving forward, as we turn the interpreter into an analyzer, one of our main goals is to guarantee termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
 
@@ -893,6 +892,8 @@ To make this easier to read, let \mintinline{js}{F} stand for \mintinline{js}{f 
 \end{minted}
 
 % TODO: TURING COMPLETE: HALTING PROBLEM
+
+\section{Step 1: Environment-Based Interpreter}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
