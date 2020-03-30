@@ -850,46 +850,77 @@ function stringify(value: Value): string {
 
 \begin{center}
 \begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
+\textbf{Example Programs} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(f => f(f))(f => f(f))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
+\mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of the $\Omega$-combinator is also known as the \emph{$U$-combinator} ($\Omega = U(U)$).
+The first example program (\mintinline{js}{(f => f(f))(f => f(f))}) is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of this program is also known as the \emph{$U$-combinator} ($\Omega = (U)(U)$).
 \end{mdframed}
 
-Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript: on the first call to \mintinline{js}{run()} both the called function and the argument are immediate functions (they are both \mintinline{js}{f => f(f)}), so the first two recursive calls to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 11 and 12) return the functions unchanged. At this point, the \mintinline{ts}{parameter} is \mintinline{ts}{f}, the \mintinline{ts}{body} is \mintinline{js}{f(f)}, and the \mintinline{ts}{argument} is \mintinline{js}{f => f(f)}. The result of the call to \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, line 13) is \mintinline{js}{(f => f(f))(f => f(f))}, which is the same as the initial program, so the recursive call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, line 13) leads to an infinite loop.
+Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the first example program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}):
 
-This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will turn the interpreter from this Step into an analyzer, and one of the main issues we will address is termination.
+\begin{tabular}{rrcl}
+\textbf{Line}&&&\\
+3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
+9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f}\\
+10 & \mintinline{ts}{body} & = & \mintinline{js}{f(f)}\\
+12 & \mintinline{ts}{argument} & = & \mintinline{js}{f => f(f)}\\
+13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
+\end{tabular}
 
-% ---
+The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop and not terminate.
 
-In §~\ref{A Program That Does Not Terminate} there was an example of a program for which the interpreter we developed in Step~0 (see §~\ref{Step 0: Substitution-Based Interpreter}) would not terminate. Moving forward, as we turn the interpreter into an analyzer, one of our main goals is to guarantee termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
+There are also programs for which interpretation does not terminate that never produce the same intermediary expression twice. For example, consider the second example program, which is a variation of the first in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
 
-The source of potential non-termination in the interpreter we developed in Step~0 is that substitution is constantly creating new expressions, which in turn must themselves be interpreted and may produce yet more expressions, and so forth. In most cases the interpreter eventually finds expressions that may be evaluated immediately without further substitution (for example, it may find a function definition, which is already a value) and the interpretation ends, but in some cases the process goes on forever.
+\begin{tabular}{rrcl}
+\textbf{Line}&&&\mintinline{js}{F = f => (f(f))(f(f))}\\
+3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)}\\
+9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f}\\
+10 & \mintinline{ts}{body} & = & \mintinline{js}{(f(f))(f(f))}\\
+12 & \mintinline{ts}{argument} & = & \mintinline{js}{F}\\
+13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(F(F))(F(F))}\\
+\end{tabular}
 
-In the example program from §~\ref{A Program That Does Not Terminate} (\mintinline{js}{(f => f(f))(f => f(f))}), the expression that is the result of substitution is the same as the initial expression, so at first glance it may seem as if we could detect non-termination simply by checking whether we are asking the interpreter to evaluate an expression that it has already tried to evaluate before. Unfortunately, the problem is more difficult, because there are programs for which interpretation does not terminate and never produce the same expression twice. For example, consider the program below:
+The result of substitution is an expression that contains the initial expression in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop and not terminate. Additionally, the expression never repeats itself; it grows on each recursive call to \mintinline{ts}{run()}:
 
-\begin{minted}{js}
-(f => (f(f))(f(f)))(f => (f(f))(f(f)))
-\end{minted}
-
-This program is is a variation on the program from §~\ref{A Program That Does Not Terminate} in which each variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. When evaluating this program, the result of the first substitution is the following expression:
-
-\begin{minted}{js}
-(f => (f(f))(f(f)))(f => (f(f))(f(f)))((f => (f(f))(f(f)))(f => (f(f))(f(f))))
-\end{minted}
-
-To make this easier to read, let \mintinline{js}{F} stand for \mintinline{js}{f => (f(f))(f(f))}. We can rewrite the original program above and the substitutions that follow from evaluating it as:
-
-\begin{minted}{js}
+\begin{minted}[mathescape]{js}
 (F(F))
 (F(F))(F(F))
 (F(F))(F(F))(F(F))
 (F(F))(F(F))(F(F))(F(F))
-           ...
+//          $\vdots$
 \end{minted}
+
+This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will turn the interpreter from this Step into an analyzer, and one of the main issues we will address is termination.
+
+% In §~\ref{A Program That Does Not Terminate} there was an example of a program for which the interpreter we developed in Step~0 (see §~\ref{Step 0: Substitution-Based Interpreter}) would not terminate. Moving forward, as we turn the interpreter into an analyzer, one of our main goals is to guarantee termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
+
+% The source of potential non-termination in the interpreter we developed in Step~0 is that substitution is constantly creating new expressions, which in turn must themselves be interpreted and may produce yet more expressions, and so forth. In most cases the interpreter eventually finds expressions that may be evaluated immediately without further substitution (for example, it may find a function definition, which is already a value) and the interpretation ends, but in some cases the process goes on forever.
+
+% In the example program from §~\ref{A Program That Does Not Terminate} (\mintinline{js}{(f => f(f))(f => f(f))}), the expression that is the result of substitution is the same as the initial expression, so at first glance it may seem as if we could detect non-termination simply by checking whether we are asking the interpreter to evaluate an expression that it has already tried to evaluate before. Unfortunately, the problem is more difficult, because there are programs for which interpretation does not terminate and never produce the same expression twice. For example, consider the program below:
+
+% \begin{minted}{js}
+% (f => (f(f))(f(f)))(f => (f(f))(f(f)))
+% \end{minted}
+
+% This program is is a variation on the program from §~\ref{A Program That Does Not Terminate} in which each variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. When evaluating this program, the result of the first substitution is the following expression:
+
+% \begin{minted}{js}
+% (f => (f(f))(f(f)))(f => (f(f))(f(f)))((f => (f(f))(f(f)))(f => (f(f))(f(f))))
+% \end{minted}
+
+% To make this easier to read, let \mintinline{js}{F} stand for \mintinline{js}{f => (f(f))(f(f))}. We can rewrite the original program above and the substitutions that follow from evaluating it as:
+
+% \begin{minted}{js}
+% (F(F))
+% (F(F))(F(F))
+% (F(F))(F(F))(F(F))
+% (F(F))(F(F))(F(F))(F(F))
+%            ...
+% \end{minted}
 
 % TODO: TURING COMPLETE: HALTING PROBLEM
 

@@ -1,5 +1,5 @@
 {
   "dependencies": {
-    "shiki-latex": "^1.1.6"
+    "shiki-latex": "^1.2.0"
   }
 }
