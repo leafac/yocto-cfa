@@ -360,10 +360,6 @@ case "ArrowFunctionExpression":
 
 Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in this Step we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in §~\ref{Substitution in Function Calls}.
 
-\begin{mdframed}[frametitle = {Technical Terms}]
-This technique for interpreting function calls is what characterizes our interpreter in this Step as a \emph{substitution-based interpreter}.
-\end{mdframed}
-
 In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
 \begin{minted}[highlightlines = {3-7}]{ts}
@@ -847,6 +843,7 @@ function stringify(value: Value): string {
 \end{minted}
 
 \subsection{Programs That Do Not Terminate}
+\label{Programs That Do Not Terminate}
 
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -862,6 +859,7 @@ The first example program (\mintinline{js}{(f => f(f))(f => f(f))}) is also know
 
 Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the first example program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}):
 
+\begin{center}
 \begin{tabular}{rrcl}
 \textbf{Line}&&&\\
 3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
@@ -870,11 +868,13 @@ Yocto-JavaScript may express any program that a computer may run (see §~\ref{Th
 12 & \mintinline{ts}{argument} & = & \mintinline{js}{f => f(f)}\\
 13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
 \end{tabular}
+\end{center}
 
 The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop.
 
-There are also programs for which interpretation does not terminate that never produce the same intermediary expression twice. For example, consider the second example program, which is a variation of the first in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
+There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the second example program, which is a variation of the first in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
 
+\begin{center}
 \begin{tabular}{rrcl}
 \textbf{Line}&&&\mintinline{js}{F = f => (f(f))(f(f))}\\
 3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)}\\
@@ -883,6 +883,7 @@ There are also programs for which interpretation does not terminate that never p
 12 & \mintinline{ts}{argument} & = & \mintinline{js}{F}\\
 13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(F(F))(F(F))}\\
 \end{tabular}
+\end{center}
 
 The result of substitution is an expression that contains the initial expression in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to \mintinline{ts}{run()} never repeat themselves:
 
@@ -902,7 +903,29 @@ Detecting non-termination in an interpreter is a problem that cannot be solved, 
 
 \section{Step 1: Environment-Based Interpreter}
 
-% The source of potential non-termination in the interpreter we developed in Step~0 is that substitution is constantly creating new expressions, which in turn must themselves be interpreted and may produce yet more expressions, and so forth. In most cases the interpreter eventually finds expressions that may be evaluated immediately without further substitution (for example, it may find a function definition, which is already a value) and the interpretation ends, but in some cases the process goes on forever.
+As mentioned in §~\ref{Programs That Do Not Terminate}, the interpreter from Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer. The source of non-termination in the interpreter from Step~0 is substitution, which may produce infinitely many new expressions. In this Step, we modify the interpreter so that it does not perform substitution, and as a consequence the only expressions it considers are the finitely many expressions and sub-expressions from the input program. The interpreter we develop in this Step may still not terminate, but that would be because of other sources of non-termination that will be addressed in subsequent Steps.
+
+\subsection{Environments and Closures}
+
+In Step~0, when a function was applied we substituted all references to the parameter in the body with the argument. In the interpreter we develop in this Step, we do not perform the substitution, but keep the body intact along with a mapping from the parameter to the argument, for example:
+
+\begin{center}
+\begin{tabular}{rcc}
+& \textbf{Program} & \textbf{Evaluates to} \\
+\textbf{Step~0} & \mintinline{js}{(x => x)(y => y)} & \mintinline{js}{y => y} \\
+\textbf{Step~1} & \mintinline{js}{(x => x)(y => y)} & $\langle \mintinline{js}{x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$ \\
+\end{tabular}
+\end{center}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function body along with an environment (for example, $\langle \mintinline{js}{x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
+\end{mdframed}
+
+It is possible to use the outputs of the interpreter from this Step to recreate an expression produced by the interpreter from Step~0 by substituting the variable references in the function body with the corresponding values found in the environment. We may do this to check that the outputs of the interpreters are equivalent. But the interpreter from this Step does not perform substitution: as interpretation proceeds the interpreter simply adds more mappings to the environment, and it only looks up variable references in the environment when necessary.
+
+\begin{mdframed}[frametitle = {Alternative Argument}]
+Another way to reason about an environment-based interpreter is as a substitution-based interpreter in which substitutions are delayed until they are needed.
+\end{mdframed}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
