@@ -7,6 +7,7 @@
 \usepackage[top = 1in, right = 1in, bottom = 1in, left = 1.5in]{geometry}
 \pagestyle{plain}
 \usepackage[doublespacing]{setspace}
+\frenchspacing
 
 \usepackage{graphicx}
 
@@ -180,7 +181,7 @@ Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, whi
 The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}~\cite{eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript.
 \end{mdframed}
 
-The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of this Step (the \mintinline{ts}{>} represents the console):
+The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of Step~0 (the \mintinline{ts}{>} represents the console):
 
 \begin{minted}{ts}
 > evaluate("x => x")
@@ -358,7 +359,7 @@ case "ArrowFunctionExpression":
 \end{tabular}
 \end{center}
 
-Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in this Step we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in §~\ref{Substitution in Function Calls}.
+Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step~0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in §~\ref{Substitution in Function Calls}.
 
 In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
@@ -903,29 +904,53 @@ Detecting non-termination in an interpreter is a problem that cannot be solved, 
 
 \section{Step 1: Environment-Based Interpreter}
 
-As mentioned in §~\ref{Programs That Do Not Terminate}, the interpreter from Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer. The source of non-termination in the interpreter from Step~0 is substitution, which may produce infinitely many new expressions. In this Step, we modify the interpreter so that it does not perform substitution, and as a consequence the only expressions it considers are the finitely many expressions and sub-expressions from the input program. The interpreter we develop in this Step may still not terminate, but that would be because of other sources of non-termination that will be addressed in subsequent Steps.
+As mentioned in §~\ref{Programs That Do Not Terminate}, the interpreter from Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer. The source of non-termination in Step~0 is substitution, which may produce infinitely many new expressions. In Step~1, we modify the interpreter so that it does not perform substitution, and as a consequence the only expressions it considers are the finitely many expressions found in the input program. The interpreter in Step~1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
 
 \subsection{Environments and Closures}
 
-In Step~0, when a function was applied we substituted all references to the parameter in the body with the argument. In the interpreter we develop in this Step, we do not perform the substitution, but keep the body intact along with a mapping from the parameter to the argument, for example:
+In Step~0, when a function was applied we substituted all references to the parameter in the body with the argument. In Step~1, we do not perform the substitution, but keep the body intact along with a mapping from the parameter to the argument, for example:
 
 \begin{center}
 \begin{tabular}{rcc}
-& \textbf{Program} & \textbf{Evaluates to} \\
-\textbf{Step~0} & \mintinline{js}{(x => x)(y => y)} & \mintinline{js}{y => y} \\
-\textbf{Step~1} & \mintinline{js}{(x => x)(y => y)} & $\langle \mintinline{js}{x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$ \\
+& \textbf{Program} & \textbf{Evalutes to} \\
+\textbf{Step~0} & \mintinline{js}{(x => y => x)(a => a)} & \mintinline{js}{y => (a => a)} \\
+\textbf{Step~1} & \mintinline{js}{(x => y => x)(a => a)} & $\langle \mintinline{js}{y => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{a => a}] \rangle$ \\
 \end{tabular}
 \end{center}
 
+Note how Step~0 produces the expression \mintinline{js}{y => (a => a)}, which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{y => x}.
+
 \begin{mdframed}[frametitle = {Technical Terms}]
-A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function body along with an environment (for example, $\langle \mintinline{js}{x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
+A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{a => a}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{y => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{a => a}] \rangle$) is something called a \emph{closure}.
 \end{mdframed}
 
-It is possible to use the outputs of the interpreter from this Step to recreate an expression produced by the interpreter from Step~0 by substituting the variable references in the function body with the corresponding values found in the environment. We may do this to check that the outputs of the interpreters are equivalent. But the interpreter from this Step does not perform substitution: as interpretation proceeds the interpreter simply adds more mappings to the environment, and it only looks up variable references in the environment when necessary.
+In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we simply add more mappings to the environment and look up variable references in the environment.
 
 \begin{mdframed}[frametitle = {Alternative Argument}]
-Another way to reason about an environment-based interpreter is as a substitution-based interpreter in which substitutions are delayed until they are needed.
+Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
 \end{mdframed}
+
+The following are the data structures for Step~1:
+
+\begin{minted}{ts}
+type Value = Closure;
+
+type Closure = {
+  function: ArrowFunctionExpression;
+  environment: Environment;
+};
+
+type Environment = MapDeepEqual<Identifier["name"], Value>;
+\end{minted}
+
+The \mintinline{ts}{MapDeepEqual} data structure is provided by a JavaScript package developed by the author called Collections Deep Equal~\cite{collections-deep-equal}. A \mintinline{ts}{MapDeepEqual} is similar to a \mintinline{ts}{Map}, except that the keys are compared by value, not by reference, for example:
+
+\begin{minted}{ts}
+new Map([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" }); // => undefined
+new MapDeepEqual([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" }); // => 29
+\end{minted}
+
+Note how in each line the two occurrences of \mintinline{ts}{{ name: "Leandro" }} are objects with the same keys and values, but they are not the same object.
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
