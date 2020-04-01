@@ -871,7 +871,7 @@ Yocto-JavaScript may express any program that a computer may run (see §~\ref{Th
 13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
 \end{tabular}
 
-The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop and not terminate.
+The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop.
 
 There are also programs for which interpretation does not terminate that never produce the same intermediary expression twice. For example, consider the second example program, which is a variation of the first in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
 
@@ -884,7 +884,7 @@ There are also programs for which interpretation does not terminate that never p
 13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(F(F))(F(F))}\\
 \end{tabular}
 
-The result of substitution is an expression that contains the initial expression in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop and not terminate. Additionally, the expression never repeats itself; it grows on each recursive call to \mintinline{ts}{run()}:
+The result of substitution is an expression that contains the initial expression in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to \mintinline{ts}{run()} never repeat themselves:
 
 \begin{minted}[mathescape]{js}
 (F(F))
@@ -894,37 +894,15 @@ The result of substitution is an expression that contains the initial expression
 //          $\vdots$
 \end{minted}
 
-This is what we expect from an interpreter, but not from an analyzer, which must always terminate. In the next Steps we will turn the interpreter from this Step into an analyzer, and one of the main issues we will address is termination.
+Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether \mintinline{ts}{run()} is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
 
-% In §~\ref{A Program That Does Not Terminate} there was an example of a program for which the interpreter we developed in Step~0 (see §~\ref{Step 0: Substitution-Based Interpreter}) would not terminate. Moving forward, as we turn the interpreter into an analyzer, one of our main goals is to guarantee termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
-
-% The source of potential non-termination in the interpreter we developed in Step~0 is that substitution is constantly creating new expressions, which in turn must themselves be interpreted and may produce yet more expressions, and so forth. In most cases the interpreter eventually finds expressions that may be evaluated immediately without further substitution (for example, it may find a function definition, which is already a value) and the interpretation ends, but in some cases the process goes on forever.
-
-% In the example program from §~\ref{A Program That Does Not Terminate} (\mintinline{js}{(f => f(f))(f => f(f))}), the expression that is the result of substitution is the same as the initial expression, so at first glance it may seem as if we could detect non-termination simply by checking whether we are asking the interpreter to evaluate an expression that it has already tried to evaluate before. Unfortunately, the problem is more difficult, because there are programs for which interpretation does not terminate and never produce the same expression twice. For example, consider the program below:
-
-% \begin{minted}{js}
-% (f => (f(f))(f(f)))(f => (f(f))(f(f)))
-% \end{minted}
-
-% This program is is a variation on the program from §~\ref{A Program That Does Not Terminate} in which each variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. When evaluating this program, the result of the first substitution is the following expression:
-
-% \begin{minted}{js}
-% (f => (f(f))(f(f)))(f => (f(f))(f(f)))((f => (f(f))(f(f)))(f => (f(f))(f(f))))
-% \end{minted}
-
-% To make this easier to read, let \mintinline{js}{F} stand for \mintinline{js}{f => (f(f))(f(f))}. We can rewrite the original program above and the substitutions that follow from evaluating it as:
-
-% \begin{minted}{js}
-% (F(F))
-% (F(F))(F(F))
-% (F(F))(F(F))(F(F))
-% (F(F))(F(F))(F(F))(F(F))
-%            ...
-% \end{minted}
-
-% TODO: TURING COMPLETE: HALTING PROBLEM
+\begin{mdframed}[frametitle = {Advanced}]
+Detecting non-termination in an interpreter is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the \emph{halting problem}, is said to be \emph{uncomputable}~\cite[§~8]{understanding-computation}, and is a direct consequence of the Turing completeness of Yocto-JavaScript (see §~\ref{The Computational Power of Yocto-JavaScript}).
+\end{mdframed}
 
 \section{Step 1: Environment-Based Interpreter}
+
+% The source of potential non-termination in the interpreter we developed in Step~0 is that substitution is constantly creating new expressions, which in turn must themselves be interpreted and may produce yet more expressions, and so forth. In most cases the interpreter eventually finds expressions that may be evaluated immediately without further substitution (for example, it may find a function definition, which is already a value) and the interpretation ends, but in some cases the process goes on forever.
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
