@@ -909,7 +909,7 @@ As mentioned in §~\ref{Programs That Do Not Terminate}, the interpreter from St
 
 \subsection{Environments and Closures}
 
-In Step~0, when a function was applied we substituted all references to the parameter in the body with the argument. In Step~1, we do not perform the substitution, but keep the body intact along with a mapping from the parameter to the argument, for example:
+In Step~0, when a function was applied we substituted all references to the parameter in the body with the argument. In Step~1, we do not perform the substitution, but keep the body intact along with a map from the parameter to the argument, for example:
 
 \begin{center}
 \begin{tabular}{rcc}
@@ -922,10 +922,10 @@ In Step~0, when a function was applied we substituted all references to the para
 Note how Step~0 produces the expression \mintinline{js}{z => y => y} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x} and \mintinline{js}{y => y}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
+A map from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
 \end{mdframed}
 
-In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
+In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
 
 \begin{mdframed}[frametitle = {Alternative Argument}]
 Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
@@ -1006,7 +1006,7 @@ function run(expression: Expression): Value {
 \item [Lines 11–13:] The recursive calls to \mintinline{ts}{run()} are changed to recursive calls to \mintinline{ts}{step()} and the \mintinline{ts}{environment} is propagated.
 \end{description}
 
-The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the \mintinline{ts}{environment} for each different type of \mintinline{ts}{expression}.
+The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the \mintinline{ts}{environment} for each type of \mintinline{ts}{expression}.
 
 \subsection{A Function Definition}
 
@@ -1048,7 +1048,7 @@ case "CallExpression":
   return step(body, environment);
 \end{minted}
 
-Next, we fix the pattern in the result of the interpretation of the called function to take in account the closure:
+Next, we fix the pattern that matches the result of the interpretation of the called function to take in account the closure:
 
 \begin{minted}[highlightlines = {4,7,8}]{ts}
 // step()
@@ -1088,12 +1088,11 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x => z => x)(a => a)(y => y)} & — & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x} \mapsto \mintinline{js}{y => y}] \rangle$ \\
+\mintinline{js}{(x => x => z => x)(a => a)(y => y)} & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x} \mapsto \mintinline{js}{y => y}] \rangle$ & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x} \mapsto \mintinline{js}{y => y}] \rangle$ \\
 \end{tabular}
 \end{center}
 
-In the case of name reuse (see §~\ref{Step 0: Name Reuse}) the \mintinline{ts}{environment} already contains the \mintinline{ts}{parameter} and the call to \mintinline{ts}{set()} in line~13 of §~\ref{A Function Call} overwrites it. This entails that we  the most recent (the inner one) definition of a name is the one that is used.
-(what we call Option~2 in §~\ref{Step 0: Name Reuse})
+If a name is reused (for example, \mintinline{js}{x} in the example program above), then the second time it is encountered by \mintinline{ts}{step()} it is overwritten in the \mintinline{ts}{environment} (see the call to \mintinline{ts}{set()} in line~13 of §~\ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to \mintinline{js}{x} to refer to the second (inner) \mintinline{ts}{x}, which is the expected behavior (it is what we called Option~2 in §~\ref{Step 0: Name Reuse}).
 
 \subsection{A Variable Reference}
 
@@ -1102,12 +1101,28 @@ In the case of name reuse (see §~\ref{Step 0: Name Reuse}) the \mintinline{ts}{
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => x)(y => y)} & — & $\langle \mintinline{js}{y => y}, [] \rangle$ \\
 \mintinline{js}{(x => y)(y => y)} & — & \texttt{Reference to undefined variable: y} \\
+\mintinline{js}{x => y} & — & $\langle \mintinline{js}{x => y}, [] \rangle$ \\
 \end{tabular}
 \end{center}
+
+When we encounter a variable reference, we look it up in the current environment:
+
+\begin{minted}[highlightlines = {3-8}]{ts}
+// step()
+case "Identifier":
+  const value = environment.get(expression.name);
+  if (value === undefined)
+    throw new Error(
+      `Reference to undefined variable: ${expression.name}`
+    );
+  return value;
+\end{minted}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
 % TODO: Operational semantics
+
+% TODO: Stringifier
 
 % TODO: \appendix
 
