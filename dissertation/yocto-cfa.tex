@@ -924,7 +924,7 @@ Note how Step~0 produces the expression \mintinline{js}{y => (a => a)}, which do
 A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{a => a}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{y => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{a => a}] \rangle$) is something called a \emph{closure}.
 \end{mdframed}
 
-In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we simply add more mappings to the environment and look up variable references in the environment.
+In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
 
 \begin{mdframed}[frametitle = {Alternative Argument}]
 Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
@@ -952,7 +952,42 @@ new MapDeepEqual([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" }); // => 29
 
 Note how in each line the two occurrences of \mintinline{ts}{{ name: "Leandro" }} are objects with the same keys and values, but they are not the same object.
 
+\subsection{Adding an Environment to the Runner}
+
+The runner needs to maintain an environment, so we introduce an auxiliary function called \mintinline{ts}{step()} and change all recursive calls to \mintinline{ts}{run()}:
+
+\begin{minted}{ts}
+function run(expression: Expression): Value {
+  return step(expression, new MapDeepEqual());
+  function step(expression: Expression, environment: Environment): Value {
+    // The implementation of run() from Step 0 in which recursive calls
+    // to run(___) have been replaced with step(___, environment).
+  }
+}
+\end{minted}
+
+The \mintinline{ts}{environment} starts empty (\mintinline{ts}{new MapDeepEqual()}) and for now it is propagated through the recursive calls to \mintinline{ts}{step()}. We must then consider how to manage the \mintinline{ts}{environment} for each different type of \mintinline{ts}{expression}.
+
+\subsection{A Function Definition}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
+\mintinline{js}{x => x} & — & $\langle \mintinline{js}{x => x}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+When the interpreter encounters a function definition, it creates a closure with the current \mintinline{ts}{environment}:
+
+\begin{minted}{ts}
+// step()
+case "ArrowFunctionExpression":
+  return { function: expression, environment };
+\end{minted}
+
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
+
+% TODO: Operational semantics
 
 % TODO: \appendix
 
