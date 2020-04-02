@@ -913,15 +913,15 @@ In Step~0, when a function was applied we substituted all references to the para
 \begin{center}
 \begin{tabular}{rcc}
 & \textbf{Program} & \textbf{Evalutes to} \\
-\textbf{Step~0} & \mintinline{js}{(x => y => x)(a => a)} & \mintinline{js}{y => (a => a)} \\
-\textbf{Step~1} & \mintinline{js}{(x => y => x)(a => a)} & $\langle \mintinline{js}{y => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{a => a}] \rangle$ \\
+\textbf{Step~0} & \mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{z => y => y} \\
+\textbf{Step~1} & \mintinline{js}{(x => z => x)(y => y)} & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$ \\
 \end{tabular}
 \end{center}
 
-Note how Step~0 produces the expression \mintinline{js}{y => (a => a)}, which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{y => x}.
+Note how Step~0 produces the expression \mintinline{js}{z => y => y} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{a => a}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{y => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{a => a}] \rangle$) is something called a \emph{closure}.
+A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
 \end{mdframed}
 
 In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
@@ -984,6 +984,15 @@ When the interpreter encounters a function definition, it creates a closure with
 case "ArrowFunctionExpression":
   return { function: expression, environment };
 \end{minted}
+
+\subsection{Function Calls}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
+\mintinline{js}{(x => z => x)(y => y)} & — & $\langle \mintinline{js}{}, [] \rangle$ \\
+\end{tabular}
+\end{center}
 
 % TODO: \section{A Function Body Is Evaluated with the Environment under Which Its Closure Is Created}
 
