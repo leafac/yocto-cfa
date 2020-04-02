@@ -68,10 +68,19 @@ describe("run()", () => {
         ]
       }"
     `);
-    expect(evaluate("(x => x => x)(y => y)(z => z)")).toMatchInlineSnapshot(`
+    expect(evaluate("(x => x => z => x)(a => a)(y => y)"))
+      .toMatchInlineSnapshot(`
       "{
-        \\"function\\": \\"z => z\\",
-        \\"environment\\": []
+        \\"function\\": \\"z => x\\",
+        \\"environment\\": [
+          [
+            \\"x\\",
+            {
+              \\"function\\": \\"y => y\\",
+              \\"environment\\": []
+            }
+          ]
+        ]
       }"
     `);
   });

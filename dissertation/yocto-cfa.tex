@@ -491,6 +491,7 @@ case "Identifier":
 \end{minted}
 
 \subsection{Name Reuse}
+\label{Step 0: Name Reuse}
 
 \begin{center}
 \begin{tabular}{c|c|c}
@@ -918,7 +919,7 @@ In Step~0, when a function was applied we substituted all references to the para
 \end{tabular}
 \end{center}
 
-Note how Step~0 produces the expression \mintinline{js}{z => y => y} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x}.
+Note how Step~0 produces the expression \mintinline{js}{z => y => y} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x} and \mintinline{js}{y => y}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 A mapping from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
@@ -954,19 +955,58 @@ Note how in each line the two occurrences of \mintinline{ts}{{ name: "Leandro" }
 
 \subsection{Adding an Environment to the Runner}
 
-The runner needs to maintain an environment, so we introduce an auxiliary function called \mintinline{ts}{step()} and change all recursive calls to \mintinline{ts}{run()}:
+The runner needs to maintain an environment, so we introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
 
-\begin{minted}{ts}
+\begin{minted}[linenos, highlightlines = {2-3, 11-13}]{ts}
 function run(expression: Expression): Value {
   return step(expression, new MapDeepEqual());
   function step(expression: Expression, environment: Environment): Value {
-    // The implementation of run() from Step 0 in which recursive calls
-    // to run(___) have been replaced with step(___, environment).
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return expression;
+      case "CallExpression":
+        const {
+          params: [parameter],
+          body
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(substitute(body), environment);
+        function substitute(expression: Expression): Expression {
+          switch (expression.type) {
+            case "ArrowFunctionExpression":
+              if (expression.params[0].name === parameter.name)
+                return expression;
+              return {
+                ...expression,
+                body: substitute(expression.body)
+              };
+            case "CallExpression":
+              return {
+                ...expression,
+                callee: substitute(expression.callee),
+                arguments: [substitute(expression.arguments[0])]
+              };
+            case "Identifier":
+              if (expression.name !== parameter.name) return expression;
+              return argument;
+          }
+        }
+      case "Identifier":
+        throw new Error(`Reference to undefined variable: ${expression.name}`);
+    }
   }
 }
 \end{minted}
 
-The \mintinline{ts}{environment} starts empty (\mintinline{ts}{new MapDeepEqual()}) and for now it is propagated through the recursive calls to \mintinline{ts}{step()}. We must then consider how to manage the \mintinline{ts}{environment} for each different type of \mintinline{ts}{expression}.
+\begin{description}
+\item [Line 3:] We define the \mintinline{ts}{step()} auxiliary function that receives an \mintinline{ts}{environment} as an extra parameter.
+
+\item [Line 2:] The \mintinline{ts}{environment} starts empty.
+
+\item [Lines 11–13:] The recursive calls to \mintinline{ts}{run()} are changed to recursive calls to \mintinline{ts}{step()} and the \mintinline{ts}{environment} is propagated.
+\end{description}
+
+The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the \mintinline{ts}{environment} for each different type of \mintinline{ts}{expression}.
 
 \subsection{A Function Definition}
 
@@ -977,7 +1017,7 @@ The \mintinline{ts}{environment} starts empty (\mintinline{ts}{new MapDeepEqual(
 \end{tabular}
 \end{center}
 
-When the interpreter encounters a function definition, it creates a closure with the current \mintinline{ts}{environment}:
+When the interpreter encounters a function definition, it captures the current \mintinline{ts}{environment} in a closure:
 
 \begin{minted}{ts}
 // step()
@@ -985,12 +1025,83 @@ case "ArrowFunctionExpression":
   return { function: expression, environment };
 \end{minted}
 
-\subsection{Function Calls}
+\subsection{A Function Call}
+\label{A Function Call}
 
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & — & $\langle \mintinline{js}{}, [] \rangle$ \\
+\mintinline{js}{(x => z => x)(y => y)} & — & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$ \\
+\end{tabular}
+\end{center}
+
+First, we remove \mintinline{ts}{substitute()}, which is the goal of Step~1:
+
+\begin{minted}[highlightlines = {8}]{ts}
+// step()
+case "CallExpression":
+  const {
+    params: [parameter],
+    body
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(body, environment);
+\end{minted}
+
+Next, we fix the pattern in the result of the interpretation of the called function to take in account the closure:
+
+\begin{minted}[highlightlines = {4,7,8}]{ts}
+// step()
+case "CallExpression":
+  const {
+    function: {
+      params: [parameter],
+      body
+    },
+    environment: functionEnvironment
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(body, environment);
+\end{minted}
+
+Finally, we modify the recursive call to \mintinline{ts}{step()} that interprets the function body so that it receives a new augmented \mintinline{ts}{environment} including a mapping from the \mintinline{ts}{parameter} (for example, \mintinline{js}{x}) to the \mintinline{ts}{argument} (for example, $\langle \mintinline{js}{y => y}, [] \rangle$):
+
+\begin{minted}[linenos, highlightlines = {11-14}]{ts}
+// step()
+case "CallExpression":
+  const {
+    function: {
+      params: [parameter],
+      body
+    },
+    environment: functionEnvironment
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(
+    body,
+    new MapDeepEqual(environment).set(parameter.name, argument)
+  );
+\end{minted}
+
+\subsection{Name Reuse}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
+\mintinline{js}{(x => x => z => x)(a => a)(y => y)} & — & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x} \mapsto \mintinline{js}{y => y}] \rangle$ \\
+\end{tabular}
+\end{center}
+
+In the case of name reuse (see §~\ref{Step 0: Name Reuse}) the \mintinline{ts}{environment} already contains the \mintinline{ts}{parameter} and the call to \mintinline{ts}{set()} in line~13 of §~\ref{A Function Call} overwrites it. This entails that we  the most recent (the inner one) definition of a name is the one that is used.
+(what we call Option~2 in §~\ref{Step 0: Name Reuse})
+
+\subsection{A Variable Reference}
+
+\begin{center}
+\begin{tabular}{c|c|c}
+\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
+\mintinline{js}{(x => x)(y => y)} & — & $\langle \mintinline{js}{y => y}, [] \rangle$ \\
+\mintinline{js}{(x => y)(y => y)} & — & \texttt{Reference to undefined variable: y} \\
 \end{tabular}
 \end{center}
 
