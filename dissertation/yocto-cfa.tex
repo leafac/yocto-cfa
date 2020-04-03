@@ -155,8 +155,8 @@ The description of Yocto-JavaScript given so far has been informal; the followin
 
 \begin{center}
 \begin{tabular}{rcll}
-$e$ & ::= & $x\texttt{ => }e$ | $e\texttt{(}e\texttt{)}$ | $x$ & Expressions \\
-$x$ & ::= & \texttt{<A Valid JavaScript Identifier>} & Variables \\
+$e$ & ::= & $x\mintinline{js}{ => }e$ | $e\mintinline{js}{(}e\mintinline{js}{)}$ | $x$ & Expressions \\
+$x$ & ::= & <A Valid JavaScript Identifier> & Variables \\
 \end{tabular}
 \end{center}
 
@@ -355,7 +355,7 @@ case "ArrowFunctionExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{(x => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -453,7 +453,7 @@ case "Identifier":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\mintinline{js}{(x => z => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -530,7 +530,7 @@ case "ArrowFunctionExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x(x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
+\mintinline{js}{(x => z => x(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
 \end{tabular}
 \end{center}
 
@@ -552,7 +552,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)((a => a)(y => y))} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\mintinline{js}{(x => z => x)((a => a)(y => y))} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -591,7 +591,7 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{((z => z)(x => x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{((z => z)(x => x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -620,7 +620,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => (z => z)(x))(y => y)} & \texttt{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\mintinline{js}{(x => (z => z)(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -645,7 +645,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => y)(y => y)} & \texttt{NOT IMPLEMENTED YET} & \texttt{Reference to undefined variable: y} \\
+\mintinline{js}{(x => y)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{text}{Reference to undefined variable: y} \\
 \end{tabular}
 \end{center}
 
@@ -715,7 +715,7 @@ First, we extend the grammar from §~\ref{A Formal Grammar for Yocto-JavaScript}
 
 \begin{center}
 \begin{tabular}{rcll}
-$v$ & ::= & $x\texttt{ => }e$ & Values \\
+$v$ & ::= & $x\mintinline{js}{ => }e$ & Values \\
 \end{tabular}
 \end{center}
 
@@ -728,20 +728,20 @@ Next, we define a \emph{relation} $e \Rightarrow v$ using \emph{inference rules}
 
 \inferrule
 {
-e_{f} \Rightarrow x_{p}\texttt{ => }e_{b} \\
+e_{f} \Rightarrow x_{p}\mintinline{js}{ => }e_{b} \\
 e_{a} \Rightarrow v_{a} \\
 e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
 }
-{e_{f}\texttt{(}e_{a}\texttt{)} \Rightarrow v}
+{e_{f}\mintinline{js}{(}e_{a}\mintinline{js}{)} \Rightarrow v}
 \end{mathpar}
 
 Finally, we define a \emph{metafunction} $e[x \backslash v] = e$ that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, lines 14–32):
 
 \begin{center}
 \begin{tabular}{rcll}
-$(x\texttt{ => }e)[x_{p} \backslash v_{a}]$ & = & $x\texttt{ => }(e[x_{p} \backslash v_{a}])$ & if $x \neq x_{p}$ \\
-$(x_{p}\texttt{ => }e)[x_{p} \backslash v_{a}]$ & = & $x_{p}\texttt{ => }e$ & \\
-$(e_{f}\texttt{(}e_{a}\texttt{)})[x_{p} \backslash v_{a}]$ & = & $(e_{f}[x_{p} \backslash v_{a}])\texttt{(}(e_{a}[x_{p} \backslash v_{a}])\texttt{)}$ & \\
+$(x\mintinline{js}{ => }e)[x_{p} \backslash v_{a}]$ & = & $x\mintinline{js}{ => }(e[x_{p} \backslash v_{a}])$ & if $x \neq x_{p}$ \\
+$(x_{p}\mintinline{js}{ => }e)[x_{p} \backslash v_{a}]$ & = & $x_{p}\mintinline{js}{ => }e$ & \\
+$(e_{f}\mintinline{js}{(}e_{a}\mintinline{js}{)})[x_{p} \backslash v_{a}]$ & = & $(e_{f}[x_{p} \backslash v_{a}])\mintinline{js}{(}(e_{a}[x_{p} \backslash v_{a}])\mintinline{js}{)}$ & \\
 $x[x_{p} \backslash v_{a}]$ & = & $x$ & if $x \neq x_{p}$ \\
 $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{tabular}
@@ -850,8 +850,8 @@ function stringify(value: Value): string {
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Programs} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(f => f(f))(f => f(f))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
-\mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} & \texttt{DOES NOT TERMINATE} & \texttt{DOES NOT TERMINATE} \\
+\mintinline{js}{(f => f(f))(f => f(f))} & \mintinline{text}{DOES NOT TERMINATE} & \mintinline{text}{DOES NOT TERMINATE} \\
+\mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} & \mintinline{text}{DOES NOT TERMINATE} & \mintinline{text}{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
 
@@ -1100,7 +1100,7 @@ If a name is reused (for example, \mintinline{js}{x} in the example program abov
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
 \mintinline{js}{(x => x)(y => y)} & — & $\langle \mintinline{js}{y => y}, [] \rangle$ \\
-\mintinline{js}{(x => y)(y => y)} & — & \texttt{Reference to undefined variable: y} \\
+\mintinline{js}{(x => y)(y => y)} & — & \mintinline{text}{Reference to undefined variable: y} \\
 \mintinline{js}{x => y} & — & $\langle \mintinline{js}{x => y}, [] \rangle$ \\
 \end{tabular}
 \end{center}
