@@ -46,9 +46,9 @@ function run(expression: Expression): Value {
         const {
           function: {
             params: [parameter],
-            body
+            body,
           },
-          environment: functionEnvironment
+          environment: functionEnvironment,
         } = step(expression.callee, environment);
         const argument = step(expression.arguments[0], environment);
         return step(
@@ -104,7 +104,8 @@ function stringify(value: Value): string {
         return prettier
           .format(escodegen.generate(value), {
             parser: "babel",
-            semi: false
+            semi: false,
+            arrowParens: "avoid",
           })
           .trim();
       return value;

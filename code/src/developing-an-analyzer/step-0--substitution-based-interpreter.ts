@@ -35,7 +35,7 @@ function run(expression: Expression): Value {
     case "CallExpression":
       const {
         params: [parameter],
-        body
+        body,
       } = run(expression.callee);
       const argument = run(expression.arguments[0]);
       return run(substitute(body));
@@ -45,13 +45,13 @@ function run(expression: Expression): Value {
             if (expression.params[0].name === parameter.name) return expression;
             return {
               ...expression,
-              body: substitute(expression.body)
+              body: substitute(expression.body),
             };
           case "CallExpression":
             return {
               ...expression,
               callee: substitute(expression.callee),
-              arguments: [substitute(expression.arguments[0])]
+              arguments: [substitute(expression.arguments[0])],
             };
           case "Identifier":
             if (expression.name !== parameter.name) return expression;
@@ -95,6 +95,10 @@ function parse(input: string): Expression {
 
 function stringify(value: Value): string {
   return prettier
-    .format(escodegen.generate(value), { parser: "babel", semi: false })
+    .format(escodegen.generate(value), {
+      parser: "babel",
+      semi: false,
+      arrowParens: "avoid",
+    })
     .trim();
 }

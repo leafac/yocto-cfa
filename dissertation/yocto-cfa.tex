@@ -127,10 +127,10 @@ This program is a function call in which the \mintinline{js}{<function>} is \min
 
 In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the \mintinline{js}{<body>} of a function definition, or as the \mintinline{js}{<function>} or \mintinline{js}{<argument>} of a call; for example, in the program \mintinline{js}{(f(a))(b)} the function call \mintinline{js}{f(a)} appears as the \mintinline{js}{<function>} of a call.
 
-We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h}, in \mintinline{js}{(f(g))(h)} the call \mintinline{js}{f(g)} happens first and the result is a function that is called with \mintinline{js}{h}, and in \mintinline{js}{f(g(h))} the call \mintinline{js}{g(h)} happens first and the result is passed as argument to \mintinline{js}{f}.
+We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h}, in \mintinline{js}{(f(g))(h)} the call \mintinline{js}{f(g)} happens first and the result is a function that is called with \mintinline{js}{h}, and in \mintinline{js}{f(g(h))} the call \mintinline{js}{g(h)} happens first and the result is passed as argument to \mintinline{js}{f}. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example, \mintinline{js}{x => y => x} is equivalent to \mintinline{js}{x => (y => x)} and \mintinline{js}{f(a)(b)} is equivalent to \mintinline{js}{(f(a))(b)}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-The order in which operations are computed is something called their \emph{precedence}, and operations that happen first are said to have \emph{higher precedence}.
+The order in which operations are computed is something called their \emph{precedence}, and operations that happen first are said to have \emph{higher precedence}. Because of the order in which they are read, function definitions are said to be \emph{right-associative} and function calls are said to be \emph{left-associative}.
 \end{mdframed}
 
 \begin{mdframed}[frametitle = {Advanced}]
@@ -209,7 +209,7 @@ In later Steps the implementations of \mintinline{ts}{run()} and \mintinline{ts}
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
 
-The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x} (note the difference in spacing). So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x}. So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 The process of converting a program represented as a string into more convenient data structures is known as \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.
@@ -386,7 +386,7 @@ case "CallExpression":
     throw new Error("NOT IMPLEMENTED YET");
   const {
     params: [parameter],
-    body
+    body,
   } = expression.callee;
   const argument = expression.arguments[0];
   throw new Error("NOT IMPLEMENTED YET");
@@ -408,7 +408,7 @@ case "CallExpression":
     throw new Error("NOT IMPLEMENTED YET");
   const {
     params: [parameter],
-    body
+    body,
   } = expression.callee;
   const argument = expression.arguments[0];
   const substitutedBody = substitute(body);
@@ -468,7 +468,7 @@ When \mintinline{ts}{substitute()} (see §~\ref{A Call Involving Immediate Funct
 case "ArrowFunctionExpression":
   return {
     ...expression,
-    body: substitute(expression.body)
+    body: substitute(expression.body),
   };
 \end{minted}
 
@@ -512,7 +512,7 @@ Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads
 We say that the problem with Option~1 is that it defeats something called \emph{local reasoning}. We say that Option~2 exhibits a behavior called \emph{shadowing}, and that the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x}, because there is no way to refer to the outer \mintinline{js}{x} from the body of the inner function.
 \end{mdframed}
 
-We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (note that there is no recursive call to \mintinline{ts}{substitute()} in this case):
+We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (there is no recursive call to \mintinline{ts}{substitute()} in this case):
 
 \begin{minted}[highlightlines = {3}]{ts}
 // substitute()
@@ -520,7 +520,7 @@ case "ArrowFunctionExpression":
   if (expression.params[0].name === parameter.name) return expression;
   return {
     ...expression,
-    body: substitute(expression.body)
+    body: substitute(expression.body),
   };
 \end{minted}
 
@@ -542,7 +542,7 @@ case "CallExpression":
   return {
     ...expression,
     callee: substitute(expression.callee),
-    arguments: [substitute(expression.arguments[0])]
+    arguments: [substitute(expression.arguments[0])],
   };
 \end{minted}
 
@@ -565,7 +565,7 @@ case "CallExpression":
     throw new Error("NOT IMPLEMENTED YET");
   const {
     params: [parameter],
-    body
+    body,
   } = expression.callee;
   const argument = run(expression.arguments[0]);
   const substitutedBody = substitute(body);
@@ -602,7 +602,7 @@ This is the dual of §~\ref{An Argument That Is Not Immediate} for the called fu
 case "CallExpression":
   const {
     params: [parameter],
-    body
+    body,
   } = run(expression.callee);
   const argument = run(expression.arguments[0]);
   const substitutedBody = substitute(body);
@@ -631,7 +631,7 @@ This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Func
 case "CallExpression":
   const {
     params: [parameter],
-    body
+    body,
   } = run(expression.callee);
   const argument = run(expression.arguments[0]);
   return run(substitute(body));
@@ -657,7 +657,7 @@ case "Identifier":
   throw new Error(`Reference to undefined variable: ${expression.name}`);
 \end{minted}
 
-Note that if the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript’s behavior.
+If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript’s behavior.
 
 \subsection{The Entire Runner}
 \label{The Entire Runner}
@@ -674,7 +674,7 @@ function run(expression: Expression): Value {
     case "CallExpression":
       const {
         params: [parameter],
-        body
+        body,
       } = run(expression.callee);
       const argument = run(expression.arguments[0]);
       return run(substitute(body));
@@ -684,13 +684,13 @@ function run(expression: Expression): Value {
             if (expression.params[0].name === parameter.name) return expression;
             return {
               ...expression,
-              body: substitute(expression.body)
+              body: substitute(expression.body),
             };
           case "CallExpression":
             return {
               ...expression,
               callee: substitute(expression.callee),
-              arguments: [substitute(expression.arguments[0])]
+              arguments: [substitute(expression.arguments[0])],
             };
           case "Identifier":
             if (expression.name !== parameter.name) return expression;
@@ -822,7 +822,7 @@ Check that the \mintinline{ts}{CallExpression} contains a single argument. This 
 
 \item [Line 23:]
 
-\mintinline{ts}{Identifier}s are supported in Yocto-JavaScript unconditionally. Note that an \mintinline{ts}{Identifier} may be an expression or the parameter of an \mintinline{ts}{ArrowFunctionExpression}.
+\mintinline{ts}{Identifier}s are supported in Yocto-JavaScript unconditionally. An \mintinline{ts}{Identifier} may be an expression or the parameter of an \mintinline{ts}{ArrowFunctionExpression}.
 
 \item [Line 26:]
 
@@ -836,13 +836,27 @@ In later Steps almost everything about the interpreter will change, but the pars
 
 The stringifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the stringifier:
 
-\begin{minted}{ts}
+\begin{minted}[linenos]{ts}
 function stringify(value: Value): string {
   return prettier
-    .format(escodegen.generate(value), { parser: "babel", semi: false })
+    .format(escodegen.generate(value), {
+      parser: "babel",
+      semi: false,
+      arrowParens: "avoid",
+    })
     .trim();
 }
 \end{minted}
+
+\begin{description}
+\item [Line 4:] Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see §~\ref{Architecture}), and it may use different parsers. We choose Babel~\cite{babel}, which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
+
+\item [Line 5:] Instruct Prettier not to produce semicolons at the end of the line, for example, \mintinline{js}{x => y} instead of \mintinline{js}{x => y;}.
+
+\item [Line 6:] Instruct Prettier not to wrap parameters in parentheses, for example, \mintinline{js}{x => y} instead of \mintinline{js}{(x) => y}.
+
+\item [Line 8:] Remove the newline at the end of the output produced by Prettier.
+\end{description}
 
 \subsection{Programs That Do Not Terminate}
 \label{Programs That Do Not Terminate}
@@ -914,15 +928,15 @@ In Step~0, when a function was applied we substituted all references to the para
 \begin{center}
 \begin{tabular}{rcc}
 & \textbf{Program} & \textbf{Evalutes to} \\
-\textbf{Step~0} & \mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{z => y => y} \\
-\textbf{Step~1} & \mintinline{js}{(x => z => x)(y => y)} & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$ \\
+\textbf{Step~0} & \mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{z => (y => y)} \\
+\textbf{Step~1} & \mintinline{js}{(x => z => x)(y => y)} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
 \end{tabular}
 \end{center}
 
-Note how Step~0 produces the expression \mintinline{js}{z => y => y} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x} and \mintinline{js}{y => y}.
+Step~0 produces the expression \mintinline{js}{z => (y => y)} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x} and \mintinline{js}{y => y}.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-A map from parameters to arguments (for example, $[\mintinline{js}{x}\mapsto\mintinline{js}{y => y}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$) is something called a \emph{closure}.
+A map from parameters to arguments (for example, $[\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$) is something called a \emph{closure}.
 \end{mdframed}
 
 In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
@@ -947,11 +961,13 @@ type Environment = MapDeepEqual<Identifier["name"], Value>;
 The \mintinline{ts}{MapDeepEqual} data structure is provided by a JavaScript package developed by the author called Collections Deep Equal~\cite{collections-deep-equal}. A \mintinline{ts}{MapDeepEqual} is similar to a \mintinline{ts}{Map}, except that the keys are compared by value, not by reference, for example:
 
 \begin{minted}{ts}
-new Map([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" }); // => undefined
-new MapDeepEqual([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" }); // => 29
+> new Map([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" });
+undefined
+> new MapDeepEqual([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" });
+29
 \end{minted}
 
-Note how in each line the two occurrences of \mintinline{ts}{{ name: "Leandro" }} are objects with the same keys and values, but they are not the same object.
+The occurrences of \mintinline{ts}{{ name: "Leandro" }} are objects with the same keys and values, but they are not the same object.
 
 \subsection{Adding an Environment to the Runner}
 
@@ -967,7 +983,7 @@ function run(expression: Expression): Value {
       case "CallExpression":
         const {
           params: [parameter],
-          body
+          body,
         } = step(expression.callee, environment);
         const argument = step(expression.arguments[0], environment);
         return step(substitute(body), environment);
@@ -978,13 +994,13 @@ function run(expression: Expression): Value {
                 return expression;
               return {
                 ...expression,
-                body: substitute(expression.body)
+                body: substitute(expression.body),
               };
             case "CallExpression":
               return {
                 ...expression,
                 callee: substitute(expression.callee),
-                arguments: [substitute(expression.arguments[0])]
+                arguments: [substitute(expression.arguments[0])],
               };
             case "Identifier":
               if (expression.name !== parameter.name) return expression;
@@ -1013,7 +1029,7 @@ The listing above does not compile yet because we are not producing closures. In
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{x => x} & — & $\langle \mintinline{js}{x => x}, [] \rangle$ \\
+\mintinline{js}{x => x} & — & $\langle \mintinline{js}{(x => x)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1031,7 +1047,7 @@ case "ArrowFunctionExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & — & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x}\mapsto\mintinline{js}{y => y}] \rangle$ \\
+\mintinline{js}{(x => z => x)(y => y)} & — & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1042,7 +1058,7 @@ First, we remove \mintinline{ts}{substitute()}, which is the goal of Step~1:
 case "CallExpression":
   const {
     params: [parameter],
-    body
+    body,
   } = step(expression.callee, environment);
   const argument = step(expression.arguments[0], environment);
   return step(body, environment);
@@ -1056,15 +1072,15 @@ case "CallExpression":
   const {
     function: {
       params: [parameter],
-      body
+      body,
     },
-    environment: functionEnvironment
+    environment: functionEnvironment,
   } = step(expression.callee, environment);
   const argument = step(expression.arguments[0], environment);
   return step(body, environment);
 \end{minted}
 
-Finally, we modify the recursive call to \mintinline{ts}{step()} that interprets the function body so that it receives a new augmented \mintinline{ts}{environment} including a mapping from the \mintinline{ts}{parameter} (for example, \mintinline{js}{x}) to the \mintinline{ts}{argument} (for example, $\langle \mintinline{js}{y => y}, [] \rangle$):
+Finally, we modify the recursive call to \mintinline{ts}{step()} that interprets the function body so that it receives a new augmented \mintinline{ts}{environment} including a mapping from the \mintinline{ts}{parameter} (for example, \mintinline{js}{x}) to the \mintinline{ts}{argument} (for example, $\langle \mintinline{js}{(y => y)}, [] \rangle$):
 
 \begin{minted}[linenos, highlightlines = {11-14}]{ts}
 // step()
@@ -1072,9 +1088,9 @@ case "CallExpression":
   const {
     function: {
       params: [parameter],
-      body
+      body,
     },
-    environment: functionEnvironment
+    environment: functionEnvironment,
   } = step(expression.callee, environment);
   const argument = step(expression.arguments[0], environment);
   return step(
@@ -1088,7 +1104,7 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x => z => x)(a => a)(y => y)} & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x} \mapsto \mintinline{js}{y => y}] \rangle$ & $\langle \mintinline{js}{z => x}, [\mintinline{js}{x} \mapsto \mintinline{js}{y => y}] \rangle$ \\
+\mintinline{js}{(x => x => z => x)(a => a)(y => y)} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1099,9 +1115,9 @@ If a name is reused (for example, \mintinline{js}{x} in the example program abov
 \begin{center}
 \begin{tabular}{c|c|c}
 \textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x)(y => y)} & — & $\langle \mintinline{js}{y => y}, [] \rangle$ \\
+\mintinline{js}{(x => x)(y => y)} & — & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
 \mintinline{js}{(x => y)(y => y)} & — & \mintinline{text}{Reference to undefined variable: y} \\
-\mintinline{js}{x => y} & — & $\langle \mintinline{js}{x => y}, [] \rangle$ \\
+\mintinline{js}{x => y} & — & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 

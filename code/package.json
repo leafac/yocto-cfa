@@ -1,12 +1,12 @@
 {
   "scripts": {
-    "test": "tsc && jest && prettier --check 'src/**'"
+    "test": "tsc && jest && prettier --check src"
   },
   "dependencies": {
     "collections-deep-equal": "^1.1.0",
     "escodegen": "^1.13.0",
     "esprima": "^4.0.1",
-    "prettier": "^1.19.1"
+    "prettier": "^2.0.2"
   },
   "devDependencies": {
     "@types/escodegen": "0.0.6",
