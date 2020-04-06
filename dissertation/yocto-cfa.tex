@@ -946,7 +946,7 @@ In Step~0, when a function was applied we substituted all references to the para
 
 \begin{center}
 \begin{tabular}{rcc}
-& \textbf{Program} & \textbf{Evalutes to} \\
+& \textbf{Program} & \textbf{Evaluates to} \\
 \textbf{Step~0} & \mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{z => (y => y)} \\
 \textbf{Step~1} & \mintinline{js}{(x => z => x)(y => y)} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
 \end{tabular}
