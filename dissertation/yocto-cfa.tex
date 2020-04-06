@@ -311,9 +311,10 @@ In later Steps almost everything about the interpreter will change, but the data
 \label{An Expression That Already Is a Value}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{x => x} & — & \mintinline{js}{x => x} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{x => x} \\
+\textbf{Current Output:} & — \\
+\textbf{Expected Output:} & \mintinline{js}{x => x} \\
 \end{tabular}
 \end{center}
 
@@ -354,9 +355,10 @@ case "ArrowFunctionExpression":
 \label{A Call Involving Immediate Functions}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -452,9 +454,10 @@ case "Identifier":
 \label{Substitution in Function Definitions}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -476,9 +479,10 @@ case "ArrowFunctionExpression":
 \subsection{Name Mismatch}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => z)(y => y)} & \mintinline{js}{z => y => y} & \mintinline{js}{z => z} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => z => z)(y => y)} \\
+\textbf{Current Output:} & \mintinline{js}{z => y => y} \\
+\textbf{Expected Output:} & \mintinline{js}{z => z} \\
 \end{tabular}
 \end{center}
 
@@ -495,9 +499,10 @@ case "Identifier":
 \label{Step 0: Name Reuse}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x => x)(y => y)} & \mintinline{js}{x => y => y} & \mintinline{js}{x => x} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => x => x)(y => y)} \\
+\textbf{Current Output:} & \mintinline{js}{x => y => y} \\
+\textbf{Expected Output:} & \mintinline{js}{x => x} \\
 \end{tabular}
 \end{center}
 
@@ -529,9 +534,10 @@ case "ArrowFunctionExpression":
 \label{Substitution in Function Calls}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => (y => y)(y => y)} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => z => x(x))(y => y)} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{js}{z => (y => y)(y => y)} \\
 \end{tabular}
 \end{center}
 
@@ -551,9 +557,10 @@ case "CallExpression":
 \label{An Argument That Is Not Immediate}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)((a => a)(y => y))} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{z => y => y} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => z => x)((a => a)(y => y))} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -590,9 +597,10 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 \label{A Function That Is Not Immediate}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{((z => z)(x => x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{((z => z)(x => x))(y => y)} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -619,9 +627,10 @@ case "CallExpression":
 \label{Continuing to Run After a Function Call}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => (z => z)(x))(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{js}{y => y} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => (z => z)(x))(y => y)} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -644,9 +653,10 @@ case "CallExpression":
 \subsection{A Reference to an Undefined Variable}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => y)(y => y)} & \mintinline{text}{NOT IMPLEMENTED YET} & \mintinline{text}{Reference to undefined variable: y} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => y)(y => y)} \\
+\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output:} & \mintinline{text}{Reference to undefined variable: y} \\
 \end{tabular}
 \end{center}
 
@@ -863,10 +873,18 @@ function stringify(value: Value): string {
 \label{Programs That Do Not Terminate}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Programs} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(f => f(f))(f => f(f))} & \mintinline{text}{DOES NOT TERMINATE} & \mintinline{text}{DOES NOT TERMINATE} \\
-\mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} & \mintinline{text}{DOES NOT TERMINATE} & \mintinline{text}{DOES NOT TERMINATE} \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(f => f(f))(f => f(f))} \\
+\textbf{Current Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} \\
+\textbf{Current Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
 
@@ -1028,9 +1046,10 @@ The listing above does not compile yet because we are not producing closures. In
 \subsection{A Function Definition}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{x => x} & — & $\langle \mintinline{js}{(x => x)}, [] \rangle$ \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{x => x} \\
+\textbf{Current Output:} & — \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(x => x)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1046,9 +1065,10 @@ case "ArrowFunctionExpression":
 \label{A Function Call}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => z => x)(y => y)} & — & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output:} & — \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1103,9 +1123,10 @@ case "CallExpression":
 \subsection{Name Reuse}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x => z => x)(a => a)(y => y)} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => x => z => x)(a => a)(y => y)} \\
+\textbf{Current Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1114,11 +1135,26 @@ If a name is reused (for example, \mintinline{js}{x} in the example program abov
 \subsection{A Variable Reference}
 
 \begin{center}
-\begin{tabular}{c|c|c}
-\textbf{Example Program} & \textbf{Current Output} & \textbf{Expected Output} \\
-\mintinline{js}{(x => x)(y => y)} & — & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
-\mintinline{js}{(x => y)(y => y)} & — & \mintinline{text}{Reference to undefined variable: y} \\
-\mintinline{js}{x => y} & — & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output:} & — \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(x => y)(y => y)} \\
+\textbf{Current Output:} & — \\
+\textbf{Expected Output:} & \mintinline{text}{Reference to undefined variable: y} \\
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{x => y} \\
+\textbf{Current Output:} & — \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 
