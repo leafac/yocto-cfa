@@ -669,7 +669,15 @@ case "Identifier":
   throw new Error(`Reference to undefined variable: ${expression.name}`);
 \end{minted}
 
-If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. For example, the result of running the program \mintinline{js}{x => y} is \mintinline{js}{x => y}, not an exception. This is consistent with JavaScript’s behavior.
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{x => y} \\
+\textbf{Current Output:} & \mintinline{js}{x => y} \\
+\textbf{Expected Output:} & \mintinline{js}{x => y} \\
+\end{tabular}
+\end{center}
+
+If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. This is consistent with JavaScript’s behavior.
 
 \subsection{The Entire Runner}
 \label{The Entire Runner}
@@ -881,6 +889,25 @@ function stringify(value: Value): string {
 \end{tabular}
 \end{center}
 
+\begin{mdframed}[frametitle = {Technical Terms}]
+This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of this program is also known as the \emph{$U$-combinator} ($\Omega = (U)(U)$).
+\end{mdframed}
+
+Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}):
+
+\begin{center}
+\begin{tabular}{rrcl}
+\textbf{Line} & & & \\
+3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))} \\
+9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
+10 & \mintinline{ts}{body} & = & \mintinline{js}{f(f)} \\
+12 & \mintinline{ts}{argument} & = & \mintinline{js}{f => f(f)} \\
+13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(f => f(f))(f => f(f))} \\
+\end{tabular}
+\end{center}
+
+The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop.
+
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Example Program:} & \mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} \\
@@ -889,39 +916,20 @@ function stringify(value: Value): string {
 \end{tabular}
 \end{center}
 
-\begin{mdframed}[frametitle = {Technical Terms}]
-The first example program (\mintinline{js}{(f => f(f))(f => f(f))}) is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of this program is also known as the \emph{$U$-combinator} ($\Omega = (U)(U)$).
-\end{mdframed}
-
-Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the first example program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}):
+There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the program above, which is a variation of the first program in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line}&&&\\
-3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
-9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f}\\
-10 & \mintinline{ts}{body} & = & \mintinline{js}{f(f)}\\
-12 & \mintinline{ts}{argument} & = & \mintinline{js}{f => f(f)}\\
-13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(f => f(f))(f => f(f))}\\
+\textbf{Line} & & & \mintinline{js}{F = f => (f(f))(f(f))} \\
+3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)} \\
+9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
+10 & \mintinline{ts}{body} & = & \mintinline{js}{(f(f))(f(f))} \\
+12 & \mintinline{ts}{argument} & = & \mintinline{js}{F} \\
+13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(F(F))(F(F))} \\
 \end{tabular}
 \end{center}
 
-The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop.
-
-There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the second example program, which is a variation of the first in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
-
-\begin{center}
-\begin{tabular}{rrcl}
-\textbf{Line}&&&\mintinline{js}{F = f => (f(f))(f(f))}\\
-3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)}\\
-9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f}\\
-10 & \mintinline{ts}{body} & = & \mintinline{js}{(f(f))(f(f))}\\
-12 & \mintinline{ts}{argument} & = & \mintinline{js}{F}\\
-13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(F(F))(F(F))}\\
-\end{tabular}
-\end{center}
-
-The result of substitution is an expression that contains the initial expression in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to \mintinline{ts}{run()} never repeat themselves:
+The result of substitution (\mintinline{js}{(F(F))(F(F))}) is an expression that contains the initial expression (the first \mintinline{js}{F(F)}) in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to \mintinline{ts}{run()} never repeat themselves:
 
 \begin{minted}[mathescape]{js}
 (F(F))
@@ -939,33 +947,41 @@ Detecting non-termination in an interpreter is a problem that cannot be solved, 
 
 \section{Step 1: Environment-Based Interpreter}
 
-As mentioned in §~\ref{Programs That Do Not Terminate}, the interpreter from Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer. The source of non-termination in Step~0 is substitution, which may produce infinitely many new expressions. In Step~1, we modify the interpreter so that it does not perform substitution, and as a consequence the only expressions it considers are the finitely many expressions found in the input program. The interpreter in Step~1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
+As mentioned in §~\ref{Programs That Do Not Terminate}, the interpreter from Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer. The source of non-termination in Step~0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step~1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step~1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
 
-\subsection{Environments and Closures}
+\subsection{Avoiding Substitution by Introducing Environments and Closures}
 
-In Step~0, when a function was applied we substituted all references to the parameter in the body with the argument. In Step~1, we do not perform the substitution, but keep the body intact along with a map from the parameter to the argument, for example:
+When the interpreter from Step~0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument, for example:
 
 \begin{center}
-\begin{tabular}{rcc}
-& \textbf{Program} & \textbf{Evaluates to} \\
-\textbf{Step~0} & \mintinline{js}{(x => z => x)(y => y)} & \mintinline{js}{z => (y => y)} \\
-\textbf{Step~1} & \mintinline{js}{(x => z => x)(y => y)} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
+\begin{tabular}{ll}
+\textbf{Example Program (from §~\ref{Substitution in Function Definitions}):} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~0 Output:} & \mintinline{js}{z => (y => y)} \\
 \end{tabular}
 \end{center}
 
-Step~0 produces the expression \mintinline{js}{z => (y => y)} (see §~\ref{Substitution in Function Definitions}), which does not appear in the original program, but Step~1 produces only expressions that exist in the original program, for example, \mintinline{js}{z => x} and \mintinline{js}{y => y}.
+The issue with this strategy is that the expression \mintinline{js}{z => (y => y)} does not exist in the original program, and as mentioned in §~\ref{Programs That Do Not Terminate}, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step~1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{y => y} \\
+\textbf{Step~1 Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~1 Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\end{tabular}
+\end{center}
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-A map from parameters to arguments (for example, $[\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}]$) is something called an \emph{environment}. A function definition along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$) is something called a \emph{closure}.
+A map from variables to the values with which they would have been replaced (for example, $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$) is something called an \emph{environment}. A function along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$) is something called a \emph{closure}.
 \end{mdframed}
 
-In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent. But in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
+In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent, but in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
 
 \begin{mdframed}[frametitle = {Alternative Argument}]
 Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
 \end{mdframed}
 
-The following are the data structures for Step~1:
+The following are the data structures used to represent environments and closures:
 
 \begin{minted}{ts}
 type Value = Closure;
@@ -978,20 +994,22 @@ type Closure = {
 type Environment = MapDeepEqual<Identifier["name"], Value>;
 \end{minted}
 
+\begin{mdframed}[frametitle = {Implementation Details}]
 The \mintinline{ts}{MapDeepEqual} data structure is provided by a JavaScript package developed by the author called Collections Deep Equal~\cite{collections-deep-equal}. A \mintinline{ts}{MapDeepEqual} is similar to a \mintinline{ts}{Map}, except that the keys are compared by value, not by reference, for example:
 
 \begin{minted}{ts}
-> new Map([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" });
+> new Map([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
 undefined
-> new MapDeepEqual([[{ name: "Leandro" }, 29]]).get({ name: "Leandro" });
-29
+> new MapDeepEqual([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
+"Leandro"
 \end{minted}
 
-The occurrences of \mintinline{ts}{{ name: "Leandro" }} are objects with the same keys and values, but they are not the same object.
+The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key and value, but they are not the same object.
+\end{mdframed}
 
 \subsection{Adding an Environment to the Runner}
 
-The runner needs to maintain an environment, so we introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
+The runner needs to maintain an environment, so we modify the implementation of \mintinline{ts}{run()} from §~\ref{The Entire Runner} to introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
 
 \begin{minted}[linenos, highlightlines = {2-3, 11-13}]{ts}
 function run(expression: Expression): Value {
@@ -1069,7 +1087,7 @@ case "ArrowFunctionExpression":
 \begin{tabular}{ll}
 \textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
 \textbf{Current Output:} & — \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1126,8 +1144,8 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Example Program:} & \mintinline{js}{(x => x => z => x)(a => a)(y => y)} \\
-\textbf{Current Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{(y => y)}] \rangle$ \\
+\textbf{Current Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1140,19 +1158,11 @@ If a name is reused (for example, \mintinline{js}{x} in the example program abov
 \textbf{Example Program:} & \mintinline{js}{(x => x)(y => y)} \\
 \textbf{Current Output:} & — \\
 \textbf{Expected Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ll}
+\\
 \textbf{Example Program:} & \mintinline{js}{(x => y)(y => y)} \\
 \textbf{Current Output:} & — \\
 \textbf{Expected Output:} & \mintinline{text}{Reference to undefined variable: y} \\
-\end{tabular}
-\end{center}
-
-\begin{center}
-\begin{tabular}{ll}
+\\
 \textbf{Example Program:} & \mintinline{js}{x => y} \\
 \textbf{Current Output:} & — \\
 \textbf{Expected Output:} & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
