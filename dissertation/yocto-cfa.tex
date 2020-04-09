@@ -199,7 +199,7 @@ The implementation of \mintinline{ts}{evaluate()} is separated into three parts 
 \end{center}
 
 \begin{minted}{ts}
-export `function' evaluate(input: string): string {
+export function evaluate(input: string): string {
   return stringify(run(parse(input)));
 }
 \end{minted}
