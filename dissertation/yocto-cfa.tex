@@ -22,7 +22,7 @@
 
 \usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
 
-\usepackage{mathpartir}
+\usepackage{mathpartir, colortbl}
 \usepackage{datetime2} % TODO
 
 \frenchspacing
@@ -1203,11 +1203,11 @@ This example program shows the difference between the current environment with w
 5 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
 6 & \mintinline{ts}{body} & = & \mintinline{js}{(x => f(x))(a => a)} \\
 10 & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
-10 & \mintinline{ts}{argument} & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\rowcolor[rgb]{.88,1,1} 10 & \mintinline{ts}{argument} & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
-At the top level this program is a call in which the called function is \mintinline{js}{f => (x => f(x))(a => a)} and the argument is \mintinline{js}{(x => z => x)(y => y)}. As discussed in §~\ref{A Function Call}, the argument evaluates to $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$, which becomes the closure associated with \mintinline{js}{f}, and when \mintinline{js}{f} is called the current environment includes $\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle$.
+% TODO: When \mintinline{js}{f} is called the current environment includes $\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle$.
 
 \begin{minted}[highlightlines = {13}]{ts}
 // step()
