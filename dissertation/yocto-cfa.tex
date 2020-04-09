@@ -893,11 +893,11 @@ function stringify(value: Value): string {
 This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of this program is also known as the \emph{$U$-combinator} ($\Omega = (U)(U)$).
 \end{mdframed}
 
-Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()} (see §~\ref{The Entire Runner}):
+Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()}:
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & & & \\
+\textbf{Line} & (see §~\ref{The Entire Runner}) & & \\
 3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))} \\
 9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
 10 & \mintinline{ts}{body} & = & \mintinline{js}{f(f)} \\
@@ -920,7 +920,7 @@ There are also programs for which interpretation does not terminate that never p
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & & & \mintinline{js}{F = f => (f(f))(f(f))} \\
+\textbf{Line} & (see §~\ref{The Entire Runner}) & & \mintinline{js}{F = f => (f(f))(f(f))} \\
 3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)} \\
 9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
 10 & \mintinline{ts}{body} & = & \mintinline{js}{(f(f))(f(f))} \\
@@ -955,7 +955,7 @@ When the interpreter from Step~0 encounters a function call, it produces a new e
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program (from §~\ref{Substitution in Function Definitions}):} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Example Program \textmd{(from §~\ref{Substitution in Function Definitions})}:} & \mintinline{js}{(x => z => x)(y => y)} \\
 \textbf{Step~0 Output:} & \mintinline{js}{z => (y => y)} \\
 \end{tabular}
 \end{center}
@@ -1191,6 +1191,23 @@ case "Identifier":
 \textbf{Expected Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
+
+This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to \mintinline{ts}{step()}, when the relevant closure is created:
+
+\begin{center}
+\textbf{Trace 1: Closure Creation}
+\begin{tabular}{rrcl}
+\textbf{Line} & (see §~\ref{A Function Call}) & & \\
+& \mintinline{ts}{environment} & = & $[]$ \\
+9 & \mintinline{ts}{expression.callee} & = & \mintinline{js}{f => (x => f(x))(a => a)} \\
+5 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
+6 & \mintinline{ts}{body} & = & \mintinline{js}{(x => f(x))(a => a)} \\
+10 & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
+10 & \mintinline{ts}{argument} & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\end{tabular}
+\end{center}
+
+At the top level this program is a call in which the called function is \mintinline{js}{f => (x => f(x))(a => a)} and the argument is \mintinline{js}{(x => z => x)(y => y)}. As discussed in §~\ref{A Function Call}, the argument evaluates to $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$, which becomes the closure associated with \mintinline{js}{f}, and when \mintinline{js}{f} is called the current environment includes $\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle$.
 
 \begin{minted}[highlightlines = {13}]{ts}
 // step()
