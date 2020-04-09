@@ -217,11 +217,11 @@ test("§ Programs That Do Not Terminate", () => {
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });
 
-test("§ A Function Body Is Evaluated with the Environment under Which Its Closure Is Created", () => {
-  expect(evaluate("(f => (x => f(x))(b => b))((x => y => x)(a => a))"))
+test("§ A Function Body Is Evaluated with the Environment in Its Closure", () => {
+  expect(evaluate("(f => (x => f(x))(a => a))((x => z => x)(y => y))"))
     .toMatchInlineSnapshot(`
     "{
-      \\"function\\": \\"a => a\\",
+      \\"function\\": \\"y => y\\",
       \\"environment\\": []
     }"
   `);
