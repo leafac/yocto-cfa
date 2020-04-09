@@ -20,8 +20,6 @@ $ (cd code && npm install-test)
 
 ## Build
 
-**Note:** You must use macOS to build the LaTeX document because it uses system fonts.
-
 Install [LaTeX](https://www.latex-project.org) and [Node.js](https://nodejs.org/), and run:
 
 ```console
