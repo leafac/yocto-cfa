@@ -7,15 +7,13 @@
 \usepackage[top = 1in, right = 1in, bottom = 1in, left = 1.5in]{geometry}
 \pagestyle{plain}
 \usepackage[doublespacing]{setspace}
-\frenchspacing
-\sloppy % TODO
 
 \usepackage{graphicx}
 
-\usepackage{fontspec, unicode-math}
-\setmainfont{Charter}
-\setmonofont{Menlo}[Scale = MatchLowercase]
-\setmathfont{Asana Math}
+\usepackage[T1]{fontenc}
+\usepackage{paratype}
+\frenchspacing
+\sloppy % TODO
 
 \usepackage{minted}
 \renewcommand{\MintedPygmentize}{node_modules/.bin/shiki-minted}
