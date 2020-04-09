@@ -10,9 +10,10 @@
 
 \usepackage{graphicx}
 
-\usepackage[T1]{fontenc}
-\usepackage{mathpazo}
-\usepackage{paratype}
+\usepackage{fontspec, unicode-math}
+\setmainfont{PT Serif}
+\setmonofont{PT Mono}
+\setmathfont{Asana Math}
 \frenchspacing
 \sloppy % TODO
 
@@ -197,7 +198,7 @@ The implementation of \mintinline{ts}{evaluate()} is separated into three parts 
 \end{center}
 
 \begin{minted}{ts}
-export function evaluate(input: string): string {
+export `function' evaluate(input: string): string {
   return stringify(run(parse(input)));
 }
 \end{minted}
