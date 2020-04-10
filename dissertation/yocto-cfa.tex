@@ -1196,8 +1196,8 @@ case "Identifier":
 This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to \mintinline{ts}{step()}, when a closure is created:
 
 \begin{center}
-\textbf{Trace 1: First Call to \mintinline{ts}{step()} · Closure Creation}
 \begin{tabular}{rrcl}
+\multicolumn{4}{c}{\textbf{Trace 1: First Call to \mintinline{ts}{step()} · Closure Creation}} \\
 \textbf{Line} & (see §~\ref{A Function Call}) & & \\
 & \mintinline{ts}{expression.callee} & = & \mintinline{js}{f => (x => f(x))(a => a)} \\
 & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
@@ -1208,8 +1208,8 @@ This example program shows the difference between the current environment with w
 And the following is a trace of the recursive call to \mintinline{ts}{step()} in which that closure is used:
 
 \begin{center}
-\textbf{Trace 2: Recursive Call to \mintinline{ts}{step()} · Closure Use}
 \begin{tabular}{rrcl}
+\multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to \mintinline{ts}{step()} · Closure Use}} \\
 \textbf{Line} & (see §~\ref{A Function Call}) & & \\
 & \mintinline{ts}{expression.callee} & = & \mintinline{js}{f} \\
 & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{x} \\
@@ -1218,8 +1218,11 @@ And the following is a trace of the recursive call to \mintinline{ts}{step()} in
 5 & \mintinline{ts}{parameter} & = & \mintinline{js}{z} \\
 6 & \mintinline{ts}{body} & = & \mintinline{js}{x} \\
 \rowcolor[rgb]{.88,1,1} 8 & \mintinline{ts}{functionEnvironment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\multicolumn{4}{c}{Paused before line 10}\\
 \end{tabular}
 \end{center}
+
+% TODO: Figure of arrows pointing at the bindings for the two different ‘x’s.
 
 \begin{minted}[highlightlines = {13}]{ts}
 // step()
