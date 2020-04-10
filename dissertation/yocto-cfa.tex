@@ -17,8 +17,8 @@
 
 \usepackage{minted}
 \renewcommand{\MintedPygmentize}{node_modules/.bin/shiki-minted}
-\setminted{fontsize = \footnotesize, baselinestretch = 1.2}
-\setmintedinline{fontsize = \normalsize}
+\setminted{fontsize = \footnotesize, baselinestretch = 1.2, breaklines}
+\setmintedinline{fontsize = \normalsize, breaklines = false}
 
 \usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
 
@@ -1186,7 +1186,8 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(f => (x => f(x))(a => a))((x => z => x)(y => y))} \\
+\textbf{Example Program:} & \\
+\multicolumn{2}{l}{\mintinline{js}{(f => (x => f(x))(a => a))((x => z => x)(y => y))}} \\
 \textbf{Current Output:} & $\langle \mintinline{js}{(a => a)}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle ] \rangle] \rangle$ \\
 \textbf{Expected Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
 \end{tabular}
