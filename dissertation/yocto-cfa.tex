@@ -513,7 +513,7 @@ In the program above, there are two options for the variable reference \mintinli
 \includegraphics[page = 7]{images.pdf}
 \end{center}
 
-Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads to a serious issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently; we must know where it appears and whether a variable called \mintinline{js}{x} is already defined there.
+Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads to an issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently; we must know where it appears and whether a variable called \mintinline{js}{x} is already defined there.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 We say that the problem with Option~1 is that it defeats something called \emph{local reasoning}. We say that Option~2 exhibits a behavior called \emph{shadowing}, and that the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x}, because there is no way to refer to the outer \mintinline{js}{x} from the body of the inner function.
