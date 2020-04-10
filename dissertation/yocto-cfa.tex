@@ -1193,37 +1193,33 @@ case "Identifier":
 \end{tabular}
 \end{center}
 
-This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to \mintinline{ts}{step()}, when the relevant closure is created:
+This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to \mintinline{ts}{step()}, when a closure is created:
 
 \begin{center}
 \textbf{Trace 1: First Call to \mintinline{ts}{step()} · Closure Creation}
 \begin{tabular}{rrcl}
 \textbf{Line} & (see §~\ref{A Function Call}) & & \\
-& \mintinline{ts}{environment} & = & $[]$ \\
-9 & \mintinline{ts}{expression.callee} & = & \mintinline{js}{f => (x => f(x))(a => a)} \\
-5 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
-6 & \mintinline{ts}{body} & = & \mintinline{js}{(x => f(x))(a => a)} \\
-10 & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
+& \mintinline{ts}{expression.callee} & = & \mintinline{js}{f => (x => f(x))(a => a)} \\
+& \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
 \rowcolor[rgb]{.88,1,1} 10 & \mintinline{ts}{argument} & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
-And the following is a trace of the recursive call to \mintinline{ts}{step()} in which the relevant closure is used:
+And the following is a trace of the recursive call to \mintinline{ts}{step()} in which that closure is used:
 
 \begin{center}
 \textbf{Trace 2: Recursive Call to \mintinline{ts}{step()} · Closure Use}
 \begin{tabular}{rrcl}
 \textbf{Line} & (see §~\ref{A Function Call}) & & \\
+& \mintinline{ts}{expression.callee} & = & \mintinline{js}{f} \\
+& \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{x} \\
 \rowcolor[rgb]{.88,1,1} & \mintinline{ts}{environment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle, \cdots]$ \\
-9 & \mintinline{ts}{expression.callee} & = & \mintinline{js}{f => (x => f(x))(a => a)} \\
-5 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
-6 & \mintinline{ts}{body} & = & \mintinline{js}{(x => f(x))(a => a)} \\
-10 & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
-10 & \mintinline{ts}{argument} & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+9 & $\mintinline{ts}{step(}\cdots\mintinline{ts}{)}$ & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+5 & \mintinline{ts}{parameter} & = & \mintinline{js}{z} \\
+6 & \mintinline{ts}{body} & = & \mintinline{js}{x} \\
+\rowcolor[rgb]{.88,1,1} 8 & \mintinline{ts}{functionEnvironment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
 \end{tabular}
 \end{center}
-
-% TODO: When \mintinline{js}{f} is called the current environment includes $\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle$.
 
 \begin{minted}[highlightlines = {13}]{ts}
 // step()
