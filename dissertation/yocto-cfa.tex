@@ -1213,11 +1213,11 @@ And the following is a trace of the recursive call to \mintinline{ts}{step()} in
 \textbf{Line} & \multicolumn{1}{l}{(see §~\ref{A Function Call})} & & \\
 & \mintinline{ts}{expression} & = & \mintinline{js}{f(x)} \\
 & \mintinline{ts}{expression.callee} & = & \mintinline{js}{f} \\
-& \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{x} \\
+\rowcolor[rgb]{.88,1,1} & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{x} \\
 \rowcolor[rgb]{.88,1,1} & \mintinline{ts}{environment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle, \cdots]$ \\
 9 & $\mintinline{ts}{step(}\cdots\mintinline{ts}{)}$ & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 5 & \mintinline{ts}{parameter} & = & \mintinline{js}{z} \\
-6 & \mintinline{ts}{body} & = & \mintinline{js}{x} \\
+\rowcolor[rgb]{.88,1,1} 6 & \mintinline{ts}{body} & = & \mintinline{js}{x} \\
 \rowcolor[rgb]{.88,1,1} 8 & \mintinline{ts}{functionEnvironment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
 \multicolumn{4}{c}{Paused before line 10}\\
 \end{tabular}
@@ -1231,7 +1231,7 @@ But this leads to an issue: we may not reason about \mintinline{js}{z => x} by l
 \includegraphics[page = 8]{images.pdf}
 \end{center}
 
-To implement this, we change the recursive call to \mintinline{ts}{step()} that evaluates the function body so that it uses the environment coming from the closure (\mintinline{js}{functionEnvironment}):
+To implement this, we change the recursive call to \mintinline{ts}{step()} that evaluates the function body so that it uses the environment coming from the closure (\mintinline{js}{functionEnvironment}) instead of the current environment (\mintinline{js}{environment}):
 
 \begin{minted}[highlightlines = {13}]{ts}
 // step()
@@ -1251,11 +1251,11 @@ case "CallExpression":
 \end{minted}
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-The principle of being able to reason about a function only by looking at its definition is something called \emph{local reasoning} (see §~\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called \emph{dynamic scoping}, because the \emph{scope} of a variable (where a variable is available) is \emph{dynamic}, depending on where the function is called. The treatment given to the environment in this section is something called \emph{static scoping} or \emph{lexical scoping}, because the scope of a variable is determined before we start interpreting the program.
+The principle of being able to reason about a function only by looking at its definition is something called \emph{local reasoning} (see §~\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called \emph{dynamic scoping}, because the \emph{scope} of a variable (where a variable is defined) is \emph{dynamic}, depending on where the function is called. The treatment given to the environment in this section is something called \emph{static scoping} or \emph{lexical scoping}, because the scope of a variable is determined before we start interpreting the program.
 \end{mdframed}
 
 \begin{mdframed}[frametitle = {Advanced}]
-There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP~\cite{lisp-original}, though that was considered a mistake later~\cite{lisp-history}. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp~\cite[§~12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s \mintinline{clojure}{parameterize}~\cite[§~4.13]{racket-guide}.
+There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP~\cite{lisp-original}, though that was later considered a mistake~\cite{lisp-history}. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp~\cite[§~12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s \mintinline{clojure}{parameterize}~\cite[§~4.13]{racket-guide}.
 \end{mdframed}
 
 \subsection{The Entire Runner}
