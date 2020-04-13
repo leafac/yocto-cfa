@@ -1303,7 +1303,38 @@ function run(expression: Expression): Value {
 }
 \end{minted}
 
-% TODO: Operational semantics
+\begin{mdframed}[frametitle = {Advanced}]
+\subsection{Operational Semantics}
+
+We adapt the operational semantics from §~\ref{An Operational Semantics for the Interpreter} to the interpreter defined in Step~1. First, we change the notion of values from §~\ref{An Operational Semantics for the Interpreter}:
+
+\begin{center}
+\begin{tabular}{rcll}
+$v$ & = & $\langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle$ & Values / Closures \\
+$\rho$ & = & $[x \mapsto v, \cdots]$ & Environments \\
+\end{tabular}
+\end{center}
+
+We then define the relation $\langle e, \rho \rangle \Rightarrow v$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
+
+\begin{mathpar}
+\inferrule
+{ }
+{v \Rightarrow v}
+
+\inferrule
+{
+\langle e_f, \rho \rangle \Rightarrow \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle \\
+\langle e_a, \rho \rangle \Rightarrow v_a \\
+\langle e_b, \rho_f [x \mapsto v_a] \rangle \Rightarrow v \\
+}
+{\langle e_f\mintinline{js}{(}e_a\mintinline{js}{)}, \rho \rangle \Rightarrow v}
+
+\inferrule
+{ }
+{\langle x, \rho \rangle \Rightarrow \rho(x)}
+\end{mathpar}
+\end{mdframed}
 
 % TODO: Stringifier
 
