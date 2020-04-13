@@ -179,10 +179,6 @@ Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed 
 
 Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
 
-\begin{mdframed}[frametitle = {Advanced}]
-The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{js}{eval()}~\cite{javascript-eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript.
-\end{mdframed}
-
 The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of Step~0 (the \mintinline{ts}{>} represents the console):
 
 \begin{minted}{ts}
@@ -207,6 +203,10 @@ export function evaluate(input: string): string {
 The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{stringify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{stringify()} to §~\ref{Step 0: Stringifier}.
 
 In later Steps the implementations of \mintinline{ts}{run()} and \mintinline{ts}{stringify()} will change, but the architecture and therefore the implementations of \mintinline{ts}{evaluate()} and \mintinline{ts}{parse()} will remain the same.
+
+\begin{mdframed}[frametitle = {Advanced}]
+The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{ts}{eval()}~\cite{javascript-eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript. The \mintinline{ts}{strinfigy()} function is named after a native JavaScript function called \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which is used in the implementation (see §~\ref{Step 1: Stringifier}).
+\end{mdframed}
 
 \subsection{Data Structures to Represent Yocto-JavaScript Programs}
 \label{Data Structures to Represent Yocto-JavaScript Programs}
@@ -1336,7 +1336,63 @@ We then define the relation $\langle e, \rho \rangle \Rightarrow v$ to be equiva
 \end{mathpar}
 \end{mdframed}
 
-% TODO: Stringifier
+\subsection{Stringifier}
+\label{Step 1: Stringifier}
+
+We modify the stringifier from §~\ref{Step 0: Stringifier} to support closures. For example, the following is the representation of the closure from §~\ref{A Function Call}:
+
+\begin{center}
+$\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$
+\end{center}
+
+\begin{minted}{js}
+{
+  "function": "z => x",
+  "environment": [
+    [
+      "x",
+      {
+        "function": "y => y",
+        "environment": []
+      }
+    ]
+  ]
+}
+\end{minted}
+
+The following is the modified implementation of \mintinline{ts}{stringify()}:
+
+\begin{minted}[linenos, highlightlines = {2,4,5,15}]{ts}
+function stringify(value: Value): string {
+  return JSON.stringify(
+    value,
+    (key, value) => {
+      if (value.type !== undefined)
+        return prettier
+          .format(escodegen.generate(value), {
+            parser: "babel",
+            semi: false,
+            arrowParens: "avoid",
+          })
+          .trim();
+      return value;
+    },
+    2
+  );
+}
+\end{minted}
+
+\begin{description}
+\item [Line 2:] Call \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}.
+
+\item [Line 4:] Provide a \mintinline{ts}{replacer} that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
+
+\item [Line 5:] Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called \mintinline{ts}{type} (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of \mintinline{ts}{stringify()} (see §~\ref{Step 0: Stringifier}) to produce a string.
+
+\item [Line 15:] Format the output with indentation of two spaces.
+\end{description}
+
+% TODO: Infinite programs
 
 % TODO: \appendix
 
