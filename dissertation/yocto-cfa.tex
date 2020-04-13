@@ -1260,9 +1260,18 @@ There are languages that implement dynamic scoping. In some cases dynamic scopin
 
 \subsection{The Entire Runner}
 
-The implementation of the \mintinline{ts}{run()} function is complete:
+We completed the changes necessary to transform the \mintinline{ts}{run()} function from the substitution-based interpreter in Step~0 into an environment-based interpreter:
 
 \begin{minted}[linenos]{ts}
+type Value = Closure;
+
+type Closure = {
+  function: ArrowFunctionExpression;
+  environment: Environment;
+};
+
+type Environment = MapDeepEqual<Identifier["name"], Value>;
+
 function run(expression: Expression): Value {
   return step(expression, new MapDeepEqual());
   function step(expression: Expression, environment: Environment): Value {
