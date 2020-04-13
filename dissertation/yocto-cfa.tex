@@ -931,13 +931,15 @@ There are also programs for which interpretation does not terminate that never p
 
 The result of substitution (\mintinline{js}{(F(F))(F(F))}) is an expression that contains the initial expression (the first \mintinline{js}{F(F)}) in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to \mintinline{ts}{run()} never repeat themselves:
 
-\begin{minted}[mathescape]{js}
-(F(F))
-(F(F))(F(F))
-(F(F))(F(F))(F(F))
-(F(F))(F(F))(F(F))(F(F))
-//          $\vdots$
-\end{minted}
+\begin{center}
+\begin{tabular}{l}
+\mintinline{js}{(F(F))} \\
+\mintinline{js}{(F(F))(F(F))} \\
+\mintinline{js}{(F(F))(F(F))(F(F))} \\
+\mintinline{js}{(F(F))(F(F))(F(F))(F(F))} \\
+\multicolumn{1}{c}{$\vdots$} \\
+\end{tabular}
+\end{center}
 
 Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether \mintinline{ts}{run()} is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
 
@@ -1383,7 +1385,7 @@ function stringify(value: Value): string {
 \end{minted}
 
 \begin{description}
-\item [Line 2:] Call \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}.
+\item [Line 2:] Call \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which traverses any data structure and converts it into a string.
 
 \item [Line 4:] Provide a \mintinline{ts}{replacer} that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
 
@@ -1391,6 +1393,28 @@ function stringify(value: Value): string {
 
 \item [Line 15:] Format the output with indentation of two spaces.
 \end{description}
+
+This implementation of \mintinline{ts}{stringify()} supports not only closures but any data structure (because of \mintinline{ts}{JSON.stringify()}), so it will remain the same in the following Steps.
+
+\subsection{Programs That Do Not Terminate}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program:} & \mintinline{js}{(f => f(f))(f => f(f))} \\
+\textbf{Current Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\end{tabular}
+\end{center}
+
+
+\begin{center}
+\begin{tabular}{l}
+$\langle \mintinline{js}{(f => f(f))}, [] \rangle$ \\
+$\langle \mintinline{js}{(f => f(f))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(f => f(f))}, [] \rangle] \rangle$ \\
+$\langle \mintinline{js}{(f => f(f))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(f => f(f))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(f => f(f))}, [] \rangle] \rangle] \rangle$ \\
+\multicolumn{1}{c}{$\vdots$} \\
+\end{tabular}
+\end{center}
 
 % TODO: Infinite programs
 
