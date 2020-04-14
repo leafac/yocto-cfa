@@ -215,6 +215,9 @@ test("§ Programs That Do Not Terminate", () => {
   expect(() => {
     evaluate("(f => (f(f))(f(f)))(f => (f(f))(f(f)))");
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
+  expect(() => {
+    evaluate("(f => u => f(f)(x => x))(f => u => f(f)(x => x))(x => x)");
+  }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });
 
 test("§ A Function Body Is Evaluated with the Environment in Its Closure", () => {
