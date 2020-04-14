@@ -974,7 +974,7 @@ The issue with this strategy is that the expression \mintinline{js}{z => (y => y
 \end{center}
 
 \begin{mdframed}[frametitle = {Technical Terms}]
-A map from variables to the values with which they would have been replaced (for example, $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$) is something called an \emph{environment}. A function along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$) is something called a \emph{closure}.
+A map from variables to the values with which they would have been replaced (for example, $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$) is something called an \emph{environment}. A function along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$) is something called a \emph{closure}~\cite{closures}.
 \end{mdframed}
 
 In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent, but in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
