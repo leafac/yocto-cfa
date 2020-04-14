@@ -680,7 +680,7 @@ case "Identifier":
 If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. This is consistent with JavaScript’s behavior.
 
 \subsection{The Entire Runner}
-\label{The Entire Runner}
+\label{Step 0: The Entire Runner}
 
 The implementation of the \mintinline{ts}{run()} function is complete:
 
@@ -731,7 +731,7 @@ What we accomplished so far in this section is more than defining an interpreter
 
 A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: \emph{operational semantics}~\cite{operational-semantics, semantics-engineering, pl-book}.
 
-First, we extend the grammar from §~\ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type \mintinline{ts}{Value} (see §~\ref{The Entire Runner}, line 1):
+First, we extend the grammar from §~\ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type \mintinline{ts}{Value} (see §~\ref{Step 0: The Entire Runner}, line 1):
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -739,7 +739,7 @@ $v$ & ::= & $x\mintinline{js}{ => }e$ & Values \\
 \end{tabular}
 \end{center}
 
-Next, we define a \emph{relation} $e \Rightarrow v$ using \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{The Entire Runner}, lines 3–36):
+Next, we define a \emph{relation} $e \Rightarrow v$ using \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{Step 0: The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
 \inferrule
@@ -755,7 +755,7 @@ e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
 {e_{f}\mintinline{js}{(}e_{a}\mintinline{js}{)} \Rightarrow v}
 \end{mathpar}
 
-Finally, we define a \emph{metafunction} $e[x \backslash v] = e$ that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}, lines 14–32):
+Finally, we define a \emph{metafunction} $e[x \backslash v] = e$ that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{Step 0: The Entire Runner}, lines 14–32):
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -826,7 +826,7 @@ The \mintinline{ts}{checkFeatures()} function, which is passed to \mintinline{ts
 
 \item [Lines 6, 7, 13, 15, 17, 23, 25:]
 
-Similar to \mintinline{ts}{run()} and \mintinline{ts}{substitute()} (see §~\ref{The Entire Runner}), \mintinline{ts}{checkFeatures()} starts by determining which type of \mintinline{ts}{estree.Node} it is given.
+Similar to \mintinline{ts}{run()} and \mintinline{ts}{substitute()} (see §~\ref{Step 0: The Entire Runner}), \mintinline{ts}{checkFeatures()} starts by determining which type of \mintinline{ts}{estree.Node} it is given.
 
 \item [Lines 8–11:]
 
@@ -897,7 +897,7 @@ Yocto-JavaScript may express any program that a computer may run (see §~\ref{Th
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{The Entire Runner})} & & \\
+\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{Step 0: The Entire Runner})} & & \\
 3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))} \\
 9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
 10 & \mintinline{ts}{body} & = & \mintinline{js}{f(f)} \\
@@ -920,7 +920,7 @@ There are also programs for which interpretation does not terminate that never p
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{The Entire Runner})} & & where \mintinline{js}{F = f => (f(f))(f(f))} \\
+\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{Step 0: The Entire Runner})} & & where \mintinline{js}{F = f => (f(f))(f(f))} \\
 3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)} \\
 9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
 10 & \mintinline{ts}{body} & = & \mintinline{js}{(f(f))(f(f))} \\
@@ -1011,7 +1011,7 @@ The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key an
 
 \subsection{Adding an Environment to the Runner}
 
-The runner needs to maintain an environment, so we modify the implementation of \mintinline{ts}{run()} from §~\ref{The Entire Runner} to introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
+The runner needs to maintain an environment, so we modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 0: The Entire Runner} to introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
 
 \begin{minted}[linenos, highlightlines = {2-3, 11-13}]{ts}
 function run(expression: Expression): Value {
@@ -1437,6 +1437,56 @@ The interpreter in Step~1 may produce infinitely many different environments bec
 \begin{mdframed}[frametitle = {Technical Terms}]
 The nesting of environments in Step~1 characterizes them as something called \emph{recursive data structures}: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
 \end{mdframed}
+
+\section{Step 1: Store-Based Interpreter}
+
+\subsection{The Entire Runner}
+
+\begin{minted}[linenos]{ts}
+type Environment = MapDeepEqual<Identifier["name"], Address>;
+
+type Store = MapDeepEqual<Address, Value>;
+
+type Address = number;
+
+function run(expression: Expression): { value: Value; store: Store } {
+  const store: Store = new MapDeepEqual();
+  return { value: step(expression, new MapDeepEqual()), store };
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression": {
+        return { function: expression, environment };
+      }
+      case "CallExpression": {
+        const {
+          function: {
+            params: [parameter],
+            body,
+          },
+          environment: functionEnvironment,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        const address = store.size;
+        store.set(address, argument);
+        return step(
+          body,
+          new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+        );
+      }
+      case "Identifier": {
+        const address = environment.get(expression.name);
+        if (address === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return store.get(address)!;
+      }
+    }
+  }
+}
+\end{minted}
+
+% TODO: Operational Semantics
 
 % TODO: \appendix
 
