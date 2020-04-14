@@ -96,7 +96,7 @@ function parse(input: string): Expression {
   }
 }
 
-function stringify(value: Value): string {
+function stringify(value: any): string {
   return JSON.stringify(
     value,
     (key, value) => {
