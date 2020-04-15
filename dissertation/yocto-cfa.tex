@@ -313,9 +313,9 @@ In later Steps almost everything about the interpreter will change, but the data
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{x => x} \\
-\textbf{Current Output:} & — \\
-\textbf{Expected Output:} & \mintinline{js}{x => x} \\
+\textbf{Example Program} & \mintinline{js}{x => x} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{js}{x => x} \\
 \end{tabular}
 \end{center}
 
@@ -357,9 +357,9 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => x)(y => y)} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{js}{y => y} \\
+\textbf{Example Program} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -456,9 +456,9 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{js}{z => y => y} \\
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
@@ -481,9 +481,9 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => z => z)(y => y)} \\
-\textbf{Current Output:} & \mintinline{js}{z => y => y} \\
-\textbf{Expected Output:} & \mintinline{js}{z => z} \\
+\textbf{Example Program} & \mintinline{js}{(x => z => z)(y => y)} \\
+\textbf{Current Output} & \mintinline{js}{z => y => y} \\
+\textbf{Expected Output} & \mintinline{js}{z => z} \\
 \end{tabular}
 \end{center}
 
@@ -501,9 +501,9 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => x => x)(y => y)} \\
-\textbf{Current Output:} & \mintinline{js}{x => y => y} \\
-\textbf{Expected Output:} & \mintinline{js}{x => x} \\
+\textbf{Example Program} & \mintinline{js}{(x => x => x)(y => y)} \\
+\textbf{Current Output} & \mintinline{js}{x => y => y} \\
+\textbf{Expected Output} & \mintinline{js}{x => x} \\
 \end{tabular}
 \end{center}
 
@@ -536,9 +536,9 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => z => x(x))(y => y)} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{js}{z => (y => y)(y => y)} \\
+\textbf{Example Program} & \mintinline{js}{(x => z => x(x))(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{z => (y => y)(y => y)} \\
 \end{tabular}
 \end{center}
 
@@ -559,13 +559,13 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => z => x)((a => a)(y => y))} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{js}{z => y => y} \\
+\textbf{Example Program} & \mintinline{js}{(x => z => x)((a => a)(y => y))} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{z => y => y} \\
 \end{tabular}
 \end{center}
 
-In all example programs we considered so far the argument to a function call was an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the immediate function unchanged; see §~\ref{An Expression That Already Is a Value}):
+In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the immediate function unchanged; see §~\ref{An Expression That Already Is a Value}):
 
 \begin{minted}[highlightlines = {3-4, 9}]{ts}
 // run()
@@ -599,9 +599,9 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{((z => z)(x => x))(y => y)} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{js}{y => y} \\
+\textbf{Example Program} & \mintinline{js}{((z => z)(x => x))(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -629,9 +629,9 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => (z => z)(x))(y => y)} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{js}{y => y} \\
+\textbf{Example Program} & \mintinline{js}{(x => (z => z)(x))(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{y => y} \\
 \end{tabular}
 \end{center}
 
@@ -655,9 +655,9 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => y)(y => y)} \\
-\textbf{Current Output:} & \mintinline{text}{NOT IMPLEMENTED YET} \\
-\textbf{Expected Output:} & \mintinline{text}{Reference to undefined variable: y} \\
+\textbf{Example Program} & \mintinline{js}{(x => y)(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{text}{Reference to undefined variable: y} \\
 \end{tabular}
 \end{center}
 
@@ -671,9 +671,9 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{x => y} \\
-\textbf{Current Output:} & \mintinline{js}{x => y} \\
-\textbf{Expected Output:} & \mintinline{js}{x => y} \\
+\textbf{Example Program} & \mintinline{js}{x => y} \\
+\textbf{Current Output} & \mintinline{js}{x => y} \\
+\textbf{Expected Output} & \mintinline{js}{x => y} \\
 \end{tabular}
 \end{center}
 
@@ -814,7 +814,7 @@ The parser is defined as a function called \mintinline{ts}{parse()}, which recei
 
 \item [Line 2:]
 
-Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as if it were a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body. We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
+Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body. We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
 \item [Line 3:]
 
@@ -883,9 +883,9 @@ function stringify(value: Value): string {
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(f => f(f))(f => f(f))} \\
-\textbf{Current Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
-\textbf{Expected Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Example Program} & \mintinline{js}{(f => f(f))(f => f(f))} \\
+\textbf{Current Output} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output} & \mintinline{text}{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
 
@@ -910,9 +910,9 @@ The result of substitution is the same as the initial expression, so when it is 
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} \\
-\textbf{Current Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
-\textbf{Expected Output:} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Example Program} & \mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} \\
+\textbf{Current Output} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output} & \mintinline{text}{DOES NOT TERMINATE} \\
 \end{tabular}
 \end{center}
 
@@ -957,8 +957,8 @@ When the interpreter from Step~0 encounters a function call, it produces a new e
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program \textmd{(from §~\ref{Substitution in Function Definitions})}:} & \mintinline{js}{(x => z => x)(y => y)} \\
-\textbf{Step~0 Output:} & \mintinline{js}{z => (y => y)} \\
+\textbf{Example Program \textmd{(from §~\ref{Substitution in Function Definitions})}} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~0 Output} & \mintinline{js}{z => (y => y)} \\
 \end{tabular}
 \end{center}
 
@@ -966,10 +966,10 @@ The issue with this strategy is that the expression \mintinline{js}{z => (y => y
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{y => y} \\
-\textbf{Step~1 Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
-\textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
-\textbf{Step~1 Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{y => y} \\
+\textbf{Step~1 Output} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~1 Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1068,9 +1068,9 @@ The listing above does not compile yet because we are not producing closures. In
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{x => x} \\
-\textbf{Current Output:} & — \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(x => x)}, [] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{x => x} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(x => x)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1087,9 +1087,9 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => z => x)(y => y)} \\
-\textbf{Current Output:} & — \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1145,29 +1145,30 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => x => z => x)(a => a)(y => y)} \\
-\textbf{Current Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{(x => x => z => x)(a => a)(y => y)} \\
+\textbf{Current Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
 \end{tabular}
 \end{center}
 
 If a name is reused (for example, \mintinline{js}{x} in the example program above), then the second time it is encountered by \mintinline{ts}{step()} it is overwritten in the \mintinline{ts}{environment} (see the call to \mintinline{ts}{set()} in line~13 of §~\ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to \mintinline{js}{x} to refer to the second (inner) \mintinline{ts}{x}, which is the expected behavior (it is what we called Option~2 in §~\ref{Step 0: Name Reuse}).
 
 \subsection{A Variable Reference}
+\label{A Variable Reference}
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \mintinline{js}{(x => x)(y => y)} \\
-\textbf{Current Output:} & — \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
 \\
-\textbf{Example Program:} & \mintinline{js}{(x => y)(y => y)} \\
-\textbf{Current Output:} & — \\
-\textbf{Expected Output:} & \mintinline{text}{Reference to undefined variable: y} \\
+\textbf{Example Program} & \mintinline{js}{(x => y)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{text}{Reference to undefined variable: y} \\
 \\
-\textbf{Example Program:} & \mintinline{js}{x => y} \\
-\textbf{Current Output:} & — \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{x => y} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1185,13 +1186,14 @@ case "Identifier":
 \end{minted}
 
 \subsection{A Function Body Is Evaluated with the Environment in Its Closure}
+\label{A Function Body Is Evaluated with the Environment in Its Closure}
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program:} & \\
+\textbf{Example Program} & \\
 \multicolumn{2}{l}{\mintinline{js}{(f => (x => f(x))(a => a))((x => z => x)(y => y))}} \\
-\textbf{Current Output:} & $\langle \mintinline{js}{(a => a)}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle ] \rangle] \rangle$ \\
-\textbf{Expected Output:} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\textbf{Current Output} & $\langle \mintinline{js}{(a => a)}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle ] \rangle] \rangle$ \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
 \end{tabular}
 \end{center}
 
@@ -1399,6 +1401,7 @@ function stringify(value: any): string {
 This implementation of \mintinline{ts}{stringify()} supports not only closures but any data structure (because of \mintinline{ts}{JSON.stringify()}), so it will remain the same in the following Steps.
 
 \subsection{Programs That Do Not Terminate}
+\label{Step 1: Programs That Do Not Terminate}
 
 The programs that did not terminate in Step~0 (see §~\ref{Step 0: Programs That Do Not Terminate}) continue to not terminate in Step~1, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step~0 substitution may produce infinitely many expressions, including expressions that did not occur in the original program. In Step~1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
 
@@ -1430,7 +1433,7 @@ $\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinli
 \end{tabular}
 \end{center}
 
-The program above is a variation on the shortest non-terminating program, \mintinline{js}{(f => f(f))(f => f(f))}, in which each \mintinline{js}{f => f(f)} was modified to receive an additional unused parameter \mintinline{js}{u}, and each \mintinline{js}{f(f)} was modified to receive an additional dummy argument \mintinline{js}{x => x}.
+The program above is a variation on the shortest non-terminating program, \mintinline{js}{(f => f(f))(f => f(f))}, in which each \mintinline{js}{f => f(f)} receives an additional unused parameter \mintinline{js}{u}, and each \mintinline{js}{f(f)} receives an additional dummy argument \mintinline{js}{x => x}.
 
 The interpreter in Step~1 may produce infinitely many different environments because environments may be nested. That is the issue that we address on the next Step.
 
@@ -1438,7 +1441,35 @@ The interpreter in Step~1 may produce infinitely many different environments bec
 The nesting of environments in Step~1 characterizes them as something called \emph{recursive data structures}: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
 \end{mdframed}
 
-\section{Step 1: Store-Based Interpreter}
+\section{Step 2: Store-Based Interpreter}
+
+The source of non-termination in Step~1 is the nesting of the environments (see §~\ref{Step 1: Programs That Do Not Terminate}). In Step~2, we address this issue by introducing a layer of indirection between a name in the environment and its corresponding value. The interpreter we develop in this Step may still not terminate, but for other reasons that will be addressed in subsequent Steps.
+
+\subsection{Avoiding Nested Environments by Introducing a Store}
+
+In Step~1 a closure contains an environment mapping names to other closures, which in turn contain their own environments mapping to yet more closures. In Step~2, we remove this circularity by introducing a layer of indirection: an environment maps names to \emph{addresses}, which may be used to lookup values in a \emph{store}, for example:
+
+\begin{center}
+\begin{tabular}{rcc}
+(See §~\ref{A Variable Reference}) & \textbf{Step~1} & \textbf{Step~2} \\
+\textbf{Variable Reference} & \mintinline{js}{x} & \mintinline{js}{x} \\
+\textbf{Environment} & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ & $[\mintinline{js}{x} \mapsto \mintinline{js}{0}]$ \\
+\textbf{Store} & — & $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\textbf{Value} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+Each closure continues to include its own environment, but there is only one store for the entire interpreter, and we avoid ambiguities by allocating distinct addresses, for example:
+
+\begin{center}
+\begin{tabular}{rll}
+(See §~\ref{A Function Body Is Evaluated with the Environment in Its Closure}) & \multicolumn{1}{c}{\textbf{Step~1}} & \multicolumn{1}{c}{\textbf{Step~2}} \\
+\mintinline{ts}{environment} & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle, \cdots]$ & $[\mintinline{js}{x} \mapsto \mintinline{js}{0}, \cdots]$ \\
+\mintinline{ts}{funcEnv.} & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ & $[\mintinline{js}{x} \mapsto \mintinline{js}{1}]$ \\
+\textbf{Store} & \multicolumn{1}{c}{—} & $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle,$ \\
+ & & $\phantom{[}\mintinline{js}{1} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$
+\end{tabular}
+\end{center}
 
 \subsection{The Entire Runner}
 
