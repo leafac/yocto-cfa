@@ -777,7 +777,7 @@ Our strategy to implement the Yocto-JavaScript parser is to delegate most of the
 
 \begin{minted}[linenos]{ts}
 function parse(input: string): Expression {
-  const program = esprima.parseScript(input, {}, checkFeatures);
+  const program = esprima.parseScript(input, { range: true }, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
   function checkFeatures(node: estree.Node): void {
@@ -814,7 +814,11 @@ The parser is defined as a function called \mintinline{ts}{parse()}, which recei
 
 \item [Line 2:]
 
-Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body. We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
+Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body.
+
+The \mintinline{ts}{{ range: true }} argument causes Esprima to include in the generated data structures some information about the part of the \mintinline{ts}{input} from where they came. We do not use this information (it is not even part of the definition of the data structures; see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example, \mintinline{ts}{x => x => x}, this information makes the \mintinline{ts}{x}s distinct.
+
+We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
 \item [Line 3:]
 

@@ -145,7 +145,12 @@ describe("run()", () => {
               {
                 \\"function\\": \\"a => a\\",
                 \\"environment\\": []
-              },
+              }
+            ]
+          ],
+          [
+            \\"x\\",
+            [
               {
                 \\"function\\": \\"y => y\\",
                 \\"environment\\": []
@@ -386,15 +391,6 @@ test("§ A Function Body Is Evaluated with the Environment in Its Closure", () =
         {
           \\"function\\": \\"y => y\\",
           \\"environment\\": []
-        },
-        {
-          \\"function\\": \\"a => a\\",
-          \\"environment\\": [
-            [
-              \\"f\\",
-              \\"f\\"
-            ]
-          ]
         }
       ],
       \\"store\\": [
@@ -404,15 +400,6 @@ test("§ A Function Body Is Evaluated with the Environment in Its Closure", () =
             {
               \\"function\\": \\"y => y\\",
               \\"environment\\": []
-            },
-            {
-              \\"function\\": \\"a => a\\",
-              \\"environment\\": [
-                [
-                  \\"f\\",
-                  \\"f\\"
-                ]
-              ]
             }
           ]
         ],
@@ -431,12 +418,22 @@ test("§ A Function Body Is Evaluated with the Environment in Its Closure", () =
           ]
         ],
         [
-          \\"z\\",
+          \\"x\\",
           [
             {
-              \\"function\\": \\"y => y\\",
-              \\"environment\\": []
-            },
+              \\"function\\": \\"a => a\\",
+              \\"environment\\": [
+                [
+                  \\"f\\",
+                  \\"f\\"
+                ]
+              ]
+            }
+          ]
+        ],
+        [
+          \\"z\\",
+          [
             {
               \\"function\\": \\"a => a\\",
               \\"environment\\": [

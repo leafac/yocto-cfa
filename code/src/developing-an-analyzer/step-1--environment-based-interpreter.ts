@@ -67,7 +67,7 @@ function run(expression: Expression): Value {
 }
 
 function parse(input: string): Expression {
-  const program = esprima.parseScript(input, {}, checkFeatures);
+  const program = esprima.parseScript(input, { range: true }, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
   return expression;
   function checkFeatures(node: estree.Node): void {
