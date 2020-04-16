@@ -1312,8 +1312,9 @@ function run(expression: Expression): Value {
 
 \begin{mdframed}[frametitle = {Advanced}]
 \subsection{Operational Semantics}
+\label{Step 1: Operational Semantics}
 
-We adapt the operational semantics from §~\ref{An Operational Semantics for the Interpreter} to the interpreter defined in Step~1. First, we change the notion of values from §~\ref{An Operational Semantics for the Interpreter}:
+We adapt the operational semantics from §~\ref{An Operational Semantics for the Interpreter} to the interpreter defined in Step~1. First, we change the notion of values:
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -1485,6 +1486,10 @@ The runner must return the store along with the value, for the variable referenc
 \end{tabular}
 \end{center}
 
+\begin{mdframed}[frametitle = {Advanced}]
+The technique used in Step~2 is related to the run-time environments that are the target of traditional compilers for languages such as C~\cite[§~7]{dragon-book}: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.
+\end{mdframed}
+
 \subsection{New Data Structures}
 
 The following are the data structures used to represent environments, stores, and addresses:
@@ -1518,6 +1523,7 @@ function run(expression: Expression): { value: Value; store: Store } {
 \end{description}
 
 \subsection{Adding a Value to the Store}
+\label{Adding a Value to the Store}
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1558,7 +1564,40 @@ case "CallExpression": {
 \item [Line 12:] Extend the \mintinline{ts}{store} with a mapping from the \mintinline{ts}{address} to the \mintinline{ts}{argument}. This is mutating the unique \mintinline{ts}{store} that is available to the entire \mintinline{ts}{step()} function, not creating a new \mintinline{ts}{store} in the same way that extending an \mintinline{ts}{environment} creates a new \mintinline{ts}{environment} (see line~15).
 \end{description}
 
+\subsection{Retrieving a Value from the Store}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{ts}{value} = $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+& \mintinline{ts}{store} = $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\end{tabular}
+\end{center}
+
+In Step~1 we retrieved values directly from the \mintinline{ts}{environment} (see §~\ref{A Variable Reference}), but in Step~2 we have to go through the \mintinline{ts}{store}:
+
+\begin{minted}[linenos, highlightlines = {3, 8}]{ts}
+// step()
+case "Identifier": {
+  const address = environment.get(expression.name);
+  if (address === undefined)
+    throw new Error(
+      `Reference to undefined variable: ${expression.name}`
+    );
+  return store.get(address)!;
+}
+\end{minted}
+
+\begin{description}
+\item [Line 3:] Retrieve the \mintinline{ts}{address} from the \mintinline{ts}{environment}.
+
+\item [Line 8:] Retrieve the \mintinline{ts}{value} from the \mintinline{ts}{store} at the given \mintinline{ts}{address} found in the \mintinline{ts}{environment}. The \mintinline{ts}{address} is guaranteed to be in the \mintinline{ts}{store} because we extend the \mintinline{ts}{store} and the \mintinline{ts}{environment} together (see §~\ref{Adding a Value to the Store}), so we use \mintinline{ts}{!} to indicate that \mintinline{ts}{get()} may not return \mintinline{ts}{undefined}.
+\end{description}
+
 \subsection{The Entire Runner}
+
+We completed the changes necessary to remove the circularity between closures and environments:
 
 \begin{minted}[linenos]{ts}
 type Environment = MapDeepEqual<Identifier["name"], Address>;
@@ -1604,7 +1643,41 @@ function run(expression: Expression): { value: Value; store: Store } {
 }
 \end{minted}
 
-% TODO: Operational Semantics
+\begin{mdframed}[frametitle = {Advanced}]
+\subsection{Operational Semantics}
+\label{Step 2: Operational Semantics}
+
+We adapt the operational semantics from §~\ref{Step 2: Operational Semantics} to the interpreter defined in Step~2. First, we change the notion of environments:
+
+\begin{center}
+\begin{tabular}{rcll}
+$\rho$ & = & $[x \mapsto a, \cdots]$ & Environments \\
+$\sigma$ & = & $[a \mapsto v, \cdots]$ & Stores \\
+$a$ & = & $\mathbb{N}$ & Addresses \\
+\end{tabular}
+\end{center}
+
+We then define the relation $\langle e, \rho, \sigma \rangle \Rightarrow \langle v, \sigma \rangle$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
+
+\begin{mathpar}
+\inferrule
+{ }
+{\langle x\mintinline{js}{ => }e, \rho, \sigma \rangle \Rightarrow \langle \langle x\mintinline{js}{ => }e, \rho \rangle, \sigma \rangle}
+
+\inferrule
+{
+\langle e_f, \rho, \sigma \rangle \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle, \sigma_f \rangle \\
+\langle e_a, \rho, \sigma_f \rangle \Rightarrow \langle v_a, \sigma_a \rangle \\
+a = \lvert \sigma_a \rvert  \\
+\langle e_b, \rho_f [x \mapsto a], \sigma_a [a \mapsto v_a] \rangle \Rightarrow \langle v, \sigma_v \rangle \\
+}
+{\langle e_f\mintinline{js}{(}e_a\mintinline{js}{)}, \rho, \sigma \rangle \Rightarrow \langle v, \sigma_v \rangle}
+
+\inferrule
+{ }
+{\langle x, \rho, \sigma \rangle \Rightarrow \sigma(\rho(x))}
+\end{mathpar}
+\end{mdframed}
 
 % TODO: \appendix
 
