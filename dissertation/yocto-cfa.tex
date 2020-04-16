@@ -816,7 +816,7 @@ The parser is defined as a function called \mintinline{ts}{parse()}, which recei
 
 Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body.
 
-The \mintinline{ts}{{ range: true }} argument causes Esprima to include in the generated data structures some information about the part of the \mintinline{ts}{input} from where they came. We do not use this information (it is not even part of the definition of the data structures; see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example, \mintinline{ts}{x => x => x}, this information makes the \mintinline{ts}{x}s distinct.
+The \mintinline{ts}{{ range: true }} argument causes Esprima to include in the generated data structures some information about the part of the \mintinline{ts}{input} from where they came. We do not use this information (it is not even part of the definition of the data structures; see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example, \mintinline{ts}{x => x => x}, this information distinguishes the \mintinline{ts}{x}s.
 
 We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
@@ -1708,6 +1708,61 @@ $\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinli
 \end{center}
 
 We address this issue in Step~3.
+
+\section{Step 3: Finitely Many Addresses}
+
+\subsection{The Entire Runner}
+
+We completed the changes necessary to produce only finitely many addresses:
+
+\begin{minted}[linenos]{ts}
+type Value = SetDeepEqual<Closure>;
+
+type Address = Identifier;
+
+function run(expression: Expression): { value: Value; store: Store } {
+  const store: Store = new MapDeepEqual();
+  return { value: step(expression, new MapDeepEqual()), store };
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression": {
+        return new SetDeepEqual([{ function: expression, environment }]);
+      }
+      case "CallExpression": {
+        const value: Value = new SetDeepEqual();
+        for (const {
+          function: {
+            params: [parameter],
+            body,
+          },
+          environment: functionEnvironment,
+        } of step(expression.callee, environment)) {
+          const argument = step(expression.arguments[0], environment);
+          const address = parameter;
+          store.merge(new MapDeepEqual([[address, argument]]));
+          value.merge(
+            step(
+              body,
+              new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+            )
+          );
+        }
+        return value;
+      }
+      case "Identifier": {
+        const address = environment.get(expression.name);
+        if (address === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return store.get(address)!;
+      }
+    }
+  }
+}
+\end{minted}
+
+% TODO: Some loss of precision. Now it’s an analyzer (of sorts).
 
 % TODO: \appendix
 
