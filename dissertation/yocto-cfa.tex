@@ -1407,7 +1407,7 @@ This implementation of \mintinline{ts}{stringify()} supports not only closures b
 \subsection{Programs That Do Not Terminate}
 \label{Step 1: Programs That Do Not Terminate}
 
-The programs that did not terminate in Step~0 (see §~\ref{Step 0: Programs That Do Not Terminate}) continue to not terminate in Step~1, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step~0 substitution may produce infinitely many expressions, including expressions that did not occur in the original program. In Step~1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
+The programs that do not terminate in Step~0 (see §~\ref{Step 0: Programs That Do Not Terminate}) do not terminate in Step~1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step~0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step~1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
 
 This difference is significant because there are programs that produce infinitely many different expressions in Step~0, but produce the same expression and environment repeatedly in Step~1, and in these cases we could detect non-termination by checking whether the runner is in a loop with the same arguments, for example:
 
@@ -1439,7 +1439,7 @@ $\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinli
 
 The program above is a variation on the shortest non-terminating program, \mintinline{js}{(f => f(f))(f => f(f))}, in which each \mintinline{js}{f => f(f)} receives an additional unused parameter \mintinline{js}{u}, and each \mintinline{js}{f(f)} receives an additional dummy argument \mintinline{js}{x => x}.
 
-The interpreter in Step~1 may produce infinitely many different environments because environments may be nested. That is the issue that we address on the next Step.
+The interpreter in Step~1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step~2.
 
 \begin{mdframed}[frametitle = {Technical Terms}]
 The nesting of environments in Step~1 characterizes them as something called \emph{recursive data structures}: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
@@ -1679,7 +1679,31 @@ a = \lvert \sigma_a \rvert  \\
 \end{mathpar}
 \end{mdframed}
 
-% TODO: Infinite programs
+\subsection{Programs That Do Not Terminate}
+\label{Step 2: Programs That Do Not Terminate}
+
+The programs that do not terminate in Step~1 (see §~\ref{Step 1: Programs That Do Not Terminate}) do not terminate in Step~2 either, because the interpreters are equivalent except for the treatment of environments, but the sources of non-termination are different. In both cases the issue is that the interpreter may create infinitely many environments, but in Step~1 the environments are nested, and in Step~2 they contain different addresses, for example:
+
+\begin{center}
+\begin{tabular}{l}
+\multicolumn{1}{c}{\mintinline{js}{(f => u => f(f)(x => x))(f => u => f(f)(x => x))(x => x)}} \\
+\multicolumn{1}{c}{or \mintinline{js}{F(F)(I)}, where \mintinline{js}{F = f => u => f(f)(I)} and \mintinline{js}{I = x => x}} \\
+\multicolumn{1}{c}{\textbf{Step~1}} \\
+$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+\multicolumn{1}{c}{$\vdots$} \\
+\multicolumn{1}{c}{\textbf{Step~2}} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{0}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{1}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{2}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{3}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\vdots$} \\
+\end{tabular}
+\end{center}
+
+We address this issue in Step~3.
 
 % TODO: \appendix
 
