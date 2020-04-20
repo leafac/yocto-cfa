@@ -3,12 +3,12 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/src/`,
+        path: `${__dirname}/src/pages/`,
       },
     },
     {
-      resolve: `gatsby-transformer-remark`,
-      plugins: [
+      resolve: `gatsby-plugin-mdx`,
+      gatsbyRemarkPlugins: [
         {
           resolve: `gatsby-remark-vscode`,
           options: {
