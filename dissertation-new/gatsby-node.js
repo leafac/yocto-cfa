@@ -29,5 +29,9 @@ ${result.data.markdownRemark.html}
 </html>
 `
   );
-  await Prince().inputs(paths.html).output(paths.pdf).execute();
+  await new Prince()
+    .option("pdf-profile", "PDF/A-1b")
+    .inputs(paths.html)
+    .output(paths.pdf)
+    .execute();
 };
