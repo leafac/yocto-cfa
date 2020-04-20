@@ -25,7 +25,6 @@ export default ({
       </Helmet>
       <header>
         <div class="title-page">
-          <p>{/* TODO */ new Date().toISOString()}</p>
           <p class="title">{title}</p>
           <p class="author">
             by
@@ -43,6 +42,7 @@ export default ({
             <br />
             {date}
           </p>
+          <p>{/* TODO */ new Date().toISOString()}</p>
         </div>
       </header>
       {children}
