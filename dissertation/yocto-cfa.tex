@@ -1337,28 +1337,28 @@ We adapt the operational semantics from §~\ref{An Operational Semantics for the
 \begin{center}
 \begin{tabular}{rcll}
 $v$ & = & $\langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle$ & Values / Closures \\
-$\rho$ & = & $[x \mapsto v, \cdots]$ & Environments \\
+$\rho$ & = & $\{x \mapsto v, \cdots\}$ & Environments \\
 \end{tabular}
 \end{center}
 
-We then define the relation $\langle e, \rho \rangle \Rightarrow v$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
+We then define the relation $\rho \vdash e \Rightarrow v$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
 
 \begin{mathpar}
 \inferrule
 { }
-{v \Rightarrow v}
+{\rho \vdash \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)} \Rightarrow \langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle}
 
 \inferrule
 {
-\langle e_f, \rho \rangle \Rightarrow \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle \\
-\langle e_a, \rho \rangle \Rightarrow v_a \\
-\langle e_b, \rho_f [x \mapsto v_a] \rangle \Rightarrow v \\
+\rho \vdash e_f \Rightarrow \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle \\
+\rho \vdash e_a \Rightarrow v_a \\
+\rho_f \cup \{x \mapsto v_a\} \vdash e_b \Rightarrow v \\
 }
-{\langle e_f\mintinline{js}{(}e_a\mintinline{js}{)}, \rho \rangle \Rightarrow v}
+{\rho \vdash e_f\mintinline{js}{(}e_a\mintinline{js}{)} \Rightarrow v}
 
 \inferrule
 { }
-{\langle x, \rho \rangle \Rightarrow \rho(x)}
+{\rho \vdash x \Rightarrow \rho(x)}
 \end{mathpar}
 \end{mdframed}
 
@@ -1693,31 +1693,31 @@ We adapt the operational semantics from §~\ref{Step 2: Operational Semantics} t
 
 \begin{center}
 \begin{tabular}{rcll}
-$\rho$ & = & $[x \mapsto a, \cdots]$ & Environments \\
-$\sigma$ & = & $[a \mapsto v, \cdots]$ & Stores \\
+$\rho$ & = & $\{x \mapsto A, \cdots\}$ & Environments \\
+$\sigma$ & = & $\{A \mapsto v, \cdots\}$ & Stores \\
 $A$ & = & $\mathbb{N}$ & Addresses \\
 \end{tabular}
 \end{center}
 
-We then define the relation $\langle e, \rho, \sigma \rangle \Rightarrow \langle v, \sigma \rangle$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
+We then define the relation $\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
 
 \begin{mathpar}
 \inferrule
 { }
-{\langle x\mintinline{js}{ => }e, \rho, \sigma \rangle \Rightarrow \langle \langle x\mintinline{js}{ => }e, \rho \rangle, \sigma \rangle}
+{\rho, \sigma \vdash \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)} \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle, \sigma \rangle}
 
 \inferrule
 {
-\langle e_f, \rho, \sigma \rangle \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle, \sigma_f \rangle \\
-\langle e_a, \rho, \sigma_f \rangle \Rightarrow \langle v_a, \sigma_a \rangle \\
+\rho, \sigma \vdash e_f \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle, \sigma_f \rangle \\
+\rho, \sigma_f \vdash e_a \Rightarrow \langle v_a, \sigma_a \rangle \\
 A = \lvert \sigma_a \rvert  \\
-\langle e_b, \rho_f [x \mapsto A], \sigma_a [A \mapsto v_a] \rangle \Rightarrow \langle v, \sigma_v \rangle \\
+\rho_f \cup \{x \mapsto A\}, \sigma_a \cup \{A \mapsto v_a\} \vdash e_b \Rightarrow \langle v, \sigma_v \rangle \\
 }
-{\langle e_f\mintinline{js}{(}e_a\mintinline{js}{)}, \rho, \sigma \rangle \Rightarrow \langle v, \sigma_v \rangle}
+{\rho, \sigma \vdash e_f\mintinline{js}{(}e_a\mintinline{js}{)} \Rightarrow \langle v, \sigma_v \rangle}
 
 \inferrule
 { }
-{\langle x, \rho, \sigma \rangle \Rightarrow \sigma(\rho(x))}
+{\rho, \sigma \vdash x \Rightarrow \sigma(\rho(x))}
 \end{mathpar}
 \end{mdframed}
 
