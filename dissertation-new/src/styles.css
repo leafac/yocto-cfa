@@ -5,7 +5,26 @@ body {
   font: 12pt/2 "PT Serif", prince-no-fallback;
 }
 
-#title {
+.title-page {
   text-align: center;
   line-height: 1;
+}
+
+.title-page .title {
+  margin-top: 1.5in;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2pt;
+}
+
+.title-page .author {
+  margin-top: 1in;
+}
+
+.title-page .statement {
+  margin-top: 1.5in;
+}
+
+.title-page .publishing-location {
+  margin-top: 0.5in;
 }
