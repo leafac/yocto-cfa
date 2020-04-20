@@ -216,7 +216,7 @@ test("§ Programs That Do Not Terminate", () => {
     evaluate("(f => (f(f))(f(f)))(f => (f(f))(f(f)))");
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
   expect(() => {
-    evaluate("(f => u => f(f)(x => x))(f => u => f(f)(x => x))(x => x)");
+    evaluate("(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)");
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });
 

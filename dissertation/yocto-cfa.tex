@@ -873,13 +873,21 @@ function stringify(value: Value): string {
 \end{minted}
 
 \begin{description}
-\item [Line 4:] Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see §~\ref{Architecture}), and it may use different parsers. We choose Babel~\cite{babel}, which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
+\item [Line 4:]
 
-\item [Line 5:] Instruct Prettier not to produce semicolons at the end of the line, for example, \mintinline{js}{x => y} instead of \mintinline{js}{x => y;}.
+Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see §~\ref{Architecture}), and it may use different parsers. We choose Babel~\cite{babel}, which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
 
-\item [Line 6:] Instruct Prettier not to wrap parameters in parentheses, for example, \mintinline{js}{x => y} instead of \mintinline{js}{(x) => y}.
+\item [Line 5:]
 
-\item [Line 8:] Remove the newline at the end of the output produced by Prettier.
+Instruct Prettier not to produce semicolons at the end of the line, for example, \mintinline{js}{x => y} instead of \mintinline{js}{x => y;}.
+
+\item [Line 6:]
+
+Instruct Prettier not to wrap parameters in parentheses, for example, \mintinline{js}{x => y} instead of \mintinline{js}{(x) => y}.
+
+\item [Line 8:]
+
+Remove the newline at the end of the output produced by Prettier.
 \end{description}
 
 \subsection{Programs That Do Not Terminate}
@@ -1061,11 +1069,17 @@ function run(expression: Expression): Value {
 \end{minted}
 
 \begin{description}
-\item [Line 3:] We define the \mintinline{ts}{step()} auxiliary function that receives an \mintinline{ts}{environment} as an extra parameter.
+\item [Line 3:]
 
-\item [Line 2:] The \mintinline{ts}{environment} starts empty.
+We define the \mintinline{ts}{step()} auxiliary function that receives an \mintinline{ts}{environment} as an extra parameter.
 
-\item [Lines 11–13:] The recursive calls to \mintinline{ts}{run()} are changed to recursive calls to \mintinline{ts}{step()} and the \mintinline{ts}{environment} is propagated.
+\item [Line 2:]
+
+The \mintinline{ts}{environment} starts empty.
+
+\item [Lines 11–13:]
+
+The recursive calls to \mintinline{ts}{run()} are changed to recursive calls to \mintinline{ts}{step()} and the \mintinline{ts}{environment} is propagated.
 \end{description}
 
 The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the \mintinline{ts}{environment} for each type of \mintinline{ts}{expression}.
@@ -1395,15 +1409,25 @@ function stringify(value: any): string {
 \end{minted}
 
 \begin{description}
-\item [Line 1:] Change the input type from \mintinline{ts}{Value} to \mintinline{ts}{any}, because this implementation of \mintinline{ts}{strinfigy()} supports any data structure, including the data structures we will define in later Steps.
+\item [Line 1:]
 
-\item [Line 2:] Call \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which traverses any data structure and converts it into a string.
+Change the input type from \mintinline{ts}{Value} to \mintinline{ts}{any}, because this implementation of \mintinline{ts}{strinfigy()} supports any data structure, including the data structures we will define in later Steps.
 
-\item [Line 4:] Provide a \mintinline{ts}{replacer} that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
+\item [Line 2:]
 
-\item [Line 5:] Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called \mintinline{ts}{type} (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of \mintinline{ts}{stringify()} (see §~\ref{Step 0: Stringifier}) to produce a string.
+Call \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which traverses any data structure and converts it into a string.
 
-\item [Line 15:] Format the output with indentation of two spaces.
+\item [Line 4:]
+
+Provide a \mintinline{ts}{replacer} that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
+
+\item [Line 5:]
+
+Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called \mintinline{ts}{type} (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of \mintinline{ts}{stringify()} (see §~\ref{Step 0: Stringifier}) to produce a string.
+
+\item [Line 15:]
+
+Format the output with indentation of two spaces.
 \end{description}
 
 This implementation of \mintinline{ts}{stringify()} supports not only closures but any data structure (because of \mintinline{ts}{JSON.stringify()}), so it will remain the same in the following Steps.
@@ -1431,17 +1455,17 @@ But this strategy is insufficient to guarantee termination, because there are pr
 
 \begin{center}
 \begin{tabular}{l}
-\multicolumn{1}{c}{\mintinline{js}{(f => u => f(f)(x => x))(f => u => f(f)(x => x))(x => x)}} \\
-\multicolumn{1}{c}{or \mintinline{js}{F(F)(I)}, where \mintinline{js}{F = f => u => f(f)(I)} and \mintinline{js}{I = x => x}} \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle$ \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+\multicolumn{1}{c}{\mintinline{js}{(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)}} \\
+\multicolumn{1}{c}{or \mintinline{js}{F(F)(y => y)}, where \mintinline{js}{F = f => c => f(f)(C)} and \mintinline{js}{C = x => c}} \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
 \multicolumn{1}{c}{$\vdots$} \\
 \end{tabular}
 \end{center}
 
-The program above is a variation on the shortest non-terminating program, \mintinline{js}{(f => f(f))(f => f(f))}, in which each \mintinline{js}{f => f(f)} receives an additional unused parameter \mintinline{js}{u}, and each \mintinline{js}{f(f)} receives an additional dummy argument \mintinline{js}{x => x}.
+The program above is a variation on the shortest non-terminating program, \mintinline{js}{(f => f(f))(f => f(f))}, in which each \mintinline{js}{f => f(f)} receives an additional parameter \mintinline{js}{c}, and each \mintinline{js}{f(f)} receives an additional argument \mintinline{js}{x => c}.
 
 The interpreter in Step~1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step~2.
 
@@ -1521,9 +1545,13 @@ function run(expression: Expression): { value: Value; store: Store } {
 \end{minted}
 
 \begin{description}
-\item [Lines 1 and 3:] The \mintinline{ts}{store} is returned because it is necessary to look up variable references in the \mintinline{ts}{value}.
+\item [Lines 1 and 3:]
 
-\item [Lines 2 and 4:] The \mintinline{ts}{store} is unique for the whole interpreter, unlike \mintinline{ts}{environment}s which are different for each closure, so we create only one store that is always available to \mintinline{ts}{step()} instead of adding it as an extra parameter.
+The \mintinline{ts}{store} is returned because it is necessary to look up variable references in the \mintinline{ts}{value}.
+
+\item [Lines 2 and 4:]
+
+The \mintinline{ts}{store} is unique for the whole interpreter, unlike \mintinline{ts}{environment}s which are different for each closure, so we create only one store that is always available to \mintinline{ts}{step()} instead of adding it as an extra parameter.
 \end{description}
 
 \subsection{Adding a Value to the Store}
@@ -1561,11 +1589,17 @@ case "CallExpression": {
 \end{minted}
 
 \begin{description}
-\item [Line 11:] Allocate an \mintinline{ts}{address}. We use the \mintinline{ts}{store.size} as the \mintinline{ts}{address} because as the \mintinline{ts}{store} grows this number changes, so it is guaranteed to be unique throughout the interpretation of a program.
+\item [Line 11:]
 
-\item [Line 15:] Extend the \mintinline{ts}{functionEnvironment} with a mapping from the \mintinline{ts}{parameter.name} to the \mintinline{ts}{address}.
+Allocate an \mintinline{ts}{address}. We use the \mintinline{ts}{store.size} as the \mintinline{ts}{address} because as the \mintinline{ts}{store} grows this number changes, so it is guaranteed to be unique throughout the interpretation of a program.
 
-\item [Line 12:] Extend the \mintinline{ts}{store} with a mapping from the \mintinline{ts}{address} to the \mintinline{ts}{argument}. This is mutating the unique \mintinline{ts}{store} that is available to the entire \mintinline{ts}{step()} function, not creating a new \mintinline{ts}{store} in the same way that extending an \mintinline{ts}{environment} creates a new \mintinline{ts}{environment} (see line~15).
+\item [Line 15:]
+
+Extend the \mintinline{ts}{functionEnvironment} with a mapping from the \mintinline{ts}{parameter.name} to the \mintinline{ts}{address}.
+
+\item [Line 12:]
+
+Extend the \mintinline{ts}{store} with a mapping from the \mintinline{ts}{address} to the \mintinline{ts}{argument}. This is mutating the unique \mintinline{ts}{store} that is available to the entire \mintinline{ts}{step()} function, not creating a new \mintinline{ts}{store} in the same way that extending an \mintinline{ts}{environment} creates a new \mintinline{ts}{environment} (see line~15).
 \end{description}
 
 \subsection{Retrieving a Value from the Store}
@@ -1594,9 +1628,13 @@ case "Identifier": {
 \end{minted}
 
 \begin{description}
-\item [Line 3:] Retrieve the \mintinline{ts}{address} from the \mintinline{ts}{environment}.
+\item [Line 3:]
 
-\item [Line 8:] Retrieve the \mintinline{ts}{value} from the \mintinline{ts}{store} at the given \mintinline{ts}{address} found in the \mintinline{ts}{environment}. The \mintinline{ts}{address} is guaranteed to be in the \mintinline{ts}{store} because we extend the \mintinline{ts}{store} and the \mintinline{ts}{environment} together (see §~\ref{Adding a Value to the Store}), so we use \mintinline{ts}{!} to indicate that \mintinline{ts}{get()} may not return \mintinline{ts}{undefined}.
+Retrieve the \mintinline{ts}{address} from the \mintinline{ts}{environment}.
+
+\item [Line 8:]
+
+Retrieve the \mintinline{ts}{value} from the \mintinline{ts}{store} at the given \mintinline{ts}{address} found in the \mintinline{ts}{environment}. The \mintinline{ts}{address} is guaranteed to be in the \mintinline{ts}{store} because we extend the \mintinline{ts}{store} and the \mintinline{ts}{environment} together (see §~\ref{Adding a Value to the Store}), so we use \mintinline{ts}{!} to indicate that \mintinline{ts}{get()} may not return \mintinline{ts}{undefined}.
 \end{description}
 
 \subsection{The Entire Runner}
@@ -1657,7 +1695,7 @@ We adapt the operational semantics from §~\ref{Step 2: Operational Semantics} t
 \begin{tabular}{rcll}
 $\rho$ & = & $[x \mapsto a, \cdots]$ & Environments \\
 $\sigma$ & = & $[a \mapsto v, \cdots]$ & Stores \\
-$a$ & = & $\mathbb{N}$ & Addresses \\
+$A$ & = & $\mathbb{N}$ & Addresses \\
 \end{tabular}
 \end{center}
 
@@ -1672,8 +1710,8 @@ We then define the relation $\langle e, \rho, \sigma \rangle \Rightarrow \langle
 {
 \langle e_f, \rho, \sigma \rangle \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle, \sigma_f \rangle \\
 \langle e_a, \rho, \sigma_f \rangle \Rightarrow \langle v_a, \sigma_a \rangle \\
-a = \lvert \sigma_a \rvert  \\
-\langle e_b, \rho_f [x \mapsto a], \sigma_a [a \mapsto v_a] \rangle \Rightarrow \langle v, \sigma_v \rangle \\
+A = \lvert \sigma_a \rvert  \\
+\langle e_b, \rho_f [x \mapsto A], \sigma_a [A \mapsto v_a] \rangle \Rightarrow \langle v, \sigma_v \rangle \\
 }
 {\langle e_f\mintinline{js}{(}e_a\mintinline{js}{)}, \rho, \sigma \rangle \Rightarrow \langle v, \sigma_v \rangle}
 
@@ -1690,20 +1728,21 @@ The programs that do not terminate in Step~1 (see §~\ref{Step 1: Programs That 
 
 \begin{center}
 \begin{tabular}{l}
-\multicolumn{1}{c}{\mintinline{js}{(f => u => f(f)(x => x))(f => u => f(f)(x => x))(x => x)}} \\
-\multicolumn{1}{c}{or \mintinline{js}{F(F)(I)}, where \mintinline{js}{F = f => u => f(f)(I)} and \mintinline{js}{I = x => x}} \\
+\multicolumn{1}{c}{\mintinline{js}{(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)}} \\
+\multicolumn{1}{c}{or \mintinline{js}{F(F)(y => y)}, where \mintinline{js}{F = f => c => f(f)(C)} and \mintinline{js}{C = x => c}} \\
 \multicolumn{1}{c}{\textbf{Step~1}} \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle$ \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [\mintinline{js}{u} \mapsto \langle \mintinline{js}{I}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
 \multicolumn{1}{c}{$\vdots$} \\
 \multicolumn{1}{c}{\textbf{Step~2}} \\
-\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{0}, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{1}, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{2}, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(I)}, [\mintinline{js}{u} \mapsto \mintinline{js}{3}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{0}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{1}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{2}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{3}, \cdots] \rangle$} \\
 \multicolumn{1}{c}{$\vdots$} \\
+\multicolumn{1}{c}{$[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \mintinline{js}{1} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \mintinline{c}{0}, \cdots] \rangle, \mintinline{js}{2} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \mintinline{c}{1}, \cdots] \rangle, \cdots]$}
 \end{tabular}
 \end{center}
 
