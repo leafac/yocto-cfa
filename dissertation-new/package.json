@@ -13,6 +13,8 @@
     "prettier": "^2.0.4",
     "prince": "^1.8.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "typeface-pt-mono": "0.0.72",
+    "typeface-pt-serif": "0.0.72"
   }
 }
