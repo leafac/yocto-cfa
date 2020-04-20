@@ -1,7 +1,7 @@
 import React from "react";
 import { Helmet } from "react-helmet";
-// import "typeface-pt-serif";
-// import "typeface-pt-mono";
+import "typeface-pt-serif";
+import "typeface-pt-mono";
 import "./layout.css";
 
 export default ({
