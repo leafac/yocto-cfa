@@ -6,10 +6,23 @@ exports.createPages = async ({ graphql }) => {
     html: "public/yocto-cfa.html",
     pdf: "yocto-cfa.pdf",
   };
-  const result = await graphql(`
+  const {
+    data: {
+      markdownRemark: {
+        html,
+        frontmatter: { title, ...meta },
+      },
+    },
+  } = await graphql(`
     {
       markdownRemark {
         html
+        frontmatter {
+          title
+          author
+          subject
+          keywords
+        }
       }
     }
   `);
@@ -21,10 +34,13 @@ exports.createPages = async ({ graphql }) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../src/styles.css">
-  <title>TODO</title>
+  <title>${title}</title>
+  ${Object.entries(meta)
+    .map(([name, content]) => `<meta name="${name}" content="${content}">`)
+    .join("\n")}
 </head>
 <body>
-${result.data.markdownRemark.html}
+${html}
 </body>
 </html>
 `
