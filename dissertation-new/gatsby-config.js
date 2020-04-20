@@ -8,14 +8,16 @@ module.exports = {
     },
     {
       resolve: `gatsby-plugin-mdx`,
-      gatsbyRemarkPlugins: [
-        {
-          resolve: `gatsby-remark-vscode`,
-          options: {
-            theme: "Light+ (default light)",
+      options: {
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-vscode`,
+            options: {
+              theme: `Light+ (default light)`,
+            },
           },
-        },
-      ],
+        ],
+      },
     },
   ],
 };
