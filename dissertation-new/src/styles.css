@@ -1,3 +1,6 @@
+@import "../node_modules/typeface-pt-serif/index.css";
+@import "../node_modules/typeface-pt-mono/index.css";
+
 body {
   font: 12pt/2 "PT Serif", prince-no-fallback;
 }

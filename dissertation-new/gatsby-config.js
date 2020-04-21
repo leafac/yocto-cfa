@@ -3,16 +3,13 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/src/pages/`,
+        path: `${__dirname}/src/`,
       },
     },
     {
-      resolve: `gatsby-plugin-mdx`,
+      resolve: `gatsby-transformer-remark`,
       options: {
-        defaultLayouts: {
-          default: require.resolve("./src/components/layout.js"),
-        },
-        gatsbyRemarkPlugins: [
+        plugins: [
           {
             resolve: `gatsby-remark-vscode`,
             options: {
@@ -22,6 +19,5 @@ module.exports = {
         ],
       },
     },
-    `gatsby-plugin-react-helmet`,
   ],
 };

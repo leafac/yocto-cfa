@@ -1,15 +1,30 @@
-const Prince = require("prince");
+const fs = require("fs");
+const child_process = require("child_process");
 
-exports.onPostBuild = async () => {
-  const { stdout, stderr } = await new Prince()
-    .option("pdf-profile", "PDF/A-1b")
-    .option("fileroot", `${__dirname}/public`)
-    .inputs("public/index.html")
-    .output("yocto-cfa.pdf")
-    .execute()
-    .catch(({ error }) => {
-      throw new Error(error);
-    });
-  console.log(stdout.toString());
-  console.error(stderr.toString());
+exports.createPages = async ({ graphql }) => {
+  const {
+    data: {
+      markdownRemark: { html },
+    },
+  } = await graphql(`
+    {
+      markdownRemark {
+        html
+      }
+    }
+  `);
+  fs.writeFileSync(
+    "public/yocto-cfa.html",
+    `<!DOCTYPE html><html lang="en">${html}</html>`
+  );
+  child_process.execFileSync(
+    `node_modules/prince/prince/lib/prince/bin/prince`,
+    [
+      "--pdf-profile=PDF/A-1b",
+      "--baseurl=src/",
+      "public/yocto-cfa.html",
+      "--output=yocto-cfa.pdf",
+    ],
+    { stdio: "inherit" }
+  );
 };
