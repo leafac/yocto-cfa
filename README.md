@@ -6,16 +6,6 @@
 <a href="https://github.com/leafac/yocto-cfa/actions"><img alt="Continuous Integration" src="https://github.com/leafac/yocto-cfa/workflows/.github/workflows/main.yml/badge.svg" /></a>
 </p>
 
-# Code
-
-## Run Tests
-
-Install [Node.js](https://nodejs.org/) and run:
-
-```console
-$ (cd code && npm install-test)
-```
-
 # Dissertation
 
 ## Build
@@ -37,3 +27,13 @@ $ (cd dissertation && pdfcrop images.pdf images.pdf)
 ```
 
 Then build the dissertation again (see [§ Build](#build)).
+
+# Code
+
+## Run Tests
+
+Install [Node.js](https://nodejs.org/) and run:
+
+```console
+$ (cd code && npm install-test)
+```
