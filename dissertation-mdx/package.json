@@ -1,8 +1,8 @@
 {
   "scripts": {
     "start": "gatsby develop",
-    "build": "gatsby build",
-    "clean": "gatsby clean",
+    "build": "gatsby build && node_modules/prince/prince/lib/prince/bin/prince --pdf-profile PDF/A-1b --fileroot public --no-artificial-fonts --fail-dropped-content --fail-missing-resources --fail-missing-glyphs public/index.html --output yocto-cfa.pdf",
+    "clean": "gatsby clean && rm yocto-cfa.pdf",
     "test": "prettier --check src"
   },
   "dependencies": {
