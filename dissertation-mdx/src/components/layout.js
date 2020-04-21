@@ -12,7 +12,8 @@ export default ({
 }) => (
   <>
     <Helmet>
-      <title lang="en">{title}</title>
+      <html lang="en" />
+      <title>{title}</title>
       {Object.entries({ author, subject, keywords }).map(([name, content]) => (
         <meta key={name} name={name} content={content} />
       ))}

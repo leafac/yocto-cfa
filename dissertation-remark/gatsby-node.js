@@ -15,7 +15,7 @@ exports.createPages = async ({ graphql }) => {
   `);
   fs.writeFileSync(
     "public/yocto-cfa.html",
-    `<!DOCTYPE html><html lang="en">${html}</html>`
+    html
   );
   child_process.execFileSync(
     `node_modules/prince/prince/lib/prince/bin/prince`,

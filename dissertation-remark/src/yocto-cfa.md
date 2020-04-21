@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <title>Yocto-CFA</title>
 <meta name="author" content="Leandro Facchinetti">
@@ -20,3 +22,4 @@
 
 <footer></footer>
 </body>
+</html>
