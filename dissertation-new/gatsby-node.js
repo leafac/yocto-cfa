@@ -24,7 +24,6 @@ exports.createPages = async ({ graphql }) => {
       "--baseurl=src/",
       "public/yocto-cfa.html",
       "--output=yocto-cfa.pdf",
-    ],
-    { stdio: "inherit" }
+    ]
   );
 };
