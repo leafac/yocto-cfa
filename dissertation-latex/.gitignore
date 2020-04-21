@@ -1,0 +1,14 @@
+node_modules
+_minted-*
+*.xmpi
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex(busy)
+*.synctex.gz
+*.toc
+*.pyg

@@ -6,7 +6,7 @@
     {
       "type": "npm",
       "script": "start",
-      "path": "dissertation-new/",
+      "path": "dissertation/",
       "group": {
         "kind": "build",
         "isDefault": true
