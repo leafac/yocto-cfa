@@ -1,8 +1,8 @@
 {
   "scripts": {
     "start": "nodemon --watch src --ext '*' --exec 'npm run build && open yocto-cfa.pdf'",
-    "develop": "open http://localhost:8080/yocto-cfa && gatsby develop",
-    "build": "gatsby build && node_modules/prince/prince/lib/prince/bin/prince --fileroot public --pdf-profile PDF/A-1b --no-artificial-fonts --fail-dropped-content --fail-missing-resources --fail-missing-glyphs public/yocto-cfa.html --output yocto-cfa.pdf",
+    "develop": "gatsby develop",
+    "build": "gatsby build && node_modules/prince/prince/lib/prince/bin/prince --fileroot public --pdf-profile PDF/A-1b --no-artificial-fonts --fail-dropped-content --fail-missing-resources --fail-missing-glyphs public/index.html --output yocto-cfa.pdf",
     "clean": "gatsby clean && rm yocto-cfa.pdf",
     "test": "npm run build && prettier src"
   },
@@ -11,6 +11,7 @@
     "@mdx-js/react": "^1.5.8",
     "gatsby": "^2.20.28",
     "gatsby-plugin-mdx": "^1.1.9",
+    "gatsby-plugin-page-creator": "^2.2.3",
     "gatsby-plugin-react-helmet": "^3.2.4",
     "gatsby-remark-vscode": "^2.0.3",
     "gatsby-source-filesystem": "^2.2.4",
