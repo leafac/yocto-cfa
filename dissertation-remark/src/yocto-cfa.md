@@ -7,7 +7,6 @@
 <meta name="keywords" content="TODO, TODO, ...">
 <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 <header>
 <div class="title-page">
@@ -17,9 +16,9 @@
 <p class="publishing-location">Baltimore, Maryland<br>August 2020</p>
 </div>
 </header>
-
-<main></main>
-
-<footer></footer>
+<main>
+</main>
+<footer>
+</footer>
 </body>
 </html>
