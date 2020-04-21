@@ -17,7 +17,6 @@ export default ({
       {Object.entries({ author, subject, keywords }).map(([name, content]) => (
         <meta key={name} name={name} content={content} />
       ))}
-      <meta name="date" content={new Date().toISOString().split("T")[0]} />
     </Helmet>
     {children}
   </>
