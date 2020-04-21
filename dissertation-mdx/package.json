@@ -12,6 +12,7 @@
     "gatsby-plugin-mdx": "^1.1.9",
     "gatsby-plugin-react-helmet": "^3.2.4",
     "gatsby-remark-vscode": "^2.0.3",
+    "gatsby-source-filesystem": "^2.2.4",
     "prettier": "^2.0.4",
     "prince": "^1.8.0",
     "react": "^16.13.1",
