@@ -14,6 +14,7 @@ module.exports = {
             resolve: `gatsby-remark-vscode`,
             options: {
               theme: `Light+ (default light)`,
+              injectStyles: false,
             },
           },
         ],
