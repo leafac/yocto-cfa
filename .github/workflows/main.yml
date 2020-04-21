@@ -8,11 +8,8 @@ jobs:
         with:
           node-version: '13.x'
       - run: |
-          echo 'deb http://azure.archive.ubuntu.com/ubuntu/ eoan main restricted universe multiverse' | sudo tee -a /etc/apt/sources.list
-          sudo apt update
-          sudo apt install --yes texlive-full
           npm ci
-          latexmk
+          npm run build
         working-directory: dissertation
       - uses: actions/upload-artifact@v1
         with:
