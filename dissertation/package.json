@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "nodemon --watch src --ext '*' --exec 'npm run build && open yocto-cfa.pdf'",
+    "start": "nodemon --watch src --ext '*' --exec 'npm run build'",
     "develop": "gatsby develop",
     "build": "gatsby build && node_modules/prince/prince/lib/prince/bin/prince --fileroot public --pdf-profile PDF/A-1b --no-artificial-fonts --fail-dropped-content --fail-missing-resources --fail-missing-glyphs public/index.html --output yocto-cfa.pdf",
     "clean": "gatsby clean && rm yocto-cfa.pdf",
