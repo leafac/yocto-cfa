@@ -21,7 +21,25 @@ module.exports = {
             },
           },
         ],
-        remarkPlugins: [require("remark-math")],
+        remarkPlugins: [
+          require("remark-slug"),
+          () => (tree) => {
+            const toc = require("mdast-util-toc");
+            const visit = require("unist-util-visit");
+            const tableOfContents = toc(tree, { tight: true }).map;
+            if (tableOfContents === null) return;
+            visit(
+              tree,
+              (node) =>
+                node.type === "heading" &&
+                node.children[0].value === "Table of Contents",
+              (node, index, parent) => {
+                parent.children.splice(index + 1, 0, tableOfContents);
+              }
+            );
+          },
+          require("remark-math"),
+        ],
         rehypePlugins: [require("rehype-katex")],
       },
     },

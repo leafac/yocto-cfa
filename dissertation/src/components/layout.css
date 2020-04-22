@@ -36,12 +36,8 @@ body {
   font: 12pt/2 "PT Serif", prince-no-fallback;
 }
 
-p ~ p {
-  margin-bottom: 0;
-}
-
 p + p {
-  margin-top: 0;
+  margin-top: -1.12em;
   text-indent: 2em;
 }
 
@@ -50,7 +46,7 @@ h1 {
 }
 
 .title-page {
-  line-height: 1;
+  line-height: 1.2;
   text-align: center;
 }
 

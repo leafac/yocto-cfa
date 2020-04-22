@@ -15,6 +15,7 @@
     "gatsby-remark-vscode": "^2.0.3",
     "gatsby-source-filesystem": "^2.2.4",
     "katex": "^0.11.1",
+    "mdast-util-toc": "^5.0.3",
     "nodemon": "^2.0.3",
     "prettier": "^2.0.5",
     "prince": "^1.8.0",
@@ -23,7 +24,9 @@
     "react-helmet": "^6.0.0",
     "rehype-katex": "^3.0.0",
     "remark-math": "^2.0.1",
+    "remark-slug": "^6.0.0",
     "typeface-pt-mono": "0.0.72",
-    "typeface-pt-serif": "0.0.72"
+    "typeface-pt-serif": "0.0.72",
+    "unist-util-visit": "^2.0.2"
   }
 }
