@@ -4,7 +4,7 @@
     "develop": "gatsby develop",
     "build": "gatsby build && node_modules/prince/prince/lib/prince/bin/prince --fileroot public --pdf-profile PDF/A-1b --no-artificial-fonts --fail-dropped-content --fail-missing-resources --fail-missing-glyphs public/index.html --output yocto-cfa.pdf",
     "clean": "gatsby clean && rm yocto-cfa.pdf",
-    "test": "npm run build && prettier src"
+    "test": "npm run build && prettier --check src"
   },
   "dependencies": {
     "@mdx-js/mdx": "^1.5.8",
