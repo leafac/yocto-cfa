@@ -3,20 +3,14 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/src`,
-      },
-    },
-    {
-      resolve: "gatsby-plugin-page-creator",
-      options: {
-        path: `${__dirname}/src`,
+        path: `${__dirname}/src/pages`,
       },
     },
     {
       resolve: `gatsby-plugin-mdx`,
       options: {
         defaultLayouts: {
-          default: require.resolve("./src/layout.js"),
+          default: require.resolve("./src/components/layout.js"),
           gatsbyRemarkPlugins: [
             {
               resolve: `gatsby-remark-vscode`,
