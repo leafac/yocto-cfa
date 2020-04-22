@@ -28,6 +28,9 @@ module.exports = {
             const visit = require("unist-util-visit");
             const tableOfContents = toc(tree, { tight: true }).map;
             if (tableOfContents === null) return;
+            tableOfContents.data = {
+              hProperties: { className: "table-of-contents" },
+            };
             visit(
               tree,
               (node) =>

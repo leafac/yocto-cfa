@@ -36,6 +36,11 @@ body {
   font: 12pt/2 "PT Serif", prince-no-fallback;
 }
 
+a {
+  text-decoration: none;
+  color: black;
+}
+
 p + p {
   margin-top: -1.12em;
   text-indent: 2em;
@@ -76,4 +81,12 @@ ul {
 
 .title-page .publishing-location {
   margin-top: 0.5in;
+}
+
+.table-of-contents, .table-of-contents ul {
+  list-style-type: none;
+}
+
+.table-of-contents {
+  padding: 0;
 }
