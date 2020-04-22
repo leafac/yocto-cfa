@@ -1,3 +1,54 @@
+@page {
+  size: US-Letter;
+  margin: 1in 1in 1in 1.5in;
+}
+
 body {
   font: 12pt/2 "PT Serif", prince-no-fallback;
+}
+
+p ~ p {
+  margin-bottom: 0;
+}
+
+p + p {
+  margin-top: 0;
+  text-indent: 2em;
+}
+
+h1 {
+  break-before: page;
+}
+
+ul {
+  margin-left: 0;
+}
+
+.title-page {
+  line-height: 1;
+  text-align: center;
+}
+
+.title-page p {
+  margin: 0;
+  text-indent: 0;
+}
+
+.title-page .title {
+  margin-top: 1.5in;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2pt;
+}
+
+.title-page .author {
+  margin-top: 1in;
+}
+
+.title-page .statement {
+  margin-top: 1.5in;
+}
+
+.title-page .publishing-location {
+  margin-top: 0.5in;
 }

@@ -7,4 +7,24 @@ language: en
 # date: TODO August 2020
 ---
 
-# Hello World
+<header>
+<div class="title-page">
+<p class="title">{props.pageContext.frontmatter.title}</p>
+<p class="author">by<br />{props.pageContext.frontmatter.author}</p>
+<p class="statement">A dissertation submitted to Johns Hopkins University in conformity with the requirements for the degree of Doctor of Philosophy</p>
+<p class="publishing-location">Baltimore, Maryland<br />{props.pageContext.frontmatter.date ?? new Date().toISOString()}</p>
+</div>
+
+<!-- TODO:
+# Abstract
+
+<p>{props.pageContext.frontmatter.subject}</p>
+
+- **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
+- **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green. -->
+
+</header>
+
+<main></main>
+
+<footer></footer>
