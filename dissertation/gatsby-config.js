@@ -11,18 +11,18 @@ module.exports = {
       options: {
         defaultLayouts: {
           default: require.resolve("./src/components/layout.js"),
-          gatsbyRemarkPlugins: [
-            {
-              resolve: `gatsby-remark-vscode`,
-              options: {
-                theme: "Light+ (default light)",
-                injectStyles: false,
-              },
-            },
-          ],
-          remarkPlugins: [require("remark-math")],
-          rehypePlugins: [require("rehype-katex")],
         },
+        gatsbyRemarkPlugins: [
+          {
+            resolve: `gatsby-remark-vscode`,
+            options: {
+              theme: "Light+ (default light)",
+              injectStyles: false,
+            },
+          },
+        ],
+        remarkPlugins: [require("remark-math")],
+        rehypePlugins: [require("rehype-katex")],
       },
     },
     `gatsby-plugin-react-helmet`,
