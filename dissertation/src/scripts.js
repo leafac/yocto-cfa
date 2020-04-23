@@ -67,3 +67,8 @@ document
       )
       .join("")
   );
+
+// Remove draft
+
+if (document.body.dataset.draft !== "true")
+  for (const element of document.querySelectorAll(".draft")) element.remove();
