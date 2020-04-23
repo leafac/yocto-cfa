@@ -63,6 +63,15 @@
 
 ### Subsection 2.2.2
 
+```js
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+```
+
 </main>
 
 <footer>
