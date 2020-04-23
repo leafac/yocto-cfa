@@ -3,16 +3,26 @@ module.exports = {
     {
       resolve: `gatsby-source-filesystem`,
       options: {
-        path: `${__dirname}/src/pages`,
+        path: `${__dirname}/src`,
       },
     },
     {
-      resolve: `gatsby-plugin-mdx`,
+      resolve: `gatsby-transformer-remark`,
       options: {
-        defaultLayouts: {
-          default: require.resolve("./src/components/layout.js"),
-        },
-        gatsbyRemarkPlugins: [
+        plugins: [
+          {
+            resolve: `gatsby-remark-autolink-headers`,
+            options: {
+              icon: false,
+            },
+          },
+          {
+            resolve: `gatsby-remark-table-of-contents`,
+            options: {
+              exclude: "Table of Contents",
+              fromHeading: 1,
+            },
+          },
           {
             resolve: `gatsby-remark-vscode`,
             options: {
@@ -20,32 +30,9 @@ module.exports = {
               injectStyles: false,
             },
           },
+          `gatsby-remark-katex`,
         ],
-        remarkPlugins: [
-          require("remark-slug"),
-          () => (tree) => {
-            const toc = require("mdast-util-toc");
-            const visit = require("unist-util-visit");
-            const tableOfContents = toc(tree, { tight: true }).map;
-            if (tableOfContents === null) return;
-            tableOfContents.data = {
-              hProperties: { className: "table-of-contents" },
-            };
-            visit(
-              tree,
-              (node) =>
-                node.type === "heading" &&
-                node.children[0].value === "Table of Contents",
-              (node, index, parent) => {
-                parent.children.splice(index + 1, 0, tableOfContents);
-              }
-            );
-          },
-          require("remark-math"),
-        ],
-        rehypePlugins: [require("rehype-katex")],
       },
     },
-    `gatsby-plugin-react-helmet`,
   ],
 };

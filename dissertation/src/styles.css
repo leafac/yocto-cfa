@@ -1,3 +1,7 @@
+@import "../node_modules/typeface-pt-serif/index.css";
+@import "../node_modules/typeface-pt-mono/index.css";
+@import "../node_modules/katex/dist/katex.css";
+
 @page {
   size: US-Letter;
   margin: 1in 1in 1in 1.5in;
@@ -83,7 +87,8 @@ ul {
   margin-top: 0.5in;
 }
 
-.table-of-contents, .table-of-contents ul {
+.table-of-contents,
+.table-of-contents ul {
   list-style-type: none;
 }
 
