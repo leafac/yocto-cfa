@@ -75,6 +75,12 @@ h3 {
   margin-right: 0.5em;
 }
 
+.draft {
+  font-size: 10pt;
+  color: #bbb;
+  /* TODO: display: none; */
+}
+
 pre {
   font-size: 10pt;
   line-height: 1.2;
@@ -122,20 +128,15 @@ ul {
   margin-top: 0.5in;
 }
 
-.toc ul {
+.table-of-contents {
   list-style-type: none;
-  margin-left: 2em;
-}
-
-.toc > ul,
-.toc p {
   margin: 0;
 }
 
-.toc a[data-section="header"]::after {
-  content: leader(".  ") target-counter(attr(href), page, lower-roman);
+.table-of-contents a::after {
+  content: leader(".  ") target-counter(attr(href), page);
 }
 
-.toc a::after {
-  content: leader(".  ") target-counter(attr(href), page);
+.table-of-contents a[data-section="header"]::after {
+  content: leader(".  ") target-counter(attr(href), page, lower-roman);
 }
