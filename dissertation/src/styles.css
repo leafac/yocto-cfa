@@ -87,11 +87,16 @@ ul {
   margin-top: 0.5in;
 }
 
-.table-of-contents,
-.table-of-contents ul {
+.toc ul {
   list-style-type: none;
+  margin-left: 2em;
 }
 
-.table-of-contents {
-  padding: 0;
+.toc > ul,
+.toc p {
+  margin: 0;
+}
+
+.toc a:after {
+  content: leader(".  ") target-counter(attr(href), page);
 }
