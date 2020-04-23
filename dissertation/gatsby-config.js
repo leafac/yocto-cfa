@@ -19,14 +19,14 @@ module.exports = {
           {
             resolve: `gatsby-remark-table-of-contents`,
             options: {
-              exclude: "Table of Contents",
+              exclude: `Table of Contents`,
               fromHeading: 1,
             },
           },
           {
             resolve: `gatsby-remark-vscode`,
             options: {
-              theme: "Light+ (default light)",
+              theme: `Light+ (default light)`,
               injectStyles: false,
             },
           },
