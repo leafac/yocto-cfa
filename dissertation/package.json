@@ -2,7 +2,7 @@
   "scripts": {
     "start": "gatsby develop",
     "build": "gatsby build",
-    "clean": "gatsby clean && rm yocto-cfa.pdf",
+    "clean": "gatsby clean && rm -f yocto-cfa.pdf",
     "test": "npm run build && prettier --check src"
   },
   "dependencies": {
