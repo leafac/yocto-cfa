@@ -40,6 +40,13 @@ exports.createPages = async ({ graphql }) => {
       );
     element.removeAttribute("id");
   }
+  for (const element of document.querySelectorAll(".toc a"))
+    element.dataset.section = ["header", "main", "footer"].find(
+      (section) =>
+        document
+          .querySelector(element.getAttribute("href"))
+          .closest(section) !== null
+    );
   fs.writeFileSync(
     "public/yocto-cfa.html",
     prettier.format(dom.serialize(), { parser: "html" })

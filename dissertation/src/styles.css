@@ -101,6 +101,10 @@ ul {
   margin: 0;
 }
 
+.toc a[data-section="header"]::after {
+  content: leader(".  ") target-counter(attr(href), page, lower-roman);
+}
+
 .toc a::after {
   content: leader(".  ") target-counter(attr(href), page);
 }
