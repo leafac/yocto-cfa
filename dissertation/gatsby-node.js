@@ -75,6 +75,8 @@ exports.createPages = async ({ graphql }) => {
         )
         .join("")
     );
+  for (const element of document.querySelectorAll(`pre[data-language="css"]`))
+    element.outerHTML = `<style>${element.textContent}</style>`;
   fs.writeFileSync(
     "public/yocto-cfa.html",
     prettier.format(dom.serialize(), { parser: "html" })
