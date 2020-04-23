@@ -54,38 +54,12 @@ h1 {
   break-before: page;
 }
 
+.heading-counter {
+  margin-right: 1em;
+}
+
 ul {
   list-style-type: disc;
-}
-
-main {
-  counter-reset: h1;
-}
-
-main h1 {
-  counter-increment: h1;
-  counter-reset: h2;
-}
-
-main h2 {
-  counter-increment: h2;
-  counter-reset: h3;
-}
-
-main h3 {
-  counter-increment: h3;
-}
-
-main h1::before {
-  content: counter(h1) "    ";
-}
-
-main h2::before {
-  content: counter(h1) "." counter(h2) "    ";
-}
-
-main h3::before {
-  content: counter(h1) "." counter(h2) "." counter(h3) "    ";
 }
 
 .title-page {
@@ -125,11 +99,6 @@ main h3::before {
 .toc > ul,
 .toc p {
   margin: 0;
-}
-
-.toc a::before {
-  content: target-counter(attr(href), h1) "." target-counter(attr(href), h2) "."
-    target-counter(attr(href), h3) "    ";
 }
 
 .toc a::after {

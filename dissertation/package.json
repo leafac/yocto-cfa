@@ -13,6 +13,7 @@
     "gatsby-remark-vscode": "^2.0.3",
     "gatsby-source-filesystem": "^2.2.4",
     "gatsby-transformer-remark": "^2.7.4",
+    "jsdom": "^16.2.2",
     "katex": "^0.11.1",
     "prettier": "^2.0.5",
     "prince": "^1.8.0",
