@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yocto-CFA</title>
 <meta name="author" content="Leandro Facchinetti">
 <meta name="subject" content="TODO">
 <meta name="keywords" content="TODO, TODO, ...">
-<title>Yocto-CFA</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -85,7 +83,6 @@ const config = {
 # Biographical Statement
 
 </footer>
-
 <script src="scripts.js"></script>
 </body>
 </html>

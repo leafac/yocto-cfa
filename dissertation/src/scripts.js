@@ -1,9 +1,16 @@
+const GithubSlugger = require("github-slugger");
+
+// Add timestamp in title page
+
 document
   .querySelector(".title-page")
   .insertAdjacentHTML(
     "beforeend",
     `<p class="draft">${new Date().toISOString()}</p>`
   );
+
+// Slugify headings & collect table of contents + references
+
 const tableOfContents = [];
 const references = {};
 const referencesCounter = [];
@@ -34,6 +41,9 @@ for (const element of document.querySelectorAll("h1, h2, h3, h4, h5, h6")) {
     innerHTML: element.innerHTML,
   });
 }
+
+// Resolve references
+
 for (const element of document.querySelectorAll(`a[href^="#"]`)) {
   const href = element.getAttribute("href");
   let reference = references[href.slice(1)];
@@ -43,6 +53,9 @@ for (const element of document.querySelectorAll(`a[href^="#"]`)) {
   }
   element.innerHTML = `§ ${reference}`;
 }
+
+// Add table of contents
+
 document
   .querySelector(".table-of-contents")
   .insertAdjacentHTML(

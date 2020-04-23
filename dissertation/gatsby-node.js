@@ -2,7 +2,6 @@ const fs = require("fs");
 const child_process = require("child_process");
 const { JSDOM } = require("jsdom");
 const prettier = require("prettier");
-const GithubSlugger = require("github-slugger");
 
 exports.createPages = async ({ graphql }) => {
   const {
