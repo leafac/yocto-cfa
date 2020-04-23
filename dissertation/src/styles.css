@@ -1,0 +1,142 @@
+@import "../node_modules/typeface-pt-serif/index.css";
+@import "../node_modules/typeface-pt-mono/index.css";
+@import "../node_modules/katex/dist/katex.css";
+
+@page {
+  size: US-Letter;
+  margin: 1in 1in 1in 1.5in;
+  font: 10pt/1 "PT Serif", prince-no-fallback;
+  @bottom {
+    content: counter(page);
+  }
+}
+
+header,
+main {
+  counter-reset: page 1;
+}
+
+header {
+  page: header;
+}
+
+@page header {
+  @bottom {
+    content: counter(page, lower-roman);
+  }
+}
+
+.title-page {
+  page: title-page;
+}
+
+@page title-page {
+  @bottom {
+    content: normal;
+  }
+}
+
+body {
+  font: 12pt/2 "PT Serif", prince-no-fallback;
+  text-align: justify;
+  hyphens: auto;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+code {
+  font-family: "PT Mono", prince-no-fallback;
+}
+
+p + p {
+  margin-top: -1.12em;
+  text-indent: 2em;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.3;
+}
+
+h1 {
+  break-before: page;
+}
+
+h2,
+h3 {
+  margin-top: 2em;
+}
+
+.heading-counter {
+  margin-right: 0.5em;
+}
+
+.draft {
+  font-size: 10pt;
+  color: #bbb;
+  /* TODO: display: none; */
+}
+
+pre {
+  font-size: 10pt;
+  line-height: 1.2;
+  white-space: pre-wrap;
+}
+
+.grvsc-line {
+  display: block;
+}
+
+.grvsc-line-highlighted {
+  background-color: #e0ffff;
+}
+
+ul {
+  list-style-type: disc;
+}
+
+.title-page {
+  line-height: 1.2;
+  text-align: center;
+}
+
+.title-page p {
+  margin: 0;
+  text-indent: 0;
+}
+
+.title-page .title {
+  margin-top: 1.5in;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2pt;
+}
+
+.title-page .author {
+  margin-top: 1in;
+}
+
+.title-page .statement {
+  margin-top: 1.5in;
+}
+
+.title-page .publishing-location {
+  margin-top: 0.5in;
+}
+
+.table-of-contents {
+  list-style-type: none;
+  margin: 0;
+}
+
+.table-of-contents a::after {
+  content: leader(".  ") target-counter(attr(href), page);
+}
+
+.table-of-contents a[data-section="header"]::after {
+  content: leader(".  ") target-counter(attr(href), page, lower-roman);
+}
