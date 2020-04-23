@@ -17,7 +17,12 @@ module.exports = {
               injectStyles: false,
             },
           },
-          `gatsby-remark-katex`,
+          {
+            resolve: `gatsby-remark-katex`,
+            options: {
+              output: "mathml",
+            },
+          },
         ],
       },
     },
