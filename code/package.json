@@ -3,17 +3,14 @@
     "test": "tsc && jest && prettier --check src"
   },
   "dependencies": {
-    "collections-deep-equal": "^1.1.0",
-    "escodegen": "^1.13.0",
-    "esprima": "^4.0.1",
-    "prettier": "^2.0.2"
+    "@babel/generator": "^7.9.5",
+    "@babel/parser": "^7.9.4",
+    "collections-deep-equal": "^1.1.0"
   },
   "devDependencies": {
-    "@types/escodegen": "0.0.6",
-    "@types/esprima": "^4.0.2",
     "@types/jest": "^24.9.0",
-    "@types/prettier": "^1.19.0",
     "jest": "^24.9.0",
+    "prettier": "^2.0.5",
     "typescript": "^3.8.2"
   },
   "jest": {
