@@ -28,6 +28,13 @@ draft: true # TODO
 <div style={{ marginTop: "1.5in" }}>A dissertation submitted to Johns Hopkins University<br />in conformity with the requirements for the degree of Doctor of Philosophy</div>
 <div style={{ marginTop: "0.5in" }}>Baltimore, Maryland<br />{props.pageContext.frontmatter.date}</div>
 <div style={{ marginTop: "0.5in" }} className="draft">{new Date().toISOString()}</div>
+<style>{`
+@page title-page {
+  @bottom {
+    content: normal;
+  }
+}
+`}</style>
 </div>
 
 # Abstract
@@ -37,9 +44,29 @@ draft: true # TODO
 - **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
 - **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
 
+<style>{`
+header {
+  page: header;
+}
+
+@page header {
+  @bottom {
+    content: counter(page, lower-roman);
+  }
+}
+`}</style>
+
 </header>
 
-<main></main>
+<main>
+
+<style>{`
+main {
+  counter-reset: page 1;
+}
+`}</style>
+
+</main>
 
 <footer></footer>
 
@@ -71,27 +98,6 @@ export default class extends React.Component {
   font: 10pt/1 "PT Serif", prince-no-fallback;
   @bottom {
     content: counter(page);
-  }
-}
-
-header,
-main {
-  counter-reset: page 1;
-}
-
-header {
-  page: header;
-}
-
-@page header {
-  @bottom {
-    content: counter(page, lower-roman);
-  }
-}
-
-@page title-page {
-  @bottom {
-    content: normal;
   }
 }
 
