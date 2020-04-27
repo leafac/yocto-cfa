@@ -1,14 +1,5 @@
 const GithubSlugger = require("github-slugger");
 
-// Add timestamp in title page
-
-document
-  .querySelector(".title-page")
-  .insertAdjacentHTML(
-    "beforeend",
-    `<p class="draft">${new Date().toISOString()}</p>`
-  );
-
 // Slugify headings
 
 const slugger = new GithubSlugger();

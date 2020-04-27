@@ -1,23 +1,8 @@
 <header>
-<div class="title-page">
-<p class="title">Yocto-CFA</p>
-<p class="author">by<br>Leandro Facchinetti</p>
-<p class="statement">A dissertation submitted to Johns Hopkins University<br>in conformity with the requirements for the degree of Doctor of Philosophy</p>
-<p class="publishing-location">Baltimore, Maryland<br>August 2020</p>
-</div>
-
-<!--
-# Abstract
-
-<p>TODO</p>
-
-- **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
-- **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
--->
 
 # Table of Contents
 
-<ul class="table-of-contents"></ul>
+<ul className="table-of-contents"></ul>
 
 </header>
 

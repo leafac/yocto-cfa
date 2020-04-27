@@ -2,12 +2,10 @@
 title: Yocto-CFA
 author: Leandro Facchinetti
 subject: TODO
-keywords: TODO, TODO, ...
+keywords: todo, todo, ...
 date: August 2020
 draft: true # TODO
 ---
-
-import { Helmet } from "react-helmet";
 
 <Helmet
   title={props.pageContext.frontmatter.title}
@@ -19,6 +17,62 @@ import { Helmet } from "react-helmet";
   ]}
   htmlAttributes={{ lang: "en" }}
 />
+
+<header>
+  <div className="title-page">
+    <p className="title">{props.pageContext.frontmatter.title}</p>
+    <p className="author">
+      by
+      <br />
+      {props.pageContext.frontmatter.author}
+    </p>
+    <p className="statement">
+      A dissertation submitted to Johns Hopkins University
+      <br />
+      in conformity with the requirements for the degree of Doctor of Philosophy
+    </p>
+    <p className="publishing-location">
+      Baltimore, Maryland
+      <br />
+      {props.pageContext.frontmatter.date}
+      <Draft><br />{new Date().toISOString()}</Draft>
+    </p>
+  </div>
+
+# Abstract
+
+<p>{props.pageContext.frontmatter.subject}</p>
+
+- **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
+- **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
+
+</header>
+
+<main></main>
+
+<footer></footer>
+
+import { Helmet } from "react-helmet";
+import { MDXProvider } from "@mdx-js/react";
+
+export default class extends React.Component {
+  constructor(props) {
+    super(props);
+    this.components = {
+      Draft: ({ children }) =>
+        props.pageContext.frontmatter.draft ? (
+          <span className="draft">{children}</span>
+        ) : null,
+    };
+  }
+  render() {
+    return (
+      <MDXProvider components={this.components}>
+        {this.props.children}
+      </MDXProvider>
+    );
+  }
+}
 
 <style>{`
 @import "../node_modules/typeface-pt-serif/index.css";
