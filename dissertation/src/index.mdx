@@ -16,28 +16,19 @@ draft: true # TODO
     { name: "date", content: new Date().toISOString().split("T")[0] },
   ]}
   htmlAttributes={{ lang: "en" }}
+  bodyAttributes={{
+    "data-mode": props.pageContext.frontmatter.draft ? "draft" : "final",
+  }}
 />
 
 <header>
-  <div className="title-page">
-    <p className="title">{props.pageContext.frontmatter.title}</p>
-    <p className="author">
-      by
-      <br />
-      {props.pageContext.frontmatter.author}
-    </p>
-    <p className="statement">
-      A dissertation submitted to Johns Hopkins University
-      <br />
-      in conformity with the requirements for the degree of Doctor of Philosophy
-    </p>
-    <p className="publishing-location">
-      Baltimore, Maryland
-      <br />
-      {props.pageContext.frontmatter.date}
-      <Draft><br />{new Date().toISOString()}</Draft>
-    </p>
-  </div>
+<div style={{ page: "title-page", lineHeight: 1.2, textAlign: "center" }}>
+<div style={{ marginTop: "1.5in", textTransform: "uppercase", fontWeight: "bold", letterSpacing: "2pt" }}>{props.pageContext.frontmatter.title}</div>
+<div style={{ marginTop: "1in" }}>by<br />{props.pageContext.frontmatter.author}</div>
+<div style={{ marginTop: "1.5in" }}>A dissertation submitted to Johns Hopkins University<br />in conformity with the requirements for the degree of Doctor of Philosophy</div>
+<div style={{ marginTop: "0.5in" }}>Baltimore, Maryland<br />{props.pageContext.frontmatter.date}</div>
+<div style={{ marginTop: "0.5in" }} className="draft">{new Date().toISOString()}</div>
+</div>
 
 # Abstract
 
@@ -58,12 +49,7 @@ import { MDXProvider } from "@mdx-js/react";
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.components = {
-      Draft: ({ children }) =>
-        props.pageContext.frontmatter.draft ? (
-          <span className="draft">{children}</span>
-        ) : null,
-    };
+    this.components = {};
   }
   render() {
     return (
@@ -101,10 +87,6 @@ header {
   @bottom {
     content: counter(page, lower-roman);
   }
-}
-
-.title-page {
-  page: title-page;
 }
 
 @page title-page {
@@ -157,6 +139,10 @@ h3 {
   color: #bbb;
 }
 
+[data-mode="final"] .draft {
+  display: none;
+}
+
 pre {
   font-size: 10pt;
   line-height: 1.2;
@@ -169,39 +155,6 @@ pre {
 
 .grvsc-line-highlighted {
   background-color: #e0ffff;
-}
-
-ul {
-  list-style-type: disc;
-}
-
-.title-page {
-  line-height: 1.2;
-  text-align: center;
-}
-
-.title-page p {
-  margin: 0;
-  text-indent: 0;
-}
-
-.title-page .title {
-  margin-top: 1.5in;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 2pt;
-}
-
-.title-page .author {
-  margin-top: 1in;
-}
-
-.title-page .statement {
-  margin-top: 1.5in;
-}
-
-.title-page .publishing-location {
-  margin-top: 0.5in;
 }
 
 .table-of-contents {
