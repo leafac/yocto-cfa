@@ -16,25 +16,15 @@ draft: true # TODO
     { name: "date", content: new Date().toISOString().split("T")[0] },
   ]}
   htmlAttributes={{ lang: "en" }}
-  bodyAttributes={{
-    "data-mode": props.pageContext.frontmatter.draft ? "draft" : "final",
-  }}
 />
 
 <header>
-<div style={{ page: "title-page", lineHeight: 1.2, textAlign: "center" }}>
-<div style={{ marginTop: "1.5in", textTransform: "uppercase", fontWeight: "bold", letterSpacing: "2pt" }}>{props.pageContext.frontmatter.title}</div>
-<div style={{ marginTop: "1in" }}>by<br />{props.pageContext.frontmatter.author}</div>
-<div style={{ marginTop: "1.5in" }}>A dissertation submitted to Johns Hopkins University<br />in conformity with the requirements for the degree of Doctor of Philosophy</div>
-<div style={{ marginTop: "0.5in" }}>Baltimore, Maryland<br />{props.pageContext.frontmatter.date}</div>
-<div style={{ marginTop: "0.5in" }} className="draft">{new Date().toISOString()}</div>
-<style>{`
-@page title-page {
-  @bottom {
-    content: normal;
-  }
-}
-`}</style>
+<div className="title-page">
+<div className="title">{props.pageContext.frontmatter.title}</div>
+<div className="author">by<br />{props.pageContext.frontmatter.author}</div>
+<div className="statement">A dissertation submitted to Johns Hopkins University<br />in conformity with the requirements for the degree of Doctor of Philosophy</div>
+<div className="publishing-location">Baltimore, Maryland<br />{props.pageContext.frontmatter.date}</div>
+<div className="timestamp draft">{new Date().toISOString()}</div>
 </div>
 
 # Abstract
@@ -44,29 +34,9 @@ draft: true # TODO
 - **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
 - **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
 
-<style>{`
-header {
-  page: header;
-}
-
-@page header {
-  @bottom {
-    content: counter(page, lower-roman);
-  }
-}
-`}</style>
-
 </header>
 
-<main>
-
-<style>{`
-main {
-  counter-reset: page 1;
-}
-`}</style>
-
-</main>
+<main></main>
 
 <footer></footer>
 
@@ -140,15 +110,6 @@ h3 {
   margin-right: 0.5em;
 }
 
-.draft {
-  font-size: 10pt;
-  color: #bbb;
-}
-
-[data-mode="final"] .draft {
-  display: none;
-}
-
 pre {
   font-size: 10pt;
   line-height: 1.2;
@@ -163,6 +124,62 @@ pre {
   background-color: #e0ffff;
 }
 
+.draft {
+${
+  props.pageContext.frontmatter.draft
+    ? `display: none;`
+    : `
+  font-size: 10pt;
+  color: #bbb;
+`
+}
+}
+
+header { 
+  page: header;
+}
+
+@page header {
+  @bottom {
+    content: counter(page, lower-roman);
+  }
+}
+
+.title-page {
+  page: title-page;
+  line-height: 1.2;
+  text-align: center;
+}
+
+@page title-page {
+  @bottom {
+    content: normal;
+  }
+}
+
+.title-page .title {
+  margin-top: 1.5in;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 2pt;
+}
+
+.title-page .author {
+  margin-top: 1in;
+}
+
+.title-page .statement {
+  margin-top: 1.5in;
+}
+
+.title-page .publishing-location {
+  margin-top: 0.5in;
+}
+
+.title-page .timestamp {
+  margin-top: 0.5in;
+}
+
 .table-of-contents {
   list-style-type: none;
   margin: 0;
@@ -174,5 +191,9 @@ pre {
 
 .table-of-contents a[data-section="header"]::after {
   content: leader(".  ") target-counter(attr(href), page, lower-roman);
+}
+
+main {
+  counter-reset: page 1;
 }
 `}</style>
