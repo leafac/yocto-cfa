@@ -1,4 +1,24 @@
-# Hello World
+---
+title: Yocto-CFA
+author: Leandro Facchinetti
+subject: TODO
+keywords: TODO, TODO, ...
+date: August 2020
+draft: true # TODO
+---
+
+import { Helmet } from "react-helmet";
+
+<Helmet
+  title={props.pageContext.frontmatter.title}
+  meta={[
+    { name: "author", content: props.pageContext.frontmatter.author },
+    { name: "subject", content: props.pageContext.frontmatter.subject },
+    { name: "keywords", content: props.pageContext.frontmatter.keywords },
+    { name: "date", content: new Date().toISOString().split("T")[0] },
+  ]}
+  htmlAttributes={{ lang: "en" }}
+/>
 
 <style>{`
 @import "../node_modules/typeface-pt-serif/index.css";

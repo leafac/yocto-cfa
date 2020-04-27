@@ -1,13 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<title>Yocto-CFA</title>
-<meta name="author" content="Leandro Facchinetti">
-<meta name="subject" content="TODO">
-<meta name="keywords" content="TODO, TODO, ...">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body data-draft="true"><!-- TODO -->
 <header>
 <div class="title-page">
 <p class="title">Yocto-CFA</p>
