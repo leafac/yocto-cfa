@@ -33,11 +33,72 @@ date: August 2020
 - **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
 - **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
 
+# Table of Contents
+
+<TableOfContents />
+
 </header>
 
-<main></main>
+<main>
 
-<footer></footer>
+# Chapter 123
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, [](#section-11) when [](#undefined) an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, [](#section-11) when [](#undefined) an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+## Section 1.1
+
+Lorem Ipsum is simply $x^2 \Rightarrow \alpha$ dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. $\frac{x^2 \Rightarrow \alpha}{e \mapsto v}$ It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum. `hello`
+
+- **Value:** $\frac{x^2 \Rightarrow \alpha}{e \mapsto v}$ $\displaystyle \frac{x^2 \Rightarrow \alpha}{e \mapsto v}$
+
+$$
+x^2 \Rightarrow \alpha \text{   he<code>l</code>lo}
+$$
+
+### Subsection 1.1.1
+
+### Subsection 1.1.2
+
+## Section 1.2
+
+### Subsection 1.2.1
+
+### Subsection 1.2.2
+
+# Chapter 2
+
+## Section 2.1
+
+### Subsection 2.1.1
+
+### Subsection 2.1.2
+
+## Section 2.2
+
+### Subsection 2.2.1
+
+### Subsection 2.2.2
+
+```js
+const config = {
+  resolve: `gatsby-source-filesystem`, // highlight-line
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+```
+
+</main>
+
+<footer>
+
+# Bibliography
+
+# Biographical Statement
+
+</footer>
 
 import { Helmet } from "react-helmet";
 import { MDXProvider } from "@mdx-js/react";
@@ -60,6 +121,69 @@ export default class extends React.Component {
     );
   }
 }
+
+<!--
+const GitHubSlugger = require("github-slugger");
+
+// Slugify headings
+
+const slugger = new GitHubSlugger();
+document.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((element) => {
+  element.id = slugger.slug(element.textContent);
+});
+
+// Number headings
+
+const headingsCounter = [];
+document
+  .querySelectorAll("main h1, main h2, main h3, main h4, main h5, main h6")
+  .forEach((element) => {
+    const level = Number(element.tagName[1]);
+    headingsCounter.splice(level);
+    while (headingsCounter.length < level) headingsCounter.push(0);
+    headingsCounter[headingsCounter.length - 1]++;
+    element.innerHTML = `<span class="heading-counter">${headingsCounter.join(
+      "."
+    )}</span> <span class="heading-content">${
+      element.innerHTML
+    }</span><code class="draft"> (#${element.id})</code>`;
+  });
+
+// Resolve references
+
+document.querySelectorAll(`a[href^="#"]`).forEach((element) => {
+  const href = element.getAttribute("href");
+  const target = document.querySelector(href);
+  if (target !== null) {
+    element.innerHTML = `§ ${
+      target.querySelector(".heading-counter").textContent
+    }<span class="draft"> (${
+      target.querySelector(".heading-content").innerHTML
+    })</span>`;
+  } else {
+    console.error(`Undefined reference: ${href}`);
+    element.innerHTML = `§ ??`;
+  }
+});
+
+// Add table of contents
+
+document.querySelector(".table-of-contents").innerHTML = [
+  ...document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
+]
+  .map(
+    (element) =>
+      `<li><a href="#${element.id}" data-section="${[
+        "header",
+        "main",
+        "footer",
+      ].find((section) => element.closest(section) !== null)}">${
+        element.innerHTML
+      }</a></li>`
+  )
+  .join("");
+-->
+
 
 <style>{`
 @import "../node_modules/typeface-pt-serif/index.css";
