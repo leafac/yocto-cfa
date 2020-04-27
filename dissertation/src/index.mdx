@@ -46,7 +46,12 @@ import { MDXProvider } from "@mdx-js/react";
 export default class extends React.Component {
   constructor(props) {
     super(props);
-    this.components = {};
+    this.components = {
+      style: ({ children }) =>
+        React.createElement("style", {
+          dangerouslySetInnerHTML: { __html: children },
+        }),
+    };
   }
   render() {
     return (
