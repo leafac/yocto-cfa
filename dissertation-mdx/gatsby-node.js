@@ -11,7 +11,7 @@ exports.createPages = compilePDF;
 async function compilePDF() {
   let input = "public/index.html";
   if (process.env.NODE_ENV === "development") {
-    input = "public/index-ssr.html";
+    input = "public/index-rendered.html";
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     try {
