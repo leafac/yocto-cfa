@@ -4,7 +4,6 @@ author: Leandro Facchinetti
 subject: TODO
 keywords: todo, todo, ...
 date: August 2020
-draft: true # TODO
 ---
 
 <Helmet
@@ -131,7 +130,7 @@ pre {
 
 .draft {
 ${
-  props.pageContext.frontmatter.draft
+  process.env.NODE_ENV === "development"
     ? `
       font-size: 10pt;
       color: #bbb;
