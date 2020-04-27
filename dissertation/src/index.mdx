@@ -102,15 +102,59 @@ const config = {
 
 import { Helmet } from "react-helmet";
 import { MDXProvider } from "@mdx-js/react";
+import GitHubSlugger from "github-slugger";
 
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    const slugger = new GitHubSlugger();
+    const numberer = new (class {
+      constructor() {
+        this.counter = [];
+      }
+      number(level) {
+        this.counter.splice(level);
+        while (this.counter.length < level) this.counter.push(0);
+        this.counter[this.counter.length - 1]++;
+        return this.counter.join(".");
+      }
+    })();
     this.components = {
       style: ({ children }) =>
         React.createElement("style", {
           dangerouslySetInnerHTML: { __html: children },
         }),
+      ...Object.fromEntries(
+        [1, 2, 3, 4, 5, 6].map((level) => {
+          const type = `h${level}`;
+          return [
+            type,
+            class extends React.Component {
+              constructor(props) {
+                super(props);
+                this.state = { id: null, number: null };
+              }
+              componentDidMount() {
+                if (this.state.id === null) {
+                  this.setState({
+                    id: slugger.slug(this.props.children),
+                    number: numberer.number(level),
+                  });
+                }
+              }
+              render() {
+                return React.createElement(
+                  type,
+                  { id: this.state.id },
+                  <span class="heading-number">{this.state.number}</span>,
+                  this.props.children,
+                  <code className="draft"> (#{this.state.id})</code>
+                );
+              }
+            },
+          ];
+        })
+      ),
     };
   }
   render() {
@@ -121,69 +165,6 @@ export default class extends React.Component {
     );
   }
 }
-
-<!--
-const GitHubSlugger = require("github-slugger");
-
-// Slugify headings
-
-const slugger = new GitHubSlugger();
-document.querySelectorAll("h1, h2, h3, h4, h5, h6").forEach((element) => {
-  element.id = slugger.slug(element.textContent);
-});
-
-// Number headings
-
-const headingsCounter = [];
-document
-  .querySelectorAll("main h1, main h2, main h3, main h4, main h5, main h6")
-  .forEach((element) => {
-    const level = Number(element.tagName[1]);
-    headingsCounter.splice(level);
-    while (headingsCounter.length < level) headingsCounter.push(0);
-    headingsCounter[headingsCounter.length - 1]++;
-    element.innerHTML = `<span class="heading-counter">${headingsCounter.join(
-      "."
-    )}</span> <span class="heading-content">${
-      element.innerHTML
-    }</span><code class="draft"> (#${element.id})</code>`;
-  });
-
-// Resolve references
-
-document.querySelectorAll(`a[href^="#"]`).forEach((element) => {
-  const href = element.getAttribute("href");
-  const target = document.querySelector(href);
-  if (target !== null) {
-    element.innerHTML = `§ ${
-      target.querySelector(".heading-counter").textContent
-    }<span class="draft"> (${
-      target.querySelector(".heading-content").innerHTML
-    })</span>`;
-  } else {
-    console.error(`Undefined reference: ${href}`);
-    element.innerHTML = `§ ??`;
-  }
-});
-
-// Add table of contents
-
-document.querySelector(".table-of-contents").innerHTML = [
-  ...document.querySelectorAll("h1, h2, h3, h4, h5, h6"),
-]
-  .map(
-    (element) =>
-      `<li><a href="#${element.id}" data-section="${[
-        "header",
-        "main",
-        "footer",
-      ].find((section) => element.closest(section) !== null)}">${
-        element.innerHTML
-      }</a></li>`
-  )
-  .join("");
--->
-
 
 <style>{`
 @import "../node_modules/typeface-pt-serif/index.css";
@@ -234,7 +215,7 @@ h3 {
   margin-top: 2em;
 }
 
-.heading-counter {
+.heading-number {
   margin-right: 0.5em;
 }
 
@@ -258,6 +239,7 @@ ${
     ? `
       font-size: 10pt;
       color: #bbb;
+      font-weight: normal;
     `
     : `display: none;`
 }
