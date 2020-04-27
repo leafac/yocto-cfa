@@ -57,10 +57,3 @@ document.querySelector(".table-of-contents").innerHTML = [
       }</a></li>`
   )
   .join("");
-
-// Remove draft
-
-if (document.body.dataset.draft !== "true")
-  document.querySelectorAll(".draft").forEach((element) => {
-    element.remove();
-  });
