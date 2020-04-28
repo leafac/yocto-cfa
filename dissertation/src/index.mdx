@@ -108,7 +108,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { tableOfContents: [] };
+    this.state = { tableOfContents: {} };
     const slugger = new GitHubSlugger();
     const numberer = new Numberer();
     this.components = {
@@ -134,7 +134,7 @@ export default class extends React.Component {
                 );
                 this.setState({ id, heading });
                 global.setState((state) => ({
-                  tableOfContents: [...state.tableOfContents, { id, heading }],
+                  tableOfContents: { ...state.tableOfContents, [id]: heading },
                 }));
               }
               render() {
@@ -150,7 +150,7 @@ export default class extends React.Component {
       ),
       TableOfContents: () => (
         <ul className="table-of-contents">
-          {global.state.tableOfContents.map(({ id, heading }) => (
+          {Object.entries(global.state.tableOfContents).map(([id, heading]) => (
             <li key={id}>
               <a href={`#${id}`}>{heading}</a>
             </li>
