@@ -108,7 +108,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { tableOfContents: {} };
+    this.state = { tableOfContents: [] };
     this.slugger = new GitHubSlugger();
     this.numberer = new (class {
       constructor() {
@@ -146,13 +146,10 @@ export default class extends React.Component {
                     <code className="draft"> (#{id})</code>
                   </>
                 );
-                global.setState((state) => ({
-                  tableOfContents: {
-                    ...state.tableOfContents,
-                    [id]: { number, heading },
-                  },
-                }));
                 this.setState({ id, heading });
+                global.setState((state) => ({
+                  tableOfContents: [...state.tableOfContents, { id, heading }],
+                }));
               }
               render() {
                 return React.createElement(
@@ -167,13 +164,11 @@ export default class extends React.Component {
       ),
       TableOfContents: () => (
         <ul className="table-of-contents">
-          {Object.entries(global.state.tableOfContents).map(
-            ([id, { heading }]) => (
-              <li key={id}>
-                <a href={`#${id}`}>{heading}</a>
-              </li>
-            )
-          )}
+          {global.state.tableOfContents.map(({ id, heading }) => (
+            <li key={id}>
+              <a href={`#${id}`}>{heading}</a>
+            </li>
+          ))}
         </ul>
       ),
     };
