@@ -118,29 +118,42 @@ export default class extends React.Component {
             class extends React.Component {
               constructor(props) {
                 super(props);
-                this.state = { id: null, heading: null };
+                this.state = { children: null };
               }
               componentDidMount() {
-                const id = this.props.id;
+                const { id, children } = this.props;
                 const number = numberer.number(level);
-                const heading = (
-                  <>
-                    <span class="heading-number">{number} </span>
-                    {this.props.children}
-                    <code className="draft"> (#{id})</code>
-                  </>
-                );
-                this.setState({ id, heading });
+                this.setState({
+                  children: (
+                    <>
+                      {React.createElement(
+                        type,
+                        null,
+                        <>
+                          <span id={id} class="heading-number">
+                            {number}{" "}
+                          </span>
+                          {children}
+                        </>
+                      )}
+                      <code className="draft">(#{id})</code>
+                    </>
+                  ),
+                });
                 global.setState((state) => ({
-                  tableOfContents: { ...state.tableOfContents, [id]: heading },
+                  tableOfContents: {
+                    ...state.tableOfContents,
+                    [id]: (
+                      <>
+                        <span class="heading-number">{number} </span>
+                        {children}
+                      </>
+                    ),
+                  },
                 }));
               }
               render() {
-                return React.createElement(
-                  type,
-                  { id: this.state.id },
-                  this.state.heading
-                );
+                return this.state.children;
               }
             },
           ];
