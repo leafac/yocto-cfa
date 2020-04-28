@@ -107,6 +107,8 @@ import GitHubSlugger from "github-slugger";
 export default class extends React.Component {
   constructor(props) {
     super(props);
+    const global = this;
+    this.state = { crossReferences: {} };
     const slugger = new GitHubSlugger();
     const numberer = new (class {
       constructor() {
@@ -132,21 +134,25 @@ export default class extends React.Component {
             class extends React.Component {
               constructor(props) {
                 super(props);
-                this.state = { id: null, number: null };
+                this.state = { id: null };
               }
               componentDidMount() {
-                if (this.state.id === null) {
-                  this.setState({
-                    id: slugger.slug(this.props.children),
-                    number: numberer.number(level),
-                  });
-                }
+                const id = slugger.slug(this.props.children);
+                this.setState({ id });
+                global.setState((state) => ({
+                  crossReferences: {
+                    ...state.crossReferences,
+                    [id]: numberer.number(level),
+                  },
+                }));
               }
               render() {
                 return React.createElement(
                   type,
                   { id: this.state.id },
-                  <span class="heading-number">{this.state.number} </span>,
+                  <span class="heading-number">
+                    {global.state.crossReferences[this.state.id]}{" "}
+                  </span>,
                   this.props.children,
                   <code className="draft"> (#{this.state.id})</code>
                 );
