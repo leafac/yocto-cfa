@@ -108,9 +108,9 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { crossReferences: {} };
-    const slugger = new GitHubSlugger();
-    const numberer = new (class {
+    this.state = { crossReferences: {}, tableOfContents: [] };
+    this.slugger = new GitHubSlugger();
+    this.numberer = new (class {
       constructor() {
         this.counter = [];
       }
@@ -137,14 +137,9 @@ export default class extends React.Component {
                 this.state = { id: null };
               }
               componentDidMount() {
-                const id = slugger.slug(this.props.children);
-                this.setState({ id });
-                global.setState((state) => ({
-                  crossReferences: {
-                    ...state.crossReferences,
-                    [id]: numberer.number(level),
-                  },
-                }));
+                this.setState({
+                  id: global.addHeading(level, this.props.children),
+                });
               }
               render() {
                 return React.createElement(
@@ -161,7 +156,34 @@ export default class extends React.Component {
           ];
         })
       ),
+      TableOfContents: () => (
+        <ul className="table-of-contents">
+          {global.state.tableOfContents.map(({ id, number, heading }) => (
+            <li key={id}>
+              <a href={`#${id}`}>
+                <span class="heading-number">{number} </span>
+                {heading}
+              </a>
+            </li>
+          ))}
+        </ul>
+      ),
     };
+  }
+  addHeading(level, children) {
+    const id = this.slugger.slug(children);
+    const number = this.numberer.number(level);
+    this.setState((state) => ({
+      crossReferences: {
+        ...state.crossReferences,
+        [id]: number,
+      },
+      tableOfContents: [
+        ...state.tableOfContents,
+        { id, number, heading: children },
+      ],
+    }));
+    return id;
   }
   render() {
     return (
