@@ -24,7 +24,7 @@ module.exports = {
             },
           },
         ],
-        remarkPlugins: [require("remark-math")],
+        remarkPlugins: [require("remark-slug"), require("remark-math")],
         rehypePlugins: [
           [
             require("rehype-katex"),

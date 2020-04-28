@@ -102,14 +102,12 @@ const config = {
 
 import { Helmet } from "react-helmet";
 import { MDXProvider } from "@mdx-js/react";
-import GitHubSlugger from "github-slugger";
 
 export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
     this.state = { tableOfContents: {} };
-    const slugger = new GitHubSlugger();
     const numberer = new Numberer();
     this.components = {
       ...Object.fromEntries(
@@ -123,7 +121,7 @@ export default class extends React.Component {
                 this.state = { id: null, heading: null };
               }
               componentDidMount() {
-                const id = slugger.slug(this.props.children);
+                const id = this.props.id;
                 const number = numberer.number(level);
                 const heading = (
                   <>
