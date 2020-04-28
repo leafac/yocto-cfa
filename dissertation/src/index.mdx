@@ -175,7 +175,7 @@ export default class extends React.Component {
         <ul className="table-of-contents">
           {global.state.tableOfContents.map(({ id, heading }) => (
             <li key={id}>
-              <a href={`#${id}`}>{heading}</a>
+              {React.createElement("a", { href: `#${id}` }, heading)}
             </li>
           ))}
         </ul>
