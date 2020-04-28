@@ -118,33 +118,12 @@ export default class extends React.Component {
             class extends React.Component {
               constructor(props) {
                 super(props);
-                this.state = { render: null };
+                this.state = { number: null };
               }
               componentDidMount() {
                 const { id, children } = this.props;
                 const number = numberer.number(level);
-                this.setState({
-                  render: (
-                    <>
-                      {React.createElement(
-                        type,
-                        null,
-                        <>
-                          <span id={id} class="heading-number">
-                            {number}
-                          </span>{" "}
-                          {children}
-                        </>
-                      )}
-                      <code
-                        style={{ display: "block", marginTop: "-2em" }}
-                        className="draft"
-                      >
-                        #{id}
-                      </code>
-                    </>
-                  ),
-                });
+                this.setState({ number });
                 global.setState((state) => ({
                   tableOfContents: {
                     ...state.tableOfContents,
@@ -157,7 +136,26 @@ export default class extends React.Component {
                 }));
               }
               render() {
-                return this.state.render;
+                return (
+                  <>
+                    {React.createElement(
+                      type,
+                      null,
+                      <>
+                        <span id={this.props.id} class="heading-number">
+                          {this.state.number}
+                        </span>{" "}
+                        {this.props.children}
+                      </>
+                    )}
+                    <code
+                      style={{ display: "block", marginTop: "-2em" }}
+                      className="draft"
+                    >
+                      #{this.props.id}
+                    </code>
+                  </>
+                );
               }
             },
           ];
