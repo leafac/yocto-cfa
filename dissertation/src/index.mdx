@@ -108,7 +108,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { crossReferences: {}, tableOfContents: [] };
+    this.state = { tableOfContents: [] };
     this.slugger = new GitHubSlugger();
     this.numberer = new (class {
       constructor() {
@@ -134,22 +134,28 @@ export default class extends React.Component {
             class extends React.Component {
               constructor(props) {
                 super(props);
-                this.state = { id: null };
+                this.state = { id: null, heading: null };
               }
               componentDidMount() {
-                this.setState({
-                  id: global.addHeading(level, this.props.children),
-                });
+                const id = global.slugger.slug(this.props.children);
+                const number = global.numberer.number(level);
+                const heading = (
+                  <>
+                    <span class="heading-number">{number} </span>
+                    {this.props.children}
+                    <code className="draft"> (#{id})</code>
+                  </>
+                );
+                global.setState((state) => ({
+                  tableOfContents: [...state.tableOfContents, { id, heading }],
+                }));
+                this.setState({ id, heading });
               }
               render() {
                 return React.createElement(
                   type,
                   { id: this.state.id },
-                  <span class="heading-number">
-                    {global.state.crossReferences[this.state.id]}{" "}
-                  </span>,
-                  this.props.children,
-                  <code className="draft"> (#{this.state.id})</code>
+                  this.state.heading
                 );
               }
             },
@@ -169,21 +175,6 @@ export default class extends React.Component {
         </ul>
       ),
     };
-  }
-  addHeading(level, children) {
-    const id = this.slugger.slug(children);
-    const number = this.numberer.number(level);
-    this.setState((state) => ({
-      crossReferences: {
-        ...state.crossReferences,
-        [id]: number,
-      },
-      tableOfContents: [
-        ...state.tableOfContents,
-        { id, number, heading: children },
-      ],
-    }));
-    return id;
   }
   render() {
     return (
