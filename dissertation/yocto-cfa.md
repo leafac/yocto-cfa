@@ -20,7 +20,8 @@
 # Abstract
 
 - **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
-- **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green. -->
+- **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
+-->
 
 # Table of Contents
 
