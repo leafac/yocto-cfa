@@ -109,23 +109,9 @@ export default class extends React.Component {
     super(props);
     const global = this;
     this.state = { crossReferences: {}, tableOfContents: [] };
-    this.slugger = new GitHubSlugger();
-    this.numberer = new (class {
-      constructor() {
-        this.counter = [];
-      }
-      number(level) {
-        this.counter.splice(level);
-        while (this.counter.length < level) this.counter.push(0);
-        this.counter[this.counter.length - 1]++;
-        return this.counter.join(".");
-      }
-    })();
+    const slugger = new GitHubSlugger();
+    const numberer = new Numberer();
     this.components = {
-      style: ({ children }) =>
-        React.createElement("style", {
-          dangerouslySetInnerHTML: { __html: children },
-        }),
       ...Object.fromEntries(
         [1, 2, 3, 4, 5, 6].map((level) => {
           const type = `h${level}`;
@@ -137,8 +123,8 @@ export default class extends React.Component {
                 this.state = { id: null, heading: null };
               }
               componentDidMount() {
-                const id = global.slugger.slug(this.props.children);
-                const number = global.numberer.number(level);
+                const id = slugger.slug(this.props.children);
+                const number = numberer.number(level);
                 const heading = (
                   <>
                     <span class="heading-number">{number} </span>
@@ -180,6 +166,10 @@ export default class extends React.Component {
           ))}
         </ul>
       ),
+      style: ({ children }) =>
+        React.createElement("style", {
+          dangerouslySetInnerHTML: { __html: children },
+        }),
     };
   }
   render() {
@@ -188,6 +178,18 @@ export default class extends React.Component {
         {this.props.children}
       </MDXProvider>
     );
+  }
+}
+
+export class Numberer {
+  constructor() {
+    this.counter = [];
+  }
+  number(level) {
+    while (this.counter.length < level) this.counter.push(0);
+    this.counter.splice(level);
+    this.counter[level - 1]++;
+    return this.counter.join(".");
   }
 }
 
