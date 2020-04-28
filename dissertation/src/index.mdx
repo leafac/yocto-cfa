@@ -108,7 +108,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { crossReferences: {}, tableOfContents: [] };
+    this.state = { tableOfContents: [] };
     const slugger = new GitHubSlugger();
     const numberer = new Numberer();
     this.components = {
@@ -134,7 +134,6 @@ export default class extends React.Component {
                 );
                 this.setState({ id, heading });
                 global.setState((state) => ({
-                  crossReferences: { ...state.crossReferences, [id]: number },
                   tableOfContents: [...state.tableOfContents, { id, heading }],
                 }));
               }
@@ -149,19 +148,11 @@ export default class extends React.Component {
           ];
         })
       ),
-      a: ({ href, children }) =>
-        React.createElement(
-          "a",
-          { href },
-          href.startsWith("#")
-            ? `§ ${global.state.crossReferences[href.slice(1)] ?? "??"}`
-            : children
-        ),
       TableOfContents: () => (
         <ul className="table-of-contents">
           {global.state.tableOfContents.map(({ id, heading }) => (
             <li key={id}>
-              {React.createElement("a", { href: `#${id}` }, heading)}
+              <a href={`#${id}`}>{heading}</a>
             </li>
           ))}
         </ul>
@@ -216,6 +207,10 @@ body {
 a {
   text-decoration: none;
   color: black;
+}
+
+a[href^="#"] {
+  content: "§ " target-content(attr(href));
 }
 
 code {
@@ -322,12 +317,16 @@ header {
   margin: 0;
 }
 
+.table-of-contents a {
+  content: normal;
+}
+
 .table-of-contents a::after {
-  content: leader(".  ") target-counter(attr(href), page);
+  content: leader(dotted) target-counter(attr(href), page);
 }
 
 .table-of-contents a[data-section="header"]::after {
-  content: leader(".  ") target-counter(attr(href), page, lower-roman);
+  content: leader(dotted) target-counter(attr(href), page, lower-roman);
 }
 
 main {
