@@ -118,25 +118,30 @@ export default class extends React.Component {
             class extends React.Component {
               constructor(props) {
                 super(props);
-                this.state = { children: null };
+                this.state = { render: null };
               }
               componentDidMount() {
                 const { id, children } = this.props;
                 const number = numberer.number(level);
                 this.setState({
-                  children: (
+                  render: (
                     <>
                       {React.createElement(
                         type,
                         null,
                         <>
                           <span id={id} class="heading-number">
-                            {number}{" "}
-                          </span>
+                            {number}
+                          </span>{" "}
                           {children}
                         </>
                       )}
-                      <code className="draft">(#{id})</code>
+                      <code
+                        style={{ display: "block", marginTop: "-2em" }}
+                        className="draft"
+                      >
+                        (#{id})
+                      </code>
                     </>
                   ),
                 });
@@ -144,16 +149,15 @@ export default class extends React.Component {
                   tableOfContents: {
                     ...state.tableOfContents,
                     [id]: (
-                      <>
-                        <span class="heading-number">{number} </span>
-                        {children}
-                      </>
+                      <a href={`#${id}`}>
+                        <span class="heading-number">{number}</span> {children}
+                      </a>
                     ),
                   },
                 }));
               }
               render() {
-                return this.state.children;
+                return this.state.render;
               }
             },
           ];
@@ -161,11 +165,11 @@ export default class extends React.Component {
       ),
       TableOfContents: () => (
         <ul className="table-of-contents">
-          {Object.entries(global.state.tableOfContents).map(([id, heading]) => (
-            <li key={id}>
-              <a href={`#${id}`}>{heading}</a>
-            </li>
-          ))}
+          {Object.entries(global.state.tableOfContents).map(
+            ([id, children]) => (
+              <li key={id}>{children}</li>
+            )
+          )}
         </ul>
       ),
       style: ({ children }) =>
