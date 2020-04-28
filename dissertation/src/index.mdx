@@ -102,9 +102,10 @@ const config = {
 
 export default class extends React.Component {
   componentDidMount() {
+    const document = this.document;
     // Number headings
     const counter = [];
-    this.document
+    document
       .querySelectorAll("main h1, main h2, main h3, main h4, main h5, main h6")
       .forEach((element) => {
         const level = element.tagName[1];
@@ -118,11 +119,11 @@ export default class extends React.Component {
         })</code>`;
       });
     // Add Table of Contents
-    this.document
+    document
       .querySelector("#table-of-contents")
       .insertAdjacentHTML(
         "afterend",
-        `<ul>${[...this.document.querySelectorAll("h1, h2, h3, h4, h5, h6")]
+        `<ul>${[...document.querySelectorAll("h1, h2, h3, h4, h5, h6")]
           .map(
             (header) =>
               `<li><a href="#${header.id}" data-section="${[
@@ -135,9 +136,17 @@ export default class extends React.Component {
           )
           .join("")}</ul>`
       );
+    // Resolve cross-references
+    document.querySelectorAll(`main a[href^="#"]`).forEach((element) => {
+      element.textContent = `§ ${
+        document.querySelector(
+          `${element.getAttribute("href")} .heading-number`
+        )?.textContent ?? "??"
+      }`;
+    });
     // Remove draft
     if (process.env.NODE_ENV === "production")
-      this.document
+      document
         .querySelectorAll(".draft")
         .forEach((element) => element.remove());
   }
