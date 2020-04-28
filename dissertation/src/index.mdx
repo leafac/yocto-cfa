@@ -121,18 +121,17 @@ export default class extends React.Component {
                 this.state = { number: null };
               }
               componentDidMount() {
-                const { id, children } = this.props;
                 const number = numberer.number(level);
                 this.setState({ number });
                 global.setState((state) => ({
                   tableOfContents: [
                     ...state.tableOfContents,
                     {
-                      id,
+                      id: this.props.id,
                       entry: (
-                        <a href={`#${id}`}>
+                        <a href={`#${this.props.id}`}>
                           <span class="heading-number">{number}</span>{" "}
-                          {children}
+                          {this.props.children}
                         </a>
                       ),
                     },
