@@ -1,0 +1,22 @@
+{
+  "scripts": {
+    "start": "nodemon --ext md,js,css build.js",
+    "build": "node build.js",
+    "clean": "rm -f *.html *.pdf",
+    "test": "npm run build && prettier --check '*.{md,js,css}'"
+  },
+  "dependencies": {
+    "jsdom": "^16.2.2",
+    "nodemon": "^2.0.3",
+    "prettier": "^2.0.5",
+    "prince": "^1.8.0",
+    "remark": "^12.0.0",
+    "remark-html": "^11.0.1",
+    "remark-html-katex": "^2.0.1",
+    "remark-math": "^2.0.1",
+    "remark-slug": "^6.0.0",
+    "shiki": "^0.1.7",
+    "typeface-pt-mono": "0.0.72",
+    "typeface-pt-serif": "0.0.72"
+  }
+}
