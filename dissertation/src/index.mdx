@@ -163,11 +163,9 @@ export default class extends React.Component {
       ),
       TableOfContents: () => (
         <ul className="table-of-contents">
-          {Object.entries(global.state.tableOfContents).map(
-            ([id, children]) => (
-              <li key={id}>{children}</li>
-            )
-          )}
+          {Object.entries(global.state.tableOfContents).map(([id, entry]) => (
+            <li key={id}>{entry}</li>
+          ))}
         </ul>
       ),
       style: ({ children }) =>
