@@ -170,7 +170,7 @@ export default class extends React.Component {
           "a",
           { href },
           href.startsWith("#")
-            ? `§ ${global.state.crossReferences[href] ?? "??"}`
+            ? `§ ${global.state.crossReferences[href.slice(1)] ?? "??"}`
             : children
         ),
       TableOfContents: () => (
