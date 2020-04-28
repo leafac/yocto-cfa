@@ -108,7 +108,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { tableOfContents: [] };
+    this.state = { crossReferences: {}, tableOfContents: [] };
     this.slugger = new GitHubSlugger();
     this.numberer = new (class {
       constructor() {
@@ -148,6 +148,7 @@ export default class extends React.Component {
                 );
                 this.setState({ id, heading });
                 global.setState((state) => ({
+                  crossReferences: { ...state.crossReferences, [id]: number },
                   tableOfContents: [...state.tableOfContents, { id, heading }],
                 }));
               }
@@ -162,6 +163,14 @@ export default class extends React.Component {
           ];
         })
       ),
+      a: ({ href, children }) =>
+        React.createElement(
+          "a",
+          { href },
+          href.startsWith("#")
+            ? `§ ${global.state.crossReferences[href.slice(1)] ?? "??"}`
+            : children
+        ),
       TableOfContents: () => (
         <ul className="table-of-contents">
           {global.state.tableOfContents.map(({ id, heading }) => (
