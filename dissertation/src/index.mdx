@@ -107,7 +107,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { tableOfContents: {} };
+    this.state = { tableOfContents: [] };
     const numberer = new Numberer();
     this.components = {
       ...Object.fromEntries(
@@ -125,14 +125,18 @@ export default class extends React.Component {
                 const number = numberer.number(level);
                 this.setState({ number });
                 global.setState((state) => ({
-                  tableOfContents: {
+                  tableOfContents: [
                     ...state.tableOfContents,
-                    [id]: (
-                      <a href={`#${id}`}>
-                        <span class="heading-number">{number}</span> {children}
-                      </a>
-                    ),
-                  },
+                    {
+                      id,
+                      entry: (
+                        <a href={`#${id}`}>
+                          <span class="heading-number">{number}</span>{" "}
+                          {children}
+                        </a>
+                      ),
+                    },
+                  ],
                 }));
               }
               render() {
@@ -163,7 +167,7 @@ export default class extends React.Component {
       ),
       TableOfContents: () => (
         <ul className="table-of-contents">
-          {Object.entries(global.state.tableOfContents).map(([id, entry]) => (
+          {global.state.tableOfContents.map(({ id, entry }) => (
             <li key={id}>{entry}</li>
           ))}
         </ul>
