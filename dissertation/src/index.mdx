@@ -118,22 +118,23 @@ export default class extends React.Component {
             class extends React.Component {
               constructor(props) {
                 super(props);
-                this.state = { number: null };
+                this.state = { children: null };
               }
               componentDidMount() {
                 const number = numberer.number(level);
-                this.setState({ number });
+                const children = (
+                  <>
+                    <span class="heading-number">{number}</span>{" "}
+                    {this.props.children}
+                  </>
+                );
+                this.setState({ children });
                 global.setState((state) => ({
                   tableOfContents: [
                     ...state.tableOfContents,
                     {
                       id: this.props.id,
-                      entry: (
-                        <a href={`#${this.props.id}`}>
-                          <span class="heading-number">{number}</span>{" "}
-                          {this.props.children}
-                        </a>
-                      ),
+                      entry: <a href={`#${this.props.id}`}>{children}</a>,
                     },
                   ],
                 }));
@@ -143,13 +144,8 @@ export default class extends React.Component {
                   <>
                     {React.createElement(
                       type,
-                      null,
-                      <>
-                        <span id={this.props.id} class="heading-number">
-                          {this.state.number}
-                        </span>{" "}
-                        {this.props.children}
-                      </>
+                      { id: this.props.id },
+                      this.state.children
                     )}
                     <code
                       style={{ display: "block", marginTop: "-2em" }}
@@ -221,10 +217,6 @@ body {
 a {
   text-decoration: none;
   color: black;
-}
-
-a[href^="#"] {
-  content: "§ " target-content(attr(href));
 }
 
 code {
