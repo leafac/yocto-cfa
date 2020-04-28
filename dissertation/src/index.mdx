@@ -107,7 +107,7 @@ export default class extends React.Component {
   constructor(props) {
     super(props);
     const global = this;
-    this.state = { tableOfContents: [] };
+    this.state = { crossReferences: {}, tableOfContents: [] };
     const numberer = new Numberer();
     this.components = {
       ...Object.fromEntries(
@@ -130,11 +130,19 @@ export default class extends React.Component {
                 );
                 this.setState({ children });
                 global.setState((state) => ({
+                  crossReferences: {
+                    ...state.crossReferences,
+                    [this.props.id]: number,
+                  },
                   tableOfContents: [
                     ...state.tableOfContents,
                     {
                       id: this.props.id,
-                      entry: <a href={`#${this.props.id}`}>{children}</a>,
+                      entry: React.createElement(
+                        "a",
+                        { href: `#${this.props.id}` },
+                        children
+                      ),
                     },
                   ],
                 }));
@@ -147,12 +155,9 @@ export default class extends React.Component {
                       { id: this.props.id },
                       this.state.children
                     )}
-                    <code
-                      style={{ display: "block", marginTop: "-2em" }}
-                      className="draft"
-                    >
-                      #{this.props.id}
-                    </code>
+                    <div style={{ marginTop: "-2em" }} className="draft">
+                      <code>#{this.props.id}</code>
+                    </div>
                   </>
                 );
               }
@@ -160,6 +165,14 @@ export default class extends React.Component {
           ];
         })
       ),
+      a: ({ children, href }) =>
+        React.createElement(
+          "a",
+          { href },
+          href.startsWith("#")
+            ? `§ ${global.state.crossReferences[href] ?? "??"}`
+            : children
+        ),
       TableOfContents: () => (
         <ul className="table-of-contents">
           {global.state.tableOfContents.map(({ id, entry }) => (
