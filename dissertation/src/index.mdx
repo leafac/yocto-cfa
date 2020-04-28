@@ -6,6 +6,8 @@ keywords: todo, todo, ...
 date: August 2020
 ---
 
+import { Helmet } from "react-helmet";
+
 <Helmet
   title={props.pageContext.frontmatter.title}
   meta={[
@@ -34,8 +36,6 @@ date: August 2020
 - **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
 
 # Table of Contents
-
-<TableOfContents />
 
 </header>
 
@@ -100,110 +100,53 @@ const config = {
 
 </footer>
 
-import { Helmet } from "react-helmet";
-import { MDXProvider } from "@mdx-js/react";
-
 export default class extends React.Component {
-  constructor(props) {
-    super(props);
-    const global = this;
-    this.state = { crossReferences: {}, tableOfContents: [] };
-    const numberer = new Numberer();
-    this.components = {
-      ...Object.fromEntries(
-        [1, 2, 3, 4, 5, 6].map((level) => {
-          const type = `h${level}`;
-          return [
-            type,
-            class extends React.Component {
-              constructor(props) {
-                super(props);
-                this.state = { children: null };
-              }
-              componentDidMount() {
-                const number = numberer.number(level);
-                const children = (
-                  <>
-                    <span class="heading-number">{number}</span>{" "}
-                    {this.props.children}
-                  </>
-                );
-                this.setState({ children });
-                global.setState((state) => ({
-                  crossReferences: {
-                    ...state.crossReferences,
-                    [this.props.id]: number,
-                  },
-                  tableOfContents: [
-                    ...state.tableOfContents,
-                    {
-                      id: this.props.id,
-                      entry: React.createElement(
-                        "a",
-                        { href: `#${this.props.id}` },
-                        children
-                      ),
-                    },
-                  ],
-                }));
-              }
-              render() {
-                return (
-                  <>
-                    {React.createElement(
-                      type,
-                      { id: this.props.id },
-                      this.state.children
-                    )}
-                    <div style={{ marginTop: "-2em" }} className="draft">
-                      <code>#{this.props.id}</code>
-                    </div>
-                  </>
-                );
-              }
-            },
-          ];
-        })
-      ),
-      a: ({ children, href }) =>
-        React.createElement(
-          "a",
-          { href },
-          href.startsWith("#")
-            ? `§ ${global.state.crossReferences[href.slice(1)] ?? "??"}`
-            : children
-        ),
-      TableOfContents: () => (
-        <ul className="table-of-contents">
-          {global.state.tableOfContents.map(({ id, entry }) => (
-            <li key={id}>{entry}</li>
-          ))}
-        </ul>
-      ),
-      style: ({ children }) =>
-        React.createElement("style", {
-          dangerouslySetInnerHTML: { __html: children },
-        }),
-    };
+  componentDidMount() {
+    // Number headings
+    const counter = [];
+    this.document
+      .querySelectorAll("main h1, main h2, main h3, main h4, main h5, main h6")
+      .forEach((element) => {
+        const level = element.tagName[1];
+        while (counter.length < level) counter.push(0);
+        counter.splice(level);
+        counter[level - 1]++;
+        element.innerHTML = `<span class="heading-number">${counter.join(
+          "."
+        )}</span> ${element.innerHTML}<code class="draft"> (#${
+          element.id
+        })</code>`;
+      });
+    // Add Table of Contents
+    this.document
+      .querySelector("#table-of-contents")
+      .insertAdjacentHTML(
+        "afterend",
+        `<ul>${[...this.document.querySelectorAll("h1, h2, h3, h4, h5, h6")]
+          .map(
+            (header) =>
+              `<li><a href="#${header.id}" data-section="${[
+                "header",
+                "main",
+                "footer",
+              ].find((section) => header.closest(section) !== null)}">${
+                header.innerHTML
+              }</a></li>`
+          )
+          .join("")}</ul>`
+      );
+    // Remove draft
+    if (process.env.NODE_ENV === "production")
+      this.document
+        .querySelectorAll(".draft")
+        .forEach((element) => element.remove());
   }
   render() {
     return (
-      <MDXProvider components={this.components}>
+      <div ref={(document) => (this.document = document)}>
         {this.props.children}
-      </MDXProvider>
+      </div>
     );
-  }
-}
-
-export class Numberer {
-  constructor() {
-    this.counter = [];
-  }
-  number(level) {
-    while (this.counter.length < level) this.counter.push(0);
-    this.counter.splice(level);
-    this.counter[level - 1]++;
-    return this.counter.join(".");
   }
 }
 
@@ -275,15 +218,9 @@ pre {
 }
 
 .draft {
-${
-  process.env.NODE_ENV === "development"
-    ? `
-      font-size: 10pt;
-      color: #bbb;
-      font-weight: normal;
-    `
-    : `display: none;`
-}
+  font-size: 10pt;
+  color: #bbb;
+  font-weight: normal;
 }
 
 header { 
@@ -331,20 +268,20 @@ header {
   margin-top: 0.5in;
 }
 
-.table-of-contents {
+#table-of-contents + ul {
   list-style-type: none;
   margin: 0;
 }
 
-.table-of-contents a {
+#table-of-contents + ul a {
   content: normal;
 }
 
-.table-of-contents a::after {
+#table-of-contents + ul a::after {
   content: leader(dotted) target-counter(attr(href), page);
 }
 
-.table-of-contents a[data-section="header"]::after {
+#table-of-contents + ul a[data-section="header"]::after {
   content: leader(dotted) target-counter(attr(href), page, lower-roman);
 }
 
