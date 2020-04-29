@@ -56,6 +56,14 @@ pre {
   white-space: pre-wrap;
 }
 
+pre .highlight-line {
+  background-color: #e0ffff;
+}
+
+pre .line-number {
+  color: #aaa;
+}
+
 .draft {
   font-size: 10pt;
   color: #bbb;

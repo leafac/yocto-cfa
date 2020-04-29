@@ -8,6 +8,7 @@
   "dependencies": {
     "jsdom": "^16.2.2",
     "nodemon": "^2.0.3",
+    "parse-numeric-range": "^1.2.0",
     "prettier": "^2.0.5",
     "prince": "^1.8.0",
     "remark": "^12.0.0",

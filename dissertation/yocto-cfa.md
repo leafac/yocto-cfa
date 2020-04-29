@@ -84,7 +84,55 @@ const config = {
 };
 ```
 
-```js{number:true}
+```js{number}
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+```
+
+```js{2-4}
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+```
+
+```js{2-4|number}
+const config = {
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+```
+
+```js{2,4|number|not-an-option}
 const config = {
   resolve: `gatsby-source-filesystem`,
   options: {

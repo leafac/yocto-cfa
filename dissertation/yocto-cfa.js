@@ -3,6 +3,7 @@ const child_process = require("child_process");
 const remark = require("remark");
 const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
+const rangeParser = require("parse-numeric-range");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md");
@@ -90,42 +91,58 @@ async function processHTML(/** @type {Document} */ document) {
   for (const element of document.querySelectorAll(`main a[href^="#"]`)) {
     const href = element.getAttribute("href");
     const target = document.querySelector(`${href} .heading-counter`);
-    if (target === null) console.error(`Undefined reference ${href}`);
+    if (target === null) console.error(`Undefined reference: ${href}`);
     element.textContent = `§ ${target?.textContent ?? "??"}`;
   }
 
   // Add syntax highlighting
+  const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
   for (const element of document.querySelectorAll("code")) {
     let code;
     let language;
+    let isNumber = false;
+    let highlightLines = [];
     if (element.className.startsWith("language-")) {
       code = element.textContent;
-      language = element.className.slice("language-".length);
+      const match = element.className.match(
+        /^language-(?<language>.*?)(?:\{(?<options>.*?)\})?$/
+      );
+      language = match.groups.language;
+      if (match.groups.options !== undefined)
+        for (const option of match.groups.options.split("|"))
+          if (option === "number") isNumber = true;
+          else if (option.match(/^[0-9,\-\.]+$/))
+            highlightLines = rangeParser(option);
+          else console.error(`Unrecognized option for code block: ${option}`);
     } else {
       const segments = element.textContent.split("◊");
       if (segments.length === 2) [language, code] = segments;
     }
-    if (language === undefined) continue;
-    const highlightedCode = await highlight(code, language);
-    if (highlightedCode === null) continue;
-    element.outerHTML = highlightedCode.outerHTML;
+    if (code === undefined || language === undefined) continue;
+    let highlightedCode;
+    try {
+      highlightedCode = highlighter.codeToHtml(code, language);
+    } catch (error) {
+      console.error(error);
+      continue;
+    }
+    const highlightedLines = new JSDOM(highlightedCode).window.document
+      .querySelector("code")
+      .innerHTML.split("\n");
+    if (isNumber)
+      for (const [index, line] of Object.entries(highlightedLines))
+        highlightedLines[index] = `<span class="line-number">${String(
+          Number(index) + 1
+        ).padStart(String(highlightedLines.length).length)}</span>  ${line}`;
+    for (const highlightLine of highlightLines) {
+      const index = highlightLine - 1;
+      const line = highlightedLines[index];
+      highlightedLines[index] = `<div class="highlight-line">${line}</div>`;
+    }
+    element.innerHTML = highlightedLines.join("\n");
   }
 
   // Remove draft
   if (process.env.NODE_ENV === "production")
     for (const element of document.querySelectorAll(".draft")) element.remove();
-}
-
-async function highlight(code, language) {
-  try {
-    return new JSDOM(
-      (await shiki.getHighlighter({ theme: "light_plus" })).codeToHtml(
-        code,
-        language
-      )
-    ).window.document.querySelector("code");
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
 }
