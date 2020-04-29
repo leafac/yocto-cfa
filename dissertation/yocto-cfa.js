@@ -120,10 +120,12 @@ async function processHTML(/** @type {Document} */ document) {
 }
 
 async function highlight(code, language) {
-  const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
   try {
     return new JSDOM(
-      highlighter.codeToHtml(code, language)
+      (await shiki.getHighlighter({ theme: "light_plus" })).codeToHtml(
+        code,
+        language
+      )
     ).window.document.querySelector("pre");
   } catch (error) {
     console.error(error);
