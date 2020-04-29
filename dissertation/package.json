@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon --ext md,js,css build.js",
-    "build": "node build.js",
+    "start": "nodemon --ext md,js,css yocto-cfa.js",
+    "build": "node yocto-cfa.js",
     "clean": "rm -f *.html *.pdf",
     "test": "npm run build && prettier --check '*.{md,js,css}'"
   },
