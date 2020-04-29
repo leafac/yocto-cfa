@@ -53,7 +53,7 @@ async function processHTML(/** @type {Document} */ document) {
       `<div class="timestamp draft">${timestamp}</div>`
     );
 
-  // Number headings
+  // Add heading counter
   const counter = [];
   for (const element of document.querySelectorAll(
     "main h1, main h2, main h3, main h4, main h5, main h6"
@@ -62,7 +62,7 @@ async function processHTML(/** @type {Document} */ document) {
     while (counter.length < level) counter.push(0);
     counter.splice(level);
     counter[level - 1]++;
-    element.innerHTML = `<span class="heading-number">${counter.join(
+    element.innerHTML = `<span class="heading-counter">${counter.join(
       "."
     )}</span> ${element.innerHTML}<code class="draft"> (#${element.id})</code>`;
   }
@@ -89,12 +89,12 @@ async function processHTML(/** @type {Document} */ document) {
   // Resolve cross-references
   for (const element of document.querySelectorAll(`main a[href^="#"]`)) {
     const href = element.getAttribute("href");
-    const target = document.querySelector(`${href} .heading-number`);
+    const target = document.querySelector(`${href} .heading-counter`);
     if (target === null) console.error(`Undefined reference ${href}`);
     element.textContent = `§ ${target?.textContent ?? "??"}`;
   }
 
-  // Syntax highlighting
+  // Add syntax highlighting
   for (const element of document.querySelectorAll("pre")) {
     const language = element
       .querySelector(`[class^="language-"]`)
