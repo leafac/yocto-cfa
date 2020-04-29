@@ -100,8 +100,8 @@ async function processHTML(/** @type {Document} */ document) {
   for (const element of document.querySelectorAll("code")) {
     let code;
     let language;
-    let isNumber = false;
-    let highlightLines = [];
+    let shouldNumberLines = false;
+    let linesToHighlight = [];
     if (element.className.startsWith("language-")) {
       code = element.textContent;
       const match = element.className.match(
@@ -110,9 +110,9 @@ async function processHTML(/** @type {Document} */ document) {
       language = match.groups.language;
       if (match.groups.options !== undefined)
         for (const option of match.groups.options.split("|"))
-          if (option === "number") isNumber = true;
+          if (option === "number") shouldNumberLines = true;
           else if (option.match(/^[0-9,\-\.]+$/))
-            highlightLines = rangeParser(option);
+            linesToHighlight = rangeParser(option);
           else console.error(`Unrecognized option for code block: ${option}`);
     } else {
       const segments = element.textContent.split("◊");
@@ -129,13 +129,13 @@ async function processHTML(/** @type {Document} */ document) {
     const highlightedLines = new JSDOM(highlightedCode).window.document
       .querySelector("code")
       .innerHTML.split("\n");
-    if (isNumber)
+    if (shouldNumberLines)
       for (const [index, line] of Object.entries(highlightedLines))
         highlightedLines[index] = `<span class="line-number">${String(
           Number(index) + 1
         ).padStart(String(highlightedLines.length).length)}</span>  ${line}`;
-    for (const highlightLine of highlightLines) {
-      const index = highlightLine - 1;
+    for (const lineToHighlight of linesToHighlight) {
+      const index = lineToHighlight - 1;
       const line = highlightedLines[index];
       highlightedLines[index] = `<div class="highlight-line">${line}</div>`;
     }
