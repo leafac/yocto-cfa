@@ -5,7 +5,6 @@
 <meta name="author" content="Leandro Facchinetti">
 <meta name="subject" content="TODO">
 <meta name="keywords" content="todo, todo, ...">
-<link rel="stylesheet" href="yocto-cfa.css">
 </head>
 <body>
 <header>

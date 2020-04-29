@@ -15,7 +15,7 @@ const { JSDOM } = require("jsdom");
     .processSync(markdown).contents;
   fs.writeFileSync("yocto-cfa--raw.html", rawHTML);
   const dom = new JSDOM(rawHTML);
-  await processDocument(dom.window.document);
+  await processHTML(dom.window.document);
   const processedHTML = dom.serialize();
   fs.writeFileSync("yocto-cfa--processed.html", processedHTML);
   child_process.execFileSync(
@@ -32,18 +32,24 @@ const { JSDOM } = require("jsdom");
   );
 })();
 
-async function processDocument(/** @type {Document} */ document) {
-  // Add timestamps
-  const now = new Date().toISOString();
+async function processHTML(/** @type {Document} */ document) {
+  // Add stylesheet
   document.head.insertAdjacentHTML(
     "beforeend",
-    `<meta name="date" content="${now.split("T")[0]}">`
+    `<link rel="stylesheet" href="yocto-cfa.css">`
+  );
+
+  // Add timestamp
+  const timestamp = new Date().toISOString();
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `<meta name="date" content="${timestamp.split("T")[0]}">`
   );
   document
     .querySelector(".title-page")
     .insertAdjacentHTML(
       "beforeend",
-      `<div class="timestamp draft">${now}</div>`
+      `<div class="timestamp draft">${timestamp}</div>`
     );
 
   // Number headings
@@ -83,10 +89,10 @@ async function processDocument(/** @type {Document} */ document) {
 
   // Resolve cross-references
   document.querySelectorAll(`main a[href^="#"]`).forEach((element) => {
-    element.textContent = `§ ${
-      document.querySelector(`${element.getAttribute("href")} .heading-number`)
-        ?.textContent ?? "??"
-    }`;
+    const href = element.getAttribute("href");
+    const target = document.querySelector(`${href} .heading-number`);
+    if (target === null) console.error(`Undefined reference ${href}`);
+    element.textContent = `§ ${target?.textContent ?? "??"}`;
   });
 
   // Remove draft
