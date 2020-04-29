@@ -67,6 +67,8 @@ $$
 
 ### Subsection 2.2.2
 
+Some inline code `js◊function () {}`.
+
 ```js
 const config = {
   resolve: `gatsby-source-filesystem`, // highlight-line

@@ -2,6 +2,7 @@ const fs = require("fs");
 const child_process = require("child_process");
 const remark = require("remark");
 const { JSDOM } = require("jsdom");
+const shiki = require("shiki");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md");
@@ -54,19 +55,17 @@ async function processHTML(/** @type {Document} */ document) {
 
   // Number headings
   const counter = [];
-  document
-    .querySelectorAll("main h1, main h2, main h3, main h4, main h5, main h6")
-    .forEach((element) => {
-      const level = element.tagName[1];
-      while (counter.length < level) counter.push(0);
-      counter.splice(level);
-      counter[level - 1]++;
-      element.innerHTML = `<span class="heading-number">${counter.join(
-        "."
-      )}</span> ${element.innerHTML}<code class="draft"> (#${
-        element.id
-      })</code>`;
-    });
+  for (const element of document.querySelectorAll(
+    "main h1, main h2, main h3, main h4, main h5, main h6"
+  )) {
+    const level = element.tagName[1];
+    while (counter.length < level) counter.push(0);
+    counter.splice(level);
+    counter[level - 1]++;
+    element.innerHTML = `<span class="heading-number">${counter.join(
+      "."
+    )}</span> ${element.innerHTML}<code class="draft"> (#${element.id})</code>`;
+  }
 
   // Add Table of Contents
   document
@@ -88,14 +87,46 @@ async function processHTML(/** @type {Document} */ document) {
     );
 
   // Resolve cross-references
-  document.querySelectorAll(`main a[href^="#"]`).forEach((element) => {
+  for (const element of document.querySelectorAll(`main a[href^="#"]`)) {
     const href = element.getAttribute("href");
     const target = document.querySelector(`${href} .heading-number`);
     if (target === null) console.error(`Undefined reference ${href}`);
     element.textContent = `§ ${target?.textContent ?? "??"}`;
-  });
+  }
+
+  // Syntax highlighting
+  for (const element of document.querySelectorAll("pre")) {
+    const language = element
+      .querySelector(`[class^="language-"]`)
+      ?.className?.slice("language-".length);
+    if (language === null) continue;
+    const highlightedCode = await highlight(element.textContent, language);
+    if (highlightedCode === null) continue;
+    element.outerHTML = highlightedCode.outerHTML;
+  }
+  for (const element of document.querySelectorAll("code")) {
+    if (element.parentElement.tagName === "pre") continue;
+    const segments = element.textContent.split("◊");
+    if (segments.length !== 2) continue;
+    const [language, code] = segments;
+    const highlightedCode = await highlight(code, language);
+    if (highlightedCode === null) continue;
+    element.outerHTML = highlightedCode.querySelector("code").outerHTML;
+  }
 
   // Remove draft
   if (process.env.NODE_ENV === "production")
-    document.querySelectorAll(".draft").forEach((element) => element.remove());
+    for (const element of document.querySelectorAll(".draft")) element.remove();
+}
+
+async function highlight(code, language) {
+  const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
+  try {
+    return new JSDOM(
+      highlighter.codeToHtml(code, language)
+    ).window.document.querySelector("pre");
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }
