@@ -67,11 +67,26 @@ $$
 
 ### Subsection 2.2.2
 
-Some inline code `js◊function () {}`.
+Some inline code with a language: `js◊function () {}`.
+
+Some inline code without a language: `function () {}`.
+
+```
+A block without a language
+```
 
 ```js
 const config = {
-  resolve: `gatsby-source-filesystem`, // highlight-line
+  resolve: `gatsby-source-filesystem`,
+  options: {
+    path: `${__dirname}/src`,
+  },
+};
+```
+
+```js{number:true}
+const config = {
+  resolve: `gatsby-source-filesystem`,
   options: {
     path: `${__dirname}/src`,
   },

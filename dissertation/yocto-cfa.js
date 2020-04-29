@@ -95,23 +95,20 @@ async function processHTML(/** @type {Document} */ document) {
   }
 
   // Add syntax highlighting
-  for (const element of document.querySelectorAll("pre")) {
-    const language = element
-      .querySelector(`[class^="language-"]`)
-      ?.className?.slice("language-".length);
-    if (language === null) continue;
-    const highlightedCode = await highlight(element.textContent, language);
-    if (highlightedCode === null) continue;
-    element.outerHTML = highlightedCode.outerHTML;
-  }
   for (const element of document.querySelectorAll("code")) {
-    if (element.parentElement.tagName === "pre") continue;
-    const segments = element.textContent.split("◊");
-    if (segments.length !== 2) continue;
-    const [language, code] = segments;
+    let code;
+    let language;
+    if (element.className.startsWith("language-")) {
+      code = element.textContent;
+      language = element.className.slice("language-".length);
+    } else {
+      const segments = element.textContent.split("◊");
+      if (segments.length === 2) [language, code] = segments;
+    }
+    if (language === undefined) continue;
     const highlightedCode = await highlight(code, language);
     if (highlightedCode === null) continue;
-    element.outerHTML = highlightedCode.querySelector("code").outerHTML;
+    element.outerHTML = highlightedCode.outerHTML;
   }
 
   // Remove draft
@@ -126,7 +123,7 @@ async function highlight(code, language) {
         code,
         language
       )
-    ).window.document.querySelector("pre");
+    ).window.document.querySelector("code");
   } catch (error) {
     console.error(error);
     return null;
