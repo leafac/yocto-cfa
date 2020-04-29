@@ -34,7 +34,7 @@ p + p {
 h1,
 h2,
 h3 {
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 h1 {
@@ -54,14 +54,6 @@ pre {
   font-size: 10pt;
   line-height: 1.2;
   white-space: pre-wrap;
-}
-
-.grvsc-line {
-  display: block;
-}
-
-.grvsc-line-highlighted {
-  background-color: #e0ffff;
 }
 
 .draft {
@@ -118,10 +110,6 @@ header {
 #table-of-contents + ul {
   list-style-type: none;
   margin: 0;
-}
-
-#table-of-contents + ul a {
-  content: normal;
 }
 
 #table-of-contents + ul a::after {
