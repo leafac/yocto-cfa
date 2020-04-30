@@ -56,9 +56,8 @@ async function processHTML(/** @type {Document} */ document) {
     while (counter.length < level) counter.push(0);
     counter.splice(level);
     counter[level - 1]++;
-    element.innerHTML = `<span class="heading-counter">${counter.join(
-      "."
-    )}</span> ${element.innerHTML}<code class="draft"> (#${element.id})</code>`;
+    const counterString = counter.join(".");
+    element.innerHTML = `<span class="heading-counter">${counterString}</span> ${element.innerHTML}<code class="draft"> (#${element.id})</code>`;
   }
 
   // Add Table of Contents
@@ -78,7 +77,7 @@ async function processHTML(/** @type {Document} */ document) {
   for (const element of document.querySelectorAll(`main a[href^="#"]`)) {
     const href = element.getAttribute("href");
     const target = document.querySelector(`${href} .heading-counter`);
-    if (target === null) console.error(`Undefined reference: ${href}`);
+    if (target === null) console.error(`Undefined cross-reference: ${href}`);
     element.textContent = `§ ${target?.textContent ?? "??"}`;
   }
 
@@ -128,6 +127,12 @@ async function processHTML(/** @type {Document} */ document) {
     for (const lineToHighlight of linesToHighlight) {
       const index = lineToHighlight - 1;
       const line = highlightedLines[index];
+      if (line === undefined) {
+        console.error(
+          `Failed to highlight line out of range: ${lineToHighlight}`
+        );
+        continue;
+      }
       highlightedLines[index] = `<div class="highlight-line">${line}</div>`;
     }
     element.innerHTML = highlightedLines.join("\n");
