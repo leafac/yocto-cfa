@@ -5,6 +5,7 @@ const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
 const renderMathInElement = require("katex/dist/contrib/auto-render");
+const Cite = require("citation-js");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
@@ -81,6 +82,22 @@ async function processHTML(/** @type {Document} */ document) {
     element.textContent = `§ ${target?.textContent ?? "??"}`;
   }
 
+  // Add bibliography
+  const CSLTemplate = "acm-sig-proceedings";
+  Cite.CSL.register.addTemplate(
+    CSLTemplate,
+    fs.readFileSync(`${CSLTemplate}.csl`, "utf8")
+  );
+  document
+    .querySelector("#bibliography")
+    .insertAdjacentHTML(
+      "afterend",
+      new Cite(fs.readFileSync("yocto-cfa.bib", "utf8")).format(
+        "bibliography",
+        { format: "html", template: CSLTemplate }
+      )
+    );
+
   // Add syntax highlighting
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
   for (const element of document.querySelectorAll("code")) {
@@ -138,7 +155,7 @@ async function processHTML(/** @type {Document} */ document) {
     element.innerHTML = highlightedLines.join("\n");
   }
 
-  // Add math support
+  // Render mathematics
   document.head.insertAdjacentHTML(
     "beforeend",
     `<link rel="stylesheet" href="node_modules/katex/dist/katex.css">`
