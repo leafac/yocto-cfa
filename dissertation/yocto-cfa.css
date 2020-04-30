@@ -126,11 +126,11 @@ header {
   margin-top: 0.5in;
 }
 
-.table-of-contents--item a::after {
+.table-of-contents-item a::after {
   content: leader(dotted) target-counter(attr(href), page);
 }
 
-.table-of-contents--item a[data-section="header"]::after {
+.table-of-contents-item a[data-section="header"]::after {
   content: leader(dotted) target-counter(attr(href), page, lower-roman);
 }
 

@@ -69,7 +69,7 @@ async function processHTML(/** @type {Document} */ document) {
         const section = ["header", "main", "footer"].find(
           (section) => header.closest(section) !== null
         );
-        return `<div class="table-of-contents--item"><a href="#${header.id}" data-section="${section}">${header.innerHTML}</a></div>`;
+        return `<div class="table-of-contents-item"><a href="#${header.id}" data-section="${section}">${header.innerHTML}</a></div>`;
       })
       .join("")
   );
