@@ -1,25 +1,17 @@
 const fs = require("fs");
 const child_process = require("child_process");
-const remark = require("remark");
+const marked = require("marked");
 const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
 
 (async () => {
-  const markdown = fs.readFileSync("yocto-cfa.md");
-  const rawHTML = remark()
-    .use(require("remark-slug"))
-    .use(require("remark-math"))
-    .use(require("remark-html-katex"), {
-      output: "mathml",
-    })
-    .use(require("remark-html"))
-    .processSync(markdown).contents;
-  fs.writeFileSync("yocto-cfa--raw.html", rawHTML);
+  const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
+  const rawHTML = marked(markdown);
   const dom = new JSDOM(rawHTML);
   await processHTML(dom.window.document);
   const processedHTML = dom.serialize();
-  fs.writeFileSync("yocto-cfa--processed.html", processedHTML);
+  fs.writeFileSync("yocto-cfa.html", processedHTML);
   child_process.execFileSync(
     "node_modules/prince/prince/lib/prince/bin/prince",
     [
@@ -28,7 +20,7 @@ const rangeParser = require("parse-numeric-range");
       "--fail-dropped-content",
       "--fail-missing-resources",
       "--fail-missing-glyphs",
-      "yocto-cfa--processed.html",
+      "yocto-cfa.html",
       "--output=yocto-cfa.pdf",
     ]
   );
