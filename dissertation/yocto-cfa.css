@@ -137,3 +137,17 @@ header {
 main {
   counter-reset: page 1;
 }
+
+.csl-entry {
+  display: table-row;
+}
+
+.csl-left-margin,
+.csl-right-inline {
+  display: table-cell;
+}
+
+.csl-left-margin {
+  padding-right: 0.5em;
+  text-align: right;
+}
