@@ -24,6 +24,7 @@ a {
 
 code {
   font-family: "PT Mono", prince-no-fallback;
+  hyphens: none;
 }
 
 p + p {
@@ -62,6 +63,21 @@ pre .highlight-line {
 
 pre .line-number {
   color: #aaa;
+}
+
+fieldset {
+  padding: 0 1em;
+  border: 1px solid #dfdfdf;
+  border-radius: 3px;
+  box-decoration-break: slice;
+}
+
+legend {
+  position: absolute;
+  margin-top: -1em;
+  margin-left: -0.5em;
+  padding: 0 0.5em;
+  background-color: white;
 }
 
 .draft {
