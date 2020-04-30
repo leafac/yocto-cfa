@@ -129,11 +129,15 @@ async function processHTML(/** @type {Document} */ document) {
     const highlightedLines = new JSDOM(highlightedCode).window.document
       .querySelector("code")
       .innerHTML.split("\n");
-    if (shouldNumberLines)
-      for (const [index, line] of Object.entries(highlightedLines))
-        highlightedLines[index] = `<span class="line-number">${String(
-          Number(index) + 1
-        ).padStart(String(highlightedLines.length).length)}</span>  ${line}`;
+    if (shouldNumberLines) {
+      const width = String(highlightedLines.length).length;
+      for (const [index, line] of Object.entries(highlightedLines)) {
+        const lineNumber = String(Number(index) + 1).padStart(width);
+        highlightedLines[
+          index
+        ] = `<span class="line-number">${lineNumber}</span>  ${line}`;
+      }
+    }
     for (const lineToHighlight of linesToHighlight) {
       const index = lineToHighlight - 1;
       const line = highlightedLines[index];
