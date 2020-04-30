@@ -34,16 +34,12 @@ p + p {
 h1,
 h2,
 h3 {
+  margin-top: 2em;
   line-height: 1.2;
 }
 
 h1 {
   break-before: page;
-}
-
-h2,
-h3 {
-  margin-top: 2em;
 }
 
 .heading-counter {
@@ -130,16 +126,11 @@ header {
   margin-top: 0.5in;
 }
 
-#table-of-contents + ul {
-  list-style-type: none;
-  margin: 0;
-}
-
-#table-of-contents + ul a::after {
+.table-of-contents--item a::after {
   content: leader(dotted) target-counter(attr(href), page);
 }
 
-#table-of-contents + ul a[data-section="header"]::after {
+.table-of-contents--item a[data-section="header"]::after {
   content: leader(dotted) target-counter(attr(href), page, lower-roman);
 }
 

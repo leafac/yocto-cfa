@@ -62,23 +62,17 @@ async function processHTML(/** @type {Document} */ document) {
   }
 
   // Add Table of Contents
-  document
-    .querySelector("#table-of-contents")
-    .insertAdjacentHTML(
-      "afterend",
-      `<ul>${[...document.querySelectorAll("h1, h2, h3, h4, h5, h6")]
-        .map(
-          (header) =>
-            `<li><a href="#${header.id}" data-section="${[
-              "header",
-              "main",
-              "footer",
-            ].find((section) => header.closest(section) !== null)}">${
-              header.innerHTML
-            }</a></li>`
-        )
-        .join("")}</ul>`
-    );
+  document.querySelector("#table-of-contents").insertAdjacentHTML(
+    "afterend",
+    [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")]
+      .map((header) => {
+        const section = ["header", "main", "footer"].find(
+          (section) => header.closest(section) !== null
+        );
+        return `<div class="table-of-contents--item"><a href="#${header.id}" data-section="${section}">${header.innerHTML}</a></div>`;
+      })
+      .join("")
+  );
 
   // Resolve cross-references
   for (const element of document.querySelectorAll(`main a[href^="#"]`)) {
