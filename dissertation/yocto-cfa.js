@@ -4,6 +4,7 @@ const marked = require("marked");
 const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
+const renderMathInElement = require("katex/dist/contrib/auto-render");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
@@ -137,6 +138,20 @@ async function processHTML(/** @type {Document} */ document) {
     }
     element.innerHTML = highlightedLines.join("\n");
   }
+
+  // Add math support
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `<link rel="stylesheet" href="node_modules/katex/dist/katex.css">`
+  );
+  global.document = document;
+  renderMathInElement(document.body, {
+    delimiters: [
+      { left: "$$", right: "$$", display: true },
+      { left: "$", right: "$", display: false },
+    ],
+    output: "mathml",
+  });
 
   // Remove draft
   if (process.env.NODE_ENV === "production")

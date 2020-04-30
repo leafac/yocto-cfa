@@ -1,6 +1,5 @@
 @import "node_modules/typeface-pt-serif/index.css";
 @import "node_modules/typeface-pt-mono/index.css";
-@import "node_modules/katex/dist/katex.css";
 
 @page {
   size: US-Letter;
