@@ -113,7 +113,7 @@ async function processHTML(/** @type {Document} */ document) {
       console.error(error);
       continue;
     }
-    const highlightedLines = new JSDOM(highlightedCode).window.document
+    const highlightedLines = JSDOM.fragment(highlightedCode)
       .querySelector("code")
       .innerHTML.split("\n");
     if (shouldNumberLines) {
