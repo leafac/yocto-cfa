@@ -83,18 +83,13 @@ async function processHTML(/** @type {Document} */ document) {
   }
 
   // Add bibliography
-  const CSLTemplate = "acm-sig-proceedings";
-  Cite.CSL.register.addTemplate(
-    CSLTemplate,
-    fs.readFileSync(`${CSLTemplate}.csl`, "utf8")
-  );
   document
     .querySelector("#bibliography")
     .insertAdjacentHTML(
       "afterend",
       new Cite(fs.readFileSync("yocto-cfa.bib", "utf8")).format(
         "bibliography",
-        { format: "html", template: CSLTemplate }
+        { format: "html", template: "vancouver" }
       )
     );
 
