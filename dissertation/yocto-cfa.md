@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>Yocto-CFA</title>
+<title>Yocto-CFA: A Program Analyzer That You Can Understand</title>
 <meta name="author" content="Leandro Facchinetti">
 <meta name="subject" content="TODO">
 <meta name="keywords" content="todo, todo, ...">
@@ -9,7 +9,7 @@
 <body>
 <header>
 <div class="title-page">
-<div class="title">Yocto-CFA</div>
+<div class="title">Yocto-CFA:<br>A Program Analyzer That You Can Understand</div>
 <div class="author">by<br>Leandro Facchinetti</div>
 <div class="statement">A dissertation submitted to Johns Hopkins University<br>in conformity with the requirements for the degree of Doctor of Philosophy</div>
 <div class="publishing-location">Baltimore, Maryland<br>August 2020</div>
