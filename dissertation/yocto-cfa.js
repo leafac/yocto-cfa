@@ -28,10 +28,14 @@ const katex = require("katex");
 })();
 
 async function processHTML(/** @type {Document} */ document) {
-  // Add stylesheet
+  // Add non-content head stuff
   document.head.insertAdjacentHTML(
-    "beforeend",
-    `<link rel="stylesheet" href="yocto-cfa.css">`
+    "afterbegin",
+    `
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="yocto-cfa.css">
+    `
   );
 
   // Add timestamp

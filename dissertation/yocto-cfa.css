@@ -10,6 +10,14 @@
   }
 }
 
+@media screen {
+  body {
+    max-width: 600px;
+    margin: 2em auto;
+    padding: 0 1em;
+  }
+}
+
 body {
   font: 12pt/2 "PT Serif", prince-no-fallback;
   text-align: justify;
