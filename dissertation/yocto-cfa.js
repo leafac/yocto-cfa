@@ -125,8 +125,7 @@ async function processHTML(/** @type {Document} */ document) {
       if (match === null) continue;
       code = element.textContent;
       language = match.groups.language;
-      const options = match.groups.options;
-      for (const option of (options ?? "").split("}{"))
+      for (const option of (match.groups.options ?? "").split("}{"))
         if (option === "number") shouldNumberLines = true;
         else if (option.match(/^[0-9,\-\.]+$/))
           linesToHighlight = rangeParser(option);
