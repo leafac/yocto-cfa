@@ -89,9 +89,9 @@ A function call is written as \mintinline{js}{<function>(<argument>)}, for examp
 
 The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
-\begin{minted}{js}
+```js
 (x => x)(y => y)
-\end{minted}
+```
 
 This program is a function call in which the \mintinline{js}{<function>} is \mintinline{js}{x => x} and the \mintinline{js}{<argument>} is \mintinline{js}{y => y}. When called, an Yocto-JavaScript function returns the result of computing its \mintinline{js}{<body>} and the \mintinline{js}{<body>} of \mintinline{js}{x => x} is a reference to the variable \mintinline{js}{x}, so \mintinline{js}{x => x} is a function that returns its argument unchanged and the final result of the example above is \mintinline{js}{y => y}.
 
@@ -158,12 +158,12 @@ Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, whi
 
 The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of Step~0 (the \mintinline{ts}{>} represents the console):
 
-\begin{minted}{ts}
+```ts
 > evaluate("x => x")
 "x => x"
 > evaluate("(x => x)(y => y)")
 "y => y"
-\end{minted}
+```
 
 The implementation of \mintinline{ts}{evaluate()} is separated into three parts called \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{stringify()}:
 
@@ -171,11 +171,11 @@ The implementation of \mintinline{ts}{evaluate()} is separated into three parts 
 \includegraphics[page = 1]{images.pdf}
 \end{center}
 
-\begin{minted}{ts}
+```ts
 export function evaluate(input: string): string {
   return stringify(run(parse(input)));
 }
-\end{minted}
+```
 
 The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{stringify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{stringify()} to §~\ref{Step 0: Stringifier}.
 
@@ -202,11 +202,11 @@ The process of converting a program represented as a string into more convenient
 
 The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them, first in a high-level graphical representation and then in an equivalent low-level textual representation:
 
-\begin{minted}{ts}
+```ts
 > parse("x => x")
-\end{minted}
+```
 \includegraphics[page = 2]{images.pdf}
-\begin{minted}{ts}
+```ts
 {
   "type": "ArrowFunctionExpression",
   "params": [
@@ -220,13 +220,13 @@ The following are two examples of Yocto-JavaScript programs followed by the data
     "name": "x"
   }
 }
-\end{minted}
+```
 
-\begin{minted}{ts}
+```ts
 > parse("(x => x)(y => y)")
-\end{minted}
+```
 \includegraphics[page = 3]{images.pdf}
-\begin{minted}{ts}
+```ts
 {
   "type": "CallExpression",
   "callee": {
@@ -258,13 +258,13 @@ The following are two examples of Yocto-JavaScript programs followed by the data
     }
   ]
 }
-\end{minted}
+```
 
 We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Parser} and §~\ref{Step 0: Stringifier}).
 
 In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
 
-\begin{minted}{ts}
+```ts
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
 
 type ArrowFunctionExpression = {
@@ -283,7 +283,7 @@ type Identifier = {
   type: "Identifier";
   name: string;
 };
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -307,17 +307,17 @@ In later Steps almost everything about the interpreter will change, but the data
 
 We start the definition of \mintinline{ts}{run()} by considering the example above. As mentioned in §~\ref{Data Structures to Represent Yocto-JavaScript Programs}, the \mintinline{ts}{run()} function receives as parameter an Yocto-JavaScript program represented as an \mintinline{ts}{Expression}. The \mintinline{ts}{run()} function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see §~\ref{Values in Yocto-JavaScript}), so we start the implementation of \mintinline{ts}{run()} with the following (we use \mintinline{ts}{throw} as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
-\begin{minted}{ts}
+```ts
 type Value = ArrowFunctionExpression;
 
 function run(expression: Expression): Value {
   throw new Error("NOT IMPLEMENTED YET");
 }
-\end{minted}
+```
 
 The first thing that \mintinline{ts}{run()} has to do is determine which type of \mintinline{ts}{expression} it is given:
 
-\begin{minted}[highlightlines = {2-9}]{ts}
+```ts{2-9}
 function run(expression: Expression): Value {
   switch (expression.type) {
     case "ArrowFunctionExpression":
@@ -328,15 +328,15 @@ function run(expression: Expression): Value {
       throw new Error("NOT IMPLEMENTED YET");
   }
 }
-\end{minted}
+```
 
 In our current example, the \mintinline{ts}{expression} already is a \mintinline{ts}{Value}, so it may be returned unchanged:
 
-\begin{minted}[highlightlines = {3}]{ts}
+```ts{3}
 // run()
 case "ArrowFunctionExpression":
   return expression;
-\end{minted}
+```
 
 ### A Call Involving Immediate Functions
 
@@ -353,7 +353,7 @@ Interpreting function calls is the main responsibility of our interpreter. There
 
 In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
-\begin{minted}[highlightlines = {3-7}]{ts}
+```ts{3-7}
 // run()
 case "CallExpression":
   if (
@@ -362,11 +362,11 @@ case "CallExpression":
   )
     throw new Error("NOT IMPLEMENTED YET");
   throw new Error("NOT IMPLEMENTED YET");
-\end{minted}
+```
 
 Next, we unpack the called function (using something called \emph{destructuring assignment}~\cite{javascript-destructuring-assignment}) and the argument:
 
-\begin{minted}[highlightlines = {8-12}]{ts}
+```ts{8-12}
 // run()
 case "CallExpression":
   if (
@@ -380,7 +380,7 @@ case "CallExpression":
   } = expression.callee;
   const argument = expression.arguments[0];
   throw new Error("NOT IMPLEMENTED YET");
-\end{minted}
+```
 
 Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} that implements the traversal of the \mintinline{ts}{body} looking for references to \mintinline{ts}{parameter} and substituting them:
 
@@ -388,7 +388,7 @@ Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} tha
 \includegraphics[page = 4]{images.pdf}
 \end{center}
 
-\begin{minted}[highlightlines = {13-19}]{ts}
+```ts{13-19}
 // run()
 case "CallExpression":
   if (
@@ -408,11 +408,11 @@ case "CallExpression":
   function substitute(expression: Expression): Expression {
     throw new Error("NOT IMPLEMENTED YET");
   }
-\end{minted}
+```
 
 Similar to \mintinline{ts}{run()} itself, \mintinline{ts}{substitute()} starts by determining which type of \mintinline{ts}{expression} is passed to it:
 
-\begin{minted}[highlightlines = {2-9}]{ts}
+```ts{2-9}
 function substitute(expression: Expression): Expression {
   switch (expression.type) {
     case "ArrowFunctionExpression":
@@ -423,7 +423,7 @@ function substitute(expression: Expression): Expression {
       throw new Error("NOT IMPLEMENTED YET");
   }
 }
-\end{minted}
+```
 
 In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an \mintinline{ts}{Identifier}, and it must be substituted with the \mintinline{ts}{argument}:
 
@@ -431,11 +431,11 @@ In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an
 \includegraphics[page = 5]{images.pdf}
 \end{center}
 
-\begin{minted}[highlightlines = {3}]{ts}
+```ts{3}
 // substitute()
 case "Identifier":
   return argument;
-\end{minted}
+```
 
 ### Substitution in Function Definitions
 
@@ -454,14 +454,14 @@ When \mintinline{ts}{substitute()} (see §~\ref{A Call Involving Immediate Funct
 \includegraphics[page = 6]{images.pdf}
 \end{center}
 
-\begin{minted}[highlightlines = {3-6}]{ts}
+```ts{3-6}
 // substitute()
 case "ArrowFunctionExpression":
   return {
     ...expression,
     body: substitute(expression.body),
   };
-\end{minted}
+```
 
 ### Name Mismatch
 
@@ -475,12 +475,12 @@ case "ArrowFunctionExpression":
 
 The implementation of \mintinline{ts}{substitute()} in the case of \mintinline{ts}{Identifier} introduced in §~\ref{A Call Involving Immediate Functions} \emph{always} substitutes variable references, regardless of whether they refer to the \mintinline{ts}{parameter} of the called function. For example, in the program above \mintinline{ts}{substitute()} is substituting the \mintinline{js}{z} even though the \mintinline{ts}{parameter} is \mintinline{js}{x}. To fix this, we check whether the variable reference matches the \mintinline{ts}{parameter}, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
 
-\begin{minted}[highlightlines = {3}]{ts}
+```ts{3}
 // substitute()
 case "Identifier":
   if (expression.name !== parameter.name) return expression;
   return argument;
-\end{minted}
+```
 
 ### Name Reuse
 
@@ -510,7 +510,7 @@ We say that the problem with Option~1 is that it defeats something called \emph{
 
 We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (there is no recursive call to \mintinline{ts}{substitute()} in this case):
 
-\begin{minted}[highlightlines = {3}]{ts}
+```ts{3}
 // substitute()
 case "ArrowFunctionExpression":
   if (expression.params[0].name === parameter.name) return expression;
@@ -518,7 +518,7 @@ case "ArrowFunctionExpression":
     ...expression,
     body: substitute(expression.body),
   };
-\end{minted}
+```
 
 ### Substitution in Function Calls
 
@@ -533,7 +533,7 @@ case "ArrowFunctionExpression":
 
 This case is similar to §~\ref{Substitution in Function Definitions}: all \mintinline{ts}{substitute()} has to do is continue traversing the function call recursively:
 
-\begin{minted}[highlightlines = {3-7}]{ts}
+```ts{3-7}
 // substitute()
 case "CallExpression":
   return {
@@ -541,7 +541,7 @@ case "CallExpression":
     callee: substitute(expression.callee),
     arguments: [substitute(expression.arguments[0])],
   };
-\end{minted}
+```
 
 ### An Argument That Is Not Immediate
 
@@ -556,7 +556,7 @@ case "CallExpression":
 
 In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the immediate function unchanged; see §~\ref{An Expression That Already Is a Value}):
 
-\begin{minted}[highlightlines = {3-4, 9}]{ts}
+```ts{3-4,9}
 // run()
 case "CallExpression":
   if (expression.callee.type !== "ArrowFunctionExpression")
@@ -573,7 +573,7 @@ case "CallExpression":
   function substitute(expression: Expression): Expression {
     // ...
   }
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -602,7 +602,7 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 
 This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call \mintinline{ts}{run()} recursively (we also remove the check of whether the function is immediate):
 
-\begin{minted}[highlightlines = {6}]{ts}
+```ts{6}
 // run()
 case "CallExpression":
   const {
@@ -617,7 +617,7 @@ case "CallExpression":
   function substitute(expression: Expression): Expression {
     // ...
   }
-\end{minted}
+```
 
 ### Continuing to Run After a Function Call
 
@@ -632,7 +632,7 @@ case "CallExpression":
 
 This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (we also remove yet another check and inline the \mintinline{ts}{substitutedBody} variable):
 
-\begin{minted}[highlightlines = {8}]{ts}
+```ts{8}
 // run()
 case "CallExpression":
   const {
@@ -644,7 +644,7 @@ case "CallExpression":
   function substitute(expression: Expression): Expression {
     // ...
   }
-\end{minted}
+```
 
 ### A Reference to an Undefined Variable
 
@@ -658,11 +658,11 @@ case "CallExpression":
 
 The only case in which \mintinline{ts}{run()} may encounter a variable reference directly is if the referenced variable is undefined, otherwise \mintinline{ts}{substitute()} would have already substituted it (see §~\ref{A Call Involving Immediate Functions}–§~\ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
 
-\begin{minted}[highlightlines = {3}]{ts}
+```ts{3}
 // run()
 case "Identifier":
   throw new Error(`Reference to undefined variable: ${expression.name}`);
-\end{minted}
+```
 
 \begin{center}
 \begin{tabular}{ll}
@@ -679,7 +679,7 @@ If the reference to an undefined variable occurs in the body of a function that 
 
 The implementation of the \mintinline{ts}{run()} function is complete:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 type Value = ArrowFunctionExpression;
 
 function run(expression: Expression): Value {
@@ -716,7 +716,7 @@ function run(expression: Expression): Value {
       throw new Error(`Reference to undefined variable: ${expression.name}`);
   }
 }
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -773,7 +773,7 @@ The parser is responsible for converting an Yocto-JavaScript program written as 
 
 Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 function parse(input: string): Expression {
   const program = esprima.parseScript(input, { range: true }, checkFeatures);
   const expression = (program as any).body[0].expression as Expression;
@@ -803,7 +803,7 @@ function parse(input: string): Expression {
     }
   }
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Line 1:]
@@ -858,7 +858,7 @@ In later Steps almost everything about the interpreter will change, but the pars
 
 The stringifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the stringifier:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 function stringify(value: Value): string {
   return prettier
     .format(escodegen.generate(value), {
@@ -868,7 +868,7 @@ function stringify(value: Value): string {
     })
     .trim();
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Line 4:]
@@ -1009,7 +1009,7 @@ Another way to reason about an environment-based interpreter is that it is a sub
 
 The following are the data structures used to represent environments and closures:
 
-\begin{minted}{ts}
+```ts
 type Value = Closure;
 
 type Closure = {
@@ -1018,19 +1018,19 @@ type Closure = {
 };
 
 type Environment = MapDeepEqual<Identifier["name"], Value>;
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Implementation Details</strong></legend>
 
 The \mintinline{ts}{MapDeepEqual} data structure is provided by a JavaScript package developed by the author called Collections Deep Equal~\cite{collections-deep-equal}. A \mintinline{ts}{MapDeepEqual} is similar to a \mintinline{ts}{Map}, except that the keys are compared by value, not by reference, for example:
 
-\begin{minted}{ts}
+```ts
 > new Map([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
 undefined
 > new MapDeepEqual([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
 "Leandro"
-\end{minted}
+```
 
 The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key and value, but they are not the same object.
 
@@ -1040,7 +1040,7 @@ The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key an
 
 The runner needs to maintain an environment, so we modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 0: The Entire Runner} to introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
 
-\begin{minted}[linenos, highlightlines = {2-3, 11-13}]{ts}
+```ts{number}{2-3,11-13}
 function run(expression: Expression): Value {
   return step(expression, new MapDeepEqual());
   function step(expression: Expression, environment: Environment): Value {
@@ -1079,7 +1079,7 @@ function run(expression: Expression): Value {
     }
   }
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Line 3:]
@@ -1109,11 +1109,11 @@ The listing above does not compile yet because we are not producing closures. In
 
 When the interpreter encounters a function definition, it captures the current \mintinline{ts}{environment} in a closure:
 
-\begin{minted}{ts}
+```ts
 // step()
 case "ArrowFunctionExpression":
   return { function: expression, environment };
-\end{minted}
+```
 
 ### A Function Call
 
@@ -1128,7 +1128,7 @@ case "ArrowFunctionExpression":
 
 First, we remove \mintinline{ts}{substitute()}, which is the goal of Step~1:
 
-\begin{minted}[highlightlines = {8}]{ts}
+```ts{8}
 // step()
 case "CallExpression":
   const {
@@ -1137,11 +1137,11 @@ case "CallExpression":
   } = step(expression.callee, environment);
   const argument = step(expression.arguments[0], environment);
   return step(body, environment);
-\end{minted}
+```
 
 Next, we fix the pattern that matches the result of the interpretation of the called function to take in account the closure:
 
-\begin{minted}[highlightlines = {4, 7, 8}]{ts}
+```ts{4,7,8}
 // step()
 case "CallExpression":
   const {
@@ -1153,11 +1153,11 @@ case "CallExpression":
   } = step(expression.callee, environment);
   const argument = step(expression.arguments[0], environment);
   return step(body, environment);
-\end{minted}
+```
 
 Finally, we modify the recursive call to \mintinline{ts}{step()} that interprets the function body so that it receives a new augmented \mintinline{ts}{environment} including a mapping from the \mintinline{ts}{parameter} (for example, \mintinline{js}{x}) to the \mintinline{ts}{argument} (for example, $\langle \mintinline{js}{(y => y)}, [] \rangle$):
 
-\begin{minted}[linenos, highlightlines = {11-14}]{ts}
+```ts{number}{11-14}
 // step()
 case "CallExpression":
   const {
@@ -1172,7 +1172,7 @@ case "CallExpression":
     body,
     new MapDeepEqual(environment).set(parameter.name, argument)
   );
-\end{minted}
+```
 
 ### Name Reuse
 
@@ -1207,7 +1207,7 @@ If a name is reused (for example, \mintinline{js}{x} in the example program abov
 
 When we encounter a variable reference, we look it up in the current environment:
 
-\begin{minted}[highlightlines = {3-8}]{ts}
+```ts{3-8}
 // step()
 case "Identifier":
   const value = environment.get(expression.name);
@@ -1216,7 +1216,7 @@ case "Identifier":
       `Reference to undefined variable: ${expression.name}`
     );
   return value;
-\end{minted}
+```
 
 ### A Function Body Is Evaluated with the Environment in Its Closure
 
@@ -1270,7 +1270,7 @@ But this leads to an issue: we may not reason about \mintinline{js}{z => x} by l
 
 To implement this, we change the recursive call to \mintinline{ts}{step()} that evaluates the function body so that it uses the environment coming from the closure (\mintinline{js}{functionEnvironment}) instead of the current environment (\mintinline{js}{environment}):
 
-\begin{minted}[highlightlines = {13}]{ts}
+```ts{13}
 // step()
 case "CallExpression":
   const {
@@ -1285,7 +1285,7 @@ case "CallExpression":
     body,
     new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
   );
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -1306,7 +1306,7 @@ There are languages that implement dynamic scoping. In some cases dynamic scopin
 
 We completed the changes necessary to transform the \mintinline{ts}{run()} function from the substitution-based interpreter in Step~0 into an environment-based interpreter:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 type Value = Closure;
 
 type Closure = {
@@ -1345,7 +1345,7 @@ function run(expression: Expression): Value {
     }
   }
 }
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -1393,7 +1393,7 @@ We modify the stringifier from §~\ref{Step 0: Stringifier} to support closures.
 $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$
 \end{center}
 
-\begin{minted}{js}
+```js
 {
   "function": "z => x",
   "environment": [
@@ -1406,11 +1406,11 @@ $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinl
     ]
   ]
 }
-\end{minted}
+```
 
 The following is the modified implementation of \mintinline{ts}{stringify()}:
 
-\begin{minted}[linenos, highlightlines = {1, 2, 4, 5, 15}]{ts}
+```ts{number}{1,2,4,5,15}
 function stringify(value: any): string {
   return JSON.stringify(
     value,
@@ -1428,7 +1428,7 @@ function stringify(value: any): string {
     2
   );
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Line 1:]
@@ -1550,19 +1550,19 @@ The technique used in Step~2 is related to the run-time environments that are th
 
 The following are the data structures used to represent environments, stores, and addresses:
 
-\begin{minted}{ts}
+```ts
 type Environment = MapDeepEqual<Identifier["name"], Address>;
 
 type Store = MapDeepEqual<Address, Value>;
 
 type Address = number;
-\end{minted}
+```
 
 ### Adding a Store to the Runner
 
 We modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 1: The Entire Runner} to introduce a \mintinline{ts}{store}:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 function run(expression: Expression): { value: Value; store: Store } {
   const store: Store = new MapDeepEqual();
   return { value: step(expression, new MapDeepEqual()), store };
@@ -1570,7 +1570,7 @@ function run(expression: Expression): { value: Value; store: Store } {
     // ...
   }
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Lines 1 and 3:]
@@ -1596,7 +1596,7 @@ The \mintinline{ts}{store} is unique for the whole interpreter, unlike \mintinli
 
 In Step~1, when we encounter a function call we extend the \mintinline{ts}{functionEnvironment} with a mapping from the \mintinline{ts}{parameter.name} to the \mintinline{ts}{argument} (see §~\ref{A Function Call},~\ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step~2, we introduce the \mintinline{ts}{store} as a layer of indirection:
 
-\begin{minted}[linenos, highlightlines = {11, 12, 15}]{ts}
+```ts{number}{11,12,15}
 // step()
 case "CallExpression": {
   const {
@@ -1614,7 +1614,7 @@ case "CallExpression": {
     new MapDeepEqual(functionEnvironment).set(parameter.name, address)
   );
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Line 11:]
@@ -1643,7 +1643,7 @@ Extend the \mintinline{ts}{store} with a mapping from the \mintinline{ts}{addres
 
 In Step~1 we retrieved values directly from the \mintinline{ts}{environment} (see §~\ref{A Variable Reference}), but in Step~2 we have to go through the \mintinline{ts}{store}:
 
-\begin{minted}[linenos, highlightlines = {3, 8}]{ts}
+```ts{number}{3,8}
 // step()
 case "Identifier": {
   const address = environment.get(expression.name);
@@ -1653,7 +1653,7 @@ case "Identifier": {
     );
   return store.get(address)!;
 }
-\end{minted}
+```
 
 \begin{description}
 \item [Line 3:]
@@ -1669,7 +1669,7 @@ Retrieve the \mintinline{ts}{value} from the \mintinline{ts}{store} at the given
 
 We completed the changes necessary to remove the circularity between closures and environments:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 type Environment = MapDeepEqual<Identifier["name"], Address>;
 
 type Store = MapDeepEqual<Address, Value>;
@@ -1711,7 +1711,7 @@ function run(expression: Expression): { value: Value; store: Store } {
     }
   }
 }
-\end{minted}
+```
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -1785,7 +1785,7 @@ We address this issue in Step~3.
 
 We completed the changes necessary to produce only finitely many addresses:
 
-\begin{minted}[linenos]{ts}
+```ts{number}
 type Value = SetDeepEqual<Closure>;
 
 type Address = Identifier;
@@ -1830,7 +1830,7 @@ function run(expression: Expression): { value: Value; store: Store } {
     }
   }
 }
-\end{minted}
+```
 
 % TODO: Some loss of precision. Now it’s an analyzer (of sorts).
 
