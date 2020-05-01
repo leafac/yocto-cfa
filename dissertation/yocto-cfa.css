@@ -60,6 +60,10 @@ pre .line-number {
   color: #aaa;
 }
 
+.math {
+  text-align: center;
+}
+
 fieldset {
   padding: 0 1em;
   border: 1px solid #dfdfdf;

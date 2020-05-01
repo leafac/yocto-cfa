@@ -4,7 +4,7 @@ const marked = require("marked");
 const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
-const renderMathInElement = require("katex/dist/contrib/auto-render");
+const katex = require("katex");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
@@ -110,6 +110,31 @@ async function processHTML(/** @type {Document} */ document) {
   if (unusedCitations.size !== 0)
     console.error(`Unused citations: ${[...unusedCitations].join(", ")}`);
 
+  // Render mathematics
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `<link rel="stylesheet" href="node_modules/katex/dist/katex.css">`
+  );
+  const katexOptions = { output: "mathml" };
+  const mathInlinePrefix = "math`";
+  for (const element of document.querySelectorAll("code")) {
+    const isBlock = element.parentElement.tagName === "PRE";
+    if (isBlock) {
+      if (element.className !== "language-math") continue;
+      const renderedMath = katex.renderToString(
+        `\\displaystyle ${element.textContent}`,
+        katexOptions
+      );
+      element.parentElement.outerHTML = `<div class="math">${renderedMath}</div>`;
+    } else {
+      if (!element.textContent.startsWith(mathInlinePrefix)) continue;
+      element.outerHTML = katex.renderToString(
+        element.textContent.slice(mathInlinePrefix.length),
+        katexOptions
+      );
+    }
+  }
+
   // Add syntax highlighting
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
   for (const element of document.querySelectorAll("code")) {
@@ -168,20 +193,6 @@ async function processHTML(/** @type {Document} */ document) {
     }
     element.innerHTML = highlightedLines.join("\n");
   }
-
-  // Render mathematics
-  document.head.insertAdjacentHTML(
-    "beforeend",
-    `<link rel="stylesheet" href="node_modules/katex/dist/katex.css">`
-  );
-  global.document = document;
-  renderMathInElement(document.body, {
-    delimiters: [
-      { left: "$$", right: "$$", display: true },
-      { left: "$", right: "$", display: false },
-    ],
-    output: "mathml",
-  });
 
   // Make URLs monospaced
   for (const element of document.querySelectorAll("a"))
