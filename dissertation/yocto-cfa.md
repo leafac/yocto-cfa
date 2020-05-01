@@ -22,102 +22,31 @@
 - **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
 -->
 
+<!-- TODO: # Acknowledgements -->
+
+<!-- TODO: # Dedication -->
+
 # Table of Contents
 
 </header>
 <main>
 
+<!-- TODO:
+
+# Introduction
+
+- Link to GitHub
+-->
+
+# Developing an Analyzer
+
+<!-- TODO: An overview of the rest of the section -->
+
 <!--
-\documentclass[12pt, oneside]{book}
 
-\usepackage[a-1b]{pdfx}
-\hypersetup{hidelinks, bookmarksnumbered}
-\usepackage{tocbibind}
 
-\usepackage[top = 1in, right = 1in, bottom = 1in, left = 1.5in]{geometry}
-\pagestyle{plain}
-\usepackage[doublespacing]{setspace}
+## The Analyzed Language: Yocto-JavaScript
 
-\usepackage{graphicx}
-
-\usepackage{fontspec, unicode-math}
-\setmainfont{PT Serif}
-\setmonofont{PT Mono}
-\setmathfont{Asana Math}
-
-\usepackage{minted}
-\renewcommand{\MintedPygmentize}{node_modules/.bin/shiki-minted}
-\setminted{fontsize = \footnotesize, baselinestretch = 1.2, breaklines}
-\setmintedinline{fontsize = \normalsize, breaklines = false}
-
-\usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
-
-\usepackage{mathpartir, colortbl}
-\usepackage{datetime2} % TODO
-
-\frenchspacing
-\sloppy % TODO
-
-\begin{document}
-
-\frontmatter
-
-\begin{center}
-\begin{singlespace}
-\vspace*{0.5in}
-
-DRAFT: \DTMnow % TODO
-
-\textbf{\uppercase{Yocto-CFA}}
-
-\vspace*{1in}
-
-by\\Leandro Facchinetti
-
-\vspace*{1.5in}
-
-A dissertation submitted to Johns Hopkins University\\in conformity with the requirements for the degree of Doctor of Philosophy
-
-\vspace*{0.5in}
-
-Baltimore, Maryland\\August 2020
-\end{singlespace}
-\end{center}
-
-\thispagestyle{empty}
-\clearpage
-
-% TODO: \chapter{Abstract}
-
-% Not more than 350 words
-
-% \paragraph{Primary Reader and Advisor:}
-
-% Dr.~Scott Fraser Smith.
-
-% \paragraph{Readers:}
-
-% Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
-
-% TODO: \chapter{Acknowledgements}
-
-% TODO: \chapter{Dedication}
-
-\tableofcontents
-% TODO: \listoftables
-% TODO: \listoffigures
-
-\mainmatter
-
-% TODO: Introduction
-% TODO: Link to GitHub
-
-\chapter{Developing an Analyzer}
-
-% TODO: An overview of the rest of the section
-
-\section{The Analyzed Language: Yocto-JavaScript}
-\label{The Analyzed Language: Yocto-JavaScript}
 
 Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, a feature which is supported by most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
@@ -131,8 +60,8 @@ On the surface the choice of analyzed language is important because it determine
 Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}.
 \end{mdframed}
 
-\subsection{Values in Yocto-JavaScript}
-\label{Values in Yocto-JavaScript}
+### Values in Yocto-JavaScript
+
 
 JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
 
@@ -142,8 +71,8 @@ An Yocto-JavaScript function is written as \mintinline{js}{<parameter> => <body>
 The notation we use for writing functions is something called \emph{arrow function expressions}~\cite{javascript-arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of acting as values is what characterizes these functions as \emph{higher-order}.
 \end{mdframed}
 
-\subsection{Operations in Yocto-JavaScript}
-\label{Operations in Yocto-JavaScript}
+### Operations in Yocto-JavaScript
+
 
 JavaScript has many operations: strings may have its characters accessed (for example, \mintinline{js}{"Leandro"[2]}, which results in \mintinline{js}{"a"}), numbers may be added together (for example, \mintinline{js}{29 + 1}, which results in \mintinline{js}{30}), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
 
@@ -167,8 +96,8 @@ The order in which operations are computed is something called their \emph{prece
 
 \begin{mdframed}[frametitle = {Advanced}]
 
-\subsection{The Computational Power of Yocto-JavaScript}
-\label{The Computational Power of Yocto-JavaScript}
+### The Computational Power of Yocto-JavaScript
+
 
 Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages~\cite[§~6]{understanding-computation}.
 
@@ -180,8 +109,8 @@ All the languages we are considering are said to be equivalent in terms of \emph
 
 For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence~\cite{expressive-power}.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
 
-\subsection{A Formal Grammar for Yocto-JavaScript}
-\label{A Formal Grammar for Yocto-JavaScript}
+### A Formal Grammar for Yocto-JavaScript
+
 
 The description of Yocto-JavaScript given so far has been informal; the following is a grammar in \emph{Backus–Naur Form}~(BNF)~\cite{bnf}~\cite[§~4.2]{dragon-book} that formalizes it:
 
@@ -194,18 +123,18 @@ $x$ & ::= & \mintinline{text}{<A JavaScript Identifier>} & Variables \\
 
 \end{mdframed}
 
-\section{The Analyzer Language: TypeScript}
-\label{The Analyzer Language: TypeScript}
+## The Analyzer Language: TypeScript
+
 
 After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our analyzed language being based on JavaScript, we may choose to develop the analyzer in any language (for example, JavaScript, Java, Python, Ruby, and so forth), because the analyzer treats the analyzed program as data. Still, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Parser} and §~\ref{Step 0: Stringifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript-documentation, typescript-deep-dive, understanding-typescript}.
 
-\section{Step 0: Substitution-Based Interpreter}
-\label{Step 0: Substitution-Based Interpreter}
+## Step 0: Substitution-Based Interpreter
+
 
 Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of Steps in the development of the analyzer. The first Step is an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
 
-\subsection{Architecture}
-\label{Architecture}
+### Architecture
+
 
 Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
 
@@ -238,8 +167,8 @@ In later Steps the implementations of \mintinline{ts}{run()} and \mintinline{ts}
 The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{ts}{eval()}~\cite{javascript-eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript. The \mintinline{ts}{strinfigy()} function is named after a native JavaScript function called \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which is used in the implementation (see §~\ref{Step 1: Stringifier}).
 \end{mdframed}
 
-\subsection{Data Structures to Represent Yocto-JavaScript Programs}
-\label{Data Structures to Represent Yocto-JavaScript Programs}
+### Data Structures to Represent Yocto-JavaScript Programs
+
 
 The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x}. So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
 
@@ -338,8 +267,8 @@ The definitions above correspond to elements of the Yocto-JavaScript grammar (se
 
 In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.
 
-\subsection{An Expression That Already Is a Value}
-\label{An Expression That Already Is a Value}
+### An Expression That Already Is a Value
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -382,8 +311,8 @@ case "ArrowFunctionExpression":
   return expression;
 \end{minted}
 
-\subsection{A Call Involving Immediate Functions}
-\label{A Call Involving Immediate Functions}
+### A Call Involving Immediate Functions
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -481,8 +410,8 @@ case "Identifier":
   return argument;
 \end{minted}
 
-\subsection{Substitution in Function Definitions}
-\label{Substitution in Function Definitions}
+### Substitution in Function Definitions
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -507,7 +436,7 @@ case "ArrowFunctionExpression":
   };
 \end{minted}
 
-\subsection{Name Mismatch}
+### Name Mismatch
 
 \begin{center}
 \begin{tabular}{ll}
@@ -526,8 +455,8 @@ case "Identifier":
   return argument;
 \end{minted}
 
-\subsection{Name Reuse}
-\label{Step 0: Name Reuse}
+### Name Reuse
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -561,8 +490,8 @@ case "ArrowFunctionExpression":
   };
 \end{minted}
 
-\subsection{Substitution in Function Calls}
-\label{Substitution in Function Calls}
+### Substitution in Function Calls
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -584,8 +513,8 @@ case "CallExpression":
   };
 \end{minted}
 
-\subsection{An Argument That Is Not Immediate}
-\label{An Argument That Is Not Immediate}
+### An Argument That Is Not Immediate
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -624,8 +553,8 @@ This technique of calling \mintinline{ts}{run()} recursively to produce an immed
 The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a \emph{call-by-value} language~\cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a \emph{call-by-need} language. In a call-by-need language the argument is interpreted only if it is \emph{needed}, for example, if it is used in the function position of another call (see §~\ref{A Function That Is Not Immediate}), or if it is the result of the program (see §~\ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. And there is yet another policy for when to interpret arguments called \emph{call-by-name}: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
 \end{mdframed}
 
-\subsection{A Function That Is Not Immediate}
-\label{A Function That Is Not Immediate}
+### A Function That Is Not Immediate
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -654,8 +583,8 @@ case "CallExpression":
   }
 \end{minted}
 
-\subsection{Continuing to Run After a Function Call}
-\label{Continuing to Run After a Function Call}
+### Continuing to Run After a Function Call
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -681,7 +610,7 @@ case "CallExpression":
   }
 \end{minted}
 
-\subsection{A Reference to an Undefined Variable}
+### A Reference to an Undefined Variable
 
 \begin{center}
 \begin{tabular}{ll}
@@ -709,8 +638,8 @@ case "Identifier":
 
 If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. This is consistent with JavaScript’s behavior.
 
-\subsection{The Entire Runner}
-\label{Step 0: The Entire Runner}
+### The Entire Runner
+
 
 The implementation of the \mintinline{ts}{run()} function is complete:
 
@@ -754,8 +683,8 @@ function run(expression: Expression): Value {
 \end{minted}
 
 \begin{mdframed}[frametitle = {Advanced}]
-\subsection{An Operational Semantics for the Interpreter}
-\label{An Operational Semantics for the Interpreter}
+### An Operational Semantics for the Interpreter
+
 
 What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript; we also defined formally the \emph{meaning} of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the \emph{semantics} of the language, and there are several techniques to specify semantics; the one we are using so far is known as a \emph{definitional interpreter}~\cite{definitional-interpreters}.
 
@@ -798,8 +727,8 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{center}
 \end{mdframed}
 
-\subsection{Parser}
-\label{Parser}
+### Parser
+
 
 The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} for a high-level view of the architecture and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
 
@@ -885,8 +814,8 @@ All other types of \mintinline{ts}{estree.Node} are not supported by Yocto-JavaS
 
 In later Steps almost everything about the interpreter will change, but the parser will remain the same.
 
-\subsection{Stringifier}
-\label{Step 0: Stringifier}
+### Stringifier
+
 
 The stringifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the stringifier:
 
@@ -920,8 +849,8 @@ Instruct Prettier not to wrap parameters in parentheses, for example, \mintinlin
 Remove the newline at the end of the output produced by Prettier.
 \end{description}
 
-\subsection{Programs That Do Not Terminate}
-\label{Step 0: Programs That Do Not Terminate}
+### Programs That Do Not Terminate
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -989,11 +918,11 @@ Non-termination is what we expect from an interpreter, but not from an analyzer,
 Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the \emph{halting problem}, is said to be \emph{uncomputable}~\cite[§~8]{understanding-computation}, and is a direct consequence of the Turing completeness of Yocto-JavaScript (see §~\ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.
 \end{mdframed}
 
-\section{Step 1: Environment-Based Interpreter}
+## Step 1: Environment-Based Interpreter
 
 The interpreter in Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see §~\ref{Step 0: Programs That Do Not Terminate}). The source of non-termination in Step~0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step~1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step~1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
 
-\subsection{Avoiding Substitution by Introducing Environments and Closures}
+### Avoiding Substitution by Introducing Environments and Closures
 
 When the interpreter from Step~0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument, for example:
 
@@ -1025,7 +954,7 @@ In Step~1 we have a different notion of \emph{value}: while in Step~0 the interp
 Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
 \end{mdframed}
 
-\subsection{New Data Structures}
+### New Data Structures
 
 The following are the data structures used to represent environments and closures:
 
@@ -1053,7 +982,7 @@ undefined
 The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key and value, but they are not the same object.
 \end{mdframed}
 
-\subsection{Adding an Environment to the Runner}
+### Adding an Environment to the Runner
 
 The runner needs to maintain an environment, so we modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 0: The Entire Runner} to introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
 
@@ -1114,7 +1043,7 @@ The recursive calls to \mintinline{ts}{run()} are changed to recursive calls to 
 
 The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the \mintinline{ts}{environment} for each type of \mintinline{ts}{expression}.
 
-\subsection{A Function Definition}
+### A Function Definition
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1132,8 +1061,8 @@ case "ArrowFunctionExpression":
   return { function: expression, environment };
 \end{minted}
 
-\subsection{A Function Call}
-\label{A Function Call}
+### A Function Call
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1191,7 +1120,7 @@ case "CallExpression":
   );
 \end{minted}
 
-\subsection{Name Reuse}
+### Name Reuse
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1203,8 +1132,8 @@ case "CallExpression":
 
 If a name is reused (for example, \mintinline{js}{x} in the example program above), then the second time it is encountered by \mintinline{ts}{step()} it is overwritten in the \mintinline{ts}{environment} (see the call to \mintinline{ts}{set()} in line~13 of §~\ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to \mintinline{js}{x} to refer to the second (inner) \mintinline{ts}{x}, which is the expected behavior (it is what we called Option~2 in §~\ref{Step 0: Name Reuse}).
 
-\subsection{A Variable Reference}
-\label{A Variable Reference}
+### A Variable Reference
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1235,8 +1164,8 @@ case "Identifier":
   return value;
 \end{minted}
 
-\subsection{A Function Body Is Evaluated with the Environment in Its Closure}
-\label{A Function Body Is Evaluated with the Environment in Its Closure}
+### A Function Body Is Evaluated with the Environment in Its Closure
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1312,8 +1241,8 @@ The principle of being able to reason about a function only by looking at its de
 There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP~\cite{lisp-original}, though that was later considered a mistake~\cite{lisp-history}. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp~\cite[§~12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s \mintinline{clojure}{parameterize}~\cite[§~4.13]{racket-guide}.
 \end{mdframed}
 
-\subsection{The Entire Runner}
-\label{Step 1: The Entire Runner}
+### The Entire Runner
+
 
 We completed the changes necessary to transform the \mintinline{ts}{run()} function from the substitution-based interpreter in Step~0 into an environment-based interpreter:
 
@@ -1359,8 +1288,8 @@ function run(expression: Expression): Value {
 \end{minted}
 
 \begin{mdframed}[frametitle = {Advanced}]
-\subsection{Operational Semantics}
-\label{Step 1: Operational Semantics}
+### Operational Semantics
+
 
 We adapt the operational semantics from §~\ref{An Operational Semantics for the Interpreter} to the interpreter defined in Step~1. First, we change the notion of values:
 
@@ -1392,8 +1321,8 @@ We then define the relation $\rho \vdash e \Rightarrow v$ to be equivalent to th
 \end{mathpar}
 \end{mdframed}
 
-\subsection{Stringifier}
-\label{Step 1: Stringifier}
+### Stringifier
+
 
 We modify the stringifier from §~\ref{Step 0: Stringifier} to support closures. For example, the following is the representation of the closure from §~\ref{A Function Call}:
 
@@ -1462,8 +1391,8 @@ Format the output with indentation of two spaces.
 
 This implementation of \mintinline{ts}{stringify()} supports not only closures but any data structure (because of \mintinline{ts}{JSON.stringify()}), so it will remain the same in the following Steps.
 
-\subsection{Programs That Do Not Terminate}
-\label{Step 1: Programs That Do Not Terminate}
+### Programs That Do Not Terminate
+
 
 The programs that do not terminate in Step~0 (see §~\ref{Step 0: Programs That Do Not Terminate}) do not terminate in Step~1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step~0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step~1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
 
@@ -1503,11 +1432,11 @@ The interpreter in Step~1 may produce infinitely many different environments bec
 The nesting of environments in Step~1 characterizes them as something called \emph{recursive data structures}: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
 \end{mdframed}
 
-\section{Step 2: Store-Based Interpreter}
+## Step 2: Store-Based Interpreter
 
 The source of non-termination in Step~1 is the nesting of the environments (see §~\ref{Step 1: Programs That Do Not Terminate}). In Step~2, we address this issue by introducing a layer of indirection between a name in the environment and its corresponding value. The interpreter in Step~2 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
 
-\subsection{Avoiding Nested Environments by Introducing a Store}
+### Avoiding Nested Environments by Introducing a Store
 
 In Step~1 a closure contains an environment mapping names to other closures, which in turn contain their own environments mapping to yet more closures. In Step~2, we remove this circularity by introducing a layer of indirection: an environment maps names to \emph{addresses}, which may be used to lookup values in a \emph{store}, for example:
 
@@ -1548,7 +1477,7 @@ The runner must return the store along with the value, for the variable referenc
 The technique used in Step~2 is related to the run-time environments that are the target of traditional compilers for languages such as C~\cite[§~7]{dragon-book}: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.
 \end{mdframed}
 
-\subsection{New Data Structures}
+### New Data Structures
 
 The following are the data structures used to represent environments, stores, and addresses:
 
@@ -1560,7 +1489,7 @@ type Store = MapDeepEqual<Address, Value>;
 type Address = number;
 \end{minted}
 
-\subsection{Adding a Store to the Runner}
+### Adding a Store to the Runner
 
 We modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 1: The Entire Runner} to introduce a \mintinline{ts}{store}:
 
@@ -1584,8 +1513,8 @@ The \mintinline{ts}{store} is returned because it is necessary to look up variab
 The \mintinline{ts}{store} is unique for the whole interpreter, unlike \mintinline{ts}{environment}s which are different for each closure, so we create only one store that is always available to \mintinline{ts}{step()} instead of adding it as an extra parameter.
 \end{description}
 
-\subsection{Adding a Value to the Store}
-\label{Adding a Value to the Store}
+### Adding a Value to the Store
+
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1632,7 +1561,7 @@ Extend the \mintinline{ts}{functionEnvironment} with a mapping from the \mintinl
 Extend the \mintinline{ts}{store} with a mapping from the \mintinline{ts}{address} to the \mintinline{ts}{argument}. This is mutating the unique \mintinline{ts}{store} that is available to the entire \mintinline{ts}{step()} function, not creating a new \mintinline{ts}{store} in the same way that extending an \mintinline{ts}{environment} creates a new \mintinline{ts}{environment} (see line~15).
 \end{description}
 
-\subsection{Retrieving a Value from the Store}
+### Retrieving a Value from the Store
 
 \begin{center}
 \begin{tabular}{ll}
@@ -1667,7 +1596,7 @@ Retrieve the \mintinline{ts}{address} from the \mintinline{ts}{environment}.
 Retrieve the \mintinline{ts}{value} from the \mintinline{ts}{store} at the given \mintinline{ts}{address} found in the \mintinline{ts}{environment}. The \mintinline{ts}{address} is guaranteed to be in the \mintinline{ts}{store} because we extend the \mintinline{ts}{store} and the \mintinline{ts}{environment} together (see §~\ref{Adding a Value to the Store}), so we use \mintinline{ts}{!} to indicate that \mintinline{ts}{get()} may not return \mintinline{ts}{undefined}.
 \end{description}
 
-\subsection{The Entire Runner}
+### The Entire Runner
 
 We completed the changes necessary to remove the circularity between closures and environments:
 
@@ -1716,8 +1645,8 @@ function run(expression: Expression): { value: Value; store: Store } {
 \end{minted}
 
 \begin{mdframed}[frametitle = {Advanced}]
-\subsection{Operational Semantics}
-\label{Step 2: Operational Semantics}
+### Operational Semantics
+
 
 We adapt the operational semantics from §~\ref{Step 2: Operational Semantics} to the interpreter defined in Step~2. First, we change the notion of environments:
 
@@ -1751,8 +1680,8 @@ A = \lvert \sigma_a \rvert  \\
 \end{mathpar}
 \end{mdframed}
 
-\subsection{Programs That Do Not Terminate}
-\label{Step 2: Programs That Do Not Terminate}
+### Programs That Do Not Terminate
+
 
 The programs that do not terminate in Step~1 (see §~\ref{Step 1: Programs That Do Not Terminate}) do not terminate in Step~2 either, because the interpreters are equivalent except for the treatment of environments, but the sources of non-termination are different. In both cases the issue is that the interpreter may create infinitely many environments, but in Step~1 the environments are nested, and in Step~2 they contain different addresses, for example:
 
@@ -1778,9 +1707,9 @@ $\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinli
 
 We address this issue in Step~3.
 
-\section{Step 3: Finitely Many Addresses}
+## Step 3: Finitely Many Addresses
 
-\subsection{The Entire Runner}
+### The Entire Runner
 
 We completed the changes necessary to produce only finitely many addresses:
 
@@ -1850,17 +1779,6 @@ function run(expression: Expression): { value: Value; store: Store } {
 %       Garbage Collection
 %         Filtered environments to contain only the non-locals
 %         Filtered stores (proper garbage collection)
-
-% TODO: \appendix
-
-\backmatter
-
-\bibliographystyle{plain}
-\bibliography{\jobname}
-
-% TODO: \chapter{Biographical Statement}
-
-\end{document}
 -->
 
 </main>
@@ -1899,9 +1817,7 @@ function run(expression: Expression): { value: Value; store: Store } {
 1. <span id="typescript-deep-dive"></span> Basarat Ali Syed. _TypeScript Deep Dive_. <https://basarat.gitbook.io/typescript/>. Accessed 2020-01-17.
 1. <span id="typescript-documentation"></span> _TypeScript Documentation_. <https://www.typescriptlang.org/docs>. Accessed 2020-01-17.
 
-<!-- TODO
-# Biographical Statement
--->
+<!-- TODO: # Biographical Statement -->
 
 </footer>
 </body>

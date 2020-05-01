@@ -36,6 +36,7 @@ h2,
 h3 {
   margin-top: 2em;
   line-height: 1.2;
+  text-align: left;
 }
 
 h1 {
@@ -140,4 +141,8 @@ header {
 
 main {
   counter-reset: page 1;
+}
+
+#bibliography + ol {
+  text-align: left;
 }
