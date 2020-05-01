@@ -27,6 +27,1842 @@
 </header>
 <main>
 
+<!--
+\documentclass[12pt, oneside]{book}
+
+\usepackage[a-1b]{pdfx}
+\hypersetup{hidelinks, bookmarksnumbered}
+\usepackage{tocbibind}
+
+\usepackage[top = 1in, right = 1in, bottom = 1in, left = 1.5in]{geometry}
+\pagestyle{plain}
+\usepackage[doublespacing]{setspace}
+
+\usepackage{graphicx}
+
+\usepackage{fontspec, unicode-math}
+\setmainfont{PT Serif}
+\setmonofont{PT Mono}
+\setmathfont{Asana Math}
+
+\usepackage{minted}
+\renewcommand{\MintedPygmentize}{node_modules/.bin/shiki-minted}
+\setminted{fontsize = \footnotesize, baselinestretch = 1.2, breaklines}
+\setmintedinline{fontsize = \normalsize, breaklines = false}
+
+\usepackage[framemethod = tikz, middlelinewidth = 1pt, roundcorner = 3pt]{mdframed}
+
+\usepackage{mathpartir, colortbl}
+\usepackage{datetime2} % TODO
+
+\frenchspacing
+\sloppy % TODO
+
+\begin{document}
+
+\frontmatter
+
+\begin{center}
+\begin{singlespace}
+\vspace*{0.5in}
+
+DRAFT: \DTMnow % TODO
+
+\textbf{\uppercase{Yocto-CFA}}
+
+\vspace*{1in}
+
+by\\Leandro Facchinetti
+
+\vspace*{1.5in}
+
+A dissertation submitted to Johns Hopkins University\\in conformity with the requirements for the degree of Doctor of Philosophy
+
+\vspace*{0.5in}
+
+Baltimore, Maryland\\August 2020
+\end{singlespace}
+\end{center}
+
+\thispagestyle{empty}
+\clearpage
+
+% TODO: \chapter{Abstract}
+
+% Not more than 350 words
+
+% \paragraph{Primary Reader and Advisor:}
+
+% Dr.~Scott Fraser Smith.
+
+% \paragraph{Readers:}
+
+% Dr.~Zachary Eli Palmer and Dr.~Matthew Daniel Green.
+
+% TODO: \chapter{Acknowledgements}
+
+% TODO: \chapter{Dedication}
+
+\tableofcontents
+% TODO: \listoftables
+% TODO: \listoffigures
+
+\mainmatter
+
+% TODO: Introduction
+% TODO: Link to GitHub
+
+\chapter{Developing an Analyzer}
+
+% TODO: An overview of the rest of the section
+
+\section{The Analyzed Language: Yocto-JavaScript}
+\label{The Analyzed Language: Yocto-JavaScript}
+
+Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, a feature which is supported by most languages, including JavaScript, Java, Python, Ruby, and so forth.
+
+From all these options, we would like to choose JavaScript because it is the most popular language among programmers~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a \emph{subset} of JavaScript features that are related to higher-order functions, resulting in a language that we call \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
+
+\begin{mdframed}[frametitle = {Advanced}]
+On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial~\cite{m-cfa}.
+\end{mdframed}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}.
+\end{mdframed}
+
+\subsection{Values in Yocto-JavaScript}
+\label{Values in Yocto-JavaScript}
+
+JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Leandro"}), numbers (for example, \mintinline{js}{29}), arrays (for example, \mintinline{js}{["Leandro", 29]}), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
+
+An Yocto-JavaScript function is written as \mintinline{js}{<parameter> => <body>}, for example, \mintinline{js}{x => x}, in which the \mintinline{js}{<parameter>} is called \mintinline{js}{x} and the \mintinline{js}{<body>} is a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript} for more on function calls).
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The notation we use for writing functions is something called \emph{arrow function expressions}~\cite{javascript-arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of acting as values is what characterizes these functions as \emph{higher-order}.
+\end{mdframed}
+
+\subsection{Operations in Yocto-JavaScript}
+\label{Operations in Yocto-JavaScript}
+
+JavaScript has many operations: strings may have its characters accessed (for example, \mintinline{js}{"Leandro"[2]}, which results in \mintinline{js}{"a"}), numbers may be added together (for example, \mintinline{js}{29 + 1}, which results in \mintinline{js}{30}), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
+
+A function call is written as \mintinline{js}{<function>(<argument>)}, for example, \mintinline{js}{f(a)}, in which the \mintinline{js}{<function>} is a hypothetical function \mintinline{js}{f} and the \mintinline{js}{<argument>} is a hypothetical argument \mintinline{js}{a}. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see §~\ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, \mintinline{js}{x}.
+
+The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
+
+\begin{minted}{js}
+(x => x)(y => y)
+\end{minted}
+
+This program is a function call in which the \mintinline{js}{<function>} is \mintinline{js}{x => x} and the \mintinline{js}{<argument>} is \mintinline{js}{y => y}. When called, an Yocto-JavaScript function returns the result of computing its \mintinline{js}{<body>} and the \mintinline{js}{<body>} of \mintinline{js}{x => x} is a reference to the variable \mintinline{js}{x}, so \mintinline{js}{x => x} is a function that returns its argument unchanged and the final result of the example above is \mintinline{js}{y => y}.
+
+In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the \mintinline{js}{<body>} of a function definition, or as the \mintinline{js}{<function>} or \mintinline{js}{<argument>} of a call; for example, in the program \mintinline{js}{(f(a))(b)} the function call \mintinline{js}{f(a)} appears as the \mintinline{js}{<function>} of a call.
+
+We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h}, in \mintinline{js}{(f(g))(h)} the call \mintinline{js}{f(g)} happens first and the result is a function that is called with \mintinline{js}{h}, and in \mintinline{js}{f(g(h))} the call \mintinline{js}{g(h)} happens first and the result is passed as argument to \mintinline{js}{f}. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example, \mintinline{js}{x => y => x} is equivalent to \mintinline{js}{x => (y => x)} and \mintinline{js}{f(a)(b)} is equivalent to \mintinline{js}{(f(a))(b)}.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The order in which operations are computed is something called their \emph{precedence}, and operations that happen first are said to have \emph{higher precedence}. Because of the order in which they are read, function definitions are said to be \emph{right-associative} and function calls are said to be \emph{left-associative}.
+\end{mdframed}
+
+\begin{mdframed}[frametitle = {Advanced}]
+
+\subsection{The Computational Power of Yocto-JavaScript}
+\label{The Computational Power of Yocto-JavaScript}
+
+Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it \emph{too} simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages~\cite[§~6]{understanding-computation}.
+
+As an example of how to carry out this translation, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, \mintinline{js}{f(a, b)} may be encoded as \mintinline{js}{(f(a))(b)}.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+All the languages we are considering are said to be equivalent in terms of \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. The translation technique for functions with multiple arguments is called \emph{currying}~\cite[page~163]{understanding-computation}.
+\end{mdframed}
+
+For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence~\cite{expressive-power}.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
+
+\subsection{A Formal Grammar for Yocto-JavaScript}
+\label{A Formal Grammar for Yocto-JavaScript}
+
+The description of Yocto-JavaScript given so far has been informal; the following is a grammar in \emph{Backus–Naur Form}~(BNF)~\cite{bnf}~\cite[§~4.2]{dragon-book} that formalizes it:
+
+\begin{center}
+\begin{tabular}{rcll}
+$e$ & ::= & $\mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}$ | $e\mintinline{js}{(}e\mintinline{js}{)}$ | $x$ & Expressions \\
+$x$ & ::= & \mintinline{text}{<A JavaScript Identifier>} & Variables \\
+\end{tabular}
+\end{center}
+
+\end{mdframed}
+
+\section{The Analyzer Language: TypeScript}
+\label{The Analyzer Language: TypeScript}
+
+After choosing our analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our analyzed language being based on JavaScript, we may choose to develop the analyzer in any language (for example, JavaScript, Java, Python, Ruby, and so forth), because the analyzer treats the analyzed program as data. Still, from all these options, JavaScript does offer some advantages: it is the most popular~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see §~\ref{Parser} and §~\ref{Step 0: Stringifier}). But JavaScript lacks a way to express the \emph{types} of data structures, functions, and so forth, which we will need (for example, see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called \emph{TypeScript}~\cite{typescript-documentation, typescript-deep-dive, understanding-typescript}.
+
+\section{Step 0: Substitution-Based Interpreter}
+\label{Step 0: Substitution-Based Interpreter}
+
+Having chosen the analyzed language (Yocto-JavaScript; see §~\ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see §~\ref{The Analyzer Language: TypeScript}), we are ready to start the series of Steps in the development of the analyzer. The first Step is an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
+
+\subsection{Architecture}
+\label{Architecture}
+
+Our interpreter is defined as a function called \mintinline{ts}{evaluate()}, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
+
+The following are two examples of how we will be able to use \mintinline{ts}{evaluate()} by the end of Step~0 (the \mintinline{ts}{>} represents the console):
+
+\begin{minted}{ts}
+> evaluate("x => x")
+"x => x"
+> evaluate("(x => x)(y => y)")
+"y => y"
+\end{minted}
+
+The implementation of \mintinline{ts}{evaluate()} is separated into three parts called \mintinline{ts}{parse()}, \mintinline{ts}{run()}, and \mintinline{ts}{stringify()}:
+
+\begin{center}
+\includegraphics[page = 1]{images.pdf}
+\end{center}
+
+\begin{minted}{ts}
+export function evaluate(input: string): string {
+  return stringify(run(parse(input)));
+}
+\end{minted}
+
+The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for interpretation, converting it from a string into more convenient data structures (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The \mintinline{ts}{run()} function is responsible for the interpretation itself. The \mintinline{ts}{stringify()} function converts the outputs of \mintinline{ts}{run()} into a human-readable format. In the following sections (§~\ref{Data Structures to Represent Yocto-JavaScript Programs}–§~\ref{An Operational Semantics for the Interpreter}) we address the implementation of \mintinline{ts}{run()}, deferring \mintinline{ts}{parse()} to §~\ref{Parser} and \mintinline{ts}{stringify()} to §~\ref{Step 0: Stringifier}.
+
+In later Steps the implementations of \mintinline{ts}{run()} and \mintinline{ts}{stringify()} will change, but the architecture and therefore the implementations of \mintinline{ts}{evaluate()} and \mintinline{ts}{parse()} will remain the same.
+
+\begin{mdframed}[frametitle = {Advanced}]
+The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{ts}{eval()}~\cite{javascript-eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript. The \mintinline{ts}{strinfigy()} function is named after a native JavaScript function called \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which is used in the implementation (see §~\ref{Step 1: Stringifier}).
+\end{mdframed}
+
+\subsection{Data Structures to Represent Yocto-JavaScript Programs}
+\label{Data Structures to Represent Yocto-JavaScript Programs}
+
+The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x}. So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The process of converting a program represented as a string into more convenient data structures is known as \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.
+\end{mdframed}
+
+The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them, first in a high-level graphical representation and then in an equivalent low-level textual representation:
+
+\begin{minted}{ts}
+> parse("x => x")
+\end{minted}
+\includegraphics[page = 2]{images.pdf}
+\begin{minted}{ts}
+{
+  "type": "ArrowFunctionExpression",
+  "params": [
+    {
+      "type": "Identifier",
+      "name": "x"
+    }
+  ],
+  "body": {
+    "type": "Identifier",
+    "name": "x"
+  }
+}
+\end{minted}
+
+\begin{minted}{ts}
+> parse("(x => x)(y => y)")
+\end{minted}
+\includegraphics[page = 3]{images.pdf}
+\begin{minted}{ts}
+{
+  "type": "CallExpression",
+  "callee": {
+    "type": "ArrowFunctionExpression",
+    "params": [
+      {
+        "type": "Identifier",
+        "name": "x"
+      }
+    ],
+    "body": {
+      "type": "Identifier",
+      "name": "x"
+    }
+  },
+  "arguments": [
+    {
+      "type": "ArrowFunctionExpression",
+      "params": [
+        {
+          "type": "Identifier",
+          "name": "y"
+        }
+      ],
+      "body": {
+        "type": "Identifier",
+        "name": "y"
+      }
+    }
+  ]
+}
+\end{minted}
+
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree~\cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see §~\ref{Parser} and §~\ref{Step 0: Stringifier}).
+
+In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types~\cite{estree-types} to include only the features supported by Yocto-JavaScript):
+
+\begin{minted}{ts}
+type Expression = ArrowFunctionExpression | CallExpression | Identifier;
+
+type ArrowFunctionExpression = {
+  type: "ArrowFunctionExpression";
+  params: [Identifier];
+  body: Expression;
+};
+
+type CallExpression = {
+  type: "CallExpression";
+  callee: Expression;
+  arguments: [Expression];
+};
+
+type Identifier = {
+  type: "Identifier";
+  name: string;
+};
+\end{minted}
+
+\begin{mdframed}[frametitle = {Advanced}]
+The definitions above correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.
+\end{mdframed}
+
+In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.
+
+\subsection{An Expression That Already Is a Value}
+\label{An Expression That Already Is a Value}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{x => x} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{js}{x => x} \\
+\end{tabular}
+\end{center}
+
+We start the definition of \mintinline{ts}{run()} by considering the example above. As mentioned in §~\ref{Data Structures to Represent Yocto-JavaScript Programs}, the \mintinline{ts}{run()} function receives as parameter an Yocto-JavaScript program represented as an \mintinline{ts}{Expression}. The \mintinline{ts}{run()} function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see §~\ref{Values in Yocto-JavaScript}), so we start the implementation of \mintinline{ts}{run()} with the following (we use \mintinline{ts}{throw} as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+
+\begin{minted}{ts}
+type Value = ArrowFunctionExpression;
+
+function run(expression: Expression): Value {
+  throw new Error("NOT IMPLEMENTED YET");
+}
+\end{minted}
+
+The first thing that \mintinline{ts}{run()} has to do is determine which type of \mintinline{ts}{expression} it is given:
+
+\begin{minted}[highlightlines = {2-9}]{ts}
+function run(expression: Expression): Value {
+  switch (expression.type) {
+    case "ArrowFunctionExpression":
+      throw new Error("NOT IMPLEMENTED YET");
+    case "CallExpression":
+      throw new Error("NOT IMPLEMENTED YET");
+    case "Identifier":
+      throw new Error("NOT IMPLEMENTED YET");
+  }
+}
+\end{minted}
+
+In our current example, the \mintinline{ts}{expression} already is a \mintinline{ts}{Value}, so it may be returned unchanged:
+
+\begin{minted}[highlightlines = {3}]{ts}
+// run()
+case "ArrowFunctionExpression":
+  return expression;
+\end{minted}
+
+\subsection{A Call Involving Immediate Functions}
+\label{A Call Involving Immediate Functions}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{y => y} \\
+\end{tabular}
+\end{center}
+
+Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step~0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in §~\ref{Substitution in Function Calls}.
+
+In the example we are considering both the function that is called (\mintinline{js}{x => x}) and the argument (\mintinline{js}{y => y}) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
+
+\begin{minted}[highlightlines = {3-7}]{ts}
+// run()
+case "CallExpression":
+  if (
+    expression.callee.type !== "ArrowFunctionExpression" ||
+    expression.arguments[0].type !== "ArrowFunctionExpression"
+  )
+    throw new Error("NOT IMPLEMENTED YET");
+  throw new Error("NOT IMPLEMENTED YET");
+\end{minted}
+
+Next, we unpack the called function (using something called \emph{destructuring assignment}~\cite{javascript-destructuring-assignment}) and the argument:
+
+\begin{minted}[highlightlines = {8-12}]{ts}
+// run()
+case "CallExpression":
+  if (
+    expression.callee.type !== "ArrowFunctionExpression" ||
+    expression.arguments[0].type !== "ArrowFunctionExpression"
+  )
+    throw new Error("NOT IMPLEMENTED YET");
+  const {
+    params: [parameter],
+    body,
+  } = expression.callee;
+  const argument = expression.arguments[0];
+  throw new Error("NOT IMPLEMENTED YET");
+\end{minted}
+
+Finally, we setup an auxiliary function called \mintinline{ts}{substitute()} that implements the traversal of the \mintinline{ts}{body} looking for references to \mintinline{ts}{parameter} and substituting them:
+
+\begin{center}
+\includegraphics[page = 4]{images.pdf}
+\end{center}
+
+\begin{minted}[highlightlines = {13-19}]{ts}
+// run()
+case "CallExpression":
+  if (
+    expression.callee.type !== "ArrowFunctionExpression" ||
+    expression.arguments[0].type !== "ArrowFunctionExpression"
+  )
+    throw new Error("NOT IMPLEMENTED YET");
+  const {
+    params: [parameter],
+    body,
+  } = expression.callee;
+  const argument = expression.arguments[0];
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
+    throw new Error("NOT IMPLEMENTED YET");
+  }
+\end{minted}
+
+Similar to \mintinline{ts}{run()} itself, \mintinline{ts}{substitute()} starts by determining which type of \mintinline{ts}{expression} is passed to it:
+
+\begin{minted}[highlightlines = {2-9}]{ts}
+function substitute(expression: Expression): Expression {
+  switch (expression.type) {
+    case "ArrowFunctionExpression":
+      throw new Error("NOT IMPLEMENTED YET");
+    case "CallExpression":
+      throw new Error("NOT IMPLEMENTED YET");
+    case "Identifier":
+      throw new Error("NOT IMPLEMENTED YET");
+  }
+}
+\end{minted}
+
+In our current example the \mintinline{ts}{expression} is \mintinline{ts}{x}, an \mintinline{ts}{Identifier}, and it must be substituted with the \mintinline{ts}{argument}:
+
+\begin{center}
+\includegraphics[page = 5]{images.pdf}
+\end{center}
+
+\begin{minted}[highlightlines = {3}]{ts}
+// substitute()
+case "Identifier":
+  return argument;
+\end{minted}
+
+\subsection{Substitution in Function Definitions}
+\label{Substitution in Function Definitions}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{z => y => y} \\
+\end{tabular}
+\end{center}
+
+When \mintinline{ts}{substitute()} (see §~\ref{A Call Involving Immediate Functions}) starts traversing the \mintinline{ts}{body} of the example above, the \mintinline{ts}{expression} is an \mintinline{ts}{ArrowFunctionExpression} (\mintinline{js}{z => x}), and we want substitution to proceed deeper to find and substitute \mintinline{js}{x}, so we call \mintinline{ts}{substitute()} recursively (we use a feature called \emph{spread syntax}~\cite{javascript-spread-syntax} to build an \mintinline{ts}{expression} based on the existing one with a new \mintinline{ts}{body}):
+
+\begin{center}
+\includegraphics[page = 6]{images.pdf}
+\end{center}
+
+\begin{minted}[highlightlines = {3-6}]{ts}
+// substitute()
+case "ArrowFunctionExpression":
+  return {
+    ...expression,
+    body: substitute(expression.body),
+  };
+\end{minted}
+
+\subsection{Name Mismatch}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => z => z)(y => y)} \\
+\textbf{Current Output} & \mintinline{js}{z => y => y} \\
+\textbf{Expected Output} & \mintinline{js}{z => z} \\
+\end{tabular}
+\end{center}
+
+The implementation of \mintinline{ts}{substitute()} in the case of \mintinline{ts}{Identifier} introduced in §~\ref{A Call Involving Immediate Functions} \emph{always} substitutes variable references, regardless of whether they refer to the \mintinline{ts}{parameter} of the called function. For example, in the program above \mintinline{ts}{substitute()} is substituting the \mintinline{js}{z} even though the \mintinline{ts}{parameter} is \mintinline{js}{x}. To fix this, we check whether the variable reference matches the \mintinline{ts}{parameter}, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
+
+\begin{minted}[highlightlines = {3}]{ts}
+// substitute()
+case "Identifier":
+  if (expression.name !== parameter.name) return expression;
+  return argument;
+\end{minted}
+
+\subsection{Name Reuse}
+\label{Step 0: Name Reuse}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => x => x)(y => y)} \\
+\textbf{Current Output} & \mintinline{js}{x => y => y} \\
+\textbf{Expected Output} & \mintinline{js}{x => x} \\
+\end{tabular}
+\end{center}
+
+In the program above, there are two options for the variable reference \mintinline{js}{x} on the right of the second \mintinline{js}{=>}: it may refer to the first (outer) \mintinline{js}{x} on the left of the first \mintinline{js}{=>}, in which case the output of the program would be \mintinline{js}{x => y => y}; or it may refer to the second (inner) \mintinline{js}{x} on the left of the second \mintinline{js}{=>}, in which case the output of the program would be \mintinline{js}{x => x}:
+
+\begin{center}
+\includegraphics[page = 7]{images.pdf}
+\end{center}
+
+Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads to an issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently; we must know where it appears and whether a variable called \mintinline{js}{x} is already defined there.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+We say that the problem with Option~1 is that it defeats something called \emph{local reasoning}. We say that Option~2 exhibits a behavior called \emph{shadowing}, and that the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x}, because there is no way to refer to the outer \mintinline{js}{x} from the body of the inner function.
+\end{mdframed}
+
+We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (there is no recursive call to \mintinline{ts}{substitute()} in this case):
+
+\begin{minted}[highlightlines = {3}]{ts}
+// substitute()
+case "ArrowFunctionExpression":
+  if (expression.params[0].name === parameter.name) return expression;
+  return {
+    ...expression,
+    body: substitute(expression.body),
+  };
+\end{minted}
+
+\subsection{Substitution in Function Calls}
+\label{Substitution in Function Calls}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => z => x(x))(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{z => (y => y)(y => y)} \\
+\end{tabular}
+\end{center}
+
+This case is similar to §~\ref{Substitution in Function Definitions}: all \mintinline{ts}{substitute()} has to do is continue traversing the function call recursively:
+
+\begin{minted}[highlightlines = {3-7}]{ts}
+// substitute()
+case "CallExpression":
+  return {
+    ...expression,
+    callee: substitute(expression.callee),
+    arguments: [substitute(expression.arguments[0])],
+  };
+\end{minted}
+
+\subsection{An Argument That Is Not Immediate}
+\label{An Argument That Is Not Immediate}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => z => x)((a => a)(y => y))} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{z => y => y} \\
+\end{tabular}
+\end{center}
+
+In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling \mintinline{ts}{run()} recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to \mintinline{ts}{run()} returns the immediate function unchanged; see §~\ref{An Expression That Already Is a Value}):
+
+\begin{minted}[highlightlines = {3-4, 9}]{ts}
+// run()
+case "CallExpression":
+  if (expression.callee.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  const {
+    params: [parameter],
+    body,
+  } = expression.callee;
+  const argument = run(expression.arguments[0]);
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
+    // ...
+  }
+\end{minted}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+This technique of calling \mintinline{ts}{run()} recursively to produce an immediate function for the argument characterizes the interpreter as \emph{big-step}.
+\end{mdframed}
+
+\begin{mdframed}[frametitle = {Advanced}]
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a \emph{call-by-value} language~\cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a \emph{call-by-need} language. In a call-by-need language the argument is interpreted only if it is \emph{needed}, for example, if it is used in the function position of another call (see §~\ref{A Function That Is Not Immediate}), or if it is the result of the program (see §~\ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. And there is yet another policy for when to interpret arguments called \emph{call-by-name}: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
+\end{mdframed}
+
+\subsection{A Function That Is Not Immediate}
+\label{A Function That Is Not Immediate}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{((z => z)(x => x))(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{y => y} \\
+\end{tabular}
+\end{center}
+
+This is the dual of §~\ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call \mintinline{ts}{run()} recursively (we also remove the check of whether the function is immediate):
+
+\begin{minted}[highlightlines = {6}]{ts}
+// run()
+case "CallExpression":
+  const {
+    params: [parameter],
+    body,
+  } = run(expression.callee);
+  const argument = run(expression.arguments[0]);
+  const substitutedBody = substitute(body);
+  if (substitutedBody.type !== "ArrowFunctionExpression")
+    throw new Error("NOT IMPLEMENTED YET");
+  return substitutedBody;
+  function substitute(expression: Expression): Expression {
+    // ...
+  }
+\end{minted}
+
+\subsection{Continuing to Run After a Function Call}
+\label{Continuing to Run After a Function Call}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => (z => z)(x))(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{js}{y => y} \\
+\end{tabular}
+\end{center}
+
+This is similar to §~\ref{An Argument That Is Not Immediate} and §~\ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to \mintinline{ts}{evaluate()} (we also remove yet another check and inline the \mintinline{ts}{substitutedBody} variable):
+
+\begin{minted}[highlightlines = {8}]{ts}
+// run()
+case "CallExpression":
+  const {
+    params: [parameter],
+    body,
+  } = run(expression.callee);
+  const argument = run(expression.arguments[0]);
+  return run(substitute(body));
+  function substitute(expression: Expression): Expression {
+    // ...
+  }
+\end{minted}
+
+\subsection{A Reference to an Undefined Variable}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => y)(y => y)} \\
+\textbf{Current Output} & \mintinline{text}{NOT IMPLEMENTED YET} \\
+\textbf{Expected Output} & \mintinline{text}{Reference to undefined variable: y} \\
+\end{tabular}
+\end{center}
+
+The only case in which \mintinline{ts}{run()} may encounter a variable reference directly is if the referenced variable is undefined, otherwise \mintinline{ts}{substitute()} would have already substituted it (see §~\ref{A Call Involving Immediate Functions}–§~\ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
+
+\begin{minted}[highlightlines = {3}]{ts}
+// run()
+case "Identifier":
+  throw new Error(`Reference to undefined variable: ${expression.name}`);
+\end{minted}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{x => y} \\
+\textbf{Current Output} & \mintinline{js}{x => y} \\
+\textbf{Expected Output} & \mintinline{js}{x => y} \\
+\end{tabular}
+\end{center}
+
+If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. This is consistent with JavaScript’s behavior.
+
+\subsection{The Entire Runner}
+\label{Step 0: The Entire Runner}
+
+The implementation of the \mintinline{ts}{run()} function is complete:
+
+\begin{minted}[linenos]{ts}
+type Value = ArrowFunctionExpression;
+
+function run(expression: Expression): Value {
+  switch (expression.type) {
+    case "ArrowFunctionExpression":
+      return expression;
+    case "CallExpression":
+      const {
+        params: [parameter],
+        body,
+      } = run(expression.callee);
+      const argument = run(expression.arguments[0]);
+      return run(substitute(body));
+      function substitute(expression: Expression): Expression {
+        switch (expression.type) {
+          case "ArrowFunctionExpression":
+            if (expression.params[0].name === parameter.name) return expression;
+            return {
+              ...expression,
+              body: substitute(expression.body),
+            };
+          case "CallExpression":
+            return {
+              ...expression,
+              callee: substitute(expression.callee),
+              arguments: [substitute(expression.arguments[0])],
+            };
+          case "Identifier":
+            if (expression.name !== parameter.name) return expression;
+            return argument;
+        }
+      }
+    case "Identifier":
+      throw new Error(`Reference to undefined variable: ${expression.name}`);
+  }
+}
+\end{minted}
+
+\begin{mdframed}[frametitle = {Advanced}]
+\subsection{An Operational Semantics for the Interpreter}
+\label{An Operational Semantics for the Interpreter}
+
+What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript; we also defined formally the \emph{meaning} of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the \emph{semantics} of the language, and there are several techniques to specify semantics; the one we are using so far is known as a \emph{definitional interpreter}~\cite{definitional-interpreters}.
+
+A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: \emph{operational semantics}~\cite{operational-semantics, semantics-engineering, pl-book}.
+
+First, we extend the grammar from §~\ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type \mintinline{ts}{Value} (see §~\ref{Step 0: The Entire Runner}, line 1):
+
+\begin{center}
+\begin{tabular}{rcll}
+$v$ & ::= & $x\mintinline{js}{ => }e$ & Values \\
+\end{tabular}
+\end{center}
+
+Next, we define a \emph{relation} $e \Rightarrow v$ using \emph{inference rules} that are equivalent to the behavior of \mintinline{ts}{run()} (see §~\ref{Step 0: The Entire Runner}, lines 3–36):
+
+\begin{mathpar}
+\inferrule
+{ }
+{v \Rightarrow v}
+
+\inferrule
+{
+e_{f} \Rightarrow x_{p}\mintinline{js}{ => }e_{b} \\
+e_{a} \Rightarrow v_{a} \\
+e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
+}
+{e_{f}\mintinline{js}{(}e_{a}\mintinline{js}{)} \Rightarrow v}
+\end{mathpar}
+
+Finally, we define a \emph{metafunction} $e[x \backslash v] = e$ that is equivalent to the behavior of \mintinline{ts}{substitute()} (see §~\ref{Step 0: The Entire Runner}, lines 14–32):
+
+\begin{center}
+\begin{tabular}{rcll}
+$(x\mintinline{js}{ => }e)[x_{p} \backslash v_{a}]$ & = & $x\mintinline{js}{ => }(e[x_{p} \backslash v_{a}])$ & if $x \neq x_{p}$ \\
+$(x_{p}\mintinline{js}{ => }e)[x_{p} \backslash v_{a}]$ & = & $x_{p}\mintinline{js}{ => }e$ & \\
+$(e_{f}\mintinline{js}{(}e_{a}\mintinline{js}{)})[x_{p} \backslash v_{a}]$ & = & $(e_{f}[x_{p} \backslash v_{a}])\mintinline{js}{(}(e_{a}[x_{p} \backslash v_{a}])\mintinline{js}{)}$ & \\
+$x[x_{p} \backslash v_{a}]$ & = & $x$ & if $x \neq x_{p}$ \\
+$x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
+\end{tabular}
+\end{center}
+\end{mdframed}
+
+\subsection{Parser}
+\label{Parser}
+
+The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see §~\ref{Architecture} for a high-level view of the architecture and §~\ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree~\cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima~\cite{esprima}, and the Esprima Interactive Online Demonstration~\cite{esprima-demonstration}, which shows the data structures used to represent a given program.
+
+Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
+
+\begin{minted}[linenos]{ts}
+function parse(input: string): Expression {
+  const program = esprima.parseScript(input, { range: true }, checkFeatures);
+  const expression = (program as any).body[0].expression as Expression;
+  return expression;
+  function checkFeatures(node: estree.Node): void {
+    switch (node.type) {
+      case "Program":
+        if (node.body.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
+          );
+        break;
+      case "ExpressionStatement":
+        break;
+      case "ArrowFunctionExpression":
+        break;
+      case "CallExpression":
+        if (node.arguments.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+          );
+        break;
+      case "Identifier":
+        break;
+      default:
+        throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
+    }
+  }
+}
+\end{minted}
+
+\begin{description}
+\item [Line 1:]
+
+The parser is defined as a function called \mintinline{ts}{parse()}, which receives the program \mintinline{ts}{input} represented as a \mintinline{ts}{string} and returns an \mintinline{ts}{Expression} (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
+
+\item [Line 2:]
+
+Call \mintinline{ts}{esprima.parseScript()}, which parses the \mintinline{ts}{input} as a JavaScript program and produces a data structure following the ESTree specification. The \mintinline{ts}{esprima.parseScript()} function also detects syntax errors, for example, in the program \mintinline{js}{x =>}, which is missing the function body.
+
+The \mintinline{ts}{{ range: true }} argument causes Esprima to include in the generated data structures some information about the part of the \mintinline{ts}{input} from where they came. We do not use this information (it is not even part of the definition of the data structures; see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example, \mintinline{ts}{x => x => x}, this information distinguishes the \mintinline{ts}{x}s.
+
+We pass as argument to \mintinline{ts}{esprima.parseScript()} a function called \mintinline{ts}{checkFeatures()} which is called with every fragment of data structure that represents a part of the program. The purpose of \mintinline{ts}{checkFeatures()} is to check that the program uses only the features that are supported by Yocto-JavaScript.
+
+\item [Line 3:]
+
+Extract the single \mintinline{ts}{Expression} from within the \mintinline{ts}{Program} returned by \mintinline{ts}{esprima.parseScript()}. The \mintinline{ts}{as <something>} forms sidestep the TypeScript type checker and assert that the \mintinline{ts}{expression} is of the correct type. This is safe to do because of \mintinline{ts}{checkFeatures()}.
+
+\item [Line 5:]
+
+The \mintinline{ts}{checkFeatures()} function, which is passed to \mintinline{ts}{esprima.parseScript()} is called with every fragment of data structure used to represent the program. These fragments are called \emph{nodes}, because the data structure as a whole forms a \emph{tree}, also known as the \emph{Abstract Syntax Tree}~(AST) of the program (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}). The \mintinline{ts}{checkFeatures()} does not return anything (\mintinline{ts}{void}); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+
+\item [Lines 6, 7, 13, 15, 17, 23, 25:]
+
+Similar to \mintinline{ts}{run()} and \mintinline{ts}{substitute()} (see §~\ref{Step 0: The Entire Runner}), \mintinline{ts}{checkFeatures()} starts by determining which type of \mintinline{ts}{estree.Node} it is given.
+
+\item [Lines 8–11:]
+
+Check that the \mintinline{ts}{Program} contains a single statement. This prevents programs such as \mintinline{js}{x => x; y => y}.
+
+\item [Lines 13, 15:]
+
+\mintinline{ts}{ExpressionStatement}s and \mintinline{ts}{ArrowFunctionExpression}s are supported in Yocto-JavaScript unconditionally. We could check that the \mintinline{ts}{ArrowFunctionExpression} includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as \mintinline{js}{[x, y]}, for example), but this would be redundant because Esprima already calls \mintinline{ts}{checkFeatures()} with other unsupported \mintinline{ts}{node}s that subsume these cases. For example, given the program \mintinline{js}{(x, y) => x}, which is a function of multiple parameters, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{SequenceExpression}. Similarly, given the program \mintinline{js}{([x, y]) => x}, which is a function in which the parameter is a pattern, Esprima calls \mintinline{ts}{checkFeatures()} with a \mintinline{ts}{node} of type \mintinline{ts}{ArrayExpression}.
+
+\item [Lines 18–21:]
+
+Check that the \mintinline{ts}{CallExpression} contains a single argument. This prevents programs such as \mintinline{js}{f(a, b)}.
+
+\item [Line 23:]
+
+\mintinline{ts}{Identifier}s are supported in Yocto-JavaScript unconditionally. An \mintinline{ts}{Identifier} may be an expression or the parameter of an \mintinline{ts}{ArrowFunctionExpression}.
+
+\item [Line 26:]
+
+All other types of \mintinline{ts}{estree.Node} are not supported by Yocto-JavaScript. This includes programs such as \mintinline{js}{29} (\mintinline{ts}{estree.Literal}) and \mintinline{js}{const f = x => x} (\mintinline{ts}{estree.VariableDeclarator}).
+\end{description}
+
+In later Steps almost everything about the interpreter will change, but the parser will remain the same.
+
+\subsection{Stringifier}
+\label{Step 0: Stringifier}
+
+The stringifier transforms a \mintinline{ts}{Value} produced by \mintinline{ts}{run()} into a human-readable format (see §~\ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see §~\ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen~\cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier~\cite{prettier} to format that string. The following is the full implementation of the stringifier:
+
+\begin{minted}[linenos]{ts}
+function stringify(value: Value): string {
+  return prettier
+    .format(escodegen.generate(value), {
+      parser: "babel",
+      semi: false,
+      arrowParens: "avoid",
+    })
+    .trim();
+}
+\end{minted}
+
+\begin{description}
+\item [Line 4:]
+
+Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see §~\ref{Architecture}), and it may use different parsers. We choose Babel~\cite{babel}, which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
+
+\item [Line 5:]
+
+Instruct Prettier not to produce semicolons at the end of the line, for example, \mintinline{js}{x => y} instead of \mintinline{js}{x => y;}.
+
+\item [Line 6:]
+
+Instruct Prettier not to wrap parameters in parentheses, for example, \mintinline{js}{x => y} instead of \mintinline{js}{(x) => y}.
+
+\item [Line 8:]
+
+Remove the newline at the end of the output produced by Prettier.
+\end{description}
+
+\subsection{Programs That Do Not Terminate}
+\label{Step 0: Programs That Do Not Terminate}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(f => f(f))(f => f(f))} \\
+\textbf{Current Output} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output} & \mintinline{text}{DOES NOT TERMINATE} \\
+\end{tabular}
+\end{center}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of this program is also known as the \emph{$U$-combinator} ($\Omega = (U)(U)$).
+\end{mdframed}
+
+Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()}:
+
+\begin{center}
+\begin{tabular}{rrcl}
+\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{Step 0: The Entire Runner})} & & \\
+3 & \mintinline{ts}{expression} & = & \mintinline{js}{(f => f(f))(f => f(f))} \\
+9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
+10 & \mintinline{ts}{body} & = & \mintinline{js}{f(f)} \\
+12 & \mintinline{ts}{argument} & = & \mintinline{js}{f => f(f)} \\
+13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(f => f(f))(f => f(f))} \\
+\end{tabular}
+\end{center}
+
+The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop.
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(f => (f(f))(f(f)))(f => (f(f))(f(f)))} \\
+\textbf{Current Output} & \mintinline{text}{DOES NOT TERMINATE} \\
+\textbf{Expected Output} & \mintinline{text}{DOES NOT TERMINATE} \\
+\end{tabular}
+\end{center}
+
+There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the program above, which is a variation of the first program in which every variable reference to \mintinline{js}{f} has been replaced with \mintinline{js}{f(f)}. The following is a trace of the first call to \mintinline{ts}{run()}:
+
+\begin{center}
+\begin{tabular}{rrcl}
+\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{Step 0: The Entire Runner})} & & where \mintinline{js}{F = f => (f(f))(f(f))} \\
+3 & \mintinline{ts}{expression} & = & \mintinline{js}{F(F)} \\
+9 & \mintinline{ts}{parameter} & = & \mintinline{js}{f} \\
+10 & \mintinline{ts}{body} & = & \mintinline{js}{(f(f))(f(f))} \\
+12 & \mintinline{ts}{argument} & = & \mintinline{js}{F} \\
+13 & \mintinline{ts}{substitute(body)} & = & \mintinline{js}{(F(F))(F(F))} \\
+\end{tabular}
+\end{center}
+
+The result of substitution (\mintinline{js}{(F(F))(F(F))}) is an expression that contains the initial expression (the first \mintinline{js}{F(F)}) in addition to some extra work (the second \mintinline{js}{F(F)}), so when it is passed as argument to the recursive call to \mintinline{ts}{run()} in line~13, it causes \mintinline{ts}{run()} to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to \mintinline{ts}{run()} never repeat themselves:
+
+\begin{center}
+\begin{tabular}{l}
+\mintinline{js}{(F(F))} \\
+\mintinline{js}{(F(F))(F(F))} \\
+\mintinline{js}{(F(F))(F(F))(F(F))} \\
+\mintinline{js}{(F(F))(F(F))(F(F))(F(F))} \\
+\multicolumn{1}{c}{$\vdots$} \\
+\end{tabular}
+\end{center}
+
+Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether \mintinline{ts}{run()} is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
+
+\begin{mdframed}[frametitle = {Advanced}]
+Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the \emph{halting problem}, is said to be \emph{uncomputable}~\cite[§~8]{understanding-computation}, and is a direct consequence of the Turing completeness of Yocto-JavaScript (see §~\ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.
+\end{mdframed}
+
+\section{Step 1: Environment-Based Interpreter}
+
+The interpreter in Step~0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see §~\ref{Step 0: Programs That Do Not Terminate}). The source of non-termination in Step~0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step~1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step~1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
+
+\subsection{Avoiding Substitution by Introducing Environments and Closures}
+
+When the interpreter from Step~0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument, for example:
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} (see §~\ref{Substitution in Function Definitions}) & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~0 Output} & \mintinline{js}{z => (y => y)} \\
+\end{tabular}
+\end{center}
+
+The issue with this strategy is that the expression \mintinline{js}{z => (y => y)} does not exist in the original program, and as mentioned in §~\ref{Step 0: Programs That Do Not Terminate}, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step~1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{y => y} \\
+\textbf{Step~1 Output} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~1 Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\end{tabular}
+\end{center}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+A map from variables to the values with which they would have been replaced (for example, $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$) is something called an \emph{environment}. A function along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$) is something called a \emph{closure}~\cite{closures}.
+\end{mdframed}
+
+In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent, but in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
+
+\begin{mdframed}[frametitle = {Alternative Argument}]
+Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
+\end{mdframed}
+
+\subsection{New Data Structures}
+
+The following are the data structures used to represent environments and closures:
+
+\begin{minted}{ts}
+type Value = Closure;
+
+type Closure = {
+  function: ArrowFunctionExpression;
+  environment: Environment;
+};
+
+type Environment = MapDeepEqual<Identifier["name"], Value>;
+\end{minted}
+
+\begin{mdframed}[frametitle = {Implementation Details}]
+The \mintinline{ts}{MapDeepEqual} data structure is provided by a JavaScript package developed by the author called Collections Deep Equal~\cite{collections-deep-equal}. A \mintinline{ts}{MapDeepEqual} is similar to a \mintinline{ts}{Map}, except that the keys are compared by value, not by reference, for example:
+
+\begin{minted}{ts}
+> new Map([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
+undefined
+> new MapDeepEqual([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
+"Leandro"
+\end{minted}
+
+The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key and value, but they are not the same object.
+\end{mdframed}
+
+\subsection{Adding an Environment to the Runner}
+
+The runner needs to maintain an environment, so we modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 0: The Entire Runner} to introduce an auxiliary function called \mintinline{ts}{step()} that receives an \mintinline{ts}{environment} as an extra parameter:
+
+\begin{minted}[linenos, highlightlines = {2-3, 11-13}]{ts}
+function run(expression: Expression): Value {
+  return step(expression, new MapDeepEqual());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return expression;
+      case "CallExpression":
+        const {
+          params: [parameter],
+          body,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(substitute(body), environment);
+        function substitute(expression: Expression): Expression {
+          switch (expression.type) {
+            case "ArrowFunctionExpression":
+              if (expression.params[0].name === parameter.name)
+                return expression;
+              return {
+                ...expression,
+                body: substitute(expression.body),
+              };
+            case "CallExpression":
+              return {
+                ...expression,
+                callee: substitute(expression.callee),
+                arguments: [substitute(expression.arguments[0])],
+              };
+            case "Identifier":
+              if (expression.name !== parameter.name) return expression;
+              return argument;
+          }
+        }
+      case "Identifier":
+        throw new Error(`Reference to undefined variable: ${expression.name}`);
+    }
+  }
+}
+\end{minted}
+
+\begin{description}
+\item [Line 3:]
+
+We define the \mintinline{ts}{step()} auxiliary function that receives an \mintinline{ts}{environment} as an extra parameter.
+
+\item [Line 2:]
+
+The \mintinline{ts}{environment} starts empty.
+
+\item [Lines 11–13:]
+
+The recursive calls to \mintinline{ts}{run()} are changed to recursive calls to \mintinline{ts}{step()} and the \mintinline{ts}{environment} is propagated.
+\end{description}
+
+The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the \mintinline{ts}{environment} for each type of \mintinline{ts}{expression}.
+
+\subsection{A Function Definition}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{x => x} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(x => x)}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+When the interpreter encounters a function definition, it captures the current \mintinline{ts}{environment} in a closure:
+
+\begin{minted}{ts}
+// step()
+case "ArrowFunctionExpression":
+  return { function: expression, environment };
+\end{minted}
+
+\subsection{A Function Call}
+\label{A Function Call}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\end{tabular}
+\end{center}
+
+First, we remove \mintinline{ts}{substitute()}, which is the goal of Step~1:
+
+\begin{minted}[highlightlines = {8}]{ts}
+// step()
+case "CallExpression":
+  const {
+    params: [parameter],
+    body,
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(body, environment);
+\end{minted}
+
+Next, we fix the pattern that matches the result of the interpretation of the called function to take in account the closure:
+
+\begin{minted}[highlightlines = {4, 7, 8}]{ts}
+// step()
+case "CallExpression":
+  const {
+    function: {
+      params: [parameter],
+      body,
+    },
+    environment: functionEnvironment,
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(body, environment);
+\end{minted}
+
+Finally, we modify the recursive call to \mintinline{ts}{step()} that interprets the function body so that it receives a new augmented \mintinline{ts}{environment} including a mapping from the \mintinline{ts}{parameter} (for example, \mintinline{js}{x}) to the \mintinline{ts}{argument} (for example, $\langle \mintinline{js}{(y => y)}, [] \rangle$):
+
+\begin{minted}[linenos, highlightlines = {11-14}]{ts}
+// step()
+case "CallExpression":
+  const {
+    function: {
+      params: [parameter],
+      body,
+    },
+    environment: functionEnvironment,
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(
+    body,
+    new MapDeepEqual(environment).set(parameter.name, argument)
+  );
+\end{minted}
+
+\subsection{Name Reuse}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => x => z => x)(a => a)(y => y)} \\
+\textbf{Current Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\end{tabular}
+\end{center}
+
+If a name is reused (for example, \mintinline{js}{x} in the example program above), then the second time it is encountered by \mintinline{ts}{step()} it is overwritten in the \mintinline{ts}{environment} (see the call to \mintinline{ts}{set()} in line~13 of §~\ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to \mintinline{js}{x} to refer to the second (inner) \mintinline{ts}{x}, which is the expected behavior (it is what we called Option~2 in §~\ref{Step 0: Name Reuse}).
+
+\subsection{A Variable Reference}
+\label{A Variable Reference}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\\
+\textbf{Example Program} & \mintinline{js}{(x => y)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{text}{Reference to undefined variable: y} \\
+\\
+\textbf{Example Program} & \mintinline{js}{x => y} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(x => y)}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+When we encounter a variable reference, we look it up in the current environment:
+
+\begin{minted}[highlightlines = {3-8}]{ts}
+// step()
+case "Identifier":
+  const value = environment.get(expression.name);
+  if (value === undefined)
+    throw new Error(
+      `Reference to undefined variable: ${expression.name}`
+    );
+  return value;
+\end{minted}
+
+\subsection{A Function Body Is Evaluated with the Environment in Its Closure}
+\label{A Function Body Is Evaluated with the Environment in Its Closure}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \\
+\multicolumn{2}{l}{\mintinline{js}{(f => (x => f(x))(a => a))((x => z => x)(y => y))}} \\
+\textbf{Current Output} & $\langle \mintinline{js}{(a => a)}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle ] \rangle] \rangle$ \\
+\textbf{Expected Output} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to \mintinline{ts}{step()}, when a closure is created:
+
+\begin{center}
+\begin{tabular}{rrcl}
+\multicolumn{4}{c}{\textbf{Trace 1: First Call to \mintinline{ts}{step()} · Closure Creation}} \\
+\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{A Function Call})} & & \\
+& \mintinline{ts}{expression.callee} & = & \mintinline{js}{f => (x => f(x))(a => a)} \\
+& \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{(x => z => x)(y => y)} \\
+\rowcolor[rgb]{.88,1,1} 10 & \mintinline{ts}{argument} & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\end{tabular}
+\end{center}
+
+And the following is a trace of the recursive call to \mintinline{ts}{step()} in which that closure is called:
+
+\begin{center}
+\begin{tabular}{rrcl}
+\multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to \mintinline{ts}{step()} · Closure Call}} \\
+\textbf{Line} & \multicolumn{1}{l}{(see §~\ref{A Function Call})} & & \\
+& \mintinline{ts}{expression} & = & \mintinline{js}{f(x)} \\
+& \mintinline{ts}{expression.callee} & = & \mintinline{js}{f} \\
+\rowcolor[rgb]{.88,1,1} & \mintinline{ts}{expression.arguments[0]} & = & \mintinline{js}{x} \\
+\rowcolor[rgb]{.88,1,1} & \mintinline{ts}{environment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle, \cdots]$ \\
+9 & $\mintinline{ts}{step(}\cdots\mintinline{ts}{)}$ & = & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+5 & \mintinline{ts}{parameter} & = & \mintinline{js}{z} \\
+\rowcolor[rgb]{.88,1,1} 6 & \mintinline{ts}{body} & = & \mintinline{js}{x} \\
+\rowcolor[rgb]{.88,1,1} 8 & \mintinline{ts}{functionEnvironment} & = & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\multicolumn{4}{c}{Paused before line 10}\\
+\end{tabular}
+\end{center}
+
+At this point, there are two expressions left to evaluate: the argument (\mintinline{ts}{expression.arguments[0]}; line 10), and the body of the called function (\mintinline{ts}{body}; lines 11–14). Both of these expressions have the same code (\mintinline{js}{x}), and our current implementation looks up this variable both times on the current \mintinline{ts}{environment}, which produces the same value: $\langle \mintinline{js}{(a => a)}, [\cdots] \rangle$.
+
+But this leads to an issue: we may not reason about \mintinline{js}{z => x} by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step~0 (see §~\ref{Step 0: Name Reuse}). We would like, instead, for each \mintinline{js}{x} to refer to the value that existed in the environment where the closure is \emph{created}, not where it is \emph{called}:
+
+\begin{center}
+\includegraphics[page = 8]{images.pdf}
+\end{center}
+
+To implement this, we change the recursive call to \mintinline{ts}{step()} that evaluates the function body so that it uses the environment coming from the closure (\mintinline{js}{functionEnvironment}) instead of the current environment (\mintinline{js}{environment}):
+
+\begin{minted}[highlightlines = {13}]{ts}
+// step()
+case "CallExpression":
+  const {
+    function: {
+      params: [parameter],
+      body,
+    },
+    environment: functionEnvironment,
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  return step(
+    body,
+    new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
+  );
+\end{minted}
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The principle of being able to reason about a function only by looking at its definition is something called \emph{local reasoning} (see §~\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called \emph{dynamic scoping}, because the \emph{scope} of a variable (where a variable is defined) is \emph{dynamic}, depending on where the function is called. The treatment given to the environment in this section is something called \emph{static scoping} or \emph{lexical scoping}, because the scope of a variable is determined before we start interpreting the program.
+\end{mdframed}
+
+\begin{mdframed}[frametitle = {Advanced}]
+There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP~\cite{lisp-original}, though that was later considered a mistake~\cite{lisp-history}. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp~\cite[§~12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s \mintinline{clojure}{parameterize}~\cite[§~4.13]{racket-guide}.
+\end{mdframed}
+
+\subsection{The Entire Runner}
+\label{Step 1: The Entire Runner}
+
+We completed the changes necessary to transform the \mintinline{ts}{run()} function from the substitution-based interpreter in Step~0 into an environment-based interpreter:
+
+\begin{minted}[linenos]{ts}
+type Value = Closure;
+
+type Closure = {
+  function: ArrowFunctionExpression;
+  environment: Environment;
+};
+
+type Environment = MapDeepEqual<Identifier["name"], Value>;
+
+function run(expression: Expression): Value {
+  return step(expression, new MapDeepEqual());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return { function: expression, environment };
+      case "CallExpression":
+        const {
+          function: {
+            params: [parameter],
+            body,
+          },
+          environment: functionEnvironment,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(
+          body,
+          new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
+        );
+      case "Identifier":
+        const value = environment.get(expression.name);
+        if (value === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return value;
+    }
+  }
+}
+\end{minted}
+
+\begin{mdframed}[frametitle = {Advanced}]
+\subsection{Operational Semantics}
+\label{Step 1: Operational Semantics}
+
+We adapt the operational semantics from §~\ref{An Operational Semantics for the Interpreter} to the interpreter defined in Step~1. First, we change the notion of values:
+
+\begin{center}
+\begin{tabular}{rcll}
+$v$ & = & $\langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle$ & Values / Closures \\
+$\rho$ & = & $\{x \mapsto v, \cdots\}$ & Environments \\
+\end{tabular}
+\end{center}
+
+We then define the relation $\rho \vdash e \Rightarrow v$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
+
+\begin{mathpar}
+\inferrule
+{ }
+{\rho \vdash \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)} \Rightarrow \langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle}
+
+\inferrule
+{
+\rho \vdash e_f \Rightarrow \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle \\
+\rho \vdash e_a \Rightarrow v_a \\
+\rho_f \cup \{x \mapsto v_a\} \vdash e_b \Rightarrow v \\
+}
+{\rho \vdash e_f\mintinline{js}{(}e_a\mintinline{js}{)} \Rightarrow v}
+
+\inferrule
+{ }
+{\rho \vdash x \Rightarrow \rho(x)}
+\end{mathpar}
+\end{mdframed}
+
+\subsection{Stringifier}
+\label{Step 1: Stringifier}
+
+We modify the stringifier from §~\ref{Step 0: Stringifier} to support closures. For example, the following is the representation of the closure from §~\ref{A Function Call}:
+
+\begin{center}
+$\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$
+\end{center}
+
+\begin{minted}{js}
+{
+  "function": "z => x",
+  "environment": [
+    [
+      "x",
+      {
+        "function": "y => y",
+        "environment": []
+      }
+    ]
+  ]
+}
+\end{minted}
+
+The following is the modified implementation of \mintinline{ts}{stringify()}:
+
+\begin{minted}[linenos, highlightlines = {1, 2, 4, 5, 15}]{ts}
+function stringify(value: any): string {
+  return JSON.stringify(
+    value,
+    (key, value) => {
+      if (value.type !== undefined)
+        return prettier
+          .format(escodegen.generate(value), {
+            parser: "babel",
+            semi: false,
+            arrowParens: "avoid",
+          })
+          .trim();
+      return value;
+    },
+    2
+  );
+}
+\end{minted}
+
+\begin{description}
+\item [Line 1:]
+
+Change the input type from \mintinline{ts}{Value} to \mintinline{ts}{any}, because this implementation of \mintinline{ts}{strinfigy()} supports any data structure, including the data structures we will define in later Steps.
+
+\item [Line 2:]
+
+Call \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which traverses any data structure and converts it into a string.
+
+\item [Line 4:]
+
+Provide a \mintinline{ts}{replacer} that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
+
+\item [Line 5:]
+
+Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called \mintinline{ts}{type} (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of \mintinline{ts}{stringify()} (see §~\ref{Step 0: Stringifier}) to produce a string.
+
+\item [Line 15:]
+
+Format the output with indentation of two spaces.
+\end{description}
+
+This implementation of \mintinline{ts}{stringify()} supports not only closures but any data structure (because of \mintinline{ts}{JSON.stringify()}), so it will remain the same in the following Steps.
+
+\subsection{Programs That Do Not Terminate}
+\label{Step 1: Programs That Do Not Terminate}
+
+The programs that do not terminate in Step~0 (see §~\ref{Step 0: Programs That Do Not Terminate}) do not terminate in Step~1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step~0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step~1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
+
+This difference is significant because there are programs that produce infinitely many different expressions in Step~0, but produce the same expression and environment repeatedly in Step~1, and in these cases we could detect non-termination by checking whether the runner is in a loop with the same arguments, for example:
+
+\begin{center}
+\begin{tabular}{ll}
+\multicolumn{2}{c}{\mintinline{js}{(F(F))}, where \mintinline{js}{F = f => (f(f))(f(f))}} \\
+\multicolumn{1}{c}{\textbf{Step~0}} & \multicolumn{1}{c}{\textbf{Step~1}} \\
+\mintinline{js}{(F(F))} & $\langle \mintinline{js}{(F(F))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{F}, [] \rangle] \rangle$ \\
+\mintinline{js}{(F(F))(F(F))} & $\langle \mintinline{js}{(F(F))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{F}, [] \rangle] \rangle$ \\
+\mintinline{js}{(F(F))(F(F))(F(F))} & $\langle \mintinline{js}{(F(F))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{F}, [] \rangle] \rangle$ \\
+\mintinline{js}{(F(F))(F(F))(F(F))(F(F))} & $\langle \mintinline{js}{(F(F))}, [\mintinline{js}{f} \mapsto \langle \mintinline{js}{F}, [] \rangle] \rangle$ \\
+\multicolumn{1}{c}{$\vdots$} & \multicolumn{1}{c}{$\vdots$} \\
+\end{tabular}
+\end{center}
+
+But this strategy is insufficient to guarantee termination, because there are programs that do not terminate which produce infinitely many different environments, for example:
+
+\begin{center}
+\begin{tabular}{l}
+\multicolumn{1}{c}{\mintinline{js}{(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)}} \\
+\multicolumn{1}{c}{or \mintinline{js}{F(F)(y => y)}, where \mintinline{js}{F = f => c => f(f)(C)} and \mintinline{js}{C = x => c}} \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+\multicolumn{1}{c}{$\vdots$} \\
+\end{tabular}
+\end{center}
+
+The program above is a variation on the shortest non-terminating program, \mintinline{js}{(f => f(f))(f => f(f))}, in which each \mintinline{js}{f => f(f)} receives an additional parameter \mintinline{js}{c}, and each \mintinline{js}{f(f)} receives an additional argument \mintinline{js}{x => c}.
+
+The interpreter in Step~1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step~2.
+
+\begin{mdframed}[frametitle = {Technical Terms}]
+The nesting of environments in Step~1 characterizes them as something called \emph{recursive data structures}: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
+\end{mdframed}
+
+\section{Step 2: Store-Based Interpreter}
+
+The source of non-termination in Step~1 is the nesting of the environments (see §~\ref{Step 1: Programs That Do Not Terminate}). In Step~2, we address this issue by introducing a layer of indirection between a name in the environment and its corresponding value. The interpreter in Step~2 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
+
+\subsection{Avoiding Nested Environments by Introducing a Store}
+
+In Step~1 a closure contains an environment mapping names to other closures, which in turn contain their own environments mapping to yet more closures. In Step~2, we remove this circularity by introducing a layer of indirection: an environment maps names to \emph{addresses}, which may be used to lookup values in a \emph{store}, for example:
+
+\begin{center}
+\begin{tabular}{rcc}
+(See §~\ref{A Variable Reference}) & \textbf{Step~1} & \textbf{Step~2} \\
+\textbf{Variable Reference} & \mintinline{js}{x} & \mintinline{js}{x} \\
+\textbf{Environment} & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ & $[\mintinline{js}{x} \mapsto \mintinline{js}{0}]$ \\
+\textbf{Store} & — & $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\textbf{Value} & $\langle \mintinline{js}{(y => y)}, [] \rangle$ & $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+\end{tabular}
+\end{center}
+
+Each closure continues to include its own environment, because it needs to look up variable references from where the closure was created (see §~\ref{A Function Body Is Evaluated with the Environment in Its Closure}), but there is only one store for the entire interpreter, and we avoid ambiguities by allocating different addresses, for example:
+
+\begin{center}
+\begin{tabular}{rll}
+(See §~\ref{A Function Body Is Evaluated with the Environment in Its Closure}) & \multicolumn{1}{c}{\textbf{Step~1}} & \multicolumn{1}{c}{\textbf{Step~2}} \\
+\mintinline{ts}{environment} & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle, \cdots]$ & $[\mintinline{js}{x} \mapsto \mintinline{js}{0}, \cdots]$ \\
+\mintinline{ts}{funcEnv.} & $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ & $[\mintinline{js}{x} \mapsto \mintinline{js}{1}]$ \\
+\textbf{Store} & \multicolumn{1}{c}{—} & $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(a => a)}, [\cdots] \rangle,$ \\
+ & & $\phantom{[}\mintinline{js}{1} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$
+\end{tabular}
+\end{center}
+
+The runner must return the store along with the value, for the variable references to be looked up, for example:
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} (see §~\ref{A Function Call}) & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Step~1 Output} & $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$ \\
+\textbf{Step~2 Output} & \mintinline{ts}{value} = $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{0}] \rangle$ \\
+& \mintinline{ts}{store} = $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\end{tabular}
+\end{center}
+
+\begin{mdframed}[frametitle = {Advanced}]
+The technique used in Step~2 is related to the run-time environments that are the target of traditional compilers for languages such as C~\cite[§~7]{dragon-book}: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.
+\end{mdframed}
+
+\subsection{New Data Structures}
+
+The following are the data structures used to represent environments, stores, and addresses:
+
+\begin{minted}{ts}
+type Environment = MapDeepEqual<Identifier["name"], Address>;
+
+type Store = MapDeepEqual<Address, Value>;
+
+type Address = number;
+\end{minted}
+
+\subsection{Adding a Store to the Runner}
+
+We modify the implementation of \mintinline{ts}{run()} from §~\ref{Step 1: The Entire Runner} to introduce a \mintinline{ts}{store}:
+
+\begin{minted}[linenos]{ts}
+function run(expression: Expression): { value: Value; store: Store } {
+  const store: Store = new MapDeepEqual();
+  return { value: step(expression, new MapDeepEqual()), store };
+  function step(expression: Expression, environment: Environment): Value {
+    // ...
+  }
+}
+\end{minted}
+
+\begin{description}
+\item [Lines 1 and 3:]
+
+The \mintinline{ts}{store} is returned because it is necessary to look up variable references in the \mintinline{ts}{value}.
+
+\item [Lines 2 and 4:]
+
+The \mintinline{ts}{store} is unique for the whole interpreter, unlike \mintinline{ts}{environment}s which are different for each closure, so we create only one store that is always available to \mintinline{ts}{step()} instead of adding it as an extra parameter.
+\end{description}
+
+\subsection{Adding a Value to the Store}
+\label{Adding a Value to the Store}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => z => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{ts}{value} = $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \mintinline{js}{0}] \rangle$ \\
+& \mintinline{ts}{store} = $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\end{tabular}
+\end{center}
+
+In Step~1, when we encounter a function call we extend the \mintinline{ts}{functionEnvironment} with a mapping from the \mintinline{ts}{parameter.name} to the \mintinline{ts}{argument} (see §~\ref{A Function Call},~\ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step~2, we introduce the \mintinline{ts}{store} as a layer of indirection:
+
+\begin{minted}[linenos, highlightlines = {11, 12, 15}]{ts}
+// step()
+case "CallExpression": {
+  const {
+    function: {
+      params: [parameter],
+      body,
+    },
+    environment: functionEnvironment,
+  } = step(expression.callee, environment);
+  const argument = step(expression.arguments[0], environment);
+  const address = store.size;
+  store.set(address, argument);
+  return step(
+    body,
+    new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+  );
+}
+\end{minted}
+
+\begin{description}
+\item [Line 11:]
+
+Allocate an \mintinline{ts}{address}. We use the \mintinline{ts}{store.size} as the \mintinline{ts}{address} because as the \mintinline{ts}{store} grows this number changes, so it is guaranteed to be unique throughout the interpretation of a program.
+
+\item [Line 15:]
+
+Extend the \mintinline{ts}{functionEnvironment} with a mapping from the \mintinline{ts}{parameter.name} to the \mintinline{ts}{address}.
+
+\item [Line 12:]
+
+Extend the \mintinline{ts}{store} with a mapping from the \mintinline{ts}{address} to the \mintinline{ts}{argument}. This is mutating the unique \mintinline{ts}{store} that is available to the entire \mintinline{ts}{step()} function, not creating a new \mintinline{ts}{store} in the same way that extending an \mintinline{ts}{environment} creates a new \mintinline{ts}{environment} (see line~15).
+\end{description}
+
+\subsection{Retrieving a Value from the Store}
+
+\begin{center}
+\begin{tabular}{ll}
+\textbf{Example Program} & \mintinline{js}{(x => x)(y => y)} \\
+\textbf{Current Output} & — \\
+\textbf{Expected Output} & \mintinline{ts}{value} = $\langle \mintinline{js}{(y => y)}, [] \rangle$ \\
+& \mintinline{ts}{store} = $[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$ \\
+\end{tabular}
+\end{center}
+
+In Step~1 we retrieved values directly from the \mintinline{ts}{environment} (see §~\ref{A Variable Reference}), but in Step~2 we have to go through the \mintinline{ts}{store}:
+
+\begin{minted}[linenos, highlightlines = {3, 8}]{ts}
+// step()
+case "Identifier": {
+  const address = environment.get(expression.name);
+  if (address === undefined)
+    throw new Error(
+      `Reference to undefined variable: ${expression.name}`
+    );
+  return store.get(address)!;
+}
+\end{minted}
+
+\begin{description}
+\item [Line 3:]
+
+Retrieve the \mintinline{ts}{address} from the \mintinline{ts}{environment}.
+
+\item [Line 8:]
+
+Retrieve the \mintinline{ts}{value} from the \mintinline{ts}{store} at the given \mintinline{ts}{address} found in the \mintinline{ts}{environment}. The \mintinline{ts}{address} is guaranteed to be in the \mintinline{ts}{store} because we extend the \mintinline{ts}{store} and the \mintinline{ts}{environment} together (see §~\ref{Adding a Value to the Store}), so we use \mintinline{ts}{!} to indicate that \mintinline{ts}{get()} may not return \mintinline{ts}{undefined}.
+\end{description}
+
+\subsection{The Entire Runner}
+
+We completed the changes necessary to remove the circularity between closures and environments:
+
+\begin{minted}[linenos]{ts}
+type Environment = MapDeepEqual<Identifier["name"], Address>;
+
+type Store = MapDeepEqual<Address, Value>;
+
+type Address = number;
+
+function run(expression: Expression): { value: Value; store: Store } {
+  const store: Store = new MapDeepEqual();
+  return { value: step(expression, new MapDeepEqual()), store };
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression": {
+        return { function: expression, environment };
+      }
+      case "CallExpression": {
+        const {
+          function: {
+            params: [parameter],
+            body,
+          },
+          environment: functionEnvironment,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        const address = store.size;
+        store.set(address, argument);
+        return step(
+          body,
+          new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+        );
+      }
+      case "Identifier": {
+        const address = environment.get(expression.name);
+        if (address === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return store.get(address)!;
+      }
+    }
+  }
+}
+\end{minted}
+
+\begin{mdframed}[frametitle = {Advanced}]
+\subsection{Operational Semantics}
+\label{Step 2: Operational Semantics}
+
+We adapt the operational semantics from §~\ref{Step 2: Operational Semantics} to the interpreter defined in Step~2. First, we change the notion of environments:
+
+\begin{center}
+\begin{tabular}{rcll}
+$\rho$ & = & $\{x \mapsto A, \cdots\}$ & Environments \\
+$\sigma$ & = & $\{A \mapsto v, \cdots\}$ & Stores \\
+$A$ & = & $\mathbb{N}$ & Addresses \\
+\end{tabular}
+\end{center}
+
+We then define the relation $\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle$ to be equivalent to the new implementation of \mintinline{ts}{run()}:
+
+\begin{mathpar}
+\inferrule
+{ }
+{\rho, \sigma \vdash \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)} \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e\mintinline{js}{)}, \rho \rangle, \sigma \rangle}
+
+\inferrule
+{
+\rho, \sigma \vdash e_f \Rightarrow \langle \langle \mintinline{js}{(}x\mintinline{js}{ => }e_b\mintinline{js}{)}, \rho_f \rangle, \sigma_f \rangle \\
+\rho, \sigma_f \vdash e_a \Rightarrow \langle v_a, \sigma_a \rangle \\
+A = \lvert \sigma_a \rvert  \\
+\rho_f \cup \{x \mapsto A\}, \sigma_a \cup \{A \mapsto v_a\} \vdash e_b \Rightarrow \langle v, \sigma_v \rangle \\
+}
+{\rho, \sigma \vdash e_f\mintinline{js}{(}e_a\mintinline{js}{)} \Rightarrow \langle v, \sigma_v \rangle}
+
+\inferrule
+{ }
+{\rho, \sigma \vdash x \Rightarrow \sigma(\rho(x))}
+\end{mathpar}
+\end{mdframed}
+
+\subsection{Programs That Do Not Terminate}
+\label{Step 2: Programs That Do Not Terminate}
+
+The programs that do not terminate in Step~1 (see §~\ref{Step 1: Programs That Do Not Terminate}) do not terminate in Step~2 either, because the interpreters are equivalent except for the treatment of environments, but the sources of non-termination are different. In both cases the issue is that the interpreter may create infinitely many environments, but in Step~1 the environments are nested, and in Step~2 they contain different addresses, for example:
+
+\begin{center}
+\begin{tabular}{l}
+\multicolumn{1}{c}{\mintinline{js}{(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)}} \\
+\multicolumn{1}{c}{or \mintinline{js}{F(F)(y => y)}, where \mintinline{js}{F = f => c => f(f)(C)} and \mintinline{js}{C = x => c}} \\
+\multicolumn{1}{c}{\textbf{Step~1}} \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
+\multicolumn{1}{c}{$\vdots$} \\
+\multicolumn{1}{c}{\textbf{Step~2}} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{0}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{1}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{2}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\langle \mintinline{js}{f(f)(C)}, [\mintinline{js}{c} \mapsto \mintinline{js}{3}, \cdots] \rangle$} \\
+\multicolumn{1}{c}{$\vdots$} \\
+\multicolumn{1}{c}{$[\mintinline{js}{0} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle, \mintinline{js}{1} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \mintinline{c}{0}, \cdots] \rangle, \mintinline{js}{2} \mapsto \langle \mintinline{js}{C}, [\mintinline{js}{c} \mapsto \mintinline{c}{1}, \cdots] \rangle, \cdots]$}
+\end{tabular}
+\end{center}
+
+We address this issue in Step~3.
+
+\section{Step 3: Finitely Many Addresses}
+
+\subsection{The Entire Runner}
+
+We completed the changes necessary to produce only finitely many addresses:
+
+\begin{minted}[linenos]{ts}
+type Value = SetDeepEqual<Closure>;
+
+type Address = Identifier;
+
+function run(expression: Expression): { value: Value; store: Store } {
+  const store: Store = new MapDeepEqual();
+  return { value: step(expression, new MapDeepEqual()), store };
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression": {
+        return new SetDeepEqual([{ function: expression, environment }]);
+      }
+      case "CallExpression": {
+        const value: Value = new SetDeepEqual();
+        for (const {
+          function: {
+            params: [parameter],
+            body,
+          },
+          environment: functionEnvironment,
+        } of step(expression.callee, environment)) {
+          const argument = step(expression.arguments[0], environment);
+          const address = parameter;
+          store.merge(new MapDeepEqual([[address, argument]]));
+          value.merge(
+            step(
+              body,
+              new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+            )
+          );
+        }
+        return value;
+      }
+      case "Identifier": {
+        const address = environment.get(expression.name);
+        if (address === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return store.get(address)!;
+      }
+    }
+  }
+}
+\end{minted}
+
+% TODO: Some loss of precision. Now it’s an analyzer (of sorts).
+
+% TODO: Add highlightlines to entire runner sections.
+% TODO: High-level examples.
+
+% TODO: Variations
+%       Context Sensitivity
+%         k-CFA
+%         Set-based
+%         Top-frames / Call+return / Call-only / Return-only
+%         m-CFA
+%         Stack/Heap separation
+%         Closures contain references & stores contain environments (the PL II trick) (sets of maps instead of maps of sets) (path-sensitive?)
+%       Store Widening
+%         None
+%         Universal (flow-insensitive)
+%       Garbage Collection
+%         Filtered environments to contain only the non-locals
+%         Filtered stores (proper garbage collection)
+
+% TODO: \appendix
+
+\backmatter
+
+\bibliographystyle{plain}
+\bibliography{\jobname}
+
+% TODO: \chapter{Biographical Statement}
+
+\end{document}
+-->
+
 </main>
 <footer>
 
