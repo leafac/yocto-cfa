@@ -82,17 +82,6 @@ async function processHTML(/** @type {Document} */ document) {
     element.textContent = `§ ${target?.textContent ?? "??"}`;
   }
 
-  // Add bibliography
-  document
-    .querySelector("#bibliography")
-    .insertAdjacentHTML(
-      "afterend",
-      new Cite(fs.readFileSync("yocto-cfa.bib", "utf8")).format(
-        "bibliography",
-        { format: "html", template: "vancouver" }
-      )
-    );
-
   // Add syntax highlighting
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
   for (const element of document.querySelectorAll("code")) {
