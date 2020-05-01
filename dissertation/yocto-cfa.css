@@ -70,6 +70,7 @@ fieldset {
   border: 1px solid #dfdfdf;
   border-radius: 3px;
   box-decoration-break: slice;
+  margin: 1em 0;
 }
 
 legend {

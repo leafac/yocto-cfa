@@ -44,42 +44,42 @@
 
 ## The Analyzed Language: Yocto-JavaScript
 
-Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, and we have plenty of options to choose from, because higher-order functions are a feature that most languages support, for example, JavaScript, Java, Python, Ruby, and so forth.
+Our first decision when developing a program analyzer is which language it should analyze. This decision is important, among other reasons, because it influences how difficult it is to develop the analyzer. In this dissertation we are interested in analysis techniques for higher-order functions, so we have plenty of options from which to choose, because higher-order functions are present in most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
-From all these options, we would like to choose JavaScript because it is the most popular language among programmers [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a _subset_ of JavaScript features that are related to higher-order functions, resulting in a language that we call _Yocto-JavaScript_ (`` math`\mathrm{JavaScript} \times 10^{-24} ``). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
+From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call _Yocto-JavaScript_ (JavaScript `` math` \times 10^{-24} ``).
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
+On the surface the choice of analyzed language is important because it influences how difficult it is to develop the analyzer, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
 
 </fieldset>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-Yocto-JavaScript is a representation of something called the *`` math`\lambda ``-calculus* \cite[§ 6]{understanding-computation}.
+Yocto-JavaScript is a representation of something called the *`` math`\lambda ``-calculus* [understanding-computation (§ 6)]().
 
 </fieldset>
 
 ### Values in Yocto-JavaScript
 
-JavaScript has many kinds of values: strings (for example,  `` js`"Leandro" ``), numbers (for example,  `` js`29 ``), arrays (for example,  `` js`["Leandro", 29] ``), objects (for example, \mintinline{js}!{ name: "Leandro", age: 29 }!), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
+JavaScript has many kinds of values: strings (for example, `` js`"Leandro" ``), numbers (for example, `` js`29 ``), arrays (for example, `` js`["Leandro", 29] ``), objects (for example, `` js`{ name: "Leandro", age: 29 } ``), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
 
-An Yocto-JavaScript function is written as  `` js`<parameter> => <body> ``, for example,  `` js`x => x ``, in which the  `` js`<parameter> `` is called  `` js`x `` and the  `` js`<body> `` is a reference to the variable  `` js`x `` (see § \ref{Operations in Yocto-JavaScript} for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see § \ref{Operations in Yocto-JavaScript} for more on function calls).
+An Yocto-JavaScript function is written as `` js`<parameter> => <body> ``, for example, `` js`x => x ``, in which the `` js`<parameter> `` is called `` js`x `` and the `` js`<body> `` is a reference to the variable `` js`x `` (see [](#operations-in-yocto-javascript) for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see [](#operations-in-yocto-javascript) for more on function calls).
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The notation we use for writing functions is something called *arrow function expressions* [javascript-arrow-function-expressions](). The function given as example is called the _identity_ function. The ability of acting as values is what characterizes these functions as _higher-order_.
+The notation we use for writing functions is something called *arrow function expressions* [javascript-arrow-function-expressions](). The function given as example (`` js`x => x ``) is called the _identity_ function. The ability of acting as values is what characterizes these functions as _higher-order_.
 
 </fieldset>
 
 ### Operations in Yocto-JavaScript
 
-JavaScript has many operations: strings may have its characters accessed (for example,  `` js`"Leandro"[2] ``, which results in  `` js`"a" ``), numbers may be added together (for example,  `` js`29 + 1 ``, which results in  `` js`30 ``), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
+JavaScript has many operations: strings may have its characters accessed (for example, `` js`"Leandro"[2] ``, which results in `` js`"a" ``), numbers may be added together (for example, `` js`29 + 1 ``, which results in `` js`30 ``), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
 
-A function call is written as  `` js`<function>(<argument>) ``, for example,  `` js`f(a) ``, in which the  `` js`<function> `` is a hypothetical function  `` js`f `` and the  `` js`<argument> `` is a hypothetical argument  `` js`a ``. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see § \ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example,  `` js`x ``.
+A function call is written as `` js`<function>(<argument>) ``, for example, `` js`f(a) ``, in which the `` js`<function> `` is a hypothetical function `` js`f `` and the `` js`<argument> `` is a hypothetical argument `` js`a ``. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see § \ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, `` js`x ``.
 
 The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
@@ -87,11 +87,11 @@ The following is a complete Yocto-JavaScript program that exemplifies all the su
 ((x) => x)((y) => y);
 ```
 
-This program is a function call in which the  `` js`<function> `` is  `` js`x => x `` and the  `` js`<argument> `` is  `` js`y => y ``. When called, an Yocto-JavaScript function returns the result of computing its  `` js`<body> `` and the  `` js`<body> `` of  `` js`x => x `` is a reference to the variable  `` js`x ``, so  `` js`x => x `` is a function that returns its argument unchanged and the final result of the example above is  `` js`y => y ``.
+This program is a function call in which the `` js`<function> `` is `` js`x => x `` and the `` js`<argument> `` is `` js`y => y ``. When called, an Yocto-JavaScript function returns the result of computing its `` js`<body> `` and the `` js`<body> `` of `` js`x => x `` is a reference to the variable `` js`x ``, so `` js`x => x `` is a function that returns its argument unchanged and the final result of the example above is `` js`y => y ``.
 
-In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the  `` js`<body> `` of a function definition, or as the  `` js`<function> `` or  `` js`<argument> `` of a call; for example, in the program  `` js`(f(a))(b) `` the function call  `` js`f(a) `` appears as the  `` js`<function> `` of a call.
+In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the `` js`<body> `` of a function definition, or as the `` js`<function> `` or `` js`<argument> `` of a call; for example, in the program `` js`(f(a))(b) `` the function call `` js`f(a) `` appears as the `` js`<function> `` of a call.
 
-We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions  `` js`f ``,  `` js`g ``, and  `` js`h ``, in  `` js`(f(g))(h) `` the call  `` js`f(g) `` happens first and the result is a function that is called with  `` js`h ``, and in  `` js`f(g(h)) `` the call  `` js`g(h) `` happens first and the result is passed as argument to  `` js`f ``. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example,  `` js`x => y => x `` is equivalent to  `` js`x => (y => x) `` and  `` js`f(a)(b) `` is equivalent to  `` js`(f(a))(b) ``.
+We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions `` js`f ``, `` js`g ``, and `` js`h ``, in `` js`(f(g))(h) `` the call `` js`f(g) `` happens first and the result is a function that is called with `` js`h ``, and in `` js`f(g(h)) `` the call `` js`g(h) `` happens first and the result is passed as argument to `` js`f ``. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example, `` js`x => y => x `` is equivalent to `` js`x => (y => x) `` and `` js`f(a)(b) `` is equivalent to `` js`(f(a))(b) ``.
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -107,7 +107,7 @@ The order in which operations are computed is something called their _precedence
 
 Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it _too_ simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages \cite[§ 6]{understanding-computation}.
 
-As an example of how to carry out this translation, consider a JavaScript function of two parameters:  `` js`(x, y) => x ``. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see § \ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter:  `` js`x => (y => x) ``. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example,  `` js`f(a, b) `` may be encoded as  `` js`(f(a))(b) ``.
+As an example of how to carry out this translation, consider a JavaScript function of two parameters: `` js`(x, y) => x ``. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see § \ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: `` js`x => (y => x) ``. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, `` js`f(a, b) `` may be encoded as `` js`(f(a))(b) ``.
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -124,7 +124,7 @@ The description of Yocto-JavaScript given so far has been informal; the followin
 
 \begin{center}
 \begin{tabular}{rcll}
-`` math`e `` & ::= & `` math` `` js` ( ``x `` js ` => `e` js` ) `` `` | `` math `e `` js`( ``e `` js`) `` `|` math` x `` & Expressions \\ `` math `x `& ::= &` text`<A JavaScript Identifier> `` & Variables \\
+`` math`e `` & ::= & `` math` `` js` ( ``x `` js ` => `e` js` ) `` `` | `` math `e`` js`( ``e`` js`) `` `|` math` x `` & Expressions \\ `` math `x `& ::= &` text`<A JavaScript Identifier> `` & Variables \\
 \end{tabular}
 \end{center}
 
@@ -140,9 +140,9 @@ Having chosen the analyzed language (Yocto-JavaScript; see § \ref{The Analyzed
 
 ### Architecture
 
-Our interpreter is defined as a function called  `` ts`evaluate() ``, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
+Our interpreter is defined as a function called `` ts`evaluate() ``, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
 
-The following are two examples of how we will be able to use  `` ts`evaluate() `` by the end of Step 0 (the  `` ts`> `` represents the console):
+The following are two examples of how we will be able to use `` ts`evaluate() `` by the end of Step 0 (the `` ts`> `` represents the console):
 
 ```ts
 > evaluate("x => x")
@@ -151,7 +151,7 @@ The following are two examples of how we will be able to use  `` ts`evaluate() 
 "y => y"
 ```
 
-The implementation of  `` ts`evaluate() `` is separated into three parts called  `` ts`parse() ``,  `` ts`run() ``, and  `` ts`stringify() ``:
+The implementation of `` ts`evaluate() `` is separated into three parts called `` ts`parse() ``, `` ts`run() ``, and `` ts`stringify() ``:
 
 \begin{center}
 \includegraphics[page = 1]{images.pdf}
@@ -163,20 +163,20 @@ export function evaluate(input: string): string {
 }
 ```
 
-The  `` ts`parse() `` function prepares the  `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see § \ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The  `` ts`run() `` function is responsible for the interpretation itself. The  `` ts`stringify() `` function converts the outputs of  `` ts`run() `` into a human-readable format. In the following sections (§ \ref{Data Structures to Represent Yocto-JavaScript Programs}–§ \ref{An Operational Semantics for the Interpreter}) we address the implementation of  `` ts`run() ``, deferring  `` ts`parse() `` to § \ref{Parser} and  `` ts`stringify() `` to § \ref{Step 0: Stringifier}.
+The `` ts`parse() `` function prepares the `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see § \ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The `` ts`run() `` function is responsible for the interpretation itself. The `` ts`stringify() `` function converts the outputs of `` ts`run() `` into a human-readable format. In the following sections (§ \ref{Data Structures to Represent Yocto-JavaScript Programs}–§ \ref{An Operational Semantics for the Interpreter}) we address the implementation of `` ts`run() ``, deferring `` ts`parse() `` to § \ref{Parser} and `` ts`stringify() `` to § \ref{Step 0: Stringifier}.
 
-In later Steps the implementations of  `` ts`run() `` and  `` ts`stringify() `` will change, but the architecture and therefore the implementations of  `` ts`evaluate() `` and  `` ts`parse() `` will remain the same.
+In later Steps the implementations of `` ts`run() `` and `` ts`stringify() `` will change, but the architecture and therefore the implementations of `` ts`evaluate() `` and `` ts`parse() `` will remain the same.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The  `` ts`evaluate() `` function is named after a native JavaScript function called  `` ts`eval() `` [javascript-eval](), which is similar to  `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The  `` ts`strinfigy() `` function is named after a native JavaScript function called  `` ts`JSON.stringify() `` [javascript-json-stringify](), which is used in the implementation (see § \ref{Step 1: Stringifier}).
+The `` ts`evaluate() `` function is named after a native JavaScript function called `` ts`eval() `` [javascript-eval](), which is similar to `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The `` ts`strinfigy() `` function is named after a native JavaScript function called `` ts`JSON.stringify() `` [javascript-json-stringify](), which is used in the implementation (see § \ref{Step 1: Stringifier}).
 
 </fieldset>
 
 ### Data Structures to Represent Yocto-JavaScript Programs
 
-The  `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see § \ref{Architecture}), which is convenient for humans to write and read, but inconvenient for  `` ts`run() `` to manipulate directly, because  `` ts`run() `` is concerned with the _structure_ of the program instead of the _text_: from  `` ts`run() ``’s perspective it does not matter, for example, whether a function is written as  `` js`x => x `` or as  `` js`x=>x ``. So before  `` ts`run() `` starts interpreting the program,  `` ts`parse() `` transforms it from a string into more convenient data structures (see § \ref{Parser} for  `` ts`parse() ``’s implementation).
+The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see § \ref{Architecture}), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because `` ts`run() `` is concerned with the _structure_ of the program instead of the _text_: from `` ts`run() ``’s perspective it does not matter, for example, whether a function is written as `` js`x => x `` or as `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see § \ref{Parser} for `` ts`parse() ``’s implementation).
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -277,7 +277,7 @@ type Identifier = {
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The definitions above correspond to elements of the Yocto-JavaScript grammar (see § \ref{A Formal Grammar for Yocto-JavaScript}); for example,  `` ts`Expression `` corresponds to `` math`e ``.
+The definitions above correspond to elements of the Yocto-JavaScript grammar (see § \ref{A Formal Grammar for Yocto-JavaScript}); for example, `` ts`Expression `` corresponds to `` math`e ``.
 
 </fieldset>
 
@@ -287,13 +287,13 @@ In later Steps almost everything about the interpreter will change, but the data
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`x => x `` \\
+\textbf{Example Program} & `` js`x => x `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` js`x => x `` \\
+\textbf{Expected Output} & `` js`x => x `` \\
 \end{tabular}
 \end{center}
 
-We start the definition of  `` ts`run() `` by considering the example above. As mentioned in § \ref{Data Structures to Represent Yocto-JavaScript Programs}, the  `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an  `` ts`Expression ``. The  `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see § \ref{Values in Yocto-JavaScript}), so we start the implementation of  `` ts`run() `` with the following (we use  `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+We start the definition of `` ts`run() `` by considering the example above. As mentioned in § \ref{Data Structures to Represent Yocto-JavaScript Programs}, the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see § \ref{Values in Yocto-JavaScript}), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
 ```ts
 type Value = ArrowFunctionExpression;
@@ -303,7 +303,7 @@ function run(expression: Expression): Value {
 }
 ```
 
-The first thing that  `` ts`run() `` has to do is determine which type of  `` ts`expression `` it is given:
+The first thing that `` ts`run() `` has to do is determine which type of `` ts`expression `` it is given:
 
 ```ts{2-9}
 function run(expression: Expression): Value {
@@ -318,7 +318,7 @@ function run(expression: Expression): Value {
 }
 ```
 
-In our current example, the  `` ts`expression `` already is a  `` ts`Value ``, so it may be returned unchanged:
+In our current example, the `` ts`expression `` already is a `` ts`Value ``, so it may be returned unchanged:
 
 ```ts{3}
 // run()
@@ -330,15 +330,15 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => x)(y => y) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` js`y => y `` \\
+\textbf{Example Program} & `` js`(x => x)(y => y) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` js`y => y `` \\
 \end{tabular}
 \end{center}
 
 Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`f `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in § \ref{Substitution in Function Calls}.
 
-In the example we are considering both the function that is called ( `` js`x => x ``) and the argument ( `` js`y => y ``) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
+In the example we are considering both the function that is called (`` js`x => x ``) and the argument (`` js`y => y ``) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
 ```ts{3-7}
 // run()
@@ -369,7 +369,7 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 ```
 
-Finally, we setup an auxiliary function called  `` ts`substitute() `` that implements the traversal of the  `` ts`body `` looking for references to  `` ts`parameter `` and substituting them:
+Finally, we setup an auxiliary function called `` ts`substitute() `` that implements the traversal of the `` ts`body `` looking for references to `` ts`parameter `` and substituting them:
 
 \begin{center}
 \includegraphics[page = 4]{images.pdf}
@@ -397,7 +397,7 @@ case "CallExpression":
   }
 ```
 
-Similar to  `` ts`run() `` itself,  `` ts`substitute() `` starts by determining which type of  `` ts`expression `` is passed to it:
+Similar to `` ts`run() `` itself, `` ts`substitute() `` starts by determining which type of `` ts`expression `` is passed to it:
 
 ```ts{2-9}
 function substitute(expression: Expression): Expression {
@@ -412,7 +412,7 @@ function substitute(expression: Expression): Expression {
 }
 ```
 
-In our current example the  `` ts`expression `` is  `` ts`x ``, an  `` ts`Identifier ``, and it must be substituted with the  `` ts`argument ``:
+In our current example the `` ts`expression `` is `` ts`x ``, an `` ts`Identifier ``, and it must be substituted with the `` ts`argument ``:
 
 \begin{center}
 \includegraphics[page = 5]{images.pdf}
@@ -428,13 +428,13 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` js`z => y => y `` \\
+\textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` js`z => y => y `` \\
 \end{tabular}
 \end{center}
 
-When  `` ts`substitute() `` (see § \ref{A Call Involving Immediate Functions}) starts traversing the  `` ts`body `` of the example above, the  `` ts`expression `` is an  `` ts`ArrowFunctionExpression `` ( `` js`z => x ``), and we want substitution to proceed deeper to find and substitute  `` js`x ``, so we call  `` ts`substitute() `` recursively (we use a feature called *spread syntax* [javascript-spread-syntax]() to build an  `` ts`expression `` based on the existing one with a new  `` ts`body ``):
+When `` ts`substitute() `` (see § \ref{A Call Involving Immediate Functions}) starts traversing the `` ts`body `` of the example above, the `` ts`expression `` is an `` ts`ArrowFunctionExpression `` (`` js`z => x ``), and we want substitution to proceed deeper to find and substitute `` js`x ``, so we call `` ts`substitute() `` recursively (we use a feature called *spread syntax* [javascript-spread-syntax]() to build an `` ts`expression `` based on the existing one with a new `` ts`body ``):
 
 \begin{center}
 \includegraphics[page = 6]{images.pdf}
@@ -453,13 +453,13 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => z => z)(y => y) `` \\
-\textbf{Current Output} &  `` js`z => y => y `` \\
-\textbf{Expected Output} &  `` js`z => z `` \\
+\textbf{Example Program} & `` js`(x => z => z)(y => y) `` \\
+\textbf{Current Output} & `` js`z => y => y `` \\
+\textbf{Expected Output} & `` js`z => z `` \\
 \end{tabular}
 \end{center}
 
-The implementation of  `` ts`substitute() `` in the case of  `` ts`Identifier `` introduced in § \ref{A Call Involving Immediate Functions} _always_ substitutes variable references, regardless of whether they refer to the  `` ts`parameter `` of the called function. For example, in the program above  `` ts`substitute() `` is substituting the  `` js`z `` even though the  `` ts`parameter `` is  `` js`x ``. To fix this, we check whether the variable reference matches the  `` ts`parameter ``, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
+The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` introduced in § \ref{A Call Involving Immediate Functions} _always_ substitutes variable references, regardless of whether they refer to the `` ts`parameter `` of the called function. For example, in the program above `` ts`substitute() `` is substituting the `` js`z `` even though the `` ts`parameter `` is `` js`x ``. To fix this, we check whether the variable reference matches the `` ts`parameter ``, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
 
 ```ts{3}
 // substitute()
@@ -472,28 +472,28 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => x => x)(y => y) `` \\
-\textbf{Current Output} &  `` js`x => y => y `` \\
-\textbf{Expected Output} &  `` js`x => x `` \\
+\textbf{Example Program} & `` js`(x => x => x)(y => y) `` \\
+\textbf{Current Output} & `` js`x => y => y `` \\
+\textbf{Expected Output} & `` js`x => x `` \\
 \end{tabular}
 \end{center}
 
-In the program above, there are two options for the variable reference  `` js`x `` on the right of the second  `` js`=> ``: it may refer to the first (outer)  `` js`x `` on the left of the first  `` js`=> ``, in which case the output of the program would be  `` js`x => y => y ``; or it may refer to the second (inner)  `` js`x `` on the left of the second  `` js`=> ``, in which case the output of the program would be  `` js`x => x ``:
+In the program above, there are two options for the variable reference `` js`x `` on the right of the second `` js`=> ``: it may refer to the first (outer) `` js`x `` on the left of the first `` js`=> ``, in which case the output of the program would be `` js`x => y => y ``; or it may refer to the second (inner) `` js`x `` on the left of the second `` js`=> ``, in which case the output of the program would be `` js`x => x ``:
 
 \begin{center}
 \includegraphics[page = 7]{images.pdf}
 \end{center}
 
-Currently  `` ts`substitute() `` is implementing Option 1, but this leads to an issue: we are not able to reason about the inner function  `` js`x => x `` independently; we must know where it appears and whether a variable called  `` js`x `` is already defined there.
+Currently `` ts`substitute() `` is implementing Option 1, but this leads to an issue: we are not able to reason about the inner function `` js`x => x `` independently; we must know where it appears and whether a variable called `` js`x `` is already defined there.
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-We say that the problem with Option 1 is that it defeats something called _local reasoning_. We say that Option 2 exhibits a behavior called _shadowing_, and that the outer  `` js`x `` is _shadowed_ by the inner  `` js`x ``, because there is no way to refer to the outer  `` js`x `` from the body of the inner function.
+We say that the problem with Option 1 is that it defeats something called _local reasoning_. We say that Option 2 exhibits a behavior called _shadowing_, and that the outer `` js`x `` is _shadowed_ by the inner `` js`x ``, because there is no way to refer to the outer `` js`x `` from the body of the inner function.
 
 </fieldset>
 
-We avoid this issue by modifying  `` ts`substitute() `` to implement Option 2, which is also the choice of JavaScript and every other popular programming language. We change  `` ts`substitute() ``’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that  `` ts`subsitute() `` is looking for, then  `` ts`subsitute() `` returns the function unchanged, preventing further substitution (there is no recursive call to  `` ts`substitute() `` in this case):
+We avoid this issue by modifying `` ts`substitute() `` to implement Option 2, which is also the choice of JavaScript and every other popular programming language. We change `` ts`substitute() ``’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that `` ts`subsitute() `` is looking for, then `` ts`subsitute() `` returns the function unchanged, preventing further substitution (there is no recursive call to `` ts`substitute() `` in this case):
 
 ```ts{3}
 // substitute()
@@ -509,13 +509,13 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => z => x(x))(y => y) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` js`z => (y => y)(y => y) `` \\
+\textbf{Example Program} & `` js`(x => z => x(x))(y => y) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` js`z => (y => y)(y => y) `` \\
 \end{tabular}
 \end{center}
 
-This case is similar to § \ref{Substitution in Function Definitions}: all  `` ts`substitute() `` has to do is continue traversing the function call recursively:
+This case is similar to § \ref{Substitution in Function Definitions}: all `` ts`substitute() `` has to do is continue traversing the function call recursively:
 
 ```ts{3-7}
 // substitute()
@@ -531,13 +531,13 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => z => x)((a => a)(y => y)) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` js`z => y => y `` \\
+\textbf{Example Program} & `` js`(x => z => x)((a => a)(y => y)) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` js`z => y => y `` \\
 \end{tabular}
 \end{center}
 
-In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling  `` ts`run() `` recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to  `` ts`run() `` returns the immediate function unchanged; see § \ref{An Expression That Already Is a Value}):
+In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling `` ts`run() `` recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to `` ts`run() `` returns the immediate function unchanged; see § \ref{An Expression That Already Is a Value}):
 
 ```ts{3-4,9}
 // run()
@@ -561,14 +561,14 @@ case "CallExpression":
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-This technique of calling  `` ts`run() `` recursively to produce an immediate function for the argument characterizes the interpreter as _big-step_.
+This technique of calling `` ts`run() `` recursively to produce an immediate function for the argument characterizes the interpreter as _big-step_.
 
 </fieldset>
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see § \ref{A Function That Is Not Immediate}), or if it is the result of the program (see § \ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be  `` js`z => ((a => a)(y => y)) ``. And there is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see § \ref{A Function That Is Not Immediate}), or if it is the result of the program (see § \ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be `` js`z => ((a => a)(y => y)) ``. And there is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
 
 </fieldset>
 
@@ -576,13 +576,13 @@ The notion that the argument is interpreted to produce a value as soon as the fu
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`((z => z)(x => x))(y => y) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` js`y => y `` \\
+\textbf{Example Program} & `` js`((z => z)(x => x))(y => y) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` js`y => y `` \\
 \end{tabular}
 \end{center}
 
-This is the dual of § \ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call  `` ts`run() `` recursively (we also remove the check of whether the function is immediate):
+This is the dual of § \ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call `` ts`run() `` recursively (we also remove the check of whether the function is immediate):
 
 ```ts{6}
 // run()
@@ -605,13 +605,13 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => (z => z)(x))(y => y) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` js`y => y `` \\
+\textbf{Example Program} & `` js`(x => (z => z)(x))(y => y) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` js`y => y `` \\
 \end{tabular}
 \end{center}
 
-This is similar to § \ref{An Argument That Is Not Immediate} and § \ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to  `` ts`evaluate() `` (we also remove yet another check and inline the  `` ts`substitutedBody `` variable):
+This is similar to § \ref{An Argument That Is Not Immediate} and § \ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to `` ts`evaluate() `` (we also remove yet another check and inline the `` ts`substitutedBody `` variable):
 
 ```ts{8}
 // run()
@@ -631,13 +631,13 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => y)(y => y) `` \\
-\textbf{Current Output} &  `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} &  `` text`Reference to undefined variable: y `` \\
+\textbf{Example Program} & `` js`(x => y)(y => y) `` \\
+\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
+\textbf{Expected Output} & `` text`Reference to undefined variable: y `` \\
 \end{tabular}
 \end{center}
 
-The only case in which  `` ts`run() `` may encounter a variable reference directly is if the referenced variable is undefined, otherwise  `` ts`substitute() `` would have already substituted it (see § \ref{A Call Involving Immediate Functions}–§ \ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
+The only case in which `` ts`run() `` may encounter a variable reference directly is if the referenced variable is undefined, otherwise `` ts`substitute() `` would have already substituted it (see § \ref{A Call Involving Immediate Functions}–§ \ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
 
 ```ts{3}
 // run()
@@ -647,9 +647,9 @@ case "Identifier":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`x => y `` \\
-\textbf{Current Output} &  `` js`x => y `` \\
-\textbf{Expected Output} &  `` js`x => y `` \\
+\textbf{Example Program} & `` js`x => y `` \\
+\textbf{Current Output} & `` js`x => y `` \\
+\textbf{Expected Output} & `` js`x => y `` \\
 \end{tabular}
 \end{center}
 
@@ -657,7 +657,7 @@ If the reference to an undefined variable occurs in the body of a function that 
 
 ### The Entire Runner
 
-The implementation of the  `` ts`run() `` function is complete:
+The implementation of the `` ts`run() `` function is complete:
 
 ```ts{number}
 type Value = ArrowFunctionExpression;
@@ -707,7 +707,7 @@ What we accomplished so far in this section is more than defining an interpreter
 
 A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: *operational semantics* [operational-semantics, semantics-engineering, pl-book]().
 
-First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type  `` ts`Value `` (see § \ref{Step 0: The Entire Runner}, line 1):
+First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type `` ts`Value `` (see § \ref{Step 0: The Entire Runner}, line 1):
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -715,7 +715,7 @@ First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript
 \end{tabular}
 \end{center}
 
-Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ that are equivalent to the behavior of  `` ts`run() `` (see § \ref{Step 0: The Entire Runner}, lines 3–36):
+Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ that are equivalent to the behavior of `` ts`run() `` (see § \ref{Step 0: The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
 \inferrule
@@ -724,18 +724,18 @@ Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ 
 
 \inferrule
 {
-e*{f} \Rightarrow x*{p} `` js` => ``e*{b} \\
+e*{f} \Rightarrow x*{p}`` js` => ``e*{b} \\
 e*{a} \Rightarrow v*{a} \\
 e*{b}[x*{p} \backslash v*{a}] \Rightarrow v \\
 }
-{e*{f} `` js`( ``e*{a} `` js`) `` \Rightarrow v}
+{e*{f}`` js`( ``e*{a}`` js`) `` \Rightarrow v}
 \end{mathpar}
 
-Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equivalent to the behavior of  `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}, lines 14–32):
+Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equivalent to the behavior of `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}, lines 14–32):
 
 \begin{center}
 \begin{tabular}{rcll}
-`` math`(x `` js` => ``e)[x_{p} \backslash v_{a}] `` & = & `` math `x `` js` => ``(e[x*{p} \backslash v*{a}]) `& if` math` x \neq x_{p} `` \\ `` math `(x*{p} `` js` => ``e)[x*{p} \backslash v*{a}] `& = &` math`x*{p} `` js` => ``e `& \\` math` (e_{f} `` js `( `e_{a}` js` ) ``)[x_{p} \backslash v_{a}] `` & = & `` math `(e*{f}[x*{p} \backslash v*{a}]) `` js`( ``(e*{a}[x*{p} \backslash v*{a}]) `` js`) `` `& \\` math` x[x_{p} \backslash v_{a}] `` & = & `` math `x `& if` math` x \neq x_{p} `` \\ `` math `x*{p}[x*{p} \backslash v*{a}] `& = &` math`v*{a} `` & \\
+`` math`(x `` js` => ``e)[x_{p} \backslash v_{a}] `` & = & `` math `x`` js` => ``(e[x*{p} \backslash v*{a}]) `& if` math` x \neq x_{p} `` \\ `` math `(x*{p}`` js` => ``e)[x*{p} \backslash v*{a}] `& = &` math`x*{p}`` js` => ``e `& \\` math` (e_{f} `` js `( `e_{a}` js` ) ``)[x_{p} \backslash v_{a}] `` & = & `` math `(e*{f}[x*{p} \backslash v*{a}])`` js`( ``(e*{a}[x*{p} \backslash v*{a}])`` js`) `` `& \\` math` x[x_{p} \backslash v_{a}] `` & = & `` math `x `& if` math` x \neq x_{p} `` \\ `` math `x*{p}[x*{p} \backslash v*{a}] `& = &` math`v*{a} `` & \\
 \end{tabular}
 \end{center}
 
@@ -782,54 +782,54 @@ function parse(input: string): Expression {
 \begin{description}
 \item [Line 1:]
 
-The parser is defined as a function called  `` ts`parse() ``, which receives the program  `` ts`input `` represented as a  `` ts`string `` and returns an  `` ts`Expression `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}).
+The parser is defined as a function called `` ts`parse() ``, which receives the program `` ts`input `` represented as a `` ts`string `` and returns an `` ts`Expression `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}).
 
 \item [Line 2:]
 
-Call  `` ts`esprima.parseScript() ``, which parses the  `` ts`input `` as a JavaScript program and produces a data structure following the ESTree specification. The  `` ts`esprima.parseScript() `` function also detects syntax errors, for example, in the program  `` js`x => ``, which is missing the function body.
+Call `` ts`esprima.parseScript() ``, which parses the `` ts`input `` as a JavaScript program and produces a data structure following the ESTree specification. The `` ts`esprima.parseScript() `` function also detects syntax errors, for example, in the program `` js`x => ``, which is missing the function body.
 
-The  `` ts`{ range: true ``} argument causes Esprima to include in the generated data structures some information about the part of the  `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example,  `` ts`x => x => x ``, this information distinguishes the  `` ts`x ``s.
+The `` ts`{ range: true ``} argument causes Esprima to include in the generated data structures some information about the part of the `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example, `` ts`x => x => x ``, this information distinguishes the `` ts`x ``s.
 
-We pass as argument to  `` ts`esprima.parseScript() `` a function called  `` ts`checkFeatures() `` which is called with every fragment of data structure that represents a part of the program. The purpose of  `` ts`checkFeatures() `` is to check that the program uses only the features that are supported by Yocto-JavaScript.
+We pass as argument to `` ts`esprima.parseScript() `` a function called `` ts`checkFeatures() `` which is called with every fragment of data structure that represents a part of the program. The purpose of `` ts`checkFeatures() `` is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
 \item [Line 3:]
 
-Extract the single  `` ts`Expression `` from within the  `` ts`Program `` returned by  `` ts`esprima.parseScript() ``. The  `` ts`as <something> `` forms sidestep the TypeScript type checker and assert that the  `` ts`expression `` is of the correct type. This is safe to do because of  `` ts`checkFeatures() ``.
+Extract the single `` ts`Expression `` from within the `` ts`Program `` returned by `` ts`esprima.parseScript() ``. The `` ts`as <something> `` forms sidestep the TypeScript type checker and assert that the `` ts`expression `` is of the correct type. This is safe to do because of `` ts`checkFeatures() ``.
 
 \item [Line 5:]
 
-The  `` ts`checkFeatures() `` function, which is passed to  `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}). The  `` ts`checkFeatures() `` does not return anything ( `` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}). The `` ts`checkFeatures() `` does not return anything (`` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
 
 \item [Lines 6, 7, 13, 15, 17, 23, 25:]
 
-Similar to  `` ts`run() `` and  `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}),  `` ts`checkFeatures() `` starts by determining which type of  `` ts`estree.Node `` it is given.
+Similar to `` ts`run() `` and `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}), `` ts`checkFeatures() `` starts by determining which type of `` ts`estree.Node `` it is given.
 
 \item [Lines 8–11:]
 
-Check that the  `` ts`Program `` contains a single statement. This prevents programs such as  `` js`x => x; y => y ``.
+Check that the `` ts`Program `` contains a single statement. This prevents programs such as `` js`x => x; y => y ``.
 
 \item [Lines 13, 15:]
 
-`` ts`ExpressionStatement ``s and  `` ts`ArrowFunctionExpression ``s are supported in Yocto-JavaScript unconditionally. We could check that the  `` ts`ArrowFunctionExpression `` includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as  `` js`[x, y] ``, for example), but this would be redundant because Esprima already calls  `` ts`checkFeatures() `` with other unsupported  `` ts`node ``s that subsume these cases. For example, given the program  `` js`(x, y) => x ``, which is a function of multiple parameters, Esprima calls  `` ts`checkFeatures() `` with a  `` ts`node `` of type  `` ts`SequenceExpression ``. Similarly, given the program  `` js`([x, y]) => x ``, which is a function in which the parameter is a pattern, Esprima calls  `` ts`checkFeatures() `` with a  `` ts`node `` of type  `` ts`ArrayExpression ``.
+`` ts`ExpressionStatement ``s and `` ts`ArrowFunctionExpression ``s are supported in Yocto-JavaScript unconditionally. We could check that the `` ts`ArrowFunctionExpression `` includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as `` js`[x, y] ``, for example), but this would be redundant because Esprima already calls `` ts`checkFeatures() `` with other unsupported `` ts`node ``s that subsume these cases. For example, given the program `` js`(x, y) => x ``, which is a function of multiple parameters, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`SequenceExpression ``. Similarly, given the program `` js`([x, y]) => x ``, which is a function in which the parameter is a pattern, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`ArrayExpression ``.
 
 \item [Lines 18–21:]
 
-Check that the  `` ts`CallExpression `` contains a single argument. This prevents programs such as  `` js`f(a, b) ``.
+Check that the `` ts`CallExpression `` contains a single argument. This prevents programs such as `` js`f(a, b) ``.
 
 \item [Line 23:]
 
-`` ts`Identifier ``s are supported in Yocto-JavaScript unconditionally. An  `` ts`Identifier `` may be an expression or the parameter of an  `` ts`ArrowFunctionExpression ``.
+`` ts`Identifier ``s are supported in Yocto-JavaScript unconditionally. An `` ts`Identifier `` may be an expression or the parameter of an `` ts`ArrowFunctionExpression ``.
 
 \item [Line 26:]
 
-All other types of  `` ts`estree.Node `` are not supported by Yocto-JavaScript. This includes programs such as  `` js`29 `` ( `` ts`estree.Literal ``) and  `` js`const f = x => x `` ( `` ts`estree.VariableDeclarator ``).
+All other types of `` ts`estree.Node `` are not supported by Yocto-JavaScript. This includes programs such as `` js`29 `` (`` ts`estree.Literal ``) and `` js`const f = x => x `` (`` ts`estree.VariableDeclarator ``).
 \end{description}
 
 In later Steps almost everything about the interpreter will change, but the parser will remain the same.
 
 ### Stringifier
 
-The stringifier transforms a  `` ts`Value `` produced by  `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the stringifier:
+The stringifier transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the stringifier:
 
 ```ts{number}
 function stringify(value: Value): string {
@@ -850,11 +850,11 @@ Prettier needs to parse and regenerate the string representing the value, in an 
 
 \item [Line 5:]
 
-Instruct Prettier not to produce semicolons at the end of the line, for example,  `` js`x => y `` instead of  `` js`x => y; ``.
+Instruct Prettier not to produce semicolons at the end of the line, for example, `` js`x => y `` instead of `` js`x => y; ``.
 
 \item [Line 6:]
 
-Instruct Prettier not to wrap parameters in parentheses, for example,  `` js`x => y `` instead of  `` js`(x) => y ``.
+Instruct Prettier not to wrap parameters in parentheses, for example, `` js`x => y `` instead of `` js`(x) => y ``.
 
 \item [Line 8:]
 
@@ -865,68 +865,68 @@ Remove the newline at the end of the output produced by Prettier.
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(f => f(f))(f => f(f)) `` \\
-\textbf{Current Output} &  `` text`DOES NOT TERMINATE `` \\
-\textbf{Expected Output} &  `` text`DOES NOT TERMINATE `` \\
+\textbf{Example Program} & `` js`(f => f(f))(f => f(f)) `` \\
+\textbf{Current Output} & `` text`DOES NOT TERMINATE `` \\
+\textbf{Expected Output} & `` text`DOES NOT TERMINATE `` \\
 \end{tabular}
 \end{center}
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-This example program is also known as the _`` math`\Omega ``-combinator_. The function  `` js`f => f(f) `` that is part of this program is also known as the _`` math`U ``-combinator_ (`` math`\Omega = (U)(U) ``).
+This example program is also known as the _`` math`\Omega ``-combinator_. The function `` js`f => f(f) `` that is part of this program is also known as the _`` math`U ``-combinator_ (`` math`\Omega = (U)(U) ``).
 
 </fieldset>
 
-Yocto-JavaScript may express any program that a computer may run (see § \ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to  `` ts`run() ``:
+Yocto-JavaScript may express any program that a computer may run (see § \ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to `` ts`run() ``:
 
 \begin{center}
 \begin{tabular}{rrcl}
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{Step 0: The Entire Runner})} & & \\
-3 &  `` ts`expression `` & = &  `` js`(f => f(f))(f => f(f)) `` \\
-9 &  `` ts`parameter `` & = &  `` js`f `` \\
-10 &  `` ts`body `` & = &  `` js`f(f) `` \\
-12 &  `` ts`argument `` & = &  `` js`f => f(f) `` \\
-13 &  `` ts`substitute(body) `` & = &  `` js`(f => f(f))(f => f(f)) `` \\
+3 & `` ts`expression `` & = & `` js`(f => f(f))(f => f(f)) `` \\
+9 & `` ts`parameter `` & = & `` js`f `` \\
+10 & `` ts`body `` & = & `` js`f(f) `` \\
+12 & `` ts`argument `` & = & `` js`f => f(f) `` \\
+13 & `` ts`substitute(body) `` & = & `` js`(f => f(f))(f => f(f)) `` \\
 \end{tabular}
 \end{center}
 
-The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to  `` ts`run() `` in line 13, it causes  `` ts`run() `` to go into an infinite loop.
+The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to `` ts`run() `` in line 13, it causes `` ts`run() `` to go into an infinite loop.
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(f => (f(f))(f(f)))(f => (f(f))(f(f))) `` \\
-\textbf{Current Output} &  `` text`DOES NOT TERMINATE `` \\
-\textbf{Expected Output} &  `` text`DOES NOT TERMINATE `` \\
+\textbf{Example Program} & `` js`(f => (f(f))(f(f)))(f => (f(f))(f(f))) `` \\
+\textbf{Current Output} & `` text`DOES NOT TERMINATE `` \\
+\textbf{Expected Output} & `` text`DOES NOT TERMINATE `` \\
 \end{tabular}
 \end{center}
 
-There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the program above, which is a variation of the first program in which every variable reference to  `` js`f `` has been replaced with  `` js`f(f) ``. The following is a trace of the first call to  `` ts`run() ``:
+There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the program above, which is a variation of the first program in which every variable reference to `` js`f `` has been replaced with `` js`f(f) ``. The following is a trace of the first call to `` ts`run() ``:
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see § \ref{Step 0: The Entire Runner})} & & where  `` js`F = f => (f(f))(f(f)) `` \\
-3 &  `` ts`expression `` & = &  `` js`F(F) `` \\
-9 &  `` ts`parameter `` & = &  `` js`f `` \\
-10 &  `` ts`body `` & = &  `` js`(f(f))(f(f)) `` \\
-12 &  `` ts`argument `` & = &  `` js`F `` \\
-13 &  `` ts`substitute(body) `` & = &  `` js`(F(F))(F(F)) `` \\
+\textbf{Line} & \multicolumn{1}{l}{(see § \ref{Step 0: The Entire Runner})} & & where `` js`F = f => (f(f))(f(f)) `` \\
+3 & `` ts`expression `` & = & `` js`F(F) `` \\
+9 & `` ts`parameter `` & = & `` js`f `` \\
+10 & `` ts`body `` & = & `` js`(f(f))(f(f)) `` \\
+12 & `` ts`argument `` & = & `` js`F `` \\
+13 & `` ts`substitute(body) `` & = & `` js`(F(F))(F(F)) `` \\
 \end{tabular}
 \end{center}
 
-The result of substitution ( `` js`(F(F))(F(F)) ``) is an expression that contains the initial expression (the first  `` js`F(F) ``) in addition to some extra work (the second  `` js`F(F) ``), so when it is passed as argument to the recursive call to  `` ts`run() `` in line 13, it causes  `` ts`run() `` to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to  `` ts`run() `` never repeat themselves:
+The result of substitution (`` js`(F(F))(F(F)) ``) is an expression that contains the initial expression (the first `` js`F(F) ``) in addition to some extra work (the second `` js`F(F) ``), so when it is passed as argument to the recursive call to `` ts`run() `` in line 13, it causes `` ts`run() `` to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to `` ts`run() `` never repeat themselves:
 
 \begin{center}
 \begin{tabular}{l}
- `` js`(F(F)) `` \\
- `` js`(F(F))(F(F)) `` \\
- `` js`(F(F))(F(F))(F(F)) `` \\
- `` js`(F(F))(F(F))(F(F))(F(F)) `` \\
+`` js`(F(F)) `` \\
+`` js`(F(F))(F(F)) `` \\
+`` js`(F(F))(F(F))(F(F)) `` \\
+`` js`(F(F))(F(F))(F(F))(F(F)) `` \\
 \multicolumn{1}{c}{`` math`\vdots ``} \\
 \end{tabular}
 \end{center}
 
-Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether  `` ts`run() `` is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
+Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether `` ts`run() `` is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -945,16 +945,16 @@ When the interpreter from Step 0 encounters a function call, it produces a new 
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} (see § \ref{Substitution in Function Definitions}) &  `` js`(x => z => x)(y => y) `` \\
-\textbf{Step 0 Output} &  `` js`z => (y => y) `` \\
+\textbf{Example Program} (see § \ref{Substitution in Function Definitions}) & `` js`(x => z => x)(y => y) `` \\
+\textbf{Step 0 Output} & `` js`z => (y => y) `` \\
 \end{tabular}
 \end{center}
 
-The issue with this strategy is that the expression  `` js`z => (y => y) `` does not exist in the original program, and as mentioned in § \ref{Step 0: Programs That Do Not Terminate}, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
+The issue with this strategy is that the expression `` js`z => (y => y) `` does not exist in the original program, and as mentioned in § \ref{Step 0: Programs That Do Not Terminate}, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`y => y `` \\
+\textbf{Example Program} & `` js`y => y `` \\
 \textbf{Step 1 Output} & `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ \textbf{Example Program} & `` js `(x => z => x)(y => y) `\\ \textbf{Step 1 Output} &` math` \langle `` js `(z => x) `, [` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle] \rangle` \\
 \end{tabular}
 \end{center}
@@ -993,7 +993,7 @@ type Environment = MapDeepEqual<Identifier["name"], Value>;
 <fieldset>
 <legend><strong>Implementation Details</strong></legend>
 
-The  `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A  `` ts`MapDeepEqual `` is similar to a  `` ts`Map ``, except that the keys are compared by value, not by reference, for example:
+The `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`MapDeepEqual `` is similar to a `` ts`Map ``, except that the keys are compared by value, not by reference, for example:
 
 ```ts
 > new Map([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
@@ -1002,13 +1002,13 @@ undefined
 "Leandro"
 ```
 
-The occurrences of  `` ts`{ age: 29 ``} are objects with the same key and value, but they are not the same object.
+The occurrences of `` ts`{ age: 29 ``} are objects with the same key and value, but they are not the same object.
 
 </fieldset>
 
 ### Adding an Environment to the Runner
 
-The runner needs to maintain an environment, so we modify the implementation of  `` ts`run() `` from § \ref{Step 0: The Entire Runner} to introduce an auxiliary function called  `` ts`step() `` that receives an  `` ts`environment `` as an extra parameter:
+The runner needs to maintain an environment, so we modify the implementation of `` ts`run() `` from § \ref{Step 0: The Entire Runner} to introduce an auxiliary function called `` ts`step() `` that receives an `` ts`environment `` as an extra parameter:
 
 ```ts{number}{2-3,11-13}
 function run(expression: Expression): Value {
@@ -1054,30 +1054,30 @@ function run(expression: Expression): Value {
 \begin{description}
 \item [Line 3:]
 
-We define the  `` ts`step() `` auxiliary function that receives an  `` ts`environment `` as an extra parameter.
+We define the `` ts`step() `` auxiliary function that receives an `` ts`environment `` as an extra parameter.
 
 \item [Line 2:]
 
-The  `` ts`environment `` starts empty.
+The `` ts`environment `` starts empty.
 
 \item [Lines 11–13:]
 
-The recursive calls to  `` ts`run() `` are changed to recursive calls to  `` ts`step() `` and the  `` ts`environment `` is propagated.
+The recursive calls to `` ts`run() `` are changed to recursive calls to `` ts`step() `` and the `` ts`environment `` is propagated.
 \end{description}
 
-The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the  `` ts`environment `` for each type of  `` ts`expression ``.
+The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the `` ts`environment `` for each type of `` ts`expression ``.
 
 ### A Function Definition
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`x => x `` \\
+\textbf{Example Program} & `` js`x => x `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js`(x => x)`, [] \rangle` \\
 \end{tabular}
 \end{center}
 
-When the interpreter encounters a function definition, it captures the current  `` ts`environment `` in a closure:
+When the interpreter encounters a function definition, it captures the current `` ts`environment `` in a closure:
 
 ```ts
 // step()
@@ -1089,13 +1089,13 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
 \end{tabular}
 \end{center}
 
-First, we remove  `` ts`substitute() ``, which is the goal of Step 1:
+First, we remove `` ts`substitute() ``, which is the goal of Step 1:
 
 ```ts{8}
 // step()
@@ -1124,7 +1124,7 @@ case "CallExpression":
   return step(body, environment);
 ```
 
-Finally, we modify the recursive call to  `` ts`step() `` that interprets the function body so that it receives a new augmented  `` ts`environment `` including a mapping from the  `` ts`parameter `` (for example,  `` js`x ``) to the  `` ts`argument `` (for example, `` math`\langle `` js`(y => y)`, [] \rangle`):
+Finally, we modify the recursive call to `` ts`step() `` that interprets the function body so that it receives a new augmented `` ts`environment `` including a mapping from the `` ts`parameter `` (for example, `` js`x ``) to the `` ts`argument `` (for example, `` math`\langle `` js`(y => y)`, [] \rangle`):
 
 ```ts{number}{11-14}
 // step()
@@ -1147,18 +1147,18 @@ case "CallExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => x => z => x)(a => a)(y => y) `` \\
-\textbf{Current Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
+\textbf{Example Program} & `` js`(x => x => z => x)(a => a)(y => y) `` \\
+\textbf{Current Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle `` js`(z => x) ``, [`` js`x `` \mapsto \langle `` js`(y => y) ``, [] \rangle] \rangle `` \\
 \end{tabular}
 \end{center}
 
-If a name is reused (for example,  `` js`x `` in the example program above), then the second time it is encountered by  `` ts`step() `` it is overwritten in the  `` ts`environment `` (see the call to  `` ts`set() `` in line 13 of § \ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to  `` js`x `` to refer to the second (inner)  `` ts`x ``, which is the expected behavior (it is what we called Option 2 in § \ref{Step 0: Name Reuse}).
+If a name is reused (for example, `` js`x `` in the example program above), then the second time it is encountered by `` ts`step() `` it is overwritten in the `` ts`environment `` (see the call to `` ts`set() `` in line 13 of § \ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to `` js`x `` to refer to the second (inner) `` ts`x ``, which is the expected behavior (it is what we called Option 2 in § \ref{Step 0: Name Reuse}).
 
 ### A Variable Reference
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(x => x)(y => y) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ \\ \textbf{Example Program} & `` js `(x => y)(y => y) `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` text` Reference to undefined variable: y `` \\ \\ \textbf{Example Program} & `` js `x => y `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` math` \langle `` js `(x => y) `, [] \rangle` \\
 \end{tabular}
@@ -1182,47 +1182,47 @@ case "Identifier":
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Example Program} & \\
-\multicolumn{2}{l}{ `` js`(f => (x => f(x))(a => a))((x => z => x)(y => y)) ``} \\
-\textbf{Current Output} & `` math`\langle `` js` (a => a) ``, [ `` js `f `\mapsto \langle` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle ] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle  `` js`(y => y) ``, [] \rangle `` \\
+\multicolumn{2}{l}{`` js`(f => (x => f(x))(a => a))((x => z => x)(y => y)) ``} \\
+\textbf{Current Output} & `` math`\langle `` js` (a => a) ``, [ `` js `f `\mapsto \langle` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle ] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle `` js`(y => y) ``, [] \rangle `` \\
 \end{tabular}
 \end{center}
 
-This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to  `` ts`step() ``, when a closure is created:
+This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to `` ts`step() ``, when a closure is created:
 
 \begin{center}
 \begin{tabular}{rrcl}
-\multicolumn{4}{c}{\textbf{Trace 1: First Call to  `` ts`step() `` · Closure Creation}} \\
+\multicolumn{4}{c}{\textbf{Trace 1: First Call to `` ts`step() `` · Closure Creation}} \\
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
-&  `` ts`expression.callee `` & = &  `` js`f => (x => f(x))(a => a) `` \\
-&  `` ts`expression.arguments[0] `` & = &  `` js`(x => z => x)(y => y) `` \\
-\rowcolor[rgb]{.88,1,1} 10 &  `` ts`argument `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
+& `` ts`expression.callee `` & = & `` js`f => (x => f(x))(a => a) `` \\
+& `` ts`expression.arguments[0] `` & = & `` js`(x => z => x)(y => y) `` \\
+\rowcolor[rgb]{.88,1,1} 10 & `` ts`argument `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
 \end{tabular}
 \end{center}
 
-And the following is a trace of the recursive call to  `` ts`step() `` in which that closure is called:
+And the following is a trace of the recursive call to `` ts`step() `` in which that closure is called:
 
 \begin{center}
 \begin{tabular}{rrcl}
-\multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to  `` ts`step() `` · Closure Call}} \\
+\multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to `` ts`step() `` · Closure Call}} \\
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
-&  `` ts`expression `` & = &  `` js`f(x) `` \\
-&  `` ts`expression.callee `` & = &  `` js`f `` \\
-\rowcolor[rgb]{.88,1,1} &  `` ts`expression.arguments[0] `` & = &  `` js`x `` \\
-\rowcolor[rgb]{.88,1,1} &  `` ts`environment `` & = & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` \\
+& `` ts`expression `` & = & `` js`f(x) `` \\
+& `` ts`expression.callee `` & = & `` js`f `` \\
+\rowcolor[rgb]{.88,1,1} & `` ts`expression.arguments[0] `` & = & `` js`x `` \\
+\rowcolor[rgb]{.88,1,1} & `` ts`environment `` & = & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` \\
 9 & `` math` `` ts` step( ``\cdots `` ts `) `& = &` math` \langle `` js ` (z => x) `, [` js `x`\mapsto \langle`js` (y => y) `, [] \rangle] \rangle` \\ 5 & `` ts `parameter `& = &` js` z `` \\ \rowcolor[rgb]{.88,1,1} 6 & `` ts `body `& = &` js` x `` \\ \rowcolor[rgb]{.88,1,1} 8 & `` ts `functionEnvironment `& = &` math` [ `` js `x`\mapsto \langle`js`(y => y) `, [] \rangle]` \\
 \multicolumn{4}{c}{Paused before line 10}\\
 \end{tabular}
 \end{center}
 
-At this point, there are two expressions left to evaluate: the argument ( `` ts`expression.arguments[0] ``; line 10), and the body of the called function ( `` ts`body ``; lines 11–14). Both of these expressions have the same code ( `` js`x ``), and our current implementation looks up this variable both times on the current  `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a)`, [\cdots] \rangle`.
+At this point, there are two expressions left to evaluate: the argument (`` ts`expression.arguments[0] ``; line 10), and the body of the called function (`` ts`body ``; lines 11–14). Both of these expressions have the same code (`` js`x ``), and our current implementation looks up this variable both times on the current `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a)`, [\cdots] \rangle`.
 
-But this leads to an issue: we may not reason about  `` js`z => x `` by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step 0 (see § \ref{Step 0: Name Reuse}). We would like, instead, for each  `` js`x `` to refer to the value that existed in the environment where the closure is _created_, not where it is _called_:
+But this leads to an issue: we may not reason about `` js`z => x `` by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step 0 (see § \ref{Step 0: Name Reuse}). We would like, instead, for each `` js`x `` to refer to the value that existed in the environment where the closure is _created_, not where it is _called_:
 
 \begin{center}
 \includegraphics[page = 8]{images.pdf}
 \end{center}
 
-To implement this, we change the recursive call to  `` ts`step() `` that evaluates the function body so that it uses the environment coming from the closure ( `` js`functionEnvironment ``) instead of the current environment ( `` js`environment ``):
+To implement this, we change the recursive call to `` ts`step() `` that evaluates the function body so that it uses the environment coming from the closure (`` js`functionEnvironment ``) instead of the current environment (`` js`environment ``):
 
 ```ts{13}
 // step()
@@ -1251,13 +1251,13 @@ The principle of being able to reason about a function only by looking at its de
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP [lisp-original](), though that was later considered a mistake [lisp-history](). In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp \cite[§ 12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s  `` clojure`parameterize `` \cite[§ 4.13]{racket-guide}.
+There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP [lisp-original](), though that was later considered a mistake [lisp-history](). In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp \cite[§ 12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s `` clojure`parameterize `` \cite[§ 4.13]{racket-guide}.
 
 </fieldset>
 
 ### The Entire Runner
 
-We completed the changes necessary to transform the  `` ts`run() `` function from the substitution-based interpreter in Step 0 into an environment-based interpreter:
+We completed the changes necessary to transform the `` ts`run() `` function from the substitution-based interpreter in Step 0 into an environment-based interpreter:
 
 ```ts{number}
 type Value = Closure;
@@ -1313,20 +1313,20 @@ We adapt the operational semantics from § \ref{An Operational Semantics for th
 \end{tabular}
 \end{center}
 
-We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equivalent to the new implementation of  `` ts`run() ``:
+We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equivalent to the new implementation of `` ts`run() ``:
 
 \begin{mathpar}
 \inferrule
 { }
-{\rho \vdash  `` js`( ``x `` js` => ``e `` js`) `` \Rightarrow \langle  `` js`( ``x `` js` => ``e `` js`) ``, \rho \rangle}
+{\rho \vdash `` js`( ``x`` js` => ``e`` js`) `` \Rightarrow \langle `` js`( ``x`` js` => ``e`` js`) ``, \rho \rangle}
 
 \inferrule
 {
-\rho \vdash e_f \Rightarrow \langle  `` js`( ``x `` js` => ``e_b `` js`) ``, \rho_f \rangle \\
+\rho \vdash e_f \Rightarrow \langle `` js`( ``x`` js` => ``e_b`` js`) ``, \rho_f \rangle \\
 \rho \vdash e_a \Rightarrow v_a \\
 \rho_f \cup \{x \mapsto v_a\} \vdash e_b \Rightarrow v \\
 }
-{\rho \vdash e_f `` js`( ``e_a `` js`) `` \Rightarrow v}
+{\rho \vdash e_f`` js`( ``e_a`` js`) `` \Rightarrow v}
 
 \inferrule
 { }
@@ -1358,7 +1358,7 @@ We modify the stringifier from § \ref{Step 0: Stringifier} to support closures
 }
 ```
 
-The following is the modified implementation of  `` ts`stringify() ``:
+The following is the modified implementation of `` ts`stringify() ``:
 
 ```ts{number}{1,2,4,5,15}
 function stringify(value: any): string {
@@ -1383,26 +1383,26 @@ function stringify(value: any): string {
 \begin{description}
 \item [Line 1:]
 
-Change the input type from  `` ts`Value `` to  `` ts`any ``, because this implementation of  `` ts`strinfigy() `` supports any data structure, including the data structures we will define in later Steps.
+Change the input type from `` ts`Value `` to `` ts`any ``, because this implementation of `` ts`strinfigy() `` supports any data structure, including the data structures we will define in later Steps.
 
 \item [Line 2:]
 
-Call  `` ts`JSON.stringify() `` [javascript-json-stringify](), which traverses any data structure and converts it into a string.
+Call `` ts`JSON.stringify() `` [javascript-json-stringify](), which traverses any data structure and converts it into a string.
 
 \item [Line 4:]
 
-Provide a  `` ts`replacer `` that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
+Provide a `` ts`replacer `` that is responsible for converting data structures that represent Yocto-JavaScript programs into strings.
 
 \item [Line 5:]
 
-Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called  `` ts`type `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of  `` ts`stringify() `` (see § \ref{Step 0: Stringifier}) to produce a string.
+Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called `` ts`type `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of `` ts`stringify() `` (see § \ref{Step 0: Stringifier}) to produce a string.
 
 \item [Line 15:]
 
 Format the output with indentation of two spaces.
 \end{description}
 
-This implementation of  `` ts`stringify() `` supports not only closures but any data structure (because of  `` ts`JSON.stringify() ``), so it will remain the same in the following Steps.
+This implementation of `` ts`stringify() `` supports not only closures but any data structure (because of `` ts`JSON.stringify() ``), so it will remain the same in the following Steps.
 
 ### Programs That Do Not Terminate
 
@@ -1412,10 +1412,10 @@ This difference is significant because there are programs that produce infinitel
 
 \begin{center}
 \begin{tabular}{ll}
-\multicolumn{2}{c}{ `` js`(F(F)) ``, where  `` js`F = f => (f(f))(f(f)) ``} \\
+\multicolumn{2}{c}{`` js`(F(F)) ``, where `` js`F = f => (f(f))(f(f)) ``} \\
 \multicolumn{1}{c}{\textbf{Step 0}} & \multicolumn{1}{c}{\textbf{Step 1}} \\
- `` js`(F(F)) `` & `` math`\langle `` js` (F(F)) ``, [ `` js `f `\mapsto \langle` js` F ``, [] \rangle] \rangle `` \\ `` js `(F(F))(F(F)) `&` math` \langle `` js `(F(F)) `, [` js` f `` \mapsto \langle `` js `F `, [] \rangle] \rangle` \\
- `` js`(F(F))(F(F))(F(F)) `` & `` math`\langle `` js` (F(F)) ``, [ `` js `f `\mapsto \langle` js` F ``, [] \rangle] \rangle `` \\ `` js `(F(F))(F(F))(F(F))(F(F)) `&` math` \langle `` js `(F(F)) `, [` js` f `` \mapsto \langle `` js `F `, [] \rangle] \rangle` \\
+`` js`(F(F)) `` & `` math`\langle `` js` (F(F)) ``, [ `` js `f `\mapsto \langle` js` F ``, [] \rangle] \rangle `` \\ `` js `(F(F))(F(F)) `&` math` \langle `` js `(F(F)) `, [` js` f `` \mapsto \langle `` js `F `, [] \rangle] \rangle` \\
+`` js`(F(F))(F(F))(F(F)) `` & `` math`\langle `` js` (F(F)) ``, [ `` js `f `\mapsto \langle` js` F ``, [] \rangle] \rangle `` \\ `` js `(F(F))(F(F))(F(F))(F(F)) `&` math` \langle `` js `(F(F)) `, [` js` f `` \mapsto \langle `` js `F `, [] \rangle] \rangle` \\
 \multicolumn{1}{c}{`` math`\vdots ``} & \multicolumn{1}{c}{`` math`\vdots ``} \\
 \end{tabular}
 \end{center}
@@ -1424,14 +1424,14 @@ But this strategy is insufficient to guarantee termination, because there are pr
 
 \begin{center}
 \begin{tabular}{l}
-\multicolumn{1}{c}{ `` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
-\multicolumn{1}{c}{or  `` js`F(F)(y => y) ``, where  `` js`F = f => c => f(f)(C) `` and  `` js`C = x => c ``} \\
-`` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle `` \\ `` math `\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `\\` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `(y => y) `, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle` \\
+\multicolumn{1}{c}{`` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
+\multicolumn{1}{c}{or `` js`F(F)(y => y) ``, where `` js`F = f => c => f(f)(C) `` and `` js`C = x => c ``} \\
+`` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle `` \\ `` math `\langle `` js`f(f)(C) ``, [`` js`c `` \mapsto \langle `` js`C ``, [`` js`c `` \mapsto \langle `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `\\` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `(y => y) `, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle` \\
 `` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\ \multicolumn{1}{c}{`` math `\vdots ``} \\
 \end{tabular}
 \end{center}
 
-The program above is a variation on the shortest non-terminating program,  `` js`(f => f(f))(f => f(f)) ``, in which each  `` js`f => f(f) `` receives an additional parameter  `` js`c ``, and each  `` js`f(f) `` receives an additional argument  `` js`x => c ``.
+The program above is a variation on the shortest non-terminating program, `` js`(f => f(f))(f => f(f)) ``, in which each `` js`f => f(f) `` receives an additional parameter `` js`c ``, and each `` js`f(f) `` receives an additional argument `` js`x => c ``.
 
 The interpreter in Step 1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step 2.
 
@@ -1453,10 +1453,10 @@ In Step 1 a closure contains an environment mapping names to other closures, wh
 \begin{center}
 \begin{tabular}{rcc}
 (See § \ref{A Variable Reference}) & \textbf{Step 1} & \textbf{Step 2} \\
-\textbf{Variable Reference} &  `` js`x `` &  `` js`x `` \\
+\textbf{Variable Reference} & `` js`x `` & `` js`x `` \\
 \textbf{Environment} & `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]` & `` math`[ `` js` x `` \mapsto `` js `0 `]` \\
 \textbf{Store} & — & `` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle]` \\
-\textbf{Value} & `` math`\langle `` js` (y => y) ``, [] \rangle `` & `` math `\langle  `` js`(y => y) ``, [] \rangle `` \\
+\textbf{Value} & `` math`\langle `` js` (y => y) ``, [] \rangle `` & `` math `\langle `` js`(y => y) ``, [] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1465,8 +1465,8 @@ Each closure continues to include its own environment, because it needs to look 
 \begin{center}
 \begin{tabular}{rll}
 (See § \ref{A Function Body Is Evaluated with the Environment in Its Closure}) & \multicolumn{1}{c}{\textbf{Step 1}} & \multicolumn{1}{c}{\textbf{Step 2}} \\
- `` ts`environment `` & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` & `` math`[ `` js` x `` \mapsto `` js `0 `, \cdots]` \\
- `` ts`funcEnv. `` & `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]` & `` math`[ `` js` x `` \mapsto `` js `1 `]` \\
+`` ts`environment `` & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` & `` math`[ `` js` x `` \mapsto `` js `0 `, \cdots]` \\
+`` ts`funcEnv. `` & `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]` & `` math`[ `` js` x `` \mapsto `` js `1 `]` \\
 \textbf{Store} & \multicolumn{1}{c}{—} & `` math`[ `` js` 0 `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle,` \\
 & & `` math`\phantom{[} `` js` 1 `` \mapsto \langle `` js `(y => y) `, [] \rangle]`
 \end{tabular}
@@ -1476,9 +1476,9 @@ The runner must return the store along with the value, for the variable referenc
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} (see § \ref{A Function Call}) &  `` js`(x => z => x)(y => y) `` \\
+\textbf{Example Program} (see § \ref{A Function Call}) & `` js`(x => z => x)(y => y) `` \\
 \textbf{Step 1 Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ \textbf{Step 2 Output} & `` ts `value `=` math` \langle `` js `(z => x) `, [` js` x `` \mapsto `` js `0 `] \rangle` \\
-&  `` ts`store `` = `` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle]` \\
+& `` ts`store `` = `` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle]` \\
 \end{tabular}
 \end{center}
 
@@ -1503,7 +1503,7 @@ type Address = number;
 
 ### Adding a Store to the Runner
 
-We modify the implementation of  `` ts`run() `` from § \ref{Step 1: The Entire Runner} to introduce a  `` ts`store ``:
+We modify the implementation of `` ts`run() `` from § \ref{Step 1: The Entire Runner} to introduce a `` ts`store ``:
 
 ```ts{number}
 function run(expression: Expression): { value: Value; store: Store } {
@@ -1518,24 +1518,24 @@ function run(expression: Expression): { value: Value; store: Store } {
 \begin{description}
 \item [Lines 1 and 3:]
 
-The  `` ts`store `` is returned because it is necessary to look up variable references in the  `` ts`value ``.
+The `` ts`store `` is returned because it is necessary to look up variable references in the `` ts`value ``.
 
 \item [Lines 2 and 4:]
 
-The  `` ts`store `` is unique for the whole interpreter, unlike  `` ts`environment ``s which are different for each closure, so we create only one store that is always available to  `` ts`step() `` instead of adding it as an extra parameter.
+The `` ts`store `` is unique for the whole interpreter, unlike `` ts`environment ``s which are different for each closure, so we create only one store that is always available to `` ts`step() `` instead of adding it as an extra parameter.
 \end{description}
 
 ### Adding a Value to the Store
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` ts`value `` = `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto` js` 0 ``] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
+\textbf{Expected Output} & `` ts`value `` = `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto` js` 0 ``] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
 \end{center}
 
-In Step 1, when we encounter a function call we extend the  `` ts`functionEnvironment `` with a mapping from the  `` ts`parameter.name `` to the  `` ts`argument `` (see § \ref{A Function Call}, \ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step 2, we introduce the  `` ts`store `` as a layer of indirection:
+In Step 1, when we encounter a function call we extend the `` ts`functionEnvironment `` with a mapping from the `` ts`parameter.name `` to the `` ts`argument `` (see § \ref{A Function Call}, \ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step 2, we introduce the `` ts`store `` as a layer of indirection:
 
 ```ts{number}{11,12,15}
 // step()
@@ -1560,28 +1560,28 @@ case "CallExpression": {
 \begin{description}
 \item [Line 11:]
 
-Allocate an  `` ts`address ``. We use the  `` ts`store.size `` as the  `` ts`address `` because as the  `` ts`store `` grows this number changes, so it is guaranteed to be unique throughout the interpretation of a program.
+Allocate an `` ts`address ``. We use the `` ts`store.size `` as the `` ts`address `` because as the `` ts`store `` grows this number changes, so it is guaranteed to be unique throughout the interpretation of a program.
 
 \item [Line 15:]
 
-Extend the  `` ts`functionEnvironment `` with a mapping from the  `` ts`parameter.name `` to the  `` ts`address ``.
+Extend the `` ts`functionEnvironment `` with a mapping from the `` ts`parameter.name `` to the `` ts`address ``.
 
 \item [Line 12:]
 
-Extend the  `` ts`store `` with a mapping from the  `` ts`address `` to the  `` ts`argument ``. This is mutating the unique  `` ts`store `` that is available to the entire  `` ts`step() `` function, not creating a new  `` ts`store `` in the same way that extending an  `` ts`environment `` creates a new  `` ts`environment `` (see line 15).
+Extend the `` ts`store `` with a mapping from the `` ts`address `` to the `` ts`argument ``. This is mutating the unique `` ts`store `` that is available to the entire `` ts`step() `` function, not creating a new `` ts`store `` in the same way that extending an `` ts`environment `` creates a new `` ts`environment `` (see line 15).
 \end{description}
 
 ### Retrieving a Value from the Store
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} &  `` js`(x => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(x => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` ts`value `` = `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
+\textbf{Expected Output} & `` ts`value `` = `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
 \end{center}
 
-In Step 1 we retrieved values directly from the  `` ts`environment `` (see § \ref{A Variable Reference}), but in Step 2 we have to go through the  `` ts`store ``:
+In Step 1 we retrieved values directly from the `` ts`environment `` (see § \ref{A Variable Reference}), but in Step 2 we have to go through the `` ts`store ``:
 
 ```ts{number}{3,8}
 // step()
@@ -1598,11 +1598,11 @@ case "Identifier": {
 \begin{description}
 \item [Line 3:]
 
-Retrieve the  `` ts`address `` from the  `` ts`environment ``.
+Retrieve the `` ts`address `` from the `` ts`environment ``.
 
 \item [Line 8:]
 
-Retrieve the  `` ts`value `` from the  `` ts`store `` at the given  `` ts`address `` found in the  `` ts`environment ``. The  `` ts`address `` is guaranteed to be in the  `` ts`store `` because we extend the  `` ts`store `` and the  `` ts`environment `` together (see § \ref{Adding a Value to the Store}), so we use  `` ts`! `` to indicate that  `` ts`get() `` may not return  `` ts`undefined ``.
+Retrieve the `` ts`value `` from the `` ts`store `` at the given `` ts`address `` found in the `` ts`environment ``. The `` ts`address `` is guaranteed to be in the `` ts`store `` because we extend the `` ts`store `` and the `` ts`environment `` together (see § \ref{Adding a Value to the Store}), so we use `` ts`! `` to indicate that `` ts`get() `` may not return `` ts`undefined ``.
 \end{description}
 
 ### The Entire Runner
@@ -1668,21 +1668,21 @@ We adapt the operational semantics from § \ref{Step 2: Operational Semantics} 
 \end{tabular}
 \end{center}
 
-We then define the relation `` math`\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle `` to be equivalent to the new implementation of  `` ts`run() ``:
+We then define the relation `` math`\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle `` to be equivalent to the new implementation of `` ts`run() ``:
 
 \begin{mathpar}
 \inferrule
 { }
-{\rho, \sigma \vdash  `` js`( ``x `` js` => ``e `` js`) `` \Rightarrow \langle \langle  `` js`( ``x `` js` => ``e `` js`) ``, \rho \rangle, \sigma \rangle}
+{\rho, \sigma \vdash `` js`( ``x`` js` => ``e`` js`) `` \Rightarrow \langle \langle `` js`( ``x`` js` => ``e`` js`) ``, \rho \rangle, \sigma \rangle}
 
 \inferrule
 {
-\rho, \sigma \vdash e_f \Rightarrow \langle \langle  `` js`( ``x `` js` => ``e_b `` js`) ``, \rho_f \rangle, \sigma_f \rangle \\
+\rho, \sigma \vdash e_f \Rightarrow \langle \langle `` js`( ``x`` js` => ``e_b`` js`) ``, \rho_f \rangle, \sigma_f \rangle \\
 \rho, \sigma_f \vdash e_a \Rightarrow \langle v_a, \sigma_a \rangle \\
 A = \lvert \sigma_a \rvert \\
 \rho_f \cup \{x \mapsto A\}, \sigma_a \cup \{A \mapsto v_a\} \vdash e_b \Rightarrow \langle v, \sigma_v \rangle \\
 }
-{\rho, \sigma \vdash e_f `` js`( ``e_a `` js`) `` \Rightarrow \langle v, \sigma_v \rangle}
+{\rho, \sigma \vdash e_f`` js`( ``e_a`` js`) `` \Rightarrow \langle v, \sigma_v \rangle}
 
 \inferrule
 { }
@@ -1697,12 +1697,12 @@ The programs that do not terminate in Step 1 (see § \ref{Step 1: Programs Tha
 
 \begin{center}
 \begin{tabular}{l}
-\multicolumn{1}{c}{ `` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
-\multicolumn{1}{c}{or  `` js`F(F)(y => y) ``, where  `` js`F = f => c => f(f)(C) `` and  `` js`C = x => c ``} \\
+\multicolumn{1}{c}{`` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
+\multicolumn{1}{c}{or `` js`F(F)(y => y) ``, where `` js`F = f => c => f(f)(C) `` and `` js`C = x => c ``} \\
 \multicolumn{1}{c}{\textbf{Step 1}} \\
-`` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle `` \\ `` math `\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `\\` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `(y => y) `, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle` \\
+`` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle `` \\ `` math `\langle `` js`f(f)(C) ``, [`` js`c `` \mapsto \langle `` js`C ``, [`` js`c `` \mapsto \langle `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `\\` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `(y => y) `, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle` \\
 `` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\ \multicolumn{1}{c}{`` math `\vdots `} \\ \multicolumn{1}{c}{\textbf{Step 2}} \\ \multicolumn{1}{c}{` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto `` js `0 `, \cdots] \rangle`} \\
-\multicolumn{1}{c}{`` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto` js` 1 ``, \cdots] \rangle ``} \\ \multicolumn{1}{c}{`` math `\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`2 ``, \cdots] \rangle `} \\ \multicolumn{1}{c}{` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto `` js `3 `, \cdots] \rangle`} \\
+\multicolumn{1}{c}{`` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto` js` 1 ``, \cdots] \rangle ``} \\ \multicolumn{1}{c}{`` math `\langle `` js`f(f)(C) ``, [`` js`c `` \mapsto `` js`2 ``, \cdots] \rangle `} \\ \multicolumn{1}{c}{` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto `` js `3 `, \cdots] \rangle`} \\
 \multicolumn{1}{c}{`` math`\vdots ``} \\
 \multicolumn{1}{c}{`` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle,` js` 1 `` \mapsto \langle `` js `C `, [` js` c `` \mapsto `` c `0 `, \cdots] \rangle,` js` 2 `` \mapsto \langle `` js `C `, [` js` c `` \mapsto `` c `1 `, \cdots] \rangle, \cdots]`}
 \end{tabular}
