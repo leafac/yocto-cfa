@@ -129,7 +129,7 @@ async function processHTML(/** @type {Document} */ document) {
         `\\displaystyle ${element.textContent}`,
         katexOptions
       );
-      element.parentElement.outerHTML = `<div class="math">${renderedMath}</div>`;
+      element.parentElement.outerHTML = `<figure>${renderedMath}</figure>`;
     } else {
       if (!element.textContent.startsWith(mathInlinePrefix)) continue;
       element.outerHTML = katex.renderToString(
