@@ -50,19 +50,19 @@
 
 Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, a feature which is supported by most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
-From all these options, we would like to choose JavaScript because it is the most popular language among programmers [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a _subset_ of JavaScript features that are related to higher-order functions, resulting in a language that we call _Yocto-JavaScript_ ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
+From all these options, we would like to choose JavaScript because it is the most popular language among programmers [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a _subset_ of JavaScript features that are related to higher-order functions, resulting in a language that we call _Yocto-JavaScript_ (`` math`\mathrm{JavaScript} \times 10^{-24} ``). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
+On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
 
 </fieldset>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-Yocto-JavaScript is a representation of something called the _$\lambda$-calculus_ \cite[§ 6]{understanding-computation}.
+Yocto-JavaScript is a representation of something called the _`` math`\lambda ``-calculus_ \cite[§ 6]{understanding-computation}.
 
 </fieldset>
 
@@ -133,8 +133,8 @@ The description of Yocto-JavaScript given so far has been informal; the followin
 
 \begin{center}
 \begin{tabular}{rcll}
-$e$ & ::= & $ `` js`( ``x `` js` =>  ``e `` js`) ``$ | $e `` js`( ``e `` js`) ``$ | $x$ & Expressions \\
-$x$ & ::= &  `` text`<A JavaScript Identifier> `` & Variables \\
+`` math`e `` & ::= & `` math` `` js`( ``x `` js` =>  ``e `` js`) `` `` | `` math`e `` js`( ``e `` js`) `` `` | `` math`x `` & Expressions \\
+`` math`x `` & ::= &  `` text`<A JavaScript Identifier> `` & Variables \\
 \end{tabular}
 \end{center}
 
@@ -288,7 +288,7 @@ type Identifier = {
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The definitions above correspond to elements of the Yocto-JavaScript grammar (see § \ref{A Formal Grammar for Yocto-JavaScript}); for example,  `` ts`Expression `` corresponds to $e$.
+The definitions above correspond to elements of the Yocto-JavaScript grammar (see § \ref{A Formal Grammar for Yocto-JavaScript}); for example,  `` ts`Expression `` corresponds to `` math`e ``.
 
 </fieldset>
 
@@ -349,7 +349,7 @@ case "ArrowFunctionExpression":
 \end{tabular}
 \end{center}
 
-Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function $f(x) = x + 1$, we calculate $f(29)$ by substituting the references to $x$ in $f$ with the argument $29$: $f(29) = 29 + 1$. The implementation of this substitution technique starts in this section and will only be complete in § \ref{Substitution in Function Calls}.
+Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`f `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in § \ref{Substitution in Function Calls}.
 
 In the example we are considering both the function that is called ( `` js`x => x ``) and the argument ( `` js`y => y ``) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
@@ -732,11 +732,11 @@ First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript
 
 \begin{center}
 \begin{tabular}{rcll}
-$v$ & ::= & $x `` js` =>  ``e$ & Values \\
+`` math`v `` & ::= & `` math`x `` js` =>  ``e `` & Values \\
 \end{tabular}
 \end{center}
 
-Next, we define a _relation_ $e \Rightarrow v$ using _inference rules_ that are equivalent to the behavior of  `` ts`run() `` (see § \ref{Step 0: The Entire Runner}, lines 3–36):
+Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ that are equivalent to the behavior of  `` ts`run() `` (see § \ref{Step 0: The Entire Runner}, lines 3–36):
 
 \begin{mathpar}
 \inferrule
@@ -752,15 +752,15 @@ e_{b}[x_{p} \backslash v_{a}] \Rightarrow v \\
 {e_{f} `` js`( ``e_{a} `` js`) `` \Rightarrow v}
 \end{mathpar}
 
-Finally, we define a _metafunction_ $e[x \backslash v] = e$ that is equivalent to the behavior of  `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}, lines 14–32):
+Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equivalent to the behavior of  `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}, lines 14–32):
 
 \begin{center}
 \begin{tabular}{rcll}
-$(x `` js` =>  ``e)[x_{p} \backslash v_{a}]$ & = & $x `` js` =>  ``(e[x_{p} \backslash v_{a}])$ & if $x \neq x_{p}$ \\
-$(x_{p} `` js` =>  ``e)[x_{p} \backslash v_{a}]$ & = & $x_{p} `` js` =>  ``e$ & \\
-$(e_{f} `` js`( ``e_{a} `` js`) ``)[x_{p} \backslash v_{a}]$ & = & $(e_{f}[x_{p} \backslash v_{a}]) `` js`( ``(e_{a}[x_{p} \backslash v_{a}]) `` js`) ``$ & \\
-$x[x_{p} \backslash v_{a}]$ & = & $x$ & if $x \neq x_{p}$ \\
-$x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
+`` math`(x `` js` =>  ``e)[x_{p} \backslash v_{a}] `` & = & `` math`x `` js` =>  ``(e[x_{p} \backslash v_{a}]) `` & if `` math`x \neq x_{p} `` \\
+`` math`(x_{p} `` js` =>  ``e)[x_{p} \backslash v_{a}] `` & = & `` math`x_{p} `` js` =>  ``e `` & \\
+`` math`(e_{f} `` js`( ``e_{a} `` js`) ``)[x_{p} \backslash v_{a}] `` & = & `` math`(e_{f}[x_{p} \backslash v_{a}]) `` js`( ``(e_{a}[x_{p} \backslash v_{a}]) `` js`) `` `` & \\
+`` math`x[x_{p} \backslash v_{a}] `` & = & `` math`x `` & if `` math`x \neq x_{p} `` \\
+`` math`x_{p}[x_{p} \backslash v_{a}] `` & = & `` math`v_{a} `` & \\
 \end{tabular}
 \end{center}
 
@@ -902,7 +902,7 @@ Remove the newline at the end of the output produced by Prettier.
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-This example program is also known as the _$\Omega$-combinator_. The function  `` js`f => f(f) `` that is part of this program is also known as the _$U$-combinator_ ($\Omega = (U)(U)$).
+This example program is also known as the _`` math`\Omega ``-combinator_. The function  `` js`f => f(f) `` that is part of this program is also known as the _`` math`U ``-combinator_ (`` math`\Omega = (U)(U) ``).
 
 </fieldset>
 
@@ -950,7 +950,7 @@ The result of substitution ( `` js`(F(F))(F(F)) ``) is an expression that conta
  `` js`(F(F))(F(F)) `` \\
  `` js`(F(F))(F(F))(F(F)) `` \\
  `` js`(F(F))(F(F))(F(F))(F(F)) `` \\
-\multicolumn{1}{c}{$\vdots$} \\
+\multicolumn{1}{c}{`` math`\vdots ``} \\
 \end{tabular}
 \end{center}
 
@@ -983,16 +983,16 @@ The issue with this strategy is that the expression  `` js`z => (y => y) `` doe
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`y => y `` \\
-\textbf{Step 1 Output} & $\langle  `` js`(y => y) ``, [] \rangle$ \\
+\textbf{Step 1 Output} & `` math`\langle  `` js`(y => y) ``, [] \rangle `` \\
 \textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
-\textbf{Step 1 Output} & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
+\textbf{Step 1 Output} & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
 \end{tabular}
 \end{center}
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-A map from variables to the values with which they would have been replaced (for example, $[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$) is something called an _environment_. A function along with an environment (for example, $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$) is something called a _closure_ [closures]().
+A map from variables to the values with which they would have been replaced (for example, `` math`[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] ``) is something called an _environment_. A function along with an environment (for example, `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle ``) is something called a _closure_ [closures]().
 
 </fieldset>
 
@@ -1103,7 +1103,7 @@ The listing above does not compile yet because we are not producing closures. In
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`x => x `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} & $\langle  `` js`(x => x) ``, [] \rangle$ \\
+\textbf{Expected Output} & `` math`\langle  `` js`(x => x) ``, [] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1122,7 +1122,7 @@ case "ArrowFunctionExpression":
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
+\textbf{Expected Output} & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1155,7 +1155,7 @@ case "CallExpression":
   return step(body, environment);
 ```
 
-Finally, we modify the recursive call to  `` ts`step() `` that interprets the function body so that it receives a new augmented  `` ts`environment `` including a mapping from the  `` ts`parameter `` (for example,  `` js`x ``) to the  `` ts`argument `` (for example, $\langle  `` js`(y => y) ``, [] \rangle$):
+Finally, we modify the recursive call to  `` ts`step() `` that interprets the function body so that it receives a new augmented  `` ts`environment `` including a mapping from the  `` ts`parameter `` (for example,  `` js`x ``) to the  `` ts`argument `` (for example, `` math`\langle  `` js`(y => y) ``, [] \rangle ``):
 
 ```ts{number}{11-14}
 // step()
@@ -1179,8 +1179,8 @@ case "CallExpression":
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => x => z => x)(a => a)(y => y) `` \\
-\textbf{Current Output} & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
-\textbf{Expected Output} & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
+\textbf{Current Output} & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
+\textbf{Expected Output} & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1193,7 +1193,7 @@ If a name is reused (for example,  `` js`x `` in the example program above), th
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} & $\langle  `` js`(y => y) ``, [] \rangle$ \\
+\textbf{Expected Output} & `` math`\langle  `` js`(y => y) ``, [] \rangle `` \\
 \\
 \textbf{Example Program} &  `` js`(x => y)(y => y) `` \\
 \textbf{Current Output} & — \\
@@ -1201,7 +1201,7 @@ If a name is reused (for example,  `` js`x `` in the example program above), th
 \\
 \textbf{Example Program} &  `` js`x => y `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} & $\langle  `` js`(x => y) ``, [] \rangle$ \\
+\textbf{Expected Output} & `` math`\langle  `` js`(x => y) ``, [] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1225,8 +1225,8 @@ case "Identifier":
 \begin{tabular}{ll}
 \textbf{Example Program} & \\
 \multicolumn{2}{l}{ `` js`(f => (x => f(x))(a => a))((x => z => x)(y => y)) ``} \\
-\textbf{Current Output} & $\langle  `` js`(a => a) ``, [ `` js`f `` \mapsto \langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle ] \rangle] \rangle$ \\
-\textbf{Expected Output} & $\langle  `` js`(y => y) ``, [] \rangle$ \\
+\textbf{Current Output} & `` math`\langle  `` js`(a => a) ``, [ `` js`f `` \mapsto \langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle ] \rangle] \rangle `` \\
+\textbf{Expected Output} & `` math`\langle  `` js`(y => y) ``, [] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1238,7 +1238,7 @@ This example program shows the difference between the current environment with w
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
 &  `` ts`expression.callee `` & = &  `` js`f => (x => f(x))(a => a) `` \\
 &  `` ts`expression.arguments[0] `` & = &  `` js`(x => z => x)(y => y) `` \\
-\rowcolor[rgb]{.88,1,1} 10 &  `` ts`argument `` & = & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
+\rowcolor[rgb]{.88,1,1} 10 &  `` ts`argument `` & = & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1251,16 +1251,16 @@ And the following is a trace of the recursive call to  `` ts`step() `` in which
 &  `` ts`expression `` & = &  `` js`f(x) `` \\
 &  `` ts`expression.callee `` & = &  `` js`f `` \\
 \rowcolor[rgb]{.88,1,1} &  `` ts`expression.arguments[0] `` & = &  `` js`x `` \\
-\rowcolor[rgb]{.88,1,1} &  `` ts`environment `` & = & $[ `` js`x `` \mapsto \langle  `` js`(a => a) ``, [\cdots] \rangle, \cdots]$ \\
-9 & $ `` ts`step( ``\cdots `` ts`) ``$ & = & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
+\rowcolor[rgb]{.88,1,1} &  `` ts`environment `` & = & `` math`[ `` js`x `` \mapsto \langle  `` js`(a => a) ``, [\cdots] \rangle, \cdots] `` \\
+9 & `` math` `` ts`step( ``\cdots `` ts`) `` `` & = & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
 5 &  `` ts`parameter `` & = &  `` js`z `` \\
 \rowcolor[rgb]{.88,1,1} 6 &  `` ts`body `` & = &  `` js`x `` \\
-\rowcolor[rgb]{.88,1,1} 8 &  `` ts`functionEnvironment `` & = & $[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ \\
+\rowcolor[rgb]{.88,1,1} 8 &  `` ts`functionEnvironment `` & = & `` math`[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` \\
 \multicolumn{4}{c}{Paused before line 10}\\
 \end{tabular}
 \end{center}
 
-At this point, there are two expressions left to evaluate: the argument ( `` ts`expression.arguments[0] ``; line 10), and the body of the called function ( `` ts`body ``; lines 11–14). Both of these expressions have the same code ( `` js`x ``), and our current implementation looks up this variable both times on the current  `` ts`environment ``, which produces the same value: $\langle  `` js`(a => a) ``, [\cdots] \rangle$.
+At this point, there are two expressions left to evaluate: the argument ( `` ts`expression.arguments[0] ``; line 10), and the body of the called function ( `` ts`body ``; lines 11–14). Both of these expressions have the same code ( `` js`x ``), and our current implementation looks up this variable both times on the current  `` ts`environment ``, which produces the same value: `` math`\langle  `` js`(a => a) ``, [\cdots] \rangle ``.
 
 But this leads to an issue: we may not reason about  `` js`z => x `` by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step 0 (see § \ref{Step 0: Name Reuse}). We would like, instead, for each  `` js`x `` to refer to the value that existed in the environment where the closure is _created_, not where it is _called_:
 
@@ -1357,12 +1357,12 @@ We adapt the operational semantics from § \ref{An Operational Semantics for th
 
 \begin{center}
 \begin{tabular}{rcll}
-$v$ & = & $\langle  `` js`( ``x `` js` =>  ``e `` js`) ``, \rho \rangle$ & Values / Closures \\
-$\rho$ & = & $\{x \mapsto v, \cdots\}$ & Environments \\
+`` math`v `` & = & `` math`\langle  `` js`( ``x `` js` =>  ``e `` js`) ``, \rho \rangle `` & Values / Closures \\
+`` math`\rho `` & = & `` math`\{x \mapsto v, \cdots\} `` & Environments \\
 \end{tabular}
 \end{center}
 
-We then define the relation $\rho \vdash e \Rightarrow v$ to be equivalent to the new implementation of  `` ts`run() ``:
+We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equivalent to the new implementation of  `` ts`run() ``:
 
 \begin{mathpar}
 \inferrule
@@ -1390,7 +1390,7 @@ We then define the relation $\rho \vdash e \Rightarrow v$ to be equivalent to th
 We modify the stringifier from § \ref{Step 0: Stringifier} to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
 
 \begin{center}
-$\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$
+`` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle ``
 \end{center}
 
 ```js
@@ -1465,11 +1465,11 @@ This difference is significant because there are programs that produce infinitel
 \begin{tabular}{ll}
 \multicolumn{2}{c}{ `` js`(F(F)) ``, where  `` js`F = f => (f(f))(f(f)) ``} \\
 \multicolumn{1}{c}{\textbf{Step 0}} & \multicolumn{1}{c}{\textbf{Step 1}} \\
- `` js`(F(F)) `` & $\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle$ \\
- `` js`(F(F))(F(F)) `` & $\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle$ \\
- `` js`(F(F))(F(F))(F(F)) `` & $\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle$ \\
- `` js`(F(F))(F(F))(F(F))(F(F)) `` & $\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle$ \\
-\multicolumn{1}{c}{$\vdots$} & \multicolumn{1}{c}{$\vdots$} \\
+ `` js`(F(F)) `` & `` math`\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle `` \\
+ `` js`(F(F))(F(F)) `` & `` math`\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle `` \\
+ `` js`(F(F))(F(F))(F(F)) `` & `` math`\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle `` \\
+ `` js`(F(F))(F(F))(F(F))(F(F)) `` & `` math`\langle  `` js`(F(F)) ``, [ `` js`f `` \mapsto \langle  `` js`F ``, [] \rangle] \rangle `` \\
+\multicolumn{1}{c}{`` math`\vdots ``} & \multicolumn{1}{c}{`` math`\vdots ``} \\
 \end{tabular}
 \end{center}
 
@@ -1479,11 +1479,11 @@ But this strategy is insufficient to guarantee termination, because there are pr
 \begin{tabular}{l}
 \multicolumn{1}{c}{ `` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
 \multicolumn{1}{c}{or  `` js`F(F)(y => y) ``, where  `` js`F = f => c => f(f)(C) `` and  `` js`C = x => c ``} \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle$ \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-\multicolumn{1}{c}{$\vdots$} \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle `` \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `` \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\
+\multicolumn{1}{c}{`` math`\vdots ``} \\
 \end{tabular}
 \end{center}
 
@@ -1510,9 +1510,9 @@ In Step 1 a closure contains an environment mapping names to other closures, wh
 \begin{tabular}{rcc}
 (See § \ref{A Variable Reference}) & \textbf{Step 1} & \textbf{Step 2} \\
 \textbf{Variable Reference} &  `` js`x `` &  `` js`x `` \\
-\textbf{Environment} & $[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ & $[ `` js`x `` \mapsto  `` js`0 ``]$ \\
-\textbf{Store} & — & $[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ \\
-\textbf{Value} & $\langle  `` js`(y => y) ``, [] \rangle$ & $\langle  `` js`(y => y) ``, [] \rangle$ \\
+\textbf{Environment} & `` math`[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` & `` math`[ `` js`x `` \mapsto  `` js`0 ``] `` \\
+\textbf{Store} & — & `` math`[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` \\
+\textbf{Value} & `` math`\langle  `` js`(y => y) ``, [] \rangle `` & `` math`\langle  `` js`(y => y) ``, [] \rangle `` \\
 \end{tabular}
 \end{center}
 
@@ -1521,10 +1521,10 @@ Each closure continues to include its own environment, because it needs to look 
 \begin{center}
 \begin{tabular}{rll}
 (See § \ref{A Function Body Is Evaluated with the Environment in Its Closure}) & \multicolumn{1}{c}{\textbf{Step 1}} & \multicolumn{1}{c}{\textbf{Step 2}} \\
- `` ts`environment `` & $[ `` js`x `` \mapsto \langle  `` js`(a => a) ``, [\cdots] \rangle, \cdots]$ & $[ `` js`x `` \mapsto  `` js`0 ``, \cdots]$ \\
- `` ts`funcEnv. `` & $[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ & $[ `` js`x `` \mapsto  `` js`1 ``]$ \\
-\textbf{Store} & \multicolumn{1}{c}{—} & $[ `` js`0 `` \mapsto \langle  `` js`(a => a) ``, [\cdots] \rangle,$ \\
- & & $\phantom{[} `` js`1 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$
+ `` ts`environment `` & `` math`[ `` js`x `` \mapsto \langle  `` js`(a => a) ``, [\cdots] \rangle, \cdots] `` & `` math`[ `` js`x `` \mapsto  `` js`0 ``, \cdots] `` \\
+ `` ts`funcEnv. `` & `` math`[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` & `` math`[ `` js`x `` \mapsto  `` js`1 ``] `` \\
+\textbf{Store} & \multicolumn{1}{c}{—} & `` math`[ `` js`0 `` \mapsto \langle  `` js`(a => a) ``, [\cdots] \rangle, `` \\
+ & & `` math`\phantom{[} `` js`1 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] ``
 \end{tabular}
 \end{center}
 
@@ -1533,9 +1533,9 @@ The runner must return the store along with the value, for the variable referenc
 \begin{center}
 \begin{tabular}{ll}
 \textbf{Example Program} (see § \ref{A Function Call}) &  `` js`(x => z => x)(y => y) `` \\
-\textbf{Step 1 Output} & $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$ \\
-\textbf{Step 2 Output} &  `` ts`value `` = $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto  `` js`0 ``] \rangle$ \\
-&  `` ts`store `` = $[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ \\
+\textbf{Step 1 Output} & `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle `` \\
+\textbf{Step 2 Output} &  `` ts`value `` = `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto  `` js`0 ``] \rangle `` \\
+&  `` ts`store `` = `` math`[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` \\
 \end{tabular}
 \end{center}
 
@@ -1589,8 +1589,8 @@ The  `` ts`store `` is unique for the whole interpreter, unlike  `` ts`environ
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` ts`value `` = $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto  `` js`0 ``] \rangle$ \\
-&  `` ts`store `` = $[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ \\
+\textbf{Expected Output} &  `` ts`value `` = `` math`\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto  `` js`0 ``] \rangle `` \\
+&  `` ts`store `` = `` math`[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` \\
 \end{tabular}
 \end{center}
 
@@ -1636,8 +1636,8 @@ Extend the  `` ts`store `` with a mapping from the  `` ts`address `` to the  
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` ts`value `` = $\langle  `` js`(y => y) ``, [] \rangle$ \\
-&  `` ts`store `` = $[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$ \\
+\textbf{Expected Output} &  `` ts`value `` = `` math`\langle  `` js`(y => y) ``, [] \rangle `` \\
+&  `` ts`store `` = `` math`[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] `` \\
 \end{tabular}
 \end{center}
 
@@ -1723,13 +1723,13 @@ We adapt the operational semantics from § \ref{Step 2: Operational Semantics} 
 
 \begin{center}
 \begin{tabular}{rcll}
-$\rho$ & = & $\{x \mapsto A, \cdots\}$ & Environments \\
-$\sigma$ & = & $\{A \mapsto v, \cdots\}$ & Stores \\
-$A$ & = & $\mathbb{N}$ & Addresses \\
+`` math`\rho `` & = & `` math`\{x \mapsto A, \cdots\} `` & Environments \\
+`` math`\sigma `` & = & `` math`\{A \mapsto v, \cdots\} `` & Stores \\
+`` math`A `` & = & `` math`\mathbb{N} `` & Addresses \\
 \end{tabular}
 \end{center}
 
-We then define the relation $\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle$ to be equivalent to the new implementation of  `` ts`run() ``:
+We then define the relation `` math`\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle `` to be equivalent to the new implementation of  `` ts`run() ``:
 
 \begin{mathpar}
 \inferrule
@@ -1762,18 +1762,18 @@ The programs that do not terminate in Step 1 (see § \ref{Step 1: Programs Tha
 \multicolumn{1}{c}{ `` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
 \multicolumn{1}{c}{or  `` js`F(F)(y => y) ``, where  `` js`F = f => c => f(f)(C) `` and  `` js`C = x => c ``} \\
 \multicolumn{1}{c}{\textbf{Step 1}} \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle$ \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle$ \\
-\multicolumn{1}{c}{$\vdots$} \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle `` \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `` \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\
+`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto \langle  `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\
+\multicolumn{1}{c}{`` math`\vdots ``} \\
 \multicolumn{1}{c}{\textbf{Step 2}} \\
-\multicolumn{1}{c}{$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`0 ``, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`1 ``, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`2 ``, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`3 ``, \cdots] \rangle$} \\
-\multicolumn{1}{c}{$\vdots$} \\
-\multicolumn{1}{c}{$[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle,  `` js`1 `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto  `` c`0 ``, \cdots] \rangle,  `` js`2 `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto  `` c`1 ``, \cdots] \rangle, \cdots]$}
+\multicolumn{1}{c}{`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`0 ``, \cdots] \rangle ``} \\
+\multicolumn{1}{c}{`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`1 ``, \cdots] \rangle ``} \\
+\multicolumn{1}{c}{`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`2 ``, \cdots] \rangle ``} \\
+\multicolumn{1}{c}{`` math`\langle  `` js`f(f)(C) ``, [ `` js`c `` \mapsto  `` js`3 ``, \cdots] \rangle ``} \\
+\multicolumn{1}{c}{`` math`\vdots ``} \\
+\multicolumn{1}{c}{`` math`[ `` js`0 `` \mapsto \langle  `` js`(y => y) ``, [] \rangle,  `` js`1 `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto  `` c`0 ``, \cdots] \rangle,  `` js`2 `` \mapsto \langle  `` js`C ``, [ `` js`c `` \mapsto  `` c`1 ``, \cdots] \rangle, \cdots] ``}
 \end{tabular}
 \end{center}
 
