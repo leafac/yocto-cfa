@@ -49,8 +49,8 @@
 1. <span id="lisp-original"></span> John McCarthy. _Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I_. Communications of the ACM. 1960. <https://doi.org/10.1145/367177.367199>.
 1. <span id="javascript-arrow-function-expressions"></span> Mozilla. _Arrow Function Expressions_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>. Accessed 2020-01-16.
 1. <span id="javascript-destructuring-assignment"></span> Mozilla. _Destructuring Assignment_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment>. Accessed 2020-01-27.
-1. <span id="javascript-eval"></span> Mozilla. `js◊eval()`. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval>. Accessed 2020-02-13.
-1. <span id="javascript-json-stringify"></span> Mozilla. `js◊JSON.stringify()`. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>. Accessed 2020-04-13.
+1. <span id="javascript-eval"></span> Mozilla. ``js`eval()``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval>. Accessed 2020-02-13.
+1. <span id="javascript-json-stringify"></span> Mozilla. ``js`JSON.stringify()``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>. Accessed 2020-04-13.
 1. <span id="javascript-spread-syntax"></span> Mozilla. Spread Syntax. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax>. Accessed 2020-02-03.
 1. <span id="bnf"></span> Matthew Might. _The Language of Languages_. <http://matt.might.net/articles/grammars-bnf-ebnf/>. Accessed 2020-01-17.
 1. <span id="m-cfa"></span> Matthew Might, Yannis Smaragdakis, and David Van Horn. _Resolving and Exploiting the $k$-CFA Paradox: Illuminating Functional vs Object-Oriented Program Analysis_. Programming Language Design and Implementation (PLDI). 2010. <https://doi.org/10.1145/1806596.1806631>.
