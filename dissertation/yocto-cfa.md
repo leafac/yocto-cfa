@@ -44,7 +44,7 @@
 
 ## The Analyzed Language: Yocto-JavaScript
 
-Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, a feature which is supported by most languages, including JavaScript, Java, Python, Ruby, and so forth.
+Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, and we have plenty of options to choose from, because higher-order functions are a feature that most languages support, for example, JavaScript, Java, Python, Ruby, and so forth.
 
 From all these options, we would like to choose JavaScript because it is the most popular language among programmers [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a _subset_ of JavaScript features that are related to higher-order functions, resulting in a language that we call _Yocto-JavaScript_ (`` math`\mathrm{JavaScript} \times 10^{-24} ``). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
@@ -711,7 +711,7 @@ First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript
 
 \begin{center}
 \begin{tabular}{rcll}
-`` math`v `` & ::= & `` math`x `` js` => `e` & Values \\
+`` math`v `` & ::= & `` math`x `` js`=>`e` & Values \\
 \end{tabular}
 \end{center}
 
@@ -962,7 +962,7 @@ The issue with this strategy is that the expression  `` js`z => (y => y) `` doe
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-A map from variables to the values with which they would have been replaced (for example, `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]`) is something called an _environment_. A function along with an environment (for example, `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y) `, [] \rangle] \rangle`) is something called a *closure* [closures]().
+A map from variables to the values with which they would have been replaced (for example, `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]`) is something called an _environment_. A function along with an environment (for example, `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle`) is something called a *closure* [closures]().
 
 </fieldset>
 
@@ -1073,7 +1073,7 @@ The listing above does not compile yet because we are not producing closures. In
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`x => x `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} & `` math`\langle `` js`(x => x) `, [] \rangle` \\
+\textbf{Expected Output} & `` math`\langle `` js`(x => x)`, [] \rangle` \\
 \end{tabular}
 \end{center}
 
@@ -1091,7 +1091,7 @@ case "ArrowFunctionExpression":
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y) `, [] \rangle] \rangle` \\
+\textbf{Expected Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
 \end{tabular}
 \end{center}
 
@@ -1124,7 +1124,7 @@ case "CallExpression":
   return step(body, environment);
 ```
 
-Finally, we modify the recursive call to  `` ts`step() `` that interprets the function body so that it receives a new augmented  `` ts`environment `` including a mapping from the  `` ts`parameter `` (for example,  `` js`x ``) to the  `` ts`argument `` (for example, `` math`\langle `` js`(y => y) `, [] \rangle`):
+Finally, we modify the recursive call to  `` ts`step() `` that interprets the function body so that it receives a new augmented  `` ts`environment `` including a mapping from the  `` ts`parameter `` (for example,  `` js`x ``) to the  `` ts`argument `` (for example, `` math`\langle `` js`(y => y)`, [] \rangle`):
 
 ```ts{number}{11-14}
 // step()
@@ -1195,7 +1195,7 @@ This example program shows the difference between the current environment with w
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
 &  `` ts`expression.callee `` & = &  `` js`f => (x => f(x))(a => a) `` \\
 &  `` ts`expression.arguments[0] `` & = &  `` js`(x => z => x)(y => y) `` \\
-\rowcolor[rgb]{.88,1,1} 10 &  `` ts`argument `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y) `, [] \rangle] \rangle` \\
+\rowcolor[rgb]{.88,1,1} 10 &  `` ts`argument `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
 \end{tabular}
 \end{center}
 
@@ -1209,12 +1209,12 @@ And the following is a trace of the recursive call to  `` ts`step() `` in which
 &  `` ts`expression.callee `` & = &  `` js`f `` \\
 \rowcolor[rgb]{.88,1,1} &  `` ts`expression.arguments[0] `` & = &  `` js`x `` \\
 \rowcolor[rgb]{.88,1,1} &  `` ts`environment `` & = & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` \\
-9 & `` math` `` ts` step( ``\cdots `` ts `) `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ 5 & `` ts `parameter `& = &` js` z `` \\ \rowcolor[rgb]{.88,1,1} 6 & `` ts `body `& = &` js` x `` \\ \rowcolor[rgb]{.88,1,1} 8 & `` ts `functionEnvironment `& = &` math` [ `` js `x `\mapsto \langle` js`(y => y) `, [] \rangle]` \\
+9 & `` math` `` ts` step( ``\cdots `` ts `) `& = &` math` \langle `` js ` (z => x) `, [` js `x`\mapsto \langle`js` (y => y) `, [] \rangle] \rangle` \\ 5 & `` ts `parameter `& = &` js` z `` \\ \rowcolor[rgb]{.88,1,1} 6 & `` ts `body `& = &` js` x `` \\ \rowcolor[rgb]{.88,1,1} 8 & `` ts `functionEnvironment `& = &` math` [ `` js `x`\mapsto \langle`js`(y => y) `, [] \rangle]` \\
 \multicolumn{4}{c}{Paused before line 10}\\
 \end{tabular}
 \end{center}
 
-At this point, there are two expressions left to evaluate: the argument ( `` ts`expression.arguments[0] ``; line 10), and the body of the called function ( `` ts`body ``; lines 11–14). Both of these expressions have the same code ( `` js`x ``), and our current implementation looks up this variable both times on the current  `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a) `, [\cdots] \rangle`.
+At this point, there are two expressions left to evaluate: the argument ( `` ts`expression.arguments[0] ``; line 10), and the body of the called function ( `` ts`body ``; lines 11–14). Both of these expressions have the same code ( `` js`x ``), and our current implementation looks up this variable both times on the current  `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a)`, [\cdots] \rangle`.
 
 But this leads to an issue: we may not reason about  `` js`z => x `` by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step 0 (see § \ref{Step 0: Name Reuse}). We would like, instead, for each  `` js`x `` to refer to the value that existed in the environment where the closure is _created_, not where it is _called_:
 
@@ -1340,7 +1340,7 @@ We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equival
 We modify the stringifier from § \ref{Step 0: Stringifier} to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
 
 \begin{center}
-`` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y) `, [] \rangle] \rangle`
+`` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle`
 \end{center}
 
 ```js
@@ -1531,7 +1531,7 @@ The  `` ts`store `` is unique for the whole interpreter, unlike  `` ts`environ
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` ts`value `` = `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto` js` 0 ``] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y) `, [] \rangle]` \\
+\textbf{Expected Output} &  `` ts`value `` = `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto` js` 0 ``] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
 \end{center}
 
@@ -1577,7 +1577,7 @@ Extend the  `` ts`store `` with a mapping from the  `` ts`address `` to the  
 \begin{tabular}{ll}
 \textbf{Example Program} &  `` js`(x => x)(y => y) `` \\
 \textbf{Current Output} & — \\
-\textbf{Expected Output} &  `` ts`value `` = `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y) `, [] \rangle]` \\
+\textbf{Expected Output} &  `` ts`value `` = `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
 \end{center}
 
