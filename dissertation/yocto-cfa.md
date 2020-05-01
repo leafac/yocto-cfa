@@ -52,13 +52,19 @@ Our first decision when developing an analyzer is which language it should analy
 
 From all these options, we would like to choose JavaScript because it is the most popular language among programmers~\cite{stack-overflow-developer-survey, jet-brains-developer-survey}, but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a \emph{subset} of JavaScript features that are related to higher-order functions, resulting in a language that we call \emph{Yocto-JavaScript} ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
-\begin{mdframed}[frametitle = {Advanced}]
-On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial~\cite{m-cfa}.
-\end{mdframed}
+<fieldset>
+<legend><strong>Advanced</strong></legend>
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA~\cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial~\cite{m-cfa}.
+
+</fieldset>
+
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 Yocto-JavaScript is a representation of something called the \emph{$\lambda$-calculus}~\cite[§~6]{understanding-computation}.
-\end{mdframed}
+
+</fieldset>
 
 ### Values in Yocto-JavaScript
 
@@ -67,9 +73,12 @@ JavaScript has many kinds of values: strings (for example, \mintinline{js}{"Lean
 
 An Yocto-JavaScript function is written as \mintinline{js}{<parameter> => <body>}, for example, \mintinline{js}{x => x}, in which the \mintinline{js}{<parameter>} is called \mintinline{js}{x} and the \mintinline{js}{<body>} is a reference to the variable \mintinline{js}{x} (see §~\ref{Operations in Yocto-JavaScript} for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see §~\ref{Operations in Yocto-JavaScript} for more on function calls).
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 The notation we use for writing functions is something called \emph{arrow function expressions}~\cite{javascript-arrow-function-expressions}. The function given as example is called the \emph{identity} function. The ability of acting as values is what characterizes these functions as \emph{higher-order}.
-\end{mdframed}
+
+</fieldset>
 
 ### Operations in Yocto-JavaScript
 
@@ -90,11 +99,16 @@ In general, all kinds of Yocto-JavaScript expressions (function definitions, fun
 
 We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions \mintinline{js}{f}, \mintinline{js}{g}, and \mintinline{js}{h}, in \mintinline{js}{(f(g))(h)} the call \mintinline{js}{f(g)} happens first and the result is a function that is called with \mintinline{js}{h}, and in \mintinline{js}{f(g(h))} the call \mintinline{js}{g(h)} happens first and the result is passed as argument to \mintinline{js}{f}. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example, \mintinline{js}{x => y => x} is equivalent to \mintinline{js}{x => (y => x)} and \mintinline{js}{f(a)(b)} is equivalent to \mintinline{js}{(f(a))(b)}.
 
-\begin{mdframed}[frametitle = {Technical Terms}]
-The order in which operations are computed is something called their \emph{precedence}, and operations that happen first are said to have \emph{higher precedence}. Because of the order in which they are read, function definitions are said to be \emph{right-associative} and function calls are said to be \emph{left-associative}.
-\end{mdframed}
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
 
-\begin{mdframed}[frametitle = {Advanced}]
+The order in which operations are computed is something called their \emph{precedence}, and operations that happen first are said to have \emph{higher precedence}. Because of the order in which they are read, function definitions are said to be \emph{right-associative} and function calls are said to be \emph{left-associative}.
+
+</fieldset>
+
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 
 ### The Computational Power of Yocto-JavaScript
 
@@ -103,9 +117,12 @@ Yocto-JavaScript has only a few features, which makes it the ideal language for 
 
 As an example of how to carry out this translation, consider a JavaScript function of two parameters: \mintinline{js}{(x, y) => x}. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see §~\ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: \mintinline{js}{x => (y => x)}. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, \mintinline{js}{f(a, b)} may be encoded as \mintinline{js}{(f(a))(b)}.
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 All the languages we are considering are said to be equivalent in terms of \emph{computational power}: they are all \emph{Turing complete}~\cite[§~7]{understanding-computation}. The translation technique for functions with multiple arguments is called \emph{currying}~\cite[page~163]{understanding-computation}.
-\end{mdframed}
+
+</fieldset>
 
 For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not~\cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence~\cite{expressive-power}.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
 
@@ -121,7 +138,8 @@ $x$ & ::= & \mintinline{text}{<A JavaScript Identifier>} & Variables \\
 \end{tabular}
 \end{center}
 
-\end{mdframed}
+
+</fieldset>
 
 ## The Analyzer Language: TypeScript
 
@@ -163,18 +181,24 @@ The \mintinline{ts}{parse()} function prepares the \mintinline{ts}{input} for in
 
 In later Steps the implementations of \mintinline{ts}{run()} and \mintinline{ts}{stringify()} will change, but the architecture and therefore the implementations of \mintinline{ts}{evaluate()} and \mintinline{ts}{parse()} will remain the same.
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 The \mintinline{ts}{evaluate()} function is named after a native JavaScript function called \mintinline{ts}{eval()}~\cite{javascript-eval}, which is similar to \mintinline{ts}{evaluate()} but for JavaScript programs instead of Yocto-JavaScript. The \mintinline{ts}{strinfigy()} function is named after a native JavaScript function called \mintinline{ts}{JSON.stringify()}~\cite{javascript-json-stringify}, which is used in the implementation (see §~\ref{Step 1: Stringifier}).
-\end{mdframed}
+
+</fieldset>
 
 ### Data Structures to Represent Yocto-JavaScript Programs
 
 
 The \mintinline{ts}{evaluate()} function receives an Yocto-JavaScript program represented as a string (see §~\ref{Architecture}), which is convenient for humans to write and read, but inconvenient for \mintinline{ts}{run()} to manipulate directly, because \mintinline{ts}{run()} is concerned with the \emph{structure} of the program instead of the \emph{text}: from \mintinline{ts}{run()}’s perspective it does not matter, for example, whether a function is written as \mintinline{js}{x => x} or as \mintinline{js}{x=>x}. So before \mintinline{ts}{run()} starts interpreting the program, \mintinline{ts}{parse()} transforms it from a string into more convenient data structures (see §~\ref{Parser} for \mintinline{ts}{parse()}’s implementation).
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 The process of converting a program represented as a string into more convenient data structures is known as \emph{parsing}, and the data structures are called the \emph{Abstract Syntax Tree}~(AST) of the program~\cite[§~4]{dragon-book}.
-\end{mdframed}
+
+</fieldset>
 
 The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them, first in a high-level graphical representation and then in an equivalent low-level textual representation:
 
@@ -261,9 +285,12 @@ type Identifier = {
 };
 \end{minted}
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 The definitions above correspond to elements of the Yocto-JavaScript grammar (see §~\ref{A Formal Grammar for Yocto-JavaScript}); for example, \mintinline{ts}{Expression} corresponds to $e$.
-\end{mdframed}
+
+</fieldset>
 
 In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.
 
@@ -474,9 +501,12 @@ In the program above, there are two options for the variable reference \mintinli
 
 Currently \mintinline{ts}{substitute()} is implementing Option~1, but this leads to an issue: we are not able to reason about the inner function \mintinline{js}{x => x} independently; we must know where it appears and whether a variable called \mintinline{js}{x} is already defined there.
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 We say that the problem with Option~1 is that it defeats something called \emph{local reasoning}. We say that Option~2 exhibits a behavior called \emph{shadowing}, and that the outer \mintinline{js}{x} is \emph{shadowed} by the inner \mintinline{js}{x}, because there is no way to refer to the outer \mintinline{js}{x} from the body of the inner function.
-\end{mdframed}
+
+</fieldset>
 
 We avoid this issue by modifying \mintinline{ts}{substitute()} to implement Option~2, which is also the choice of JavaScript and every other popular programming language. We change \mintinline{ts}{substitute()}’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that \mintinline{ts}{subsitute()} is looking for, then \mintinline{ts}{subsitute()} returns the function unchanged, preventing further substitution (there is no recursive call to \mintinline{ts}{substitute()} in this case):
 
@@ -545,13 +575,19 @@ case "CallExpression":
   }
 \end{minted}
 
-\begin{mdframed}[frametitle = {Technical Terms}]
-This technique of calling \mintinline{ts}{run()} recursively to produce an immediate function for the argument characterizes the interpreter as \emph{big-step}.
-\end{mdframed}
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
 
-\begin{mdframed}[frametitle = {Advanced}]
+This technique of calling \mintinline{ts}{run()} recursively to produce an immediate function for the argument characterizes the interpreter as \emph{big-step}.
+
+</fieldset>
+
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a \emph{call-by-value} language~\cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a \emph{call-by-need} language. In a call-by-need language the argument is interpreted only if it is \emph{needed}, for example, if it is used in the function position of another call (see §~\ref{A Function That Is Not Immediate}), or if it is the result of the program (see §~\ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be \mintinline{js}{z => ((a => a)(y => y))}. And there is yet another policy for when to interpret arguments called \emph{call-by-name}: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
-\end{mdframed}
+
+</fieldset>
 
 ### A Function That Is Not Immediate
 
@@ -682,7 +718,9 @@ function run(expression: Expression): Value {
 }
 \end{minted}
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 ### An Operational Semantics for the Interpreter
 
 
@@ -725,7 +763,8 @@ $x[x_{p} \backslash v_{a}]$ & = & $x$ & if $x \neq x_{p}$ \\
 $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 \end{tabular}
 \end{center}
-\end{mdframed}
+
+</fieldset>
 
 ### Parser
 
@@ -860,9 +899,12 @@ Remove the newline at the end of the output produced by Prettier.
 \end{tabular}
 \end{center}
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 This example program is also known as the \emph{$\Omega$-combinator}. The function \mintinline{js}{f => f(f)} that is part of this program is also known as the \emph{$U$-combinator} ($\Omega = (U)(U)$).
-\end{mdframed}
+
+</fieldset>
 
 Yocto-JavaScript may express any program that a computer may run (see §~\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to \mintinline{ts}{run()}:
 
@@ -914,9 +956,12 @@ The result of substitution (\mintinline{js}{(F(F))(F(F))}) is an expression that
 
 Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether \mintinline{ts}{run()} is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the \emph{halting problem}, is said to be \emph{uncomputable}~\cite[§~8]{understanding-computation}, and is a direct consequence of the Turing completeness of Yocto-JavaScript (see §~\ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.
-\end{mdframed}
+
+</fieldset>
 
 ## Step 1: Environment-Based Interpreter
 
@@ -944,15 +989,21 @@ The issue with this strategy is that the expression \mintinline{js}{z => (y => y
 \end{tabular}
 \end{center}
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 A map from variables to the values with which they would have been replaced (for example, $[\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle]$) is something called an \emph{environment}. A function along with an environment (for example, $\langle \mintinline{js}{(z => x)}, [\mintinline{js}{x} \mapsto \langle \mintinline{js}{(y => y)}, [] \rangle] \rangle$) is something called a \emph{closure}~\cite{closures}.
-\end{mdframed}
+
+</fieldset>
 
 In Step~1 we have a different notion of \emph{value}: while in Step~0 the interpreter produced a \emph{function}, now it produces a \emph{closure}. It is possible to use the closure produced in Step~1 to recreate the function that would have been produced in Step~0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent, but in Step~1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
 
-\begin{mdframed}[frametitle = {Alternative Argument}]
+<fieldset>
+<legend><strong>Alternative Argument</strong></legend>
+
 Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
-\end{mdframed}
+
+</fieldset>
 
 ### New Data Structures
 
@@ -969,7 +1020,9 @@ type Closure = {
 type Environment = MapDeepEqual<Identifier["name"], Value>;
 \end{minted}
 
-\begin{mdframed}[frametitle = {Implementation Details}]
+<fieldset>
+<legend><strong>Implementation Details</strong></legend>
+
 The \mintinline{ts}{MapDeepEqual} data structure is provided by a JavaScript package developed by the author called Collections Deep Equal~\cite{collections-deep-equal}. A \mintinline{ts}{MapDeepEqual} is similar to a \mintinline{ts}{Map}, except that the keys are compared by value, not by reference, for example:
 
 \begin{minted}{ts}
@@ -980,7 +1033,8 @@ undefined
 \end{minted}
 
 The occurrences of \mintinline{ts}{{ age: 29 }} are objects with the same key and value, but they are not the same object.
-\end{mdframed}
+
+</fieldset>
 
 ### Adding an Environment to the Runner
 
@@ -1233,13 +1287,19 @@ case "CallExpression":
   );
 \end{minted}
 
-\begin{mdframed}[frametitle = {Technical Terms}]
-The principle of being able to reason about a function only by looking at its definition is something called \emph{local reasoning} (see §~\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called \emph{dynamic scoping}, because the \emph{scope} of a variable (where a variable is defined) is \emph{dynamic}, depending on where the function is called. The treatment given to the environment in this section is something called \emph{static scoping} or \emph{lexical scoping}, because the scope of a variable is determined before we start interpreting the program.
-\end{mdframed}
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
 
-\begin{mdframed}[frametitle = {Advanced}]
+The principle of being able to reason about a function only by looking at its definition is something called \emph{local reasoning} (see §~\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called \emph{dynamic scoping}, because the \emph{scope} of a variable (where a variable is defined) is \emph{dynamic}, depending on where the function is called. The treatment given to the environment in this section is something called \emph{static scoping} or \emph{lexical scoping}, because the scope of a variable is determined before we start interpreting the program.
+
+</fieldset>
+
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP~\cite{lisp-original}, though that was later considered a mistake~\cite{lisp-history}. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp~\cite[§~12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s \mintinline{clojure}{parameterize}~\cite[§~4.13]{racket-guide}.
-\end{mdframed}
+
+</fieldset>
 
 ### The Entire Runner
 
@@ -1287,7 +1347,9 @@ function run(expression: Expression): Value {
 }
 \end{minted}
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 ### Operational Semantics
 
 
@@ -1319,7 +1381,8 @@ We then define the relation $\rho \vdash e \Rightarrow v$ to be equivalent to th
 { }
 {\rho \vdash x \Rightarrow \rho(x)}
 \end{mathpar}
-\end{mdframed}
+
+</fieldset>
 
 ### Stringifier
 
@@ -1428,9 +1491,12 @@ The program above is a variation on the shortest non-terminating program, \minti
 
 The interpreter in Step~1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step~2.
 
-\begin{mdframed}[frametitle = {Technical Terms}]
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
 The nesting of environments in Step~1 characterizes them as something called \emph{recursive data structures}: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see §~\ref{Data Structures to Represent Yocto-JavaScript Programs}).
-\end{mdframed}
+
+</fieldset>
 
 ## Step 2: Store-Based Interpreter
 
@@ -1473,9 +1539,12 @@ The runner must return the store along with the value, for the variable referenc
 \end{tabular}
 \end{center}
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 The technique used in Step~2 is related to the run-time environments that are the target of traditional compilers for languages such as C~\cite[§~7]{dragon-book}: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.
-\end{mdframed}
+
+</fieldset>
 
 ### New Data Structures
 
@@ -1644,7 +1713,9 @@ function run(expression: Expression): { value: Value; store: Store } {
 }
 \end{minted}
 
-\begin{mdframed}[frametitle = {Advanced}]
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
 ### Operational Semantics
 
 
@@ -1678,7 +1749,8 @@ A = \lvert \sigma_a \rvert  \\
 { }
 {\rho, \sigma \vdash x \Rightarrow \sigma(\rho(x))}
 \end{mathpar}
-\end{mdframed}
+
+</fieldset>
 
 ### Programs That Do Not Terminate
 
