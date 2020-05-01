@@ -50,12 +50,12 @@
 
 Our first decision when developing an analyzer is which language it should analyze. In this dissertation we are interested in analysis techniques for higher-order functions, a feature which is supported by most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
-From all these options, we would like to choose JavaScript because it is the most popular language among programmers \cite{stack-overflow-developer-survey, jet-brains-developer-survey}, but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a _subset_ of JavaScript features that are related to higher-order functions, resulting in a language that we call _Yocto-JavaScript_ ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
+From all these options, we would like to choose JavaScript because it is the most popular language among programmers [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer, so we support only a _subset_ of JavaScript features that are related to higher-order functions, resulting in a language that we call _Yocto-JavaScript_ ($\mathrm{JavaScript} \times 10^{-24}$). By design, every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA \cite{k-cfa} that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial \cite{m-cfa}.
+On the surface the choice of analyzed language is important because it determines how difficult the analyzer is to develop, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called $k$-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
 
 </fieldset>
 
@@ -76,7 +76,7 @@ An Yocto-JavaScript function is written as  `` js`<parameter> => <body> ``, for
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The notation we use for writing functions is something called _arrow function expressions_ \cite{javascript-arrow-function-expressions}. The function given as example is called the _identity_ function. The ability of acting as values is what characterizes these functions as _higher-order_.
+The notation we use for writing functions is something called _arrow function expressions_ [javascript-arrow-function-expressions](). The function given as example is called the _identity_ function. The ability of acting as values is what characterizes these functions as _higher-order_.
 
 </fieldset>
 
@@ -124,12 +124,12 @@ All the languages we are considering are said to be equivalent in terms of _comp
 
 </fieldset>
 
-For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not \cite{code-quality}.) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence \cite{expressive-power}.) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
+For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not [code-quality]().) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence [expressive-power]().) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
 
 ### A Formal Grammar for Yocto-JavaScript
 
 
-The description of Yocto-JavaScript given so far has been informal; the following is a grammar in _Backus–Naur Form_ (BNF) \cite{bnf} \cite[§ 4.2]{dragon-book} that formalizes it:
+The description of Yocto-JavaScript given so far has been informal; the following is a grammar in _Backus–Naur Form_ (BNF) [bnf]() \cite[§ 4.2]{dragon-book} that formalizes it:
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -144,7 +144,7 @@ $x$ & ::= &  `` text`<A JavaScript Identifier> `` & Variables \\
 ## The Analyzer Language: TypeScript
 
 
-After choosing our analyzed language (Yocto-JavaScript; see § \ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our analyzed language being based on JavaScript, we may choose to develop the analyzer in any language (for example, JavaScript, Java, Python, Ruby, and so forth), because the analyzer treats the analyzed program as data. Still, from all these options, JavaScript does offer some advantages: it is the most popular \cite{stack-overflow-developer-survey, jet-brains-developer-survey}, and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see § \ref{Parser} and § \ref{Step 0: Stringifier}). But JavaScript lacks a way to express the _types_ of data structures, functions, and so forth, which we will need (for example, see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called _TypeScript_ \cite{typescript-documentation, typescript-deep-dive, understanding-typescript}.
+After choosing our analyzed language (Yocto-JavaScript; see § \ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our analyzed language being based on JavaScript, we may choose to develop the analyzer in any language (for example, JavaScript, Java, Python, Ruby, and so forth), because the analyzer treats the analyzed program as data. Still, from all these options, JavaScript does offer some advantages: it is the most popular [stack-overflow-developer-survey, jet-brains-developer-survey](), and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see § \ref{Parser} and § \ref{Step 0: Stringifier}). But JavaScript lacks a way to express the _types_ of data structures, functions, and so forth, which we will need (for example, see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called _TypeScript_ [typescript-documentation, typescript-deep-dive, understanding-typescript]().
 
 ## Step 0: Substitution-Based Interpreter
 
@@ -184,7 +184,7 @@ In later Steps the implementations of  `` ts`run() `` and  `` ts`stringify() `
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The  `` ts`evaluate() `` function is named after a native JavaScript function called  `` ts`eval() `` \cite{javascript-eval}, which is similar to  `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The  `` ts`strinfigy() `` function is named after a native JavaScript function called  `` ts`JSON.stringify() `` \cite{javascript-json-stringify}, which is used in the implementation (see § \ref{Step 1: Stringifier}).
+The  `` ts`evaluate() `` function is named after a native JavaScript function called  `` ts`eval() `` [javascript-eval](), which is similar to  `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The  `` ts`strinfigy() `` function is named after a native JavaScript function called  `` ts`JSON.stringify() `` [javascript-json-stringify](), which is used in the implementation (see § \ref{Step 1: Stringifier}).
 
 </fieldset>
 
@@ -260,9 +260,9 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 }
 ```
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree \cite{estree}, and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see § \ref{Parser} and § \ref{Step 0: Stringifier}).
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree [estree](), and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see § \ref{Parser} and § \ref{Step 0: Stringifier}).
 
-In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types \cite{estree-types} to include only the features supported by Yocto-JavaScript):
+In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types [estree-types]() to include only the features supported by Yocto-JavaScript):
 
 ```ts
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -364,7 +364,7 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 ```
 
-Next, we unpack the called function (using something called _destructuring assignment_ \cite{javascript-destructuring-assignment}) and the argument:
+Next, we unpack the called function (using something called _destructuring assignment_ [javascript-destructuring-assignment]()) and the argument:
 
 ```ts{8-12}
 // run()
@@ -448,7 +448,7 @@ case "Identifier":
 \end{tabular}
 \end{center}
 
-When  `` ts`substitute() `` (see § \ref{A Call Involving Immediate Functions}) starts traversing the  `` ts`body `` of the example above, the  `` ts`expression `` is an  `` ts`ArrowFunctionExpression `` ( `` js`z => x ``), and we want substitution to proceed deeper to find and substitute  `` js`x ``, so we call  `` ts`substitute() `` recursively (we use a feature called _spread syntax_ \cite{javascript-spread-syntax} to build an  `` ts`expression `` based on the existing one with a new  `` ts`body ``):
+When  `` ts`substitute() `` (see § \ref{A Call Involving Immediate Functions}) starts traversing the  `` ts`body `` of the example above, the  `` ts`expression `` is an  `` ts`ArrowFunctionExpression `` ( `` js`z => x ``), and we want substitution to proceed deeper to find and substitute  `` js`x ``, so we call  `` ts`substitute() `` recursively (we use a feature called _spread syntax_ [javascript-spread-syntax]() to build an  `` ts`expression `` based on the existing one with a new  `` ts`body ``):
 
 \begin{center}
 \includegraphics[page = 6]{images.pdf}
@@ -585,7 +585,7 @@ This technique of calling  `` ts`run() `` recursively to produce an immediate f
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language \cite{call-by-name-call-by-value-and-the-lambda-calculus}. JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see § \ref{A Function That Is Not Immediate}), or if it is the result of the program (see § \ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be  `` js`z => ((a => a)(y => y)) ``. And there is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see § \ref{A Function That Is Not Immediate}), or if it is the result of the program (see § \ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be  `` js`z => ((a => a)(y => y)) ``. And there is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
 
 </fieldset>
 
@@ -724,9 +724,9 @@ function run(expression: Expression): Value {
 ### An Operational Semantics for the Interpreter
 
 
-What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript; we also defined formally the _meaning_ of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the _semantics_ of the language, and there are several techniques to specify semantics; the one we are using so far is known as a _definitional interpreter_ \cite{definitional-interpreters}.
+What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript; we also defined formally the _meaning_ of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the _semantics_ of the language, and there are several techniques to specify semantics; the one we are using so far is known as a _definitional interpreter_ [definitional-interpreters]().
 
-A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: _operational semantics_ \cite{operational-semantics, semantics-engineering, pl-book}.
+A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: _operational semantics_ [operational-semantics, semantics-engineering, pl-book]().
 
 First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type  `` ts`Value `` (see § \ref{Step 0: The Entire Runner}, line 1):
 
@@ -769,7 +769,7 @@ $x_{p}[x_{p} \backslash v_{a}]$ & = & $v_{a}$ & \\
 ### Parser
 
 
-The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see § \ref{Architecture} for a high-level view of the architecture and § \ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree \cite{estree, estree-types} because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima \cite{esprima}, and the Esprima Interactive Online Demonstration \cite{esprima-demonstration}, which shows the data structures used to represent a given program.
+The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see § \ref{Architecture} for a high-level view of the architecture and § \ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree [estree, estree-types]() because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima [esprima](), and the Esprima Interactive Online Demonstration [esprima-demonstration](), which shows the data structures used to represent a given program.
 
 Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
@@ -856,7 +856,7 @@ In later Steps almost everything about the interpreter will change, but the pars
 ### Stringifier
 
 
-The stringifier transforms a  `` ts`Value `` produced by  `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen \cite{escodegen} to generate a string representation of an ESTree data structure, and a library called Prettier \cite{prettier} to format that string. The following is the full implementation of the stringifier:
+The stringifier transforms a  `` ts`Value `` produced by  `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the stringifier:
 
 ```ts{number}
 function stringify(value: Value): string {
@@ -873,7 +873,7 @@ function stringify(value: Value): string {
 \begin{description}
 \item [Line 4:]
 
-Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see § \ref{Architecture}), and it may use different parsers. We choose Babel \cite{babel}, which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
+Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see § \ref{Architecture}), and it may use different parsers. We choose Babel [babel](), which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
 
 \item [Line 5:]
 
@@ -992,7 +992,7 @@ The issue with this strategy is that the expression  `` js`z => (y => y) `` doe
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-A map from variables to the values with which they would have been replaced (for example, $[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$) is something called an _environment_. A function along with an environment (for example, $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$) is something called a _closure_ \cite{closures}.
+A map from variables to the values with which they would have been replaced (for example, $[ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle]$) is something called an _environment_. A function along with an environment (for example, $\langle  `` js`(z => x) ``, [ `` js`x `` \mapsto \langle  `` js`(y => y) ``, [] \rangle] \rangle$) is something called a _closure_ [closures]().
 
 </fieldset>
 
@@ -1023,7 +1023,7 @@ type Environment = MapDeepEqual<Identifier["name"], Value>;
 <fieldset>
 <legend><strong>Implementation Details</strong></legend>
 
-The  `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal \cite{collections-deep-equal}. A  `` ts`MapDeepEqual `` is similar to a  `` ts`Map ``, except that the keys are compared by value, not by reference, for example:
+The  `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A  `` ts`MapDeepEqual `` is similar to a  `` ts`Map ``, except that the keys are compared by value, not by reference, for example:
 
 ```ts
 > new Map([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
@@ -1297,7 +1297,7 @@ The principle of being able to reason about a function only by looking at its de
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP \cite{lisp-original}, though that was later considered a mistake \cite{lisp-history}. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp \cite[§ 12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s  `` clojure`parameterize `` \cite[§ 4.13]{racket-guide}.
+There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP [lisp-original](), though that was later considered a mistake [lisp-history](). In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp \cite[§ 12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s  `` clojure`parameterize `` \cite[§ 4.13]{racket-guide}.
 
 </fieldset>
 
@@ -1437,7 +1437,7 @@ Change the input type from  `` ts`Value `` to  `` ts`any ``, because this impl
 
 \item [Line 2:]
 
-Call  `` ts`JSON.stringify() `` \cite{javascript-json-stringify}, which traverses any data structure and converts it into a string.
+Call  `` ts`JSON.stringify() `` [javascript-json-stringify](), which traverses any data structure and converts it into a string.
 
 \item [Line 4:]
 
