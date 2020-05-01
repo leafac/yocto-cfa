@@ -35,6 +35,7 @@
 1. <span id="dragon-book"></span> Alfred Aho, Monica Lam, Ravi Sethi, and Jeffrey Ullman. _Compilers: Principles, Techniques, and Tools_. Addison-Wesley. 2006.
 1. <span id="babel"></span> _Babel_. <https://babeljs.io>. Accessed 2020-04-06.
 1. <span id="code-quality"></span> Emery Berger, Celeste Hollenbeck, Petr Maj, Olga Vitek, and Jan Vitek. _On the Impact of Programming Languages on Code Quality: A Reproduction Study_. ACM Transactions on Programming Languages and Systems. 2019. <https://doi.org/10.1145/3340571>.
+1. <span id="understanding-typescript"></span> Gavin Bierman, Martín Abadi, and Mads Torgersen. _Understanding TypeScript_. European Conference on Object-Oriented Programming (ECOOP). 2014.
 1. <span id="collections-deep-equal"></span> **Leandro Facchinetti**. _Collections Deep Equal_. <https://github.com/leafac/collections-deep-equal>. Accessed 2020-04-01.
 1. <span id="expressive-power"></span> Matthias Felleisen. _On the Expressive Power of Programming Languages_. Science of Computer Programming. 1991. <https://doi.org/10.1016/0167-6423(91)90036-W>.
 1. <span id="semantics-engineering"></span> Matthias Felleisen, Robert Bruce Findler, and Matthew Flatt. _Semantics Engineering with PLT Redex_. The MIT Press. 2009.
@@ -56,7 +57,11 @@
 1. <span id="call-by-name-call-by-value-and-the-lambda-calculus"></span> Gordon Plotkin. _Call-By-Name, Call-By-Value and the $\lambda$-Calculus_. Theoretical Computer Science. 1975. <https://doi.org/10.1016/0304-3975(75)90017-1>.
 1. <span id="prettier"></span> _Prettier_. <https://prettier.io>. Accessed 2020-02-18.
 1. <span id="definitional-interpreters"></span> John Reynolds. _Definitional Interpreters for Higher-Order Programming Languages_. Proceedings of the ACM Annual Conference. 1972. <https://doi.org/10.1145/800194.805852>.
-1. <span id="k-cfa"></span> Olin Shivers. Control-Flow Analysis of Higher-Order Languages. PhD Dissertation, Carnegie Mellon University. 1991.
+1. <span id="k-cfa"></span> Olin Shivers. _Control-Flow Analysis of Higher-Order Languages_. PhD Dissertation, Carnegie Mellon University. 1991.
+1. <span id="stack-overflow-developer-survey"></span> Stack Overflow. _Developer Survey Results 2019_. <https://insights.stackoverflow.com/survey/2019>. Accessed 2020-01-14.
+1. <span id="understanding-computation"></span> Tom Stuart. _Understanding Computation: From Simple Machines to Impossible Programs_. O’Reilly Media. 2013.
+1. <span id="typescript-deep-dive"></span> Basarat Ali Syed. _TypeScript Deep Dive_. <https://basarat.gitbook.io/typescript/>. Accessed 2020-01-17.
+1. <span id="typescript-documentation"></span> _TypeScript Documentation_. <https://www.typescriptlang.org/docs>. Accessed 2020-01-17.
 
 <!-- TODO
 # Biographical Statement
