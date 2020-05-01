@@ -47,14 +47,14 @@
 1. <span id="emacs-lisp"></span> Bil Lewis, Dan LaLiberte, and Richard Stallman. _GNU Emacs Lisp Reference Manual_. 2015.
 1. <span id="lisp-history"></span> John McCarthy. _History of LISP_. History of Programming Languages. 1978. <https://doi.org/10.1145/800025.1198360>.
 1. <span id="lisp-original"></span> John McCarthy. _Recursive Functions of Symbolic Expressions and Their Computation by Machine, Part I_. Communications of the ACM. 1960. <https://doi.org/10.1145/367177.367199>.
+1. <span id="bnf"></span> Matthew Might. _The Language of Languages_. <http://matt.might.net/articles/grammars-bnf-ebnf/>. Accessed 2020-01-17.
+1. <span id="m-cfa"></span> Matthew Might, Yannis Smaragdakis, and David Van Horn. _Resolving and Exploiting the `` math`k ``-CFA Paradox: Illuminating Functional vs Object-Oriented Program Analysis_. Programming Language Design and Implementation (PLDI). 2010. <https://doi.org/10.1145/1806596.1806631>.
 1. <span id="javascript-arrow-function-expressions"></span> Mozilla. _Arrow Function Expressions_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions>. Accessed 2020-01-16.
 1. <span id="javascript-destructuring-assignment"></span> Mozilla. _Destructuring Assignment_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment>. Accessed 2020-01-27.
 1. <span id="javascript-eval"></span> Mozilla. `` js`eval() ``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval>. Accessed 2020-02-13.
 1. <span id="javascript-json-stringify"></span> Mozilla. `` js`JSON.stringify() ``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>. Accessed 2020-04-13.
 1. <span id="javascript-spread-syntax"></span> Mozilla. _Spread Syntax_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax>. Accessed 2020-02-03.
-1. <span id="bnf"></span> Matthew Might. _The Language of Languages_. <http://matt.might.net/articles/grammars-bnf-ebnf/>. Accessed 2020-01-17.
-1. <span id="m-cfa"></span> Matthew Might, Yannis Smaragdakis, and David Van Horn. _Resolving and Exploiting the $k$-CFA Paradox: Illuminating Functional vs Object-Oriented Program Analysis_. Programming Language Design and Implementation (PLDI). 2010. <https://doi.org/10.1145/1806596.1806631>.
-1. <span id="call-by-name-call-by-value-and-the-lambda-calculus"></span> Gordon Plotkin. _Call-By-Name, Call-By-Value and the $\lambda$-Calculus_. Theoretical Computer Science. 1975. <https://doi.org/10.1016/0304-3975(75)90017-1>.
+1. <span id="call-by-name-call-by-value-and-the-lambda-calculus"></span> Gordon Plotkin. _Call-By-Name, Call-By-Value and the `` math`\lambda ``-Calculus_. Theoretical Computer Science. 1975. <https://doi.org/10.1016/0304-3975(75)90017-1>.
 1. <span id="prettier"></span> _Prettier_. <https://prettier.io>. Accessed 2020-02-18.
 1. <span id="definitional-interpreters"></span> John Reynolds. _Definitional Interpreters for Higher-Order Programming Languages_. Proceedings of the ACM Annual Conference. 1972. <https://doi.org/10.1145/800194.805852>.
 1. <span id="k-cfa"></span> Olin Shivers. _Control-Flow Analysis of Higher-Order Languages_. PhD Dissertation, Carnegie Mellon University. 1991.
