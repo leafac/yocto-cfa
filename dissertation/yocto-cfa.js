@@ -117,7 +117,9 @@ async function processHTML(/** @type {Document} */ document) {
     let language;
     let shouldNumberLines = false;
     let linesToHighlight = [];
-    if (element.className.startsWith("language-")) {
+    const isBlock = element.parentElement.tagName === "PRE";
+    if (isBlock) {
+      if (!element.className.startsWith("language-")) continue;
       code = element.textContent;
       const match = element.className.match(
         /^language-(?<language>.*?)(?:\{(?<options>.*?)\})?$/
@@ -131,12 +133,10 @@ async function processHTML(/** @type {Document} */ document) {
           else console.error(`Unrecognized option for code block: ${option}`);
     } else {
       const [languageSegment, ...codeSegments] = element.textContent.split("`");
-      if (codeSegments.length > 0) {
-        code = codeSegments.join("`");
-        language = languageSegment;
-      }
+      if (codeSegments.length === 0) continue;
+      code = codeSegments.join("`");
+      language = languageSegment;
     }
-    if (code === undefined || language === undefined) continue;
     let highlightedCode;
     try {
       highlightedCode = highlighter.codeToHtml(code, language);
