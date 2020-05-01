@@ -194,6 +194,39 @@ async function processHTML(/** @type {Document} */ document) {
     element.innerHTML = highlightedLines.join("\n");
   }
 
+  // Inline SVGs
+  for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
+    const src = element.getAttribute("src");
+    if (!fs.existsSync(src)) {
+      console.error(`Image not found: ${src}`);
+      continue;
+    }
+    const svg = JSDOM.fragment(fs.readFileSync(src, "utf8")).querySelector(
+      "svg"
+    );
+    for (const code of svg.querySelectorAll("[highlight]")) {
+      let highlightedText;
+      try {
+        highlightedText = highlighter.codeToHtml(
+          code.textContent,
+          code.getAttribute("highlight")
+        );
+      } catch (error) {
+        console.error(error);
+        continue;
+      }
+      const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
+        "code"
+      );
+      for (const span of highlightedCode.querySelectorAll("span")) {
+        const style = span.getAttribute("style").replace(/color:/g, "fill:");
+        span.outerHTML = `<tspan style="${style}">${span.innerHTML}</tspan>`;
+      }
+      code.innerHTML = highlightedCode.innerHTML;
+    }
+    element.outerHTML = svg.outerHTML;
+  }
+
   // Make URLs monospaced
   for (const element of document.querySelectorAll("a"))
     if (element.innerHTML === element.getAttribute("href"))
