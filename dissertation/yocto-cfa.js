@@ -5,7 +5,6 @@ const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
 const renderMathInElement = require("katex/dist/contrib/auto-render");
-const Cite = require("citation-js");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
@@ -152,6 +151,11 @@ async function processHTML(/** @type {Document} */ document) {
     ],
     output: "mathml",
   });
+
+  // Make URLs monospaced
+  for (const element of document.querySelectorAll("a"))
+    if (element.innerHTML === element.getAttribute("href"))
+      element.innerHTML = `<code>${element.innerHTML}</code>`;
 
   // Remove draft
   if (process.env.NODE_ENV === "production")
