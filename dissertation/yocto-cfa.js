@@ -186,14 +186,18 @@ async function processHTML(/** @type {Document} */ document) {
     }
     for (const lineToHighlight of linesToHighlight) {
       const index = lineToHighlight - 1;
-      const line = highlightedLines[index];
-      if (line === undefined) {
+      if (highlightedLines[index] === undefined) {
         console.error(
           `Failed to highlight line out of range: ${lineToHighlight}`
         );
         continue;
       }
-      highlightedLines[index] = `<div class="highlight-line">${line}</div>`;
+      highlightedLines[
+        index
+      ] = `<div class="highlight-line">${highlightedLines[index]}`;
+      highlightedLines[index + 1] = `</div>${
+        highlightedLines[index + 1] ?? ""
+      }`;
     }
     element.innerHTML = highlightedLines.join("\n");
   }
