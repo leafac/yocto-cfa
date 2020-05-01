@@ -77,6 +77,8 @@ The notation we use for writing functions is something called *arrow function ex
 
 ### Operations in Yocto-JavaScript
 
+---
+
 JavaScript has many operations: strings may have its characters accessed (for example, `` js`"Leandro"[2] ``, which results in `` js`"a" ``), numbers may be added together (for example, `` js`29 + 1 ``, which results in `` js`30 ``), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
 
 A function call is written as `` js`<function>(<argument>) ``, for example, `` js`f(a) ``, in which the `` js`<function> `` is a hypothetical function `` js`f `` and the `` js`<argument> `` is a hypothetical argument `` js`a ``. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see § \ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, `` js`x ``.
