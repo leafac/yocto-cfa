@@ -119,18 +119,18 @@ async function processHTML(/** @type {Document} */ document) {
     let linesToHighlight = [];
     const isBlock = element.parentElement.tagName === "PRE";
     if (isBlock) {
-      if (!element.className.startsWith("language-")) continue;
-      code = element.textContent;
       const match = element.className.match(
         /^language-(?<language>.*?)(?:\{(?<options>.*)\})?$/
       );
+      if (match === null) continue;
+      code = element.textContent;
       language = match.groups.language;
-      if (match.groups.options !== undefined)
-        for (const option of match.groups.options.split("}{"))
-          if (option === "number") shouldNumberLines = true;
-          else if (option.match(/^[0-9,\-\.]+$/))
-            linesToHighlight = rangeParser(option);
-          else console.error(`Unrecognized option for code block: ${option}`);
+      const options = match.groups.options;
+      for (const option of (options ?? "").split("}{"))
+        if (option === "number") shouldNumberLines = true;
+        else if (option.match(/^[0-9,\-\.]+$/))
+          linesToHighlight = rangeParser(option);
+        else console.error(`Unrecognized option for code block: ${option}`);
     } else {
       const [languageSegment, ...codeSegments] = element.textContent.split("`");
       if (codeSegments.length === 0) continue;
