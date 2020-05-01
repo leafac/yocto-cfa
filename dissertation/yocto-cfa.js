@@ -130,8 +130,11 @@ async function processHTML(/** @type {Document} */ document) {
             linesToHighlight = rangeParser(option);
           else console.error(`Unrecognized option for code block: ${option}`);
     } else {
-      const segments = element.textContent.split("`");
-      if (segments.length === 2) [language, code] = segments;
+      const [languageSegment, ...codeSegments] = element.textContent.split("`");
+      if (codeSegments.length > 0) {
+        language = languageSegment;
+        code = codeSegments.join("`");
+      }
     }
     if (code === undefined || language === undefined) continue;
     let highlightedCode;
