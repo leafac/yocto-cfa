@@ -131,6 +131,10 @@ header {
   margin-top: 0.5in;
 }
 
+.table-of-contents-item {
+  text-align: left;
+}
+
 .table-of-contents-item a::after {
   content: leader(dotted) target-counter(attr(href), page);
 }

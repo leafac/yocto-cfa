@@ -42,9 +42,6 @@
 
 <!-- TODO: An overview of the rest of the section -->
 
-<!--
-
-
 ## The Analyzed Language: Yocto-JavaScript
 
 
@@ -1832,25 +1829,26 @@ function run(expression: Expression): { value: Value; store: Store } {
 }
 ```
 
-% TODO: Some loss of precision. Now it’s an analyzer (of sorts).
+<!--
+TODO: Some loss of precision. Now it’s an analyzer (of sorts).
 
-% TODO: Add highlightlines to entire runner sections.
-% TODO: High-level examples.
+TODO: Add highlightlines to entire runner sections.
+TODO: High-level examples.
 
-% TODO: Variations
-%       Context Sensitivity
-%         k-CFA
-%         Set-based
-%         Top-frames / Call+return / Call-only / Return-only
-%         m-CFA
-%         Stack/Heap separation
-%         Closures contain references & stores contain environments (the PL II trick) (sets of maps instead of maps of sets) (path-sensitive?)
-%       Store Widening
-%         None
-%         Universal (flow-insensitive)
-%       Garbage Collection
-%         Filtered environments to contain only the non-locals
-%         Filtered stores (proper garbage collection)
+TODO: Variations
+      Context Sensitivity
+        k-CFA
+        Set-based
+        Top-frames / Call+return / Call-only / Return-only
+        m-CFA
+        Stack/Heap separation
+        Closures contain references & stores contain environments (the PL II trick) (sets of maps instead of maps of sets) (path-sensitive?)
+      Store Widening
+        None
+        Universal (flow-insensitive)
+      Garbage Collection
+        Filtered environments to contain only the non-locals
+        Filtered stores (proper garbage collection)
 -->
 
 </main>
