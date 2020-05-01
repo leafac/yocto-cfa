@@ -122,11 +122,11 @@ async function processHTML(/** @type {Document} */ document) {
       if (!element.className.startsWith("language-")) continue;
       code = element.textContent;
       const match = element.className.match(
-        /^language-(?<language>.*?)(?:\{(?<options>.*?)\})?$/
+        /^language-(?<language>.*?)(?:\{(?<options>.*)\})?$/
       );
       language = match.groups.language;
       if (match.groups.options !== undefined)
-        for (const option of match.groups.options.split("|"))
+        for (const option of match.groups.options.split("}{"))
           if (option === "number") shouldNumberLines = true;
           else if (option.match(/^[0-9,\-\.]+$/))
             linesToHighlight = rangeParser(option);
