@@ -132,8 +132,8 @@ async function processHTML(/** @type {Document} */ document) {
     } else {
       const [languageSegment, ...codeSegments] = element.textContent.split("`");
       if (codeSegments.length > 0) {
-        language = languageSegment;
         code = codeSegments.join("`");
+        language = languageSegment;
       }
     }
     if (code === undefined || language === undefined) continue;
