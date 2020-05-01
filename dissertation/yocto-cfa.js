@@ -81,6 +81,35 @@ async function processHTML(/** @type {Document} */ document) {
     element.textContent = `§ ${target?.textContent ?? "??"}`;
   }
 
+  // Resolve citations
+  const unusedCitations = new Set(
+    [...document.querySelectorAll("#bibliography + ol span:first-child")].map(
+      (element) => element.id
+    )
+  );
+  for (const element of document.querySelectorAll(`a[href=""]`)) {
+    const citations = [];
+    for (const segment of element.textContent.split(",")) {
+      const [id, ...description] = segment.trim().split(" ");
+      const target = document.querySelector(`#${id}`);
+      if (target === null) {
+        console.error(`Undefined citation: ${id}`);
+        citations.push(["??", ...description].join(" "));
+        continue;
+      }
+      unusedCitations.delete(id);
+      const listItem = target.parentElement;
+      const index = [...listItem.parentElement.children].indexOf(listItem);
+      const number = index + 1;
+      citations.push(
+        `<a href="#${id}">${[number, ...description].join(" ")}</a>`
+      );
+    }
+    element.outerHTML = `[${citations.join(", ")}]`;
+  }
+  if (unusedCitations.size !== 0)
+    console.error(`Unused citations: ${[...unusedCitations].join(", ")}`);
+
   // Add syntax highlighting
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
   for (const element of document.querySelectorAll("code")) {
