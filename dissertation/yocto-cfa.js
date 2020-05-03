@@ -67,6 +67,7 @@ async function processHTML(/** @type {Document} */ document) {
   document.querySelector("#table-of-contents").insertAdjacentHTML(
     "afterend",
     [...document.querySelectorAll("h1, h2, h3, h4, h5, h6")]
+      .filter((header) => header.textContent !== "Table of Contents")
       .map((header) => {
         const section = ["header", "main", "footer"].find(
           (section) => header.closest(section) !== null
