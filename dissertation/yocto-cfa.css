@@ -61,14 +61,6 @@ pre {
   white-space: pre-wrap;
 }
 
-pre .highlight-line {
-  background-color: #e0ffff;
-}
-
-pre .line-number {
-  color: #aaa;
-}
-
 figure {
   text-align: center;
 }

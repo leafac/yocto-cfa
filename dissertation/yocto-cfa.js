@@ -181,7 +181,7 @@ async function processHTML(/** @type {Document} */ document) {
         const lineNumber = String(Number(index) + 1).padStart(width);
         highlightedLines[
           index
-        ] = `<span class="line-number">${lineNumber}</span>  ${line}`;
+        ] = `<span style="color: #aaa;">${lineNumber}</span>  ${line}`;
       }
     }
     for (const lineToHighlight of linesToHighlight) {
@@ -194,7 +194,7 @@ async function processHTML(/** @type {Document} */ document) {
       }
       highlightedLines[
         index
-      ] = `<div class="highlight-line">${highlightedLines[index]}`;
+      ] = `<div style="background-color: #e0ffff;">${highlightedLines[index]}`;
       highlightedLines[index + 1] = `</div>${
         highlightedLines[index + 1] ?? ""
       }`;
