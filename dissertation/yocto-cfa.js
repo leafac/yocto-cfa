@@ -31,9 +31,9 @@ async function processHTML(/** @type {Document} */ document) {
   document.head.insertAdjacentHTML(
     "afterbegin",
     `
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="yocto-cfa.css">
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="yocto-cfa.css">
     `
   );
 
