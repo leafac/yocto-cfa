@@ -8,11 +8,10 @@ const katex = require("katex");
 
 (async () => {
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
-  const rawHTML = marked(markdown);
-  const dom = new JSDOM(rawHTML);
+  const html = marked(markdown);
+  const dom = new JSDOM(html);
   await processHTML(dom.window.document);
-  const processedHTML = dom.serialize();
-  fs.writeFileSync("yocto-cfa.html", processedHTML);
+  fs.writeFileSync("yocto-cfa.html", dom.serialize());
   child_process.execFileSync(
     "node_modules/prince/prince/lib/prince/bin/prince",
     [
