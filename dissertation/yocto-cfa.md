@@ -124,38 +124,39 @@ We use parentheses to resolve ambiguities on where function definitions start an
 
 ### The Computational Power of Yocto-JavaScript
 
-Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it _too_ simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages [understanding-computation (§ 6)]().
+Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but does it have enough features to support every kind of computation? Perhaps surprisingly, the answer is positive: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that any program in any one of these languages may be translated into an equivalent program in any other language [understanding-computation (§ 6)]().
 
-As an example of how to carry out this translation, consider a JavaScript function of two parameters: `` js`(x, y) => x ``. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see § \ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: `` js`x => (y => x) ``. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, `` js`f(a, b) `` may be encoded as `` js`(f(a))(b) ``.
+As an example of how this translation could be done, consider a JavaScript function of two parameters: `` js`(x, y) => x ``. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see [](#values-in-yocto-javascript)), but we may encode it as `` js`x => y => x ``, which is a function that receives the first parameter and returns another function that receives the second parameter. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, `` js`f(a, b) `` may be encoded as `` js`f(a)(b) ``.
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-All the languages we are considering are said to be equivalent in terms of _computational power_: they are all *Turing complete* [understanding-computation (§ 7)](). The translation technique for functions with multiple arguments is called *currying* [understanding-computation (page 163)]().
+- **Computational Power:** The ability of expressing computations.
+- **Turing Complete [understanding-computation (§ 7)]():** Property of a language that may express any computation of which a computer is capable. Yocto-JavaScript, JavaScript, Java, Python, Ruby, and so forth are all Turing Complete.
+- **Currying [understanding-computation (page 163)]():** The translation technique we used to encode functions with multiple parameters and calls with multiple arguments.
 
 </fieldset>
 
-For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers are more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not [code-quality]().) Does the language improve productivity? Does the language work well for the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence [expressive-power]().) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
+For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers would be more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not [code-quality]().) Does the language improve productivity? Does the language work well in the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence [expressive-power]().) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.
 
 ### A Formal Grammar for Yocto-JavaScript
 
-The description of Yocto-JavaScript given so far has been informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf]() [dragon-book (§ 4.2)]() that formalizes it:
+The description of Yocto-JavaScript given so far has been informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf, dragon-book (§ 4.2)]() that formalizes it:
 
-\begin{center}
-\begin{tabular}{rcll}
-`` math`e `` & ::= & `` math` `` js` ( ``x `` js ` => `e` js` ) `` `` | `` math `e`` js`( ``e`` js`) `` `|` math` x `` & Expressions \\ `` math `x `& ::= &` text`<A JavaScript Identifier> `` & Variables \\
-\end{tabular}
-\end{center}
+|              |     |                                                                                                                                  |             |
+| -----------: | :-: | :------------------------------------------------------------------------------------------------------------------------------- | :---------- |
+| `` math`e `` |  =  | `` js`( `` `` math`x ``  `` js`=> ``  `` math`e `` `` js`) `` \| `` math`e `` `` js`( `` `` math`e `` `` js`) `` \| `` math`x `` | Expressions |
+| `` math`x `` |  =  | `<A JavaScript Identifier>`                                                                                                      | Variables   |
 
 </fieldset>
 
 ## The Analyzer Language: TypeScript
 
-After choosing our analyzed language (Yocto-JavaScript; see § \ref{The Analyzed Language: Yocto-JavaScript}), we must decide in which language to develop the analyzer itself. Despite our analyzed language being based on JavaScript, we may choose to develop the analyzer in any language (for example, JavaScript, Java, Python, Ruby, and so forth), because the analyzer treats the analyzed program as data. Still, from all these options, JavaScript does offer some advantages: it is the most popular [stack-overflow-developer-survey, jet-brains-developer-survey](), and it includes convenient tools to manipulate JavaScript programs (and therefore Yocto-JavaScript programs as well; see § \ref{Parser} and § \ref{Step 0: Stringifier}). But JavaScript lacks a way to express the _types_ of data structures, functions, and so forth, which we will need (for example, see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), so we choose to implement our analyzer in a JavaScript extension with support for types called *TypeScript* [typescript-documentation, typescript-deep-dive, understanding-typescript]().
+After choosing our analyzed language (Yocto-JavaScript; see [](#the-analyzed-language-yocto-javascript)), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, so it is a natural first candidate, but JavaScript lacks a feature which we will need: the ability to express the _types_ of data structures, functions, and so forth. We choose instead to implement our analyzer in a JavaScript extension with support for types called *TypeScript* [typescript-documentation, typescript-deep-dive, understanding-typescript]().
 
 ## Step 0: Substitution-Based Interpreter
 
-Having chosen the analyzed language (Yocto-JavaScript; see § \ref{The Analyzed Language: Yocto-JavaScript}) and the language in which to develop the analyzer itself (TypeScript; see § \ref{The Analyzer Language: TypeScript}), we are ready to start the series of Steps in the development of the analyzer. The first Step is an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
+Having chosen the analyzed language (Yocto-JavaScript; see [](#the-analyzed-language-yocto-javascript)) and the language in which to develop the analyzer itself (TypeScript; see [](#the-analyzer-language-typescript)), we are ready to start developing the analyzer. In Step 0 we develop an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
 
 ### Architecture
 
