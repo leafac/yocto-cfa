@@ -51,7 +51,7 @@ From all these options, we would like to choose JavaScript because it is the mos
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-On the surface the choice of analyzed language is important because it influences how difficult it is to develop the analyzer, but the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
+On the surface the choice of analyzed language is important because it influences how difficult it is to develop the analyzer, but it has deeper consequences as well: the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
 
 </fieldset>
 
@@ -64,9 +64,18 @@ Yocto-JavaScript is a representation of something called the *`` math`\lambda ``
 
 ### Values in Yocto-JavaScript
 
-JavaScript has many kinds of values: strings (for example, `` js`"Leandro" ``), numbers (for example, `` js`29 ``), arrays (for example, `` js`["Leandro", 29] ``), objects (for example, `` js`{ name: "Leandro", age: 29 } ``), and so forth. From all these kinds of values, Yocto-JavaScript supports only one: functions.
+JavaScript has many kinds of values:
 
-An Yocto-JavaScript function is written as `` js`<parameter> => <body> ``, for example, `` js`x => x ``, in which the `` js`<parameter> `` is called `` js`x `` and the `` js`<body> `` is a reference to the variable `` js`x `` (see [](#operations-in-yocto-javascript) for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see [](#operations-in-yocto-javascript) for more on function calls).
+| Kind of JavaScript Value |                Example                |
+| :----------------------: | :-----------------------------------: |
+|     `` js`String ``      |          `` js`"Leandro" ``           |
+|     `` js`Number ``      |              `` js`29 ``              |
+|      `` js`Array ``      |       `` js`["Leandro", 29] ``        |
+|     `` js`Object ``      | `` js`{ name: "Leandro", age: 29 } `` |
+|    `` js`Function ``     |            `` js`x => x ``            |
+|            …             |                   …                   |
+
+From all these kinds of values, Yocto-JavaScript supports only one: `` js`Function ``. An Yocto-JavaScript function is written as `` js`<parameter> => <body> ``, for example, `` js`x => x ``, in which the `` js`<parameter> `` is called `` js`x `` and the `` js`<body> `` is a reference to the variable `` js`x `` (see [](#operations-in-yocto-javascript) for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see [](#operations-in-yocto-javascript) for more on function calls).
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -76,8 +85,6 @@ The notation we use for writing functions is something called *arrow function ex
 </fieldset>
 
 ### Operations in Yocto-JavaScript
-
----
 
 JavaScript has many operations: strings may have its characters accessed (for example, `` js`"Leandro"[2] ``, which results in `` js`"a" ``), numbers may be added together (for example, `` js`29 + 1 ``, which results in `` js`30 ``), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
 
