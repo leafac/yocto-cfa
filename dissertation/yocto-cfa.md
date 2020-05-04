@@ -114,7 +114,8 @@ We use parentheses to resolve ambiguities on where function definitions start an
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The order in which operations are computed is something called their _precedence_, and operations that happen first are said to have _higher precedence_. Because of the order in which they are read, function definitions are said to be _right-associative_ and function calls are said to be _left-associative_.
+- **Precedence:** The order in which operations are computed. Operations that are computed first have _higher precedence_; operations that are computed later have _lower precedence_.
+- **Associativity:** The order in which operations of the same type are computed. Function definitions are _right-associative_ and function calls are _left-associative_.
 
 </fieldset>
 
@@ -123,14 +124,14 @@ The order in which operations are computed is something called their _precedence
 
 ### The Computational Power of Yocto-JavaScript
 
-Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it _too_ simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages \cite[§ 6]{understanding-computation}.
+Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but is it _too_ simple? In other words, in the process of pairing down JavaScript to define Yocto-JavaScript, have we removed features that make the language incapable of some computations? Perhaps surprisingly, the answer is negative: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that, with some effort, any program in any one of these languages may be translated into an equivalent program in any other of these languages [understanding-computation (§ 6)]().
 
 As an example of how to carry out this translation, consider a JavaScript function of two parameters: `` js`(x, y) => x ``. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see § \ref{Values in Yocto-JavaScript}), but we may encode it as a function that receives the first parameter and returns another function that receives the second parameter: `` js`x => (y => x) ``. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, `` js`f(a, b) `` may be encoded as `` js`(f(a))(b) ``.
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-All the languages we are considering are said to be equivalent in terms of _computational power_: they are all *Turing complete* \cite[§ 7]{understanding-computation}. The translation technique for functions with multiple arguments is called *currying* \cite[page 163]{understanding-computation}.
+All the languages we are considering are said to be equivalent in terms of _computational power_: they are all *Turing complete* [understanding-computation (§ 7)](). The translation technique for functions with multiple arguments is called *currying* [understanding-computation (page 163)]().
 
 </fieldset>
 
@@ -138,7 +139,7 @@ For our goal of exploring analysis techniques, we are concerned only with comput
 
 ### A Formal Grammar for Yocto-JavaScript
 
-The description of Yocto-JavaScript given so far has been informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf]() \cite[§ 4.2]{dragon-book} that formalizes it:
+The description of Yocto-JavaScript given so far has been informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf]() [dragon-book (§ 4.2)]() that formalizes it:
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -199,7 +200,7 @@ The `` ts`evaluate() `` function receives an Yocto-JavaScript program represente
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The process of converting a program represented as a string into more convenient data structures is known as _parsing_, and the data structures are called the *Abstract Syntax Tree* (AST) of the program \cite[§ 4]{dragon-book}.
+The process of converting a program represented as a string into more convenient data structures is known as _parsing_, and the data structures are called the *Abstract Syntax Tree* (AST) of the program [dragon-book (§ 4)]().
 
 </fieldset>
 
@@ -949,7 +950,7 @@ Non-termination is what we expect from an interpreter, but not from an analyzer,
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the _halting problem_, is said to be *uncomputable* \cite[§ 8]{understanding-computation}, and is a direct consequence of the Turing completeness of Yocto-JavaScript (see § \ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.
+Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the _halting problem_, is said to be *uncomputable* [understanding-computation (§ 8)](), and is a direct consequence of the Turing completeness of Yocto-JavaScript (see § \ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.
 
 </fieldset>
 
@@ -1269,7 +1270,7 @@ The principle of being able to reason about a function only by looking at its de
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP [lisp-original](), though that was later considered a mistake [lisp-history](). In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp \cite[§ 12.10]{emacs-lisp}. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s `` clojure`parameterize `` \cite[§ 4.13]{racket-guide}.
+There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP [lisp-original](), though that was later considered a mistake [lisp-history](). In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp [emacs-lisp (§ 12.10)](). In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s `` clojure`parameterize `` [racket-guide (§ 4.13)]().
 
 </fieldset>
 
@@ -1503,7 +1504,7 @@ The runner must return the store along with the value, for the variable referenc
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The technique used in Step 2 is related to the run-time environments that are the target of traditional compilers for languages such as C \cite[§ 7]{dragon-book}: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.
+The technique used in Step 2 is related to the run-time environments that are the target of traditional compilers for languages such as C [dragon-book (§ 7)](): an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.
 
 </fieldset>
 
