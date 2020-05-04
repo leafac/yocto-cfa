@@ -7,26 +7,12 @@ const rangeParser = require("parse-numeric-range");
 const katex = require("katex");
 
 (async () => {
+  // Render Markdown
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
   const html = marked(markdown);
   const dom = new JSDOM(html);
-  await processHTML(dom.window.document);
-  fs.writeFileSync("yocto-cfa.html", dom.serialize());
-  child_process.execFileSync(
-    "node_modules/prince/prince/lib/prince/bin/prince",
-    [
-      "--pdf-profile=PDF/A-1b",
-      "--no-artificial-fonts",
-      "--fail-dropped-content",
-      "--fail-missing-resources",
-      "--fail-missing-glyphs",
-      "yocto-cfa.html",
-      "--output=yocto-cfa.pdf",
-    ]
-  );
-})();
+  const document = dom.window.document;
 
-async function processHTML(/** @type {Document} */ document) {
   // Add non-content head stuff
   document.head.insertAdjacentHTML(
     "afterbegin",
@@ -34,7 +20,7 @@ async function processHTML(/** @type {Document} */ document) {
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="yocto-cfa.css">
-    `
+      `
   );
 
   // Add timestamp
@@ -242,4 +228,19 @@ async function processHTML(/** @type {Document} */ document) {
   // Remove draft
   if (process.env.NODE_ENV === "production")
     for (const element of document.querySelectorAll(".draft")) element.remove();
-}
+
+  // Render PDF
+  fs.writeFileSync("yocto-cfa.html", dom.serialize());
+  child_process.execFileSync(
+    "node_modules/prince/prince/lib/prince/bin/prince",
+    [
+      "--pdf-profile=PDF/A-1b",
+      "--no-artificial-fonts",
+      "--fail-dropped-content",
+      "--fail-missing-resources",
+      "--fail-missing-glyphs",
+      "yocto-cfa.html",
+      "--output=yocto-cfa.pdf",
+    ]
+  );
+})();
