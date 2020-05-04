@@ -67,6 +67,11 @@ figure {
 
 table {
   margin: 1em auto;
+  line-height: 1.5em;
+}
+
+td {
+  padding: 0 0.5em;
 }
 
 fieldset {

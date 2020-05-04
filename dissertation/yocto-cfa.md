@@ -86,17 +86,24 @@ The notation we use for writing functions is something called *arrow function ex
 
 ### Operations in Yocto-JavaScript
 
-JavaScript has many operations: strings may have its characters accessed (for example, `` js`"Leandro"[2] ``, which results in `` js`"a" ``), numbers may be added together (for example, `` js`29 + 1 ``, which results in `` js`30 ``), and so forth. From all these operations, Yocto-JavaScript supports only two: functions may be called and variables may be referenced.
+JavaScript has many kinds of operations on the values introduced in [](#values-in-yocto-javascript):
 
-A function call is written as `` js`<function>(<argument>) ``, for example, `` js`f(a) ``, in which the `` js`<function> `` is a hypothetical function `` js`f `` and the `` js`<argument> `` is a hypothetical argument `` js`a ``. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see § \ref{Values in Yocto-JavaScript}). A variable reference is written as a bare identifier, for example, `` js`x ``.
+|      Kind of JavaScript Operation       |         Example         |    Result    |
+| :-------------------------------------: | :---------------------: | :----------: |
+| Access a character in a `` js`String `` |  `` js`"Leandro"[2] ``  | `` js`"a" `` |
+|          Add `` js`Number ``s           |     `` js`29 + 1 ``     | `` js`30 ``  |
+|        Call a `` js`Function ``         | `` js`parseInt("29") `` | `` js`29 ``  |
+|                    …                    |            …            |      …       |
+
+From all these operations, Yocto-JavaScript supports only two: function calls and variable references. A function call is written as `` js`<function>(<argument>) ``, for example, `` js`f(a) ``, in which the `` js`<function> `` is a hypothetical function `` js`f `` and the `` js`<argument> `` is a hypothetical argument `` js`a ``. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see [](#values-in-yocto-javascript)). A variable reference is written as a bare identifier, for example, `` js`x ``.
 
 The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
-```js
-((x) => x)((y) => y);
-```
+| Example Yocto-JavaScript Program |      Result       |
+| :------------------------------: | :---------------: |
+|    `` js`(y => y)(x => x) ``     | `` js`(x => x) `` |
 
-This program is a function call in which the `` js`<function> `` is `` js`x => x `` and the `` js`<argument> `` is `` js`y => y ``. When called, an Yocto-JavaScript function returns the result of computing its `` js`<body> `` and the `` js`<body> `` of `` js`x => x `` is a reference to the variable `` js`x ``, so `` js`x => x `` is a function that returns its argument unchanged and the final result of the example above is `` js`y => y ``.
+This program is a function call in which the `` js`<function> `` is `` js`y => y `` and the `` js`<argument> `` is `` js`x => x ``. When called, an Yocto-JavaScript function returns the result of computing its `` js`<body> ``. The `` js`<body> `` of `` js`y => y `` is a reference to the variable `` js`y ``, so `` js`y => y `` is a function that returns its argument unchanged.
 
 In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the `` js`<body> `` of a function definition, or as the `` js`<function> `` or `` js`<argument> `` of a call; for example, in the program `` js`(f(a))(b) `` the function call `` js`f(a) `` appears as the `` js`<function> `` of a call.
 
