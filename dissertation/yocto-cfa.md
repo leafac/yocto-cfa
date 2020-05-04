@@ -46,7 +46,7 @@
 
 Our first decision when developing a program analyzer is which language it should analyze. This decision is important, among other reasons, because it influences how difficult it is to develop the analyzer. In this dissertation we are interested in analysis techniques for higher-order functions, so we have plenty of options from which to choose, because higher-order functions are present in most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
-From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call _Yocto-JavaScript_ (JavaScript `` math` \times 10^{-24} ``).
+From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call _Yocto-JavaScript_ (JavaScript`` math` \times ``10<sup>-24</sup>).
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -58,7 +58,7 @@ On the surface the choice of analyzed language is important because it influence
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-Yocto-JavaScript is a representation of something called the *`` math`\lambda ``-calculus* [understanding-computation (§ 6)]().
+- **`` math`\lambda ``-Calculus [understanding-computation (§ 6)]():** Given the subset of JavaScript features that Yocto-JavaScript supports, it is a representation of the `` math`\lambda ``-calculus.
 
 </fieldset>
 
@@ -80,7 +80,9 @@ From all these kinds of values, Yocto-JavaScript supports only one: `` js`Functi
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The notation we use for writing functions is something called *arrow function expressions* [javascript-arrow-function-expressions](). The function given as example (`` js`x => x ``) is called the _identity_ function. The ability of acting as values is what characterizes these functions as _higher-order_.
+- **Arrow Function Expressions [javascript-arrow-function-expressions]():** The notation we use for writing functions.
+- **Identity Function:** The function given as example, `` js`x => x ``.
+- **High-Order Functions:** Functions that may act as values.
 
 </fieldset>
 
