@@ -152,9 +152,7 @@ The description of Yocto-JavaScript given so far has been informal; the followin
 
 ## The Analyzer Language: TypeScript
 
-After choosing our analyzed language (Yocto-JavaScript; see [](#the-analyzed-language-yocto-javascript)), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, so it is a natural first candidate, but JavaScript lacks a feature which we will need: the ability to express the _types_ of data structures, functions, and so forth. We choose instead to implement our analyzer in a JavaScript extension with support for types called *TypeScript* [typescript-documentation, typescript-deep-dive, understanding-typescript]().
-
-<!-- TODO: Forward reference to where we need types. -->
+After choosing our analyzed language (Yocto-JavaScript; see [](#the-analyzed-language-yocto-javascript)), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, so it is a natural first candidate, but JavaScript lacks a feature which we will need: the ability to express the _types_ of data structures, functions, and so forth (see, for example, [](#data-structures-to-represent-yocto-javascript-programs)). We choose instead to implement our analyzer in a JavaScript extension with support for types called *TypeScript* [typescript-documentation, typescript-deep-dive, understanding-typescript]().
 
 ## Step 0: Substitution-Based Interpreter
 
