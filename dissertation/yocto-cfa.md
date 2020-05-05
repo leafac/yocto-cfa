@@ -156,7 +156,7 @@ After choosing our analyzed language (Yocto-JavaScript; see [](#the-analyzed-lan
 
 ## Step 0: Substitution-Based Interpreter
 
-Having chosen the analyzed language (Yocto-JavaScript; see [](#the-analyzed-language-yocto-javascript)) and the language in which to develop the analyzer itself (TypeScript; see [](#the-analyzer-language-typescript)), we are ready to start developing the analyzer. In Step 0 we develop an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
+Having chosen the analyzed language (Yocto-JavaScript; see [](#the-analyzed-language-yocto-javascript)) and the language in which to develop the analyzer itself (TypeScript; see [](#the-analyzer-language-typescript)), we are ready to start developing the analyzer. We begin in Step 0 by developing an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.
 
 <!-- TODO: Forward reference to where we validate the outputs of the analyzer. -->
 
