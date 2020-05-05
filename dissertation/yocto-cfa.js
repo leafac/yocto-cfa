@@ -171,7 +171,10 @@ const katex = require("katex");
     counter.splice(level);
     counter[level - 1]++;
     const counterString = counter.join(".");
-    element.innerHTML = `<span class="heading-counter">${counterString}</span> ${element.innerHTML}<code class="draft"> (#${element.id})</code>`;
+    element.insertAdjacentHTML(
+      "afterbegin",
+      `<span class="heading-counter">${counterString}</span> `
+    );
   }
 
   // Add Table of Contents
@@ -187,6 +190,15 @@ const katex = require("katex");
       })
       .join("")
   );
+
+  // Add heading id
+  for (const element of document.querySelectorAll(
+    "main h1, main h2, main h3, main h4, main h5, main h6"
+  ))
+    element.insertAdjacentHTML(
+      "beforeend",
+      `<code class="draft"> (#${element.id})</code>`
+    );
 
   // Resolve cross-references
   for (const element of document.querySelectorAll(`main a[href^="#"]`)) {
