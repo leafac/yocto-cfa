@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "open yocto-cfa.pdf && nodemon --ext md,js,css,svg yocto-cfa.js",
+    "start": "nodemon --ext md,js,css,svg --exec 'node yocto-cfa && open yocto-cfa.pdf'",
     "test": "node yocto-cfa && prettier --check '*.{md,js,css}'"
   },
   "dependencies": {
