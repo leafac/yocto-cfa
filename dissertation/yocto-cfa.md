@@ -162,37 +162,39 @@ Having chosen the analyzed language (Yocto-JavaScript; see [](#the-analyzed-lang
 
 ### Architecture
 
-Our interpreter is defined as a function called `` ts`evaluate() ``, which receives as parameter an Yocto-JavaScript program represented as a string and returns the result of running it.
+Our interpreter is defined as a function called `` ts`evaluate() ``, which receives an Yocto-JavaScript program represented as a string and returns the result of running it.
 
 The following are two examples of how we will be able to use `` ts`evaluate() `` by the end of Step 0 (the `` ts`> `` represents the console):
 
 ```ts
 > evaluate("x => x")
 "x => x"
-> evaluate("(x => x)(y => y)")
-"y => y"
+> evaluate("(y => y)(x => x)")
+"x => x"
 ```
 
-The implementation of `` ts`evaluate() `` is separated into three parts called `` ts`parse() ``, `` ts`run() ``, and `` ts`stringify() ``:
+The implementation of `` ts`evaluate() `` is separated into three parts called `` ts`parse() ``, `` ts`run() ``, and `` ts`generate() ``:
 
-\begin{center}
-\includegraphics[page = 1]{images.pdf}
-\end{center}
+<figure>
+
+![](images/architecture.svg)
+
+</figure>
 
 ```ts
 export function evaluate(input: string): string {
-  return stringify(run(parse(input)));
+  return generate(run(parse(input)));
 }
 ```
 
-The `` ts`parse() `` function prepares the `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see § \ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The `` ts`run() `` function is responsible for the interpretation itself. The `` ts`stringify() `` function converts the outputs of `` ts`run() `` into a human-readable format. In the following sections (§ \ref{Data Structures to Represent Yocto-JavaScript Programs}–§ \ref{An Operational Semantics for the Interpreter}) we address the implementation of `` ts`run() ``, deferring `` ts`parse() `` to § \ref{Parser} and `` ts`stringify() `` to § \ref{Step 0: Stringifier}.
+The `` ts`parse() `` function prepares the `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see § \ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The `` ts`run() `` function is responsible for the interpretation itself. The `` ts`generate() `` function converts the outputs of `` ts`run() `` into a human-readable format. In the following sections (§ \ref{Data Structures to Represent Yocto-JavaScript Programs}–§ \ref{An Operational Semantics for the Interpreter}) we address the implementation of `` ts`run() ``, deferring `` ts`parse() `` to § \ref{Parser} and `` ts`generate() `` to § \ref{Step 0: Generator}.
 
-In later Steps the implementations of `` ts`run() `` and `` ts`stringify() `` will change, but the architecture and therefore the implementations of `` ts`evaluate() `` and `` ts`parse() `` will remain the same.
+In later Steps the implementations of `` ts`run() `` and `` ts`generate() `` will change, but the architecture and therefore the implementations of `` ts`evaluate() `` and `` ts`parse() `` will remain the same.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The `` ts`evaluate() `` function is named after a native JavaScript function called `` ts`eval() `` [javascript-eval](), which is similar to `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The `` ts`strinfigy() `` function is named after a native JavaScript function called `` ts`JSON.stringify() `` [javascript-json-stringify](), which is used in the implementation (see § \ref{Step 1: Stringifier}).
+The `` ts`evaluate() `` function is named after a native JavaScript function called `` ts`eval() `` [javascript-eval](), which is similar to `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The `` ts`strinfigy() `` function is named after a native JavaScript function called `` ts`JSON.generate() `` [javascript-json-stringify](), which is used in the implementation (see § \ref{Step 1: Generator}).
 
 </fieldset>
 
@@ -232,7 +234,7 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 ```
 
 ```ts
-> parse("(x => x)(y => y)")
+> parse("(y => y)(x => x)")
 ```
 
 \includegraphics[page = 3]{images.pdf}
@@ -271,7 +273,7 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 }
 ```
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree [estree](), and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see § \ref{Parser} and § \ref{Step 0: Stringifier}).
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree [estree](), and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see § \ref{Parser} and § \ref{Step 0: Generator}).
 
 In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types [estree-types]() to include only the features supported by Yocto-JavaScript):
 
@@ -352,7 +354,7 @@ case "ArrowFunctionExpression":
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(y => y)(x => x) `` \\
 \textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
 \textbf{Expected Output} & `` js`y => y `` \\
 \end{tabular}
@@ -849,12 +851,12 @@ All other types of `` ts`estree.Node `` are not supported by Yocto-JavaScript. T
 
 In later Steps almost everything about the interpreter will change, but the parser will remain the same.
 
-### Stringifier
+### Generator
 
-The stringifier transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the stringifier by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the stringifier:
+The generator transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the generator by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the generator:
 
 ```ts{number}
-function stringify(value: Value): string {
+function generate(value: Value): string {
   return prettier
     .format(escodegen.generate(value), {
       parser: "babel",
@@ -1180,7 +1182,7 @@ If a name is reused (for example, `` js`x `` in the example program above), then
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(y => y)(x => x) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ \\ \textbf{Example Program} & `` js `(x => y)(y => y) `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` text` Reference to undefined variable: y `` \\ \\ \textbf{Example Program} & `` js `x => y `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` math` \langle `` js `(x => y) `, [] \rangle` \\
 \end{tabular}
@@ -1357,9 +1359,9 @@ We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equival
 
 </fieldset>
 
-### Stringifier
+### Generator
 
-We modify the stringifier from § \ref{Step 0: Stringifier} to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
+We modify the generator from § \ref{Step 0: Generator} to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
 
 \begin{center}
 `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle`
@@ -1380,10 +1382,10 @@ We modify the stringifier from § \ref{Step 0: Stringifier} to support closures
 }
 ```
 
-The following is the modified implementation of `` ts`stringify() ``:
+The following is the modified implementation of `` ts`generate() ``:
 
 ```ts{number}{1,2,4,5,15}
-function stringify(value: any): string {
+function generate(value: any): string {
   return JSON.stringify(
     value,
     (key, value) => {
@@ -1417,14 +1419,14 @@ Provide a `` ts`replacer `` that is responsible for converting data structures t
 
 \item [Line 5:]
 
-Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called `` ts`type `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of `` ts`stringify() `` (see § \ref{Step 0: Stringifier}) to produce a string.
+Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called `` ts`type `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of `` ts`generate() `` (see § \ref{Step 0: Generator}) to produce a string.
 
 \item [Line 15:]
 
 Format the output with indentation of two spaces.
 \end{description}
 
-This implementation of `` ts`stringify() `` supports not only closures but any data structure (because of `` ts`JSON.stringify() ``), so it will remain the same in the following Steps.
+This implementation of `` ts`generate() `` supports not only closures but any data structure (because of `` ts`JSON.stringify() ``), so it will remain the same in the following Steps.
 
 ### Programs That Do Not Terminate
 
@@ -1597,7 +1599,7 @@ Extend the `` ts`store `` with a mapping from the `` ts`address `` to the `` ts`
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => x)(y => y) `` \\
+\textbf{Example Program} & `` js`(y => y)(x => x) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` ts`value `` = `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
