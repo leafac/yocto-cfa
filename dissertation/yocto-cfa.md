@@ -391,9 +391,9 @@ case "ArrowFunctionExpression":
 
 </figure>
 
-Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`f `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in § \ref{Substitution in Function Calls}.
+Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the called function with the argument. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`f `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in [](#substitution-in-function-calls).
 
-In the example we are considering both the function that is called (`` js`x => x ``) and the argument (`` js`y => y ``) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
+In the example we are considering both the function that is called (`` js`y => y ``) and the argument (`` js`x => x ``) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
 
 ```ts{3-7}
 // run()
@@ -426,9 +426,12 @@ case "CallExpression":
 
 Finally, we setup an auxiliary function called `` ts`substitute() `` that implements the traversal of the `` ts`body `` looking for references to `` ts`parameter `` and substituting them:
 
-\begin{center}
-\includegraphics[page = 4]{images.pdf}
-\end{center}
+<figure>
+
+![](images/substitute.svg)
+
+</figure>
+
 
 ```ts{13-19}
 // run()
