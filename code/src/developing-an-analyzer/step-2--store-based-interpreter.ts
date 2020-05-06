@@ -1,11 +1,10 @@
-import * as esprima from "esprima";
-import * as estree from "estree";
-import * as escodegen from "escodegen";
-import * as prettier from "prettier";
+import * as babelParser from "@babel/parser";
+import * as babelTypes from "@babel/types";
+import * as babelGenerator from "@babel/generator";
 import { MapDeepEqual } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
-  return stringify(run(parse(input)));
+  return generate(run(parse(input)));
 }
 
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -77,26 +76,29 @@ function run(expression: Expression): { value: Value; store: Store } {
 }
 
 function parse(input: string): Expression {
-  const program = esprima.parseScript(input, { range: true }, checkFeatures);
-  const expression = (program as any).body[0].expression as Expression;
-  return expression;
-  function checkFeatures(node: estree.Node): void {
+  const expression = babelParser.parseExpression(input);
+  checkFeatures(expression);
+  return expression as Expression;
+  function checkFeatures(node: babelTypes.Node): void {
     switch (node.type) {
-      case "Program":
-        if (node.body.length !== 1)
-          throw new Error(
-            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
-          );
-        break;
-      case "ExpressionStatement":
-        break;
       case "ArrowFunctionExpression":
+        if (node.params.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"
+          );
+        if (node.params[0].type !== "Identifier")
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"
+          );
+        checkFeatures(node.body);
         break;
       case "CallExpression":
         if (node.arguments.length !== 1)
           throw new Error(
             "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
           );
+        checkFeatures(node.callee);
+        checkFeatures(node.arguments[0]);
         break;
       case "Identifier":
         break;
@@ -106,18 +108,12 @@ function parse(input: string): Expression {
   }
 }
 
-function stringify(value: any): string {
+function generate(value: any): string {
   return JSON.stringify(
     value,
     (key, value) => {
       if (value.type !== undefined)
-        return prettier
-          .format(escodegen.generate(value), {
-            parser: "babel",
-            semi: false,
-            arrowParens: "avoid",
-          })
-          .trim();
+        return babelGenerator.default(value as any).code;
       return value;
     },
     2

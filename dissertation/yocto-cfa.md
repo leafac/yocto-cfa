@@ -346,9 +346,9 @@ The definitions of the data structures used to represent programs correspond to 
 
 </figure>
 
-<!-- TODO: Improve transition by introducing the idea of exploring programs of increasing complexity. -->
+Having defined the architecture ([](#architecture)) and the data structures to represent Yocto-JavaScript programs ([](#data-structures-to-represent-yocto-javascript-programs)), we start developing the `` ts`run() `` function. The development is driven by a series of example programs that highlight different aspects of the interpreter. In [](#an-expression-that-already-is-a-value)–[](#a-reference-to-an-undefined-variable) we begin with these example programs and modify the implementation to achieve the expected output.
 
-We start developing `` ts`run() `` by considering the example above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see [](#values-in-yocto-javascript)), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+Consider the example program above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see [](#values-in-yocto-javascript)), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
 ```ts
 type Value = ArrowFunctionExpression;
@@ -373,7 +373,7 @@ function run(expression: Expression): Value {
 }
 ```
 
-In our current example, the `` ts`expression `` already is a `` ts`Value ``, so it may be returned unchanged:
+In our current example, the `` ts`expression `` already is a `` ts`Value ``, so we return it unchanged:
 
 ```ts{3}
 // run()
@@ -383,13 +383,13 @@ case "ArrowFunctionExpression":
 
 ### A Call Involving Immediate Functions
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(y => y)(x => x) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` js`y => y `` \\
-\end{tabular}
-\end{center}
+<figure>
+
+|      Example Program      |    Current Output     | Expected Output |
+| :-----------------------: | :-------------------: | :-------------: |
+| `` js`(y => y)(x => x) `` | `NOT IMPLEMENTED YET` | `` js`x => x `` |
+
+</figure>
 
 Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the function that is called with the argument that is passed. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`f `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in § \ref{Substitution in Function Calls}.
 
