@@ -2,95 +2,99 @@ import { evaluate } from "./step-0--substitution-based-interpreter";
 
 describe("run()", () => {
   test("§ An Expression That Already Is a Value", () => {
-    expect(evaluate("x => x")).toMatchInlineSnapshot(`"x => x"`);
+    expect(evaluate(`x => x`)).toMatchInlineSnapshot(`"x => x"`);
   });
 
   test("§ A Call Involving Immediate Functions", () => {
-    expect(evaluate("(x => x)(y => y)")).toMatchInlineSnapshot(`"y => y"`);
+    expect(evaluate(`(y => y)(x => x)`)).toMatchInlineSnapshot(`"x => x"`);
   });
 
   test("§ Substitution in Function Definitions", () => {
-    expect(evaluate("(x => z => x)(y => y)")).toMatchInlineSnapshot(
-      `"z => y => y"`
+    expect(evaluate(`(y => z => y)(x => x)`)).toMatchInlineSnapshot(
+      `"z => x => x"`
     );
   });
 
   test("§ Name Mismatch", () => {
-    expect(evaluate("(x => z => z)(y => y)")).toMatchInlineSnapshot(`"z => z"`);
+    expect(evaluate(`(z => x => x)(y => y)`)).toMatchInlineSnapshot(`"x => x"`);
   });
 
   test("§ Name Reuse", () => {
-    expect(evaluate("(x => x => x)(y => y)")).toMatchInlineSnapshot(`"x => x"`);
+    expect(evaluate(`(x => x => x)(y => y)`)).toMatchInlineSnapshot(`"x => x"`);
   });
 
   test("§ Substitution in Function Calls", () => {
-    expect(evaluate("(x => z => x(x))(y => y)")).toMatchInlineSnapshot(
-      `"z => (y => y)(y => y)"`
+    expect(evaluate(`(y => z => y(y))(x => x)`)).toMatchInlineSnapshot(
+      `"z => (x => x)((x => x))"`
     );
   });
 
   test("§ An Argument That Is Not Immediate", () => {
-    expect(evaluate("(x => z => x)((a => a)(y => y))")).toMatchInlineSnapshot(
-      `"z => y => y"`
+    expect(evaluate(`(a => z => a)((y => y)(x => x))`)).toMatchInlineSnapshot(
+      `"z => x => x"`
     );
   });
 
   test("§ A Function That Is Not Immediate", () => {
-    expect(evaluate("((z => z)(x => x))(y => y)")).toMatchInlineSnapshot(
-      `"y => y"`
+    expect(evaluate(`((z => z)(y => y))(x => x)`)).toMatchInlineSnapshot(
+      `"x => x"`
     );
   });
 
   test("§ Continuing to Run After a Function Call", () => {
-    expect(evaluate("(x => (z => z)(x))(y => y)")).toMatchInlineSnapshot(
-      `"y => y"`
+    expect(evaluate(`(y => (z => z)(y))(x => x)`)).toMatchInlineSnapshot(
+      `"x => x"`
     );
   });
 
   test("§ A Reference to an Undefined Variable", () => {
     expect(() => {
-      evaluate("(x => y)(y => y)");
+      evaluate(`(y => u)(x => x)`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Reference to undefined variable: y"`
+      `"Reference to undefined variable: u"`
     );
-    expect(evaluate("x => y")).toMatchInlineSnapshot(`"x => y"`);
+    expect(evaluate(`y => u`)).toMatchInlineSnapshot(`"y => u"`);
   });
 });
 
 describe("parse()", () => {
   test("Syntax error", () => {
     expect(() => {
-      evaluate("x =>");
-    }).toThrowErrorMatchingInlineSnapshot(`"Line 1: Unexpected end of input"`);
+      evaluate(`x =>`);
+    }).toThrowErrorMatchingInlineSnapshot(`"Unexpected token (1:4)"`);
   });
 
   test("Program with multiple statements", () => {
     expect(() => {
-      evaluate("x => x; y => y");
-    }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: Program with multiple statements"`
-    );
+      evaluate(`x => x; y => y`);
+    }).toThrowErrorMatchingInlineSnapshot(`"Unexpected token (1:6)"`);
+  });
+
+  test("Variable declaration", () => {
+    expect(() => {
+      evaluate(`const f = x => x`);
+    }).toThrowErrorMatchingInlineSnapshot(`"Unexpected token (1:0)"`);
   });
 
   test("Function of multiple parameters", () => {
     expect(() => {
-      evaluate("(x, y) => x");
+      evaluate(`(x, y) => x`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: SequenceExpression"`
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"`
     );
   });
 
   test("Function with parameter that is a pattern", () => {
     expect(() => {
-      evaluate("([x, y]) => x");
+      evaluate(`([x, y]) => x`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: ArrayExpression"`
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"`
     );
   });
 
   test("Call with multiple arguments", () => {
     expect(() => {
-      evaluate("f(a, b)");
+      evaluate(`f(a, b)`);
     }).toThrowErrorMatchingInlineSnapshot(
       `"Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"`
     );
@@ -98,26 +102,18 @@ describe("parse()", () => {
 
   test("Number", () => {
     expect(() => {
-      evaluate("29");
+      evaluate(`29`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: Literal"`
-    );
-  });
-
-  test("Variable declaration", () => {
-    expect(() => {
-      evaluate("const f = x => x");
-    }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: VariableDeclarator"`
+      `"Unsupported Yocto-JavaScript feature: NumericLiteral"`
     );
   });
 });
 
 test("§ Programs That Do Not Terminate", () => {
   expect(() => {
-    evaluate("(f => f(f))(f => f(f))");
+    evaluate(`(f => f(f))(f => f(f))`);
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
   expect(() => {
-    evaluate("(f => (f(f))(f(f)))(f => (f(f))(f(f)))");
+    evaluate(`(f => (f(f))(f(f)))(f => (f(f))(f(f)))`);
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });

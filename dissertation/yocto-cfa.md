@@ -179,13 +179,13 @@ Having chosen the analyzed language (Yocto-JavaScript; see [](#the-analyzed-lang
 
 Our interpreter is defined as a function called `` ts`evaluate() ``, which receives an Yocto-JavaScript program represented as a string and returns the result of running it.
 
-The following are two examples of how we will be able to use `` ts`evaluate() `` by the end of Step 0 (the `` ts`> `` represents the console):
+The following are two examples of how we will be able to use `` ts`evaluate() `` by the end of Step 0 (the `` ts`> `` represents the console, and by convention strings that represent Yocto-JavaScript programs are delimited by backticks (<code>ts``</code>) [javascript-template-literals]()):
 
 ```ts
-> evaluate("x => x")
-"x => x"
-> evaluate("(y => y)(x => x)")
-"x => x"
+> evaluate(`x => x`)
+`x => x`
+> evaluate(`(y => y)(x => x)`)
+`x => x`
 ```
 
 The implementation of `` ts`evaluate() `` is separated into three parts called `` ts`parse() ``, `` ts`run() ``, and `` ts`generate() ``:
@@ -224,7 +224,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 <td>
 
 ```ts
-> parse("x => x")
+> parse(`x => x`)
 {
   "type": "ArrowFunctionExpression",
   "params": [
@@ -251,7 +251,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 <td>
 
 ```ts
-> parse("(y => y)(x => x)")
+> parse(`(y => y)(x => x)`)
 {
   "type": "CallExpression",
   "callee": {
@@ -1868,6 +1868,7 @@ TODO: Variations
 1. <span id="javascript-eval"></span> Mozilla. `` js`eval() ``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval>. Accessed 2020-02-13.
 1. <span id="javascript-json-stringify"></span> Mozilla. `` js`JSON.stringify() ``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>. Accessed 2020-04-13.
 1. <span id="javascript-spread-syntax"></span> Mozilla. _Spread Syntax_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax>. Accessed 2020-02-03.
+1. <span id="javascript-template-literals"></span> Mozilla. _Template Literals_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals>. Accessed 2020-02-03.
 1. <span id="call-by-name-call-by-value-and-the-lambda-calculus"></span> Gordon Plotkin. _Call-By-Name, Call-By-Value and the `` math`\lambda ``-Calculus_. Theoretical Computer Science. 1975. <https://doi.org/10.1016/0304-3975(75)90017-1>.
 1. <span id="prettier"></span> _Prettier_. <https://prettier.io>. Accessed 2020-02-18.
 1. <span id="definitional-interpreters"></span> John Reynolds. _Definitional Interpreters for Higher-Order Programming Languages_. Proceedings of the ACM Annual Conference. 1972. <https://doi.org/10.1145/800194.805852>.
