@@ -248,7 +248,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 ```
 
 </td>
-<td>
+<td align="center">
 
 ![](images/abstract-syntax-tree--1.svg)
 
@@ -293,7 +293,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 ```
 
 </td>
-<td>
+<td align="center">
 
 ![](images/abstract-syntax-tree--2.svg)
 

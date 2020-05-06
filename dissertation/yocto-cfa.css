@@ -66,15 +66,15 @@ figure {
   margin: 1.12em 0;
 }
 
-figure > table {
-  margin: 0 auto;
-}
-
 table {
   line-height: 1.5em;
 }
 
-td {
+figure > table {
+  margin: 0 auto;
+}
+
+figure > table td {
   padding: 0 0.5em;
 }
 
