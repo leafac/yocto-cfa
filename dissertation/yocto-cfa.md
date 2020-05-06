@@ -338,15 +338,17 @@ The definitions of the data structures used to represent programs correspond to 
 
 ### An Expression That Already Is a Value
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`x => x `` \\
-\textbf{Current Output} & — \\
-\textbf{Expected Output} & `` js`x => x `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-We start the definition of `` ts`run() `` by considering the example above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see § \ref{Values in Yocto-JavaScript}), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+| Example Program | Current Output | Expected Output |
+| :-------------: | :------------: | :-------------: |
+| `` js`x => x `` |       —        | `` js`x => x `` |
+
+</figure>
+
+<!-- TODO: Improve transition by introducing the idea of exploring programs of increasing complexity. -->
+
+We start developing `` ts`run() `` by considering the example above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see [](#values-in-yocto-javascript)), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
 ```ts
 type Value = ArrowFunctionExpression;
