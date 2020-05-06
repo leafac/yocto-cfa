@@ -66,6 +66,8 @@ On the surface the choice of analyzed language is important because it influence
 
 JavaScript has many kinds of values:
 
+<figure>
+
 | Kind of JavaScript Value |                Example                |
 | :----------------------: | :-----------------------------------: |
 |     `` js`String ``      |          `` js`"Leandro" ``           |
@@ -74,6 +76,8 @@ JavaScript has many kinds of values:
 |     `` js`Object ``      | `` js`{ name: "Leandro", age: 29 } `` |
 |    `` js`Function ``     |            `` js`x => x ``            |
 |            …             |                   …                   |
+
+</figure>
 
 From all these kinds of values, Yocto-JavaScript supports only one: `` js`Function ``. An Yocto-JavaScript function is written as `` js`<parameter> => <body> ``, for example, `` js`x => x ``, in which the `` js`<parameter> `` is called `` js`x `` and the `` js`<body> `` is a reference to the variable `` js`x `` (see [](#operations-in-yocto-javascript) for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see [](#operations-in-yocto-javascript) for more on function calls).
 
@@ -90,6 +94,8 @@ From all these kinds of values, Yocto-JavaScript supports only one: `` js`Functi
 
 JavaScript has many kinds of operations on the values introduced in [](#values-in-yocto-javascript):
 
+<figure>
+
 |      Kind of JavaScript Operation       |         Example         |    Result    |
 | :-------------------------------------: | :---------------------: | :----------: |
 | Access a character in a `` js`String `` |  `` js`"Leandro"[2] ``  | `` js`"a" `` |
@@ -97,13 +103,19 @@ JavaScript has many kinds of operations on the values introduced in [](#values-i
 |        Call a `` js`Function ``         | `` js`parseInt("29") `` | `` js`29 ``  |
 |                    …                    |            …            |      …       |
 
+</figure>
+
 From all these operations, Yocto-JavaScript supports only two: function calls and variable references. A function call is written as `` js`<function>(<argument>) ``, for example, `` js`f(a) ``, in which the `` js`<function> `` is a hypothetical function `` js`f `` and the `` js`<argument> `` is a hypothetical argument `` js`a ``. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see [](#values-in-yocto-javascript)). A variable reference is written as a bare identifier, for example, `` js`x ``.
 
 The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:
 
+<figure>
+
 | Example Yocto-JavaScript Program |      Result       |
 | :------------------------------: | :---------------: |
 |    `` js`(y => y)(x => x) ``     | `` js`(x => x) `` |
+
+</figure>
 
 This program is a function call in which the `` js`<function> `` is `` js`y => y `` and the `` js`<argument> `` is `` js`x => x ``. When called, an Yocto-JavaScript function returns the result of computing its `` js`<body> ``. The `` js`<body> `` of `` js`y => y `` is a reference to the variable `` js`y ``, so `` js`y => y `` is a function that returns its argument unchanged.
 
@@ -143,11 +155,14 @@ For our goal of exploring analysis techniques, we are concerned only with comput
 
 The description of Yocto-JavaScript given so far has been informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf, dragon-book (§ 4.2)]() that formalizes it:
 
+<figure>
+
 |              |     |                                                                                                                                  |             |
 | -----------: | :-: | :------------------------------------------------------------------------------------------------------------------------------- | :---------- |
 | `` math`e `` |  =  | `` js`( `` `` math`x ``  `` js`=> ``  `` math`e `` `` js`) `` \| `` math`e `` `` js`( `` `` math`e `` `` js`) `` \| `` math`x `` | Expressions |
 | `` math`x `` |  =  | `<A JavaScript Identifier>`                                                                                                      | Variables   |
 
+</figure>
 </fieldset>
 
 ## The Analyzer Language: TypeScript
@@ -175,49 +190,48 @@ The following are two examples of how we will be able to use `` ts`evaluate() ``
 
 The implementation of `` ts`evaluate() `` is separated into three parts called `` ts`parse() ``, `` ts`run() ``, and `` ts`generate() ``:
 
-<figure>
-
-![](images/architecture.svg)
-
-</figure>
-
 ```ts
 export function evaluate(input: string): string {
   return generate(run(parse(input)));
 }
 ```
 
-The `` ts`parse() `` function prepares the `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see § \ref{Data Structures to Represent Yocto-JavaScript Programs} for more on these data structures). The `` ts`run() `` function is responsible for the interpretation itself. The `` ts`generate() `` function converts the outputs of `` ts`run() `` into a human-readable format. In the following sections (§ \ref{Data Structures to Represent Yocto-JavaScript Programs}–§ \ref{An Operational Semantics for the Interpreter}) we address the implementation of `` ts`run() ``, deferring `` ts`parse() `` to § \ref{Parser} and `` ts`generate() `` to § \ref{Step 0: Generator}.
+<figure>
 
-In later Steps the implementations of `` ts`run() `` and `` ts`generate() `` will change, but the architecture and therefore the implementations of `` ts`evaluate() `` and `` ts`parse() `` will remain the same.
+![](images/architecture.svg)
+
+</figure>
+
+The `` ts`parse() `` function prepares the `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see [](#data-structures-to-represent-yocto-javascript-programs) for more on these data structures). The `` ts`run() `` function is responsible for the interpretation itself. The `` ts`generate() `` function converts the outputs of `` ts`run() `` into a human-readable format. In the following sections ([](#data-structures-to-represent-yocto-javascript-programs)–[](#an-operational-semantics-for-the-interpreter)) we address the implementation of `` ts`run() ``, deferring `` ts`parse() `` to [](#parser) and `` ts`generate() `` to [](#generator).
+
+In later Steps the implementations of `` ts`run() `` and `` ts`generate() `` will change, but the implementations of `` ts`evaluate() `` and `` ts`parse() `` will remain the same, because the architecture and the data structures used to represent Yocto-JavaScript programs will remain the same.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The `` ts`evaluate() `` function is named after a native JavaScript function called `` ts`eval() `` [javascript-eval](), which is similar to `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The `` ts`strinfigy() `` function is named after a native JavaScript function called `` ts`JSON.generate() `` [javascript-json-stringify](), which is used in the implementation (see § \ref{Step 1: Generator}).
+The `` ts`evaluate() `` function is named after a native JavaScript function called `` ts`eval() `` [javascript-eval](), which is similar to `` ts`evaluate() `` but for JavaScript programs instead of Yocto-JavaScript. The `` ts`parse() `` and `` ts`generate() `` functions are named after the library functions used to implement them (see [](#parser) and [](#generator)).
 
 </fieldset>
 
 ### Data Structures to Represent Yocto-JavaScript Programs
 
-The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see § \ref{Architecture}), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because `` ts`run() `` is concerned with the _structure_ of the program instead of the _text_: from `` ts`run() ``’s perspective it does not matter, for example, whether a function is written as `` js`x => x `` or as `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see § \ref{Parser} for `` ts`parse() ``’s implementation).
+The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because `` ts`run() `` is concerned with the _structure_ of the program instead of the _text_: from `` ts`run() ``’s perspective it does not matter, for example, whether a function is written as `` js`x => x `` or as `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The process of converting a program represented as a string into more convenient data structures is known as _parsing_, and the data structures are called the *Abstract Syntax Tree* (AST) of the program [dragon-book (§ 4)]().
+The process of converting a program represented as a string into more convenient data structures is known as _parsing_, and the resulting data structures are called the *Abstract Syntax Tree* (AST) of the program [dragon-book (§ 4)]().
 
 </fieldset>
 
-The following are two examples of Yocto-JavaScript programs followed by the data structures used to represent them, first in a high-level graphical representation and then in an equivalent low-level textual representation:
+The following are two examples of Yocto-JavaScript programs and the data structures used to represent them:
+
+<table>
+<tr>
+<td>
 
 ```ts
 > parse("x => x")
-```
-
-\includegraphics[page = 2]{images.pdf}
-
-```ts
 {
   "type": "ArrowFunctionExpression",
   "params": [
@@ -233,13 +247,18 @@ The following are two examples of Yocto-JavaScript programs followed by the data
 }
 ```
 
+</td>
+<td>
+
+![](images/abstract-syntax-tree--1.svg)
+
+</td>
+</tr>
+<tr>
+<td>
+
 ```ts
 > parse("(y => y)(x => x)")
-```
-
-\includegraphics[page = 3]{images.pdf}
-
-```ts
 {
   "type": "CallExpression",
   "callee": {
@@ -247,12 +266,12 @@ The following are two examples of Yocto-JavaScript programs followed by the data
     "params": [
       {
         "type": "Identifier",
-        "name": "x"
+        "name": "y"
       }
     ],
     "body": {
       "type": "Identifier",
-      "name": "x"
+      "name": "y"
     }
   },
   "arguments": [
@@ -261,19 +280,28 @@ The following are two examples of Yocto-JavaScript programs followed by the data
       "params": [
         {
           "type": "Identifier",
-          "name": "y"
+          "name": "x"
         }
       ],
       "body": {
         "type": "Identifier",
-        "name": "y"
+        "name": "x"
       }
     }
   ]
 }
 ```
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree [estree](), and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see § \ref{Parser} and § \ref{Step 0: Generator}).
+</td>
+<td>
+
+![](images/abstract-syntax-tree--2.svg)
+
+</td>
+</tr>
+</table>
+
+We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree [estree](), and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see [](#parser) and [](#generator)).
 
 In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types [estree-types]() to include only the features supported by Yocto-JavaScript):
 
@@ -317,7 +345,7 @@ In later Steps almost everything about the interpreter will change, but the data
 \end{tabular}
 \end{center}
 
-We start the definition of `` ts`run() `` by considering the example above. As mentioned in § \ref{Data Structures to Represent Yocto-JavaScript Programs}, the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see § \ref{Values in Yocto-JavaScript}), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+We start the definition of `` ts`run() `` by considering the example above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see § \ref{Values in Yocto-JavaScript}), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
 
 ```ts
 type Value = ArrowFunctionExpression;
@@ -767,7 +795,7 @@ Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equ
 
 ### Parser
 
-The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see § \ref{Architecture} for a high-level view of the architecture and § \ref{Data Structures to Represent Yocto-JavaScript Programs} for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree [estree, estree-types]() because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima [esprima](), and the Esprima Interactive Online Demonstration [esprima-demonstration](), which shows the data structures used to represent a given program.
+The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree [estree, estree-types]() because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima [esprima](), and the Esprima Interactive Online Demonstration [esprima-demonstration](), which shows the data structures used to represent a given program.
 
 Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
@@ -806,13 +834,13 @@ function parse(input: string): Expression {
 \begin{description}
 \item [Line 1:]
 
-The parser is defined as a function called `` ts`parse() ``, which receives the program `` ts`input `` represented as a `` ts`string `` and returns an `` ts`Expression `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}).
+The parser is defined as a function called `` ts`parse() ``, which receives the program `` ts`input `` represented as a `` ts`string `` and returns an `` ts`Expression `` (see [](#data-structures-to-represent-yocto-javascript-programs)).
 
 \item [Line 2:]
 
 Call `` ts`esprima.parseScript() ``, which parses the `` ts`input `` as a JavaScript program and produces a data structure following the ESTree specification. The `` ts`esprima.parseScript() `` function also detects syntax errors, for example, in the program `` js`x => ``, which is missing the function body.
 
-The `` ts`{ range: true ``} argument causes Esprima to include in the generated data structures some information about the part of the `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), but in programs with expressions that repeat, for example, `` ts`x => x => x ``, this information distinguishes the `` ts`x ``s.
+The `` ts`{ range: true ``} argument causes Esprima to include in the generated data structures some information about the part of the `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see [](#data-structures-to-represent-yocto-javascript-programs)), but in programs with expressions that repeat, for example, `` ts`x => x => x ``, this information distinguishes the `` ts`x ``s.
 
 We pass as argument to `` ts`esprima.parseScript() `` a function called `` ts`checkFeatures() `` which is called with every fragment of data structure that represents a part of the program. The purpose of `` ts`checkFeatures() `` is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
@@ -822,7 +850,7 @@ Extract the single `` ts`Expression `` from within the `` ts`Program `` returned
 
 \item [Line 5:]
 
-The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}). The `` ts`checkFeatures() `` does not return anything (`` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see [](#data-structures-to-represent-yocto-javascript-programs)). The `` ts`checkFeatures() `` does not return anything (`` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
 
 \item [Lines 6, 7, 13, 15, 17, 23, 25:]
 
@@ -853,7 +881,7 @@ In later Steps almost everything about the interpreter will change, but the pars
 
 ### Generator
 
-The generator transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see § \ref{Architecture} for a high-level view of the architecture). Similar to what happened in the parser (see § \ref{Parser}), we may implement the generator by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the generator:
+The generator transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see [](#architecture) for a high-level view of the architecture). Similar to what happened in the parser (see [](#parser)), we may implement the generator by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the generator:
 
 ```ts{number}
 function generate(value: Value): string {
@@ -870,7 +898,7 @@ function generate(value: Value): string {
 \begin{description}
 \item [Line 4:]
 
-Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see § \ref{Architecture}), and it may use different parsers. We choose Babel [babel](), which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
+Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see [](#architecture)), and it may use different parsers. We choose Babel [babel](), which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
 
 \item [Line 5:]
 
@@ -1329,7 +1357,7 @@ function run(expression: Expression): Value {
 
 ### Operational Semantics
 
-We adapt the operational semantics from § \ref{An Operational Semantics for the Interpreter} to the interpreter defined in Step 1. First, we change the notion of values:
+We adapt the operational semantics from [](#an-operational-semantics-for-the-interpreter) to the interpreter defined in Step 1. First, we change the notion of values:
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -1361,7 +1389,7 @@ We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equival
 
 ### Generator
 
-We modify the generator from § \ref{Step 0: Generator} to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
+We modify the generator from [](#generator) to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
 
 \begin{center}
 `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle`
@@ -1419,7 +1447,7 @@ Provide a `` ts`replacer `` that is responsible for converting data structures t
 
 \item [Line 5:]
 
-Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called `` ts`type `` (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}), in which case we use the previous implementation of `` ts`generate() `` (see § \ref{Step 0: Generator}) to produce a string.
+Check whether a data structure represents an Yocto-JavaScript program by checking the existence of a field called `` ts`type `` (see [](#data-structures-to-represent-yocto-javascript-programs)), in which case we use the previous implementation of `` ts`generate() `` (see [](#generator)) to produce a string.
 
 \item [Line 15:]
 
@@ -1462,7 +1490,7 @@ The interpreter in Step 1 may produce infinitely many different environments be
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-The nesting of environments in Step 1 characterizes them as something called _recursive data structures_: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see § \ref{Data Structures to Represent Yocto-JavaScript Programs}).
+The nesting of environments in Step 1 characterizes them as something called _recursive data structures_: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see [](#data-structures-to-represent-yocto-javascript-programs)).
 
 </fieldset>
 

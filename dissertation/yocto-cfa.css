@@ -63,10 +63,14 @@ pre {
 
 figure {
   text-align: center;
+  margin: 1.12em 0;
+}
+
+figure > table {
+  margin: 0 auto;
 }
 
 table {
-  margin: 1.12em auto;
   line-height: 1.5em;
 }
 
