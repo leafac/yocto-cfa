@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/generator": "^7.9.5",
     "@babel/parser": "^7.9.4",
+    "@babel/types": "^7.9.6",
     "collections-deep-equal": "^1.1.0"
   },
   "devDependencies": {

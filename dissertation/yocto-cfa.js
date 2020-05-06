@@ -197,7 +197,7 @@ const katex = require("katex");
   ))
     element.insertAdjacentHTML(
       "beforeend",
-      `<code class="draft"> (#${element.id})</code>`
+      `<code class="draft"> [](#${element.id})</code>`
     );
 
   // Resolve cross-references

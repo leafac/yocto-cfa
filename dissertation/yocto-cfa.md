@@ -215,14 +215,7 @@ The `` ts`evaluate() `` function is named after a native JavaScript function cal
 
 ### Data Structures to Represent Yocto-JavaScript Programs
 
-The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because `` ts`run() `` is concerned with the _structure_ of the program instead of the _text_: from `` ts`run() ``’s perspective it does not matter, for example, whether a function is written as `` js`x => x `` or as `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
-
-<fieldset>
-<legend><strong>Technical Terms</strong></legend>
-
-The process of converting a program represented as a string into more convenient data structures is known as _parsing_, and the resulting data structures are called the *Abstract Syntax Tree* (AST) of the program [dragon-book (§ 4)]().
-
-</fieldset>
+The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)). Strings are convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because `` ts`run() `` is concerned with the _structure_ of the program rather than the _text_: from `` ts`run() ``’s standpoint it does not matter, for example, whether a function is written as `` js`x => x `` or as `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
 
 The following are two examples of Yocto-JavaScript programs and the data structures used to represent them:
 
@@ -301,9 +294,9 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 </tr>
 </table>
 
-We choose to represent Yocto-JavaScript programs with the data structures above because they follow a specification called ESTree [estree](), and by adhering to this specification we may reuse tools from the JavaScript ecosystem (see [](#parser) and [](#generator)).
+We choose to represent Yocto-JavaScript programs with the data structures above because they match the data structures used by Babel [babel](), which is a library to manipulate JavaScript programs that we use to implement the `` ts`parse() `` and `` ts`generate() `` functions (see [](#parser) and [](#generator)).
 
-In general, the data structures used to represent Yocto-JavaScript programs are of the following types (written as TypeScript types adapted from the ESTree types [estree-types]() to include only the features supported by Yocto-JavaScript):
+In general, the data structures used to represent Yocto-JavaScript programs have the following types (written as TypeScript types adapted from the Babel types [babel-types]() to include only the features supported by Yocto-JavaScript):
 
 ```ts
 type Expression = ArrowFunctionExpression | CallExpression | Identifier;
@@ -326,14 +319,22 @@ type Identifier = {
 };
 ```
 
-<fieldset>
-<legend><strong>Advanced</strong></legend>
+In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.
 
-The definitions above correspond to elements of the Yocto-JavaScript grammar (see § \ref{A Formal Grammar for Yocto-JavaScript}); for example, `` ts`Expression `` corresponds to `` math`e ``.
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
+- **Parsing [dragon-book (§ 4)]():** The process of converting a program represented as a string into more convenient data structures.
+- **Abstract Syntax Tree (AST) [dragon-book (§ 4)]():** The data structures that represent a program.
 
 </fieldset>
 
-In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.
+<fieldset>
+<legend><strong>Advanced</strong></legend>
+
+The definitions of the data structures used to represent programs correspond to elements of the Yocto-JavaScript grammar (see [](#a-formal-grammar-for-yocto-javascript)); for example, `` ts`Expression `` corresponds to `` math`e ``.
+
+</fieldset>
 
 ### An Expression That Already Is a Value
 
@@ -759,7 +760,7 @@ What we accomplished so far in this section is more than defining an interpreter
 
 A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: *operational semantics* [operational-semantics, semantics-engineering, pl-book]().
 
-First, we extend the grammar from § \ref{A Formal Grammar for Yocto-JavaScript} with the notion of values that is equivalent to the type `` ts`Value `` (see § \ref{Step 0: The Entire Runner}, line 1):
+First, we extend the grammar from [](#a-formal-grammar-for-yocto-javascript) with the notion of values that is equivalent to the type `` ts`Value `` (see § \ref{Step 0: The Entire Runner}, line 1):
 
 \begin{center}
 \begin{tabular}{rcll}
@@ -795,7 +796,7 @@ Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equ
 
 ### Parser
 
-The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree [estree, estree-types]() because it allows us to reuse tools from the JavaScript ecosystem, including a parser called Esprima [esprima](), and the Esprima Interactive Online Demonstration [esprima-demonstration](), which shows the data structures used to represent a given program.
+The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree [estree, estree-types]() because it allows us to use tools from the JavaScript ecosystem, including a parser called Esprima [esprima](), and the Esprima Interactive Online Demonstration [esprima-demonstration](), which shows the data structures used to represent a given program.
 
 Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
@@ -1844,6 +1845,7 @@ TODO: Variations
 
 1. <span id="dragon-book"></span> Alfred Aho, Monica Lam, Ravi Sethi, and Jeffrey Ullman. _Compilers: Principles, Techniques, and Tools_. Addison-Wesley. 2006.
 1. <span id="babel"></span> _Babel_. <https://babeljs.io>. Accessed 2020-04-06.
+1. <span id="babel-types"></span> _Babel Types_. <https://git.io/JfZF8>. Accessed 2020-05-06.
 1. <span id="code-quality"></span> Emery Berger, Celeste Hollenbeck, Petr Maj, Olga Vitek, and Jan Vitek. _On the Impact of Programming Languages on Code Quality: A Reproduction Study_. ACM Transactions on Programming Languages and Systems. 2019. <https://doi.org/10.1145/3340571>.
 1. <span id="understanding-typescript"></span> Gavin Bierman, Martín Abadi, and Mads Torgersen. _Understanding TypeScript_. European Conference on Object-Oriented Programming (ECOOP). 2014.
 1. <span id="collections-deep-equal"></span> **Leandro Facchinetti**. _Collections Deep Equal_. <https://github.com/leafac/collections-deep-equal>. Accessed 2020-04-01.
