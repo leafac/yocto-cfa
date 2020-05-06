@@ -424,14 +424,13 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 ```
 
-Finally, we setup an auxiliary function called `` ts`substitute() `` that implements the traversal of the `` ts`body `` looking for references to `` ts`parameter `` and substituting them:
+Finally, we setup an auxiliary function called `` ts`substitute() `` that implements the traversal of the `` ts`body `` looking for references to `` ts`parameter `` and substituting them with the `` ts`argument ``:
 
 <figure>
 
 ![](images/substitute.svg)
 
 </figure>
-
 
 ```ts{13-19}
 // run()
