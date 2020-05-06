@@ -215,7 +215,7 @@ The `` ts`evaluate() `` function is named after a native JavaScript function cal
 
 ### Data Structures to Represent Yocto-JavaScript Programs
 
-The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly because it is concerned with the _structure_ rather than the _text_ of the program: for `` ts`run() `` it does not matter, for example, whether a function is written as `` js`x => x `` or `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
+The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because it is concerned with the _structure_ rather than the _text_ of the program: for `` ts`run() `` it does not matter, for example, whether a function is written as `` js`x => x `` or `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
 
 The following are two examples of Yocto-JavaScript programs and the data structures used to represent them:
 
