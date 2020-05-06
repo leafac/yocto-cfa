@@ -237,6 +237,10 @@ const katex = require("katex");
   if (unusedCitations.size !== 0)
     console.error(`Unused citations: ${[...unusedCitations].join(", ")}`);
 
+  // Add ‘legend’ wrapper for styling
+  for (const element of document.querySelectorAll("legend"))
+    element.innerHTML = `<span class="legend-wrapper">${element.innerHTML}</span>`;
+
   // Remove draft
   if (process.env.NODE_ENV === "production")
     for (const element of document.querySelectorAll(".draft")) element.remove();
