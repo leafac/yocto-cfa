@@ -64,9 +64,7 @@ function run(expression: Expression): Value {
 
 function parse(input: string): Expression {
   const expression = babelParser.parseExpression(input);
-  checkFeatures(expression);
-  return expression as Expression;
-  function checkFeatures(node: babelTypes.Node): void {
+  babelTypes.traverse(expression, (node) => {
     switch (node.type) {
       case "ArrowFunctionExpression":
         if (node.params.length !== 1)
@@ -77,22 +75,20 @@ function parse(input: string): Expression {
           throw new Error(
             "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"
           );
-        checkFeatures(node.body);
         break;
       case "CallExpression":
         if (node.arguments.length !== 1)
           throw new Error(
             "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
           );
-        checkFeatures(node.callee);
-        checkFeatures(node.arguments[0]);
         break;
       case "Identifier":
         break;
       default:
         throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
     }
-  }
+  });
+  return expression as Expression;
 }
 
 function generate(value: Value): string {
