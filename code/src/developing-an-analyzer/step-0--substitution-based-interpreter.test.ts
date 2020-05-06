@@ -42,7 +42,7 @@ describe("run()", () => {
   });
 
   test("§ Continuing to Run After a Function Call", () => {
-    expect(evaluate(`(y => (z => z)(y))(x => x)`)).toMatchInlineSnapshot(
+    expect(evaluate(`(z => (y => y)(z))(x => x)`)).toMatchInlineSnapshot(
       `"x => x"`
     );
   });
