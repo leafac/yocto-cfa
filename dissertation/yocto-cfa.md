@@ -190,17 +190,17 @@ The following are two examples of how we will be able to use `` ts`evaluate() ``
 
 The implementation of `` ts`evaluate() `` is separated into three parts called `` ts`parse() ``, `` ts`run() ``, and `` ts`generate() ``:
 
-```ts
-export function evaluate(input: string): string {
-  return generate(run(parse(input)));
-}
-```
-
 <figure>
 
 ![](images/architecture.svg)
 
 </figure>
+
+```ts
+export function evaluate(input: string): string {
+  return generate(run(parse(input)));
+}
+```
 
 The `` ts`parse() `` function prepares the `` ts`input `` for interpretation, converting it from a string into more convenient data structures (see [](#data-structures-to-represent-yocto-javascript-programs) for more on these data structures). The `` ts`run() `` function is responsible for the interpretation itself. The `` ts`generate() `` function converts the outputs of `` ts`run() `` into a human-readable format. In the following sections ([](#data-structures-to-represent-yocto-javascript-programs)–[](#an-operational-semantics-for-the-interpreter)) we address the implementation of `` ts`run() ``, deferring `` ts`parse() `` to [](#parser) and `` ts`generate() `` to [](#generator).
 
@@ -424,7 +424,7 @@ case "CallExpression":
   throw new Error("NOT IMPLEMENTED YET");
 ```
 
-Finally, we setup an auxiliary function called `` ts`substitute() `` that implements the traversal of the `` ts`body `` looking for references to `` ts`parameter `` and substituting them with the `` ts`argument ``:
+Finally, we setup an auxiliary function called `` ts`substitute() `` that implements the traversal of the `` ts`body `` looking for references to `` ts`parameter `` and substituting them with the `` ts`argument `` (for now the result of substitution is restricted to be an `` ts`ArrowFunctionExpression ``):
 
 <figure>
 
