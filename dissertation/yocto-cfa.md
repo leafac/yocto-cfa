@@ -635,9 +635,9 @@ This concludes the implementation of `` ts`substitute() ``.
 
 </figure>
 
-In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling `` ts`run() `` recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to `` ts`run() `` returns the immediate function unchanged; see § \ref{An Expression That Already Is a Value}):
+In all example programs we considered so far the `` js`argument `` is an `` ts`ArrowFunctionExpression ``, but in general it may be any kind of `` ts`Expression ``; for example, in the program above it is a `` ts`CallExpression ``. We address the general case by calling `` ts`run() `` recursively on the `` js`argument `` to evaluate it to a `` ts`Value ``:
 
-```ts{3-4,9}
+```ts{9}
 // run()
 case "CallExpression":
   if (expression.callee.type !== "ArrowFunctionExpression")
@@ -659,7 +659,7 @@ case "CallExpression":
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-This technique of calling `` ts`run() `` recursively to produce an immediate function for the argument characterizes the interpreter as _big-step_.
+- **Big-Step Interpreter [operational-semantics]():** The technique of calling `` ts`run() `` recursively to evaluate the `` js`argument ``.
 
 </fieldset>
 
