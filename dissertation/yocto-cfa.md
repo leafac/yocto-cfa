@@ -243,7 +243,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 </td>
 <td align="center">
 
-![](images/abstract-syntax-tree--1.svg)
+![](images/data-structures-to-represent-yocto-javascript-programs--1.svg)
 
 </td>
 </tr>
@@ -288,7 +288,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 </td>
 <td align="center">
 
-![](images/abstract-syntax-tree--2.svg)
+![](images/data-structures-to-represent-yocto-javascript-programs--2.svg)
 
 </td>
 </tr>
@@ -428,7 +428,7 @@ Finally, we setup an auxiliary function called `` ts`substitute() `` that implem
 
 <figure>
 
-![](images/substitute.svg)
+![](images/a-call-involving-immediate-functions--1.svg)
 
 </figure>
 
@@ -473,7 +473,7 @@ In our current example the `` ts`expression `` is `` ts`y ``, an `` ts`Identifie
 
 <figure>
 
-![](images/substitute--immediate.svg)
+![](images/a-call-involving-immediate-functions--2.svg)
 
 </figure>
 
@@ -497,7 +497,7 @@ When `` ts`substitute() `` (see [](#a-call-involving-immediate-functions)) start
 
 <figure>
 
-![](images/substitute--function-definition.svg)
+![](images/substitution-in-function-definitions.svg)
 
 </figure>
 
@@ -524,7 +524,7 @@ The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` i
 
 <figure>
 
-![](images/substitute--name-mismatch.svg)
+![](images/name-mismatch.svg)
 
 </figure>
 
@@ -569,7 +569,7 @@ We avoid this issue by modifying `` ts`substitute() `` to implement Option 2, w
 
 <figure>
 
-![](images/substitute--name-reuse.svg)
+![](images/name-reuse.svg)
 
 </figure>
 
@@ -607,7 +607,7 @@ This case is similar to [](#substitution-in-function-definitions): all `` ts`sub
 
 <figure>
 
-![](images/substitute--function-call.svg)
+![](images/substitution-in-function-calls.svg)
 
 </figure>
 
