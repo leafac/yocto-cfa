@@ -593,15 +593,23 @@ case "ArrowFunctionExpression":
 
 ### Substitution in Function Calls
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => z => x(x))(y => y) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` js`z => (y => y)(y => y) `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-This case is similar to § \ref{Substitution in Function Definitions}: all `` ts`substitute() `` has to do is continue traversing the function call recursively:
+|                     |                                   |
+| ------------------: | :-------------------------------- |
+| **Example Program** | `` js`(y => z => y(y))(x => x) `` |
+|  **Current Output** | `NOT IMPLEMENTED YET`             |
+| **Expected Output** | `` js`z => (x => x)(x => x) ``    |
+
+</figure>
+
+This case is similar to [](#substitution-in-function-definitions): all `` ts`substitute() `` has to do is continue traversing the function call recursively:
+
+<figure>
+
+![](images/substitute--function-call.svg)
+
+</figure>
 
 ```ts{3-7}
 // substitute()
@@ -613,15 +621,19 @@ case "CallExpression":
   };
 ```
 
+This concludes the implementation of `` ts`substitute() ``.
+
 ### An Argument That Is Not Immediate
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => z => x)((a => a)(y => y)) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` js`z => y => y `` \\
-\end{tabular}
-\end{center}
+<figure>
+
+|                     |                                          |
+| ------------------: | :--------------------------------------- |
+| **Example Program** | `` js`(a => z => a)((y => y)(x => x)) `` |
+|  **Current Output** | `NOT IMPLEMENTED YET`                    |
+| **Expected Output** | `` js`z => x => x ``                     |
+
+</figure>
 
 In all example programs we considered so far the argument to a function call is an immediate function definition, but in general arguments may be the result of function calls themselves. We fix this by calling `` ts`run() `` recursively on the argument (we also remove the check that the argument is an immediate function definition; if it is, then the recursive call to `` ts`run() `` returns the immediate function unchanged; see § \ref{An Expression That Already Is a Value}):
 
@@ -1031,7 +1043,7 @@ When the interpreter from Step 0 encounters a function call, it produces a new 
 
 \begin{center}
 \begin{tabular}{ll}
-\textbf{Example Program} (see § \ref{Substitution in Function Definitions}) & `` js`(x => z => x)(y => y) `` \\
+\textbf{Example Program} (see [](#substitution-in-function-definitions)) & `` js`(x => z => x)(y => y) `` \\
 \textbf{Step 0 Output} & `` js`z => (y => y) `` \\
 \end{tabular}
 \end{center}
