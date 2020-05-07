@@ -537,28 +537,33 @@ case "Identifier":
 
 ### Name Reuse
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => x => x)(y => y) `` \\
-\textbf{Current Output} & `` js`x => y => y `` \\
-\textbf{Expected Output} & `` js`x => x `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-In the program above, there are two options for the variable reference `` js`x `` on the right of the second `` js`=> ``: it may refer to the first (outer) `` js`x `` on the left of the first `` js`=> ``, in which case the output of the program would be `` js`x => y => y ``; or it may refer to the second (inner) `` js`x `` on the left of the second `` js`=> ``, in which case the output of the program would be `` js`x => x ``:
+|                                                                                                                                                                                                                                                                                                                                 Example Program                                                                                                                                                                                                                                                                                                                                 |                                                                                                                                                                                              Current Output                                                                                                                                                                                              |                                                                                              Expected Output                                                                                               |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| <code><span style="color: #000000">(</span><span style="color: #FF0000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> | <code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> | <code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span></code> |
 
-\begin{center}
-\includegraphics[page = 7]{images.pdf}
-\end{center}
+<!--
+| `` js`(x => x => x)(y => y) `` | `` js`x => (y => y) `` | `` js`x => x `` |
+<code><span style="color: #FF0000">x</span></code>
+<code><span style="color: #008000">x</span></code>
+<code><span style="color: #795E26">x</span></code>
+-->
 
-Currently `` ts`substitute() `` is implementing Option 1, but this leads to an issue: we are not able to reason about the inner function `` js`x => x `` independently; we must know where it appears and whether a variable called `` js`x `` is already defined there.
+</figure>
 
-<fieldset>
-<legend><strong>Technical Terms</strong></legend>
+In the program above, <code><span style="color: #795E26">x</span></code> may refer to either <code><span style="color: #FF0000">x</span></code> or <code><span style="color: #008000">x</span></code>:
 
-We say that the problem with Option 1 is that it defeats something called _local reasoning_. We say that Option 2 exhibits a behavior called _shadowing_, and that the outer `` js`x `` is _shadowed_ by the inner `` js`x ``, because there is no way to refer to the outer `` js`x `` from the body of the inner function.
+<figure>
 
-</fieldset>
+|              | If <code><span style="color: #795E26">x</span></code> Refers to |                                                                                                                                                                                  Then the Output of Example Program Is                                                                                                                                                                                   |
+| :----------: | :-------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| **Option 1** |       <code><span style="color: #FF0000">x</span></code>        | <code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> |
+| **Option 2** |       <code><span style="color: #008000">x</span></code>        |                                                                                                <code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span></code>                                                                                                |
+
+</figure>
+
+Currently `` ts`substitute() `` is implementing Option 1, but this leads to an issue: we are unable to reason about <code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span></code> independently; we must know where it appears and whether a variable called <code><span style="color: #FF0000">x</span></code> is already defined there.
 
 We avoid this issue by modifying `` ts`substitute() `` to implement Option 2, which is also the choice of JavaScript and every other popular programming language. We change `` ts`substitute() ``’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that `` ts`subsitute() `` is looking for, then `` ts`subsitute() `` returns the function unchanged, preventing further substitution (there is no recursive call to `` ts`substitute() `` in this case):
 
@@ -571,6 +576,14 @@ case "ArrowFunctionExpression":
     body: substitute(expression.body),
   };
 ```
+
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
+- **Local Reasoning:** The ability to reason about a function without having to know the context under which it appears; what Option 1 defeats and Option 2 enables.
+- **Shadowing:** The behavior exhibited by Option 2; <code><span style="color: #FF0000">x</span></code> is _shadowed_ by <code><span style="color: #008000">x</span></code> because there is no way to refer to it from the body of the inner function.
+
+</fieldset>
 
 ### Substitution in Function Calls
 
