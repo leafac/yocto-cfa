@@ -567,6 +567,12 @@ Currently `` ts`substitute() `` is implementing Option 1, but this leads to an 
 
 We avoid this issue by modifying `` ts`substitute() `` to implement Option 2, which is also the choice of JavaScript and every other popular programming language. We change `` ts`substitute() ``’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that `` ts`subsitute() `` is looking for, then `` ts`subsitute() `` returns the function unchanged, preventing further substitution (there is no recursive call to `` ts`substitute() `` in this case):
 
+<figure>
+
+![](images/substitute--name-reuse.svg)
+
+</figure>
+
 ```ts{3}
 // substitute()
 case "ArrowFunctionExpression":
