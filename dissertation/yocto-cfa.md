@@ -469,7 +469,7 @@ function substitute(expression: Expression): Expression {
 }
 ```
 
-In our current example the `` ts`expression `` is `` ts`x ``, an `` ts`Identifier ``, and it must be substituted with the `` ts`argument ``:
+In our current example the `` ts`expression `` is `` ts`y ``, an `` ts`Identifier ``, and it must be substituted with the `` ts`argument `` (`` js`x => x ``):
 
 <figure>
 
@@ -485,19 +485,19 @@ case "Identifier":
 
 ### Substitution in Function Definitions
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` js`z => y => y `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-When `` ts`substitute() `` (see § \ref{A Call Involving Immediate Functions}) starts traversing the `` ts`body `` of the example above, the `` ts`expression `` is an `` ts`ArrowFunctionExpression `` (`` js`z => x ``), and we want substitution to proceed deeper to find and substitute `` js`x ``, so we call `` ts`substitute() `` recursively (we use a feature called *spread syntax* [javascript-spread-syntax]() to build an `` ts`expression `` based on the existing one with a new `` ts`body ``):
+|        Example Program         |    Current Output     |   Expected Output    |
+| :----------------------------: | :-------------------: | :------------------: |
+| `` js`(y => z => y)(x => x) `` | `NOT IMPLEMENTED YET` | `` js`z => x => x `` |
+
+</figure>
+
+When `` ts`substitute() `` (see [](#a-call-involving-immediate-functions)) starts traversing the `` ts`body `` of the example above, the `` ts`expression `` is an `` ts`ArrowFunctionExpression `` (`` js`z => y ``), and we want substitution to proceed deeper to find and substitute `` js`y ``, so we call `` ts`substitute() `` recursively (we use a feature called *spread syntax* [javascript-spread-syntax]() to build an `` ts`expression `` based on the existing one with a new `` ts`body ``):
 
 <figure>
 
-<!-- ![](images/substitute--function-definition.svg) -->
+![](images/substitute--function-definition.svg)
 
 </figure>
 
@@ -512,15 +512,21 @@ case "ArrowFunctionExpression":
 
 ### Name Mismatch
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => z => z)(y => y) `` \\
-\textbf{Current Output} & `` js`z => y => y `` \\
-\textbf{Expected Output} & `` js`z => z `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` introduced in § \ref{A Call Involving Immediate Functions} _always_ substitutes variable references, regardless of whether they refer to the `` ts`parameter `` of the called function. For example, in the program above `` ts`substitute() `` is substituting the `` js`z `` even though the `` ts`parameter `` is `` js`x ``. To fix this, we check whether the variable reference matches the `` ts`parameter ``, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
+|        Example Program         |     Current Output     | Expected Output |
+| :----------------------------: | :--------------------: | :-------------: |
+| `` js`(z => x => x)(y => y) `` | `` js`x => (y => y) `` | `` js`x => x `` |
+
+</figure>
+
+The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` introduced in [](#a-call-involving-immediate-functions) _always_ substitutes variable references, regardless of whether they refer to the `` ts`parameter `` of the called function. For example, in the program above `` ts`substitute() `` is substituting the `` js`x `` even though the `` ts`parameter `` is `` js`z ``. To fix this, we check whether the variable reference matches the `` ts`parameter ``, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
+
+<figure>
+
+![](images/substitute--name-mismatch.svg)
+
+</figure>
 
 ```ts{3}
 // substitute()
@@ -698,7 +704,7 @@ case "CallExpression":
 \end{tabular}
 \end{center}
 
-The only case in which `` ts`run() `` may encounter a variable reference directly is if the referenced variable is undefined, otherwise `` ts`substitute() `` would have already substituted it (see § \ref{A Call Involving Immediate Functions}–§ \ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
+The only case in which `` ts`run() `` may encounter a variable reference directly is if the referenced variable is undefined, otherwise `` ts`substitute() `` would have already substituted it (see [](#a-call-involving-immediate-functions)–§ \ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
 
 ```ts{3}
 // run()
