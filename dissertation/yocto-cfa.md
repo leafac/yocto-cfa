@@ -580,8 +580,8 @@ case "ArrowFunctionExpression":
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Local Reasoning:** The ability to reason about a function without having to know the context under which it appears; what Option 1 defeats and Option 2 enables.
-- **Shadowing:** The behavior exhibited by Option 2; <code><span style="color: #FF0000">x</span></code> is _shadowed_ by <code><span style="color: #008000">x</span></code> because there is no way to refer to it from the body of the inner function.
+- **Local Reasoning:** The ability to reason about a function without having to know the context under which it appears. Option 1 defeats local reasoning and Option 2 enables it.
+- **Shadowing:** The behavior exhibited by Option 2: <code><span style="color: #FF0000">x</span></code> is _shadowed_ by <code><span style="color: #008000">x</span></code> because there is no way to refer to <code><span style="color: #FF0000">x</span></code> from the body of the inner function.
 
 </fieldset>
 
