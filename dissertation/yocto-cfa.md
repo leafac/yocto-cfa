@@ -471,9 +471,11 @@ function substitute(expression: Expression): Expression {
 
 In our current example the `` ts`expression `` is `` ts`x ``, an `` ts`Identifier ``, and it must be substituted with the `` ts`argument ``:
 
-\begin{center}
-\includegraphics[page = 5]{images.pdf}
-\end{center}
+<figure>
+
+![](images/substitute--immediate.svg)
+
+</figure>
 
 ```ts{3}
 // substitute()
@@ -493,9 +495,11 @@ case "Identifier":
 
 When `` ts`substitute() `` (see § \ref{A Call Involving Immediate Functions}) starts traversing the `` ts`body `` of the example above, the `` ts`expression `` is an `` ts`ArrowFunctionExpression `` (`` js`z => x ``), and we want substitution to proceed deeper to find and substitute `` js`x ``, so we call `` ts`substitute() `` recursively (we use a feature called *spread syntax* [javascript-spread-syntax]() to build an `` ts`expression `` based on the existing one with a new `` ts`body ``):
 
-\begin{center}
-\includegraphics[page = 6]{images.pdf}
-\end{center}
+<figure>
+
+<!-- ![](images/substitute--function-definition.svg) -->
+
+</figure>
 
 ```ts{3-6}
 // substitute()
