@@ -243,7 +243,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 </td>
 <td align="center">
 
-![](images/data-structures-to-represent-yocto-javascript-programs--1.svg)
+![](images/2.svg)
 
 </td>
 </tr>
@@ -288,7 +288,7 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 </td>
 <td align="center">
 
-![](images/data-structures-to-represent-yocto-javascript-programs--2.svg)
+![](images/3.svg)
 
 </td>
 </tr>
