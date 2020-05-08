@@ -133,12 +133,12 @@ const katex = require("katex");
     const svg = JSDOM.fragment(fs.readFileSync(src, "utf8")).querySelector(
       "svg"
     );
-    for (const code of svg.querySelectorAll("[highlight]")) {
+    for (const code of svg.querySelectorAll(`[id^="highlight="]`)) {
       let highlightedText;
       try {
         highlightedText = highlighter.codeToHtml(
           code.textContent,
-          code.getAttribute("highlight")
+          code.getAttribute("id").slice("highlight=".length)
         );
       } catch (error) {
         console.error(error);
