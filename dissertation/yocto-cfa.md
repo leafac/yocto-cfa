@@ -428,7 +428,7 @@ Finally, we setup an auxiliary function called `` ts`substitute() `` that implem
 
 <figure>
 
-![](images/a-call-involving-immediate-functions--1.svg)
+![](images/4.svg)
 
 </figure>
 
@@ -473,7 +473,7 @@ In our current example the `` ts`expression `` is `` ts`y ``, an `` ts`Identifie
 
 <figure>
 
-![](images/a-call-involving-immediate-functions--2.svg)
+![](images/5.svg)
 
 </figure>
 
@@ -497,7 +497,7 @@ When `` ts`substitute() `` (see [](#a-call-involving-immediate-functions)) start
 
 <figure>
 
-![](images/substitution-in-function-definitions.svg)
+![](images/6.svg)
 
 </figure>
 
@@ -524,7 +524,7 @@ The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` i
 
 <figure>
 
-![](images/name-mismatch.svg)
+![](images/7.svg)
 
 </figure>
 
@@ -569,7 +569,7 @@ We avoid this issue by modifying `` ts`substitute() `` to implement Option 2, w
 
 <figure>
 
-![](images/name-reuse.svg)
+![](images/8.svg)
 
 </figure>
 
@@ -607,7 +607,7 @@ This case is similar to [](#substitution-in-function-definitions): all `` ts`sub
 
 <figure>
 
-![](images/substitution-in-function-calls.svg)
+![](images/9.svg)
 
 </figure>
 
