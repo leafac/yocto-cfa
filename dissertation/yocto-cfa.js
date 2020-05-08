@@ -126,34 +126,11 @@ const katex = require("katex");
   // Inline SVGs
   for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
     const src = element.getAttribute("src");
-    if (!fs.existsSync(src)) {
-      console.error(`Image not found: ${src}`);
-      continue;
+    try {
+      element.outerHTML = fs.readFileSync(src, "utf8");
+    } catch (error) {
+      console.error(`Error inlining SVG: ${src}: ${error}`);
     }
-    const svg = JSDOM.fragment(fs.readFileSync(src, "utf8")).querySelector(
-      "svg"
-    );
-    for (const code of svg.querySelectorAll(`[id^="highlight="]`)) {
-      let highlightedText;
-      try {
-        highlightedText = highlighter.codeToHtml(
-          code.textContent,
-          code.getAttribute("id").slice("highlight=".length)
-        );
-      } catch (error) {
-        console.error(error);
-        continue;
-      }
-      const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
-        "code"
-      );
-      for (const span of highlightedCode.querySelectorAll("span")) {
-        const style = span.getAttribute("style").replace(/color:/g, "fill:");
-        span.outerHTML = `<tspan style="${style}">${span.innerHTML}</tspan>`;
-      }
-      code.innerHTML = highlightedCode.innerHTML;
-    }
-    element.outerHTML = svg.outerHTML;
   }
 
   // Make URLs monospaced
