@@ -12,6 +12,7 @@
     "prettier": "^2.0.5",
     "prince": "^1.8.0",
     "shiki": "^0.1.7",
+    "svgo": "^1.3.2",
     "typeface-pt-mono": "0.0.72",
     "typeface-pt-serif": "0.0.72"
   }

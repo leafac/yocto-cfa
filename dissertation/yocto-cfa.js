@@ -124,14 +124,15 @@ const katex = require("katex");
   }
 
   // Inline SVGs
-  // for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
-  //   const src = element.getAttribute("src");
-  //   try {
-  //     element.outerHTML = fs.readFileSync(src, "utf8");
-  //   } catch (error) {
-  //     console.error(`Error inlining SVG: ${src}: ${error}`);
-  //   }
-  // }
+  // TODO: (cd dissertation/images && (for page in {1..9}; do inkscape --export-plain-svg --export-area-drawing --pdf-page=$page --export-filename=$page.svg images.pdf; done) && npx svgo  --enable=prefixIds *.svg)
+  for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
+    const src = element.getAttribute("src");
+    try {
+      element.outerHTML = fs.readFileSync(src, "utf8");
+    } catch (error) {
+      console.error(`Error inlining SVG: ${src}: ${error}`);
+    }
+  }
 
   // Make URLs monospaced
   for (const element of document.querySelectorAll("a"))
