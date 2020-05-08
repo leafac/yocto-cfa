@@ -124,14 +124,14 @@ const katex = require("katex");
   }
 
   // Inline SVGs
-  for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
-    const src = element.getAttribute("src");
-    try {
-      element.outerHTML = fs.readFileSync(src, "utf8");
-    } catch (error) {
-      console.error(`Error inlining SVG: ${src}: ${error}`);
-    }
-  }
+  // for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
+  //   const src = element.getAttribute("src");
+  //   try {
+  //     element.outerHTML = fs.readFileSync(src, "utf8");
+  //   } catch (error) {
+  //     console.error(`Error inlining SVG: ${src}: ${error}`);
+  //   }
+  // }
 
   // Make URLs monospaced
   for (const element of document.querySelectorAll("a"))
