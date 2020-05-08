@@ -153,14 +153,14 @@ For our goal of exploring analysis techniques, we are concerned only with comput
 
 ### A Formal Grammar for Yocto-JavaScript
 
-The description of Yocto-JavaScript given so far has been informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf, dragon-book (§ 4.2)]() that formalizes it:
+The description of Yocto-JavaScript given in [](#values-in-yocto-javascript) and [](#operations-in-yocto-javascript) is informal; the following is a grammar in *Backus–Naur Form* (BNF) [bnf, dragon-book (§ 4.2)]() that formalizes it:
 
 <figure>
 
 |              |     |                                                                                                                                  |             |
 | -----------: | :-: | :------------------------------------------------------------------------------------------------------------------------------- | :---------- |
-| `` math`e `` |  =  | `` js`( `` `` math`x ``  `` js`=> ``  `` math`e `` `` js`) `` \| `` math`e `` `` js`( `` `` math`e `` `` js`) `` \| `` math`x `` | Expressions |
-| `` math`x `` |  =  | `<A JavaScript Identifier>`                                                                                                      | Variables   |
+| `` math`e `` | ::= | `` js`( `` `` math`x ``  `` js`=> ``  `` math`e `` `` js`) `` \| `` math`e `` `` js`( `` `` math`e `` `` js`) `` \| `` math`x `` | Expressions |
+| `` math`x `` | ::= | `<A JavaScript Identifier>`                                                                                                      | Variables   |
 
 </figure>
 </fieldset>
@@ -635,7 +635,7 @@ This concludes the implementation of `` ts`substitute() ``.
 
 </figure>
 
-In all example programs we considered so far the `` js`argument `` is an `` ts`ArrowFunctionExpression ``, but in general it may be any kind of `` ts`Expression ``; for example, in the program above it is a `` ts`CallExpression ``. We address the general case by calling `` ts`run() `` recursively on the `` js`argument `` to evaluate it to a `` ts`Value ``:
+The `` js`argument ``s in the example programs from [](#an-expression-that-already-is-a-value)–[](#substitution-in-function-calls) are `` ts`ArrowFunctionExpression ``s, but in general an `` js`argument `` may be any kind of `` ts`Expression ``; for example, in the program above the `` js`argument `` is a `` ts`CallExpression ``. We address the general case by calling `` ts`run() `` recursively on the `` js`argument `` to evaluate it to a `` ts`Value ``:
 
 ```ts{9}
 // run()
@@ -659,28 +659,30 @@ case "CallExpression":
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Big-Step Interpreter [operational-semantics]():** The technique of calling `` ts`run() `` recursively to evaluate the `` js`argument ``.
+- **Big-Step Interpreter [natural-semantics]():** An interpreter using the technique of calling `` ts`run() `` recursively to evaluate the `` js`argument ``.
 
 </fieldset>
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript itself and most other popular programming languages are call-by-value as well, but there is a notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see § \ref{A Function That Is Not Immediate}), or if it is the result of the program (see § \ref{Continuing to Run After a Function Call}). In a call-by-need language the result of the program above would be `` js`z => ((a => a)(y => y)) ``. And there is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript and most other popular programming languages are call-by-value as well, but there is one notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see [](#a-function-that-is-not-immediate)), or if it is the result of the program (see [](#continuing-to-run-after-a-function-call)). In a call-by-need language the result of the program above would be `` js`z => ((y => y)(x => x)) ``, and the call `` js`(y => y)(x => x) `` would not be computed is not computed, because it is not needed. There is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
 
 </fieldset>
 
 ### A Function That Is Not Immediate
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`((z => z)(x => x))(y => y) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` js`y => y `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-This is the dual of § \ref{An Argument That Is Not Immediate} for the called function, and the solution is the same: to call `` ts`run() `` recursively (we also remove the check of whether the function is immediate):
+|                     |                                     |
+| ------------------: | :---------------------------------- |
+| **Example Program** | `` js`((z => z)(y => y))(x => x) `` |
+|  **Current Output** | `NOT IMPLEMENTED YET`               |
+| **Expected Output** | `` js`x => x ``                     |
+
+</figure>
+
+This is the dual of [](#an-argument-that-is-not-immediate) for the called function, and the solution is the same: to call `` ts`run() `` recursively:
 
 ```ts{6}
 // run()
@@ -701,15 +703,17 @@ case "CallExpression":
 
 ### Continuing to Run After a Function Call
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => (z => z)(x))(y => y) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` js`y => y `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-This is similar to § \ref{An Argument That Is Not Immediate} and § \ref{A Function That Is Not Immediate}: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to `` ts`evaluate() `` (we also remove yet another check and inline the `` ts`substitutedBody `` variable):
+|                     |                                     |
+| ------------------: | :---------------------------------- |
+| **Example Program** | `` js`(z => (y => y)(z))(x => x) `` |
+|  **Current Output** | `NOT IMPLEMENTED YET`               |
+| **Expected Output** | `` js`x => x ``                     |
+
+</figure>
+
+This is similar to [](#an-argument-that-is-not-immediate) and [](#a-function-that-is-not-immediate): the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to `` ts`run() ``:
 
 ```ts{8}
 // run()
@@ -727,15 +731,17 @@ case "CallExpression":
 
 ### A Reference to an Undefined Variable
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => y)(y => y) `` \\
-\textbf{Current Output} & `` text`NOT IMPLEMENTED YET `` \\
-\textbf{Expected Output} & `` text`Reference to undefined variable: y `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-The only case in which `` ts`run() `` may encounter a variable reference directly is if the referenced variable is undefined, otherwise `` ts`substitute() `` would have already substituted it (see [](#a-call-involving-immediate-functions)–§ \ref{Continuing to Run After a Function Call}). In this case, we throw an exception:
+|                     |                                      |
+| ------------------: | :----------------------------------- |
+| **Example Program** | `` js`(y => u)(x => x) ``            |
+|  **Current Output** | `NOT IMPLEMENTED YET`                |
+| **Expected Output** | `Reference to undefined variable: u` |
+
+</figure>
+
+The only case in which `` ts`run() `` may encounter a variable reference directly is if the referenced variable is undefined, otherwise `` ts`substitute() `` would have already substituted it (see [](#a-call-involving-immediate-functions)–[](#continuing-to-run-after-a-function-call)). In this case, we throw an exception:
 
 ```ts{3}
 // run()
@@ -743,13 +749,13 @@ case "Identifier":
   throw new Error(`Reference to undefined variable: ${expression.name}`);
 ```
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`x => y `` \\
-\textbf{Current Output} & `` js`x => y `` \\
-\textbf{Expected Output} & `` js`x => y `` \\
-\end{tabular}
-\end{center}
+<figure>
+
+| Example Program | Current Output  | Expected Output |
+| :-------------: | :-------------: | :-------------: |
+| `` js`y => u `` | `` js`y => u `` | `` js`y => u `` |
+
+</figure>
 
 If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. This is consistent with JavaScript’s behavior.
 
@@ -801,42 +807,66 @@ function run(expression: Expression): Value {
 
 ### An Operational Semantics for the Interpreter
 
-What we accomplished so far in this section is more than defining an interpreter for Yocto-JavaScript; we also defined formally the _meaning_ of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the _semantics_ of the language, and there are several techniques to specify semantics; the one we are using so far is known as a *definitional interpreter* [definitional-interpreters]().
+What we accomplished in [](#an-expression-that-already-is-a-value)–[](#the-entire-runner) is more than defining an interpreter for Yocto-JavaScript; we also defined formally the _meaning_ of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the _semantics_ of the language, and there are several techniques to specify semantics; the technique we have been using so far is known as a *definitional interpreter* [definitional-interpreters]().
 
-A definitional interpreter has some advantages over other techniques for specifying semantics: it is easier to understand for most programmers, and it is executable. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: *operational semantics* [operational-semantics, semantics-engineering, pl-book]().
+A definitional interpreter has some advantages over other techniques for specifying semantics: it is executable and it is easier to understand for most programmers. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript, which is a big language with many complex features. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: *operational semantics* [natural-semantics, semantics-engineering, pl-book]().
 
-First, we extend the grammar from [](#a-formal-grammar-for-yocto-javascript) with the notion of values that is equivalent to the type `` ts`Value `` (see § \ref{Step 0: The Entire Runner}, line 1):
+First, we extend the grammar from [](#a-formal-grammar-for-yocto-javascript) with the notion of values that is equivalent to the type `` ts`Value `` (see [](#the-entire-runner), line 1):
 
-\begin{center}
-\begin{tabular}{rcll}
-`` math`v `` & ::= & `` math`x `` js`=>`e` & Values \\
-\end{tabular}
-\end{center}
+<figure>
 
-Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ that are equivalent to the behavior of `` ts`run() `` (see § \ref{Step 0: The Entire Runner}, lines 3–36):
+|              |     |                                         |        |
+| -----------: | :-: | :-------------------------------------- | :----- |
+| `` math`v `` | ::= | `` math`x ``  `` js`=> ``  `` math`e `` | Values |
 
-\begin{mathpar}
-\inferrule
-{ }
-{v \Rightarrow v}
+</figure>
 
-\inferrule
-{
-e*{f} \Rightarrow x*{p}`` js` => ``e*{b} \\
-e*{a} \Rightarrow v*{a} \\
-e*{b}[x*{p} \backslash v*{a}] \Rightarrow v \\
+Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ that are equivalent to the behavior of `` ts`run() `` (see [](#the-entire-runner), lines 3–36):
+
+<figure>
+<table>
+<tr>
+<th>Value</th>
+<td>
+
+```math
+\frac{}{v \Rightarrow v}
+```
+
+</td>
+</tr>
+<tr>
+<th>Function Call</th>
+<td>
+
+```math
+\frac{
+e_f \Rightarrow \texttt{(}x_p \texttt{ => } e_b\texttt{)} \quad
+e_a \Rightarrow v_a \quad
+e_b[x_p \backslash v_a] \Rightarrow v
+}{
+e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 }
-{e*{f}`` js`( ``e*{a}`` js`) `` \Rightarrow v}
-\end{mathpar}
+```
 
-Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equivalent to the behavior of `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}, lines 14–32):
+</td>
+</tr>
+</table>
+</figure>
 
-\begin{center}
-\begin{tabular}{rcll}
-`` math`(x `` js` => ``e)[x_{p} \backslash v_{a}] `` & = & `` math `x`` js` => ``(e[x*{p} \backslash v*{a}]) `& if` math` x \neq x_{p} `` \\ `` math `(x*{p}`` js` => ``e)[x*{p} \backslash v*{a}] `& = &` math`x*{p}`` js` => ``e `& \\` math` (e_{f} `` js `( `e_{a}` js` ) ``)[x_{p} \backslash v_{a}] `` & = & `` math `(e*{f}[x*{p} \backslash v*{a}])`` js`( ``(e*{a}[x*{p} \backslash v*{a}])`` js`) `` `& \\` math` x[x_{p} \backslash v_{a}] `` & = & `` math `x `& if` math` x \neq x_{p} `` \\ `` math `x*{p}[x*{p} \backslash v*{a}] `& = &` math`v*{a} `` & \\
-\end{tabular}
-\end{center}
+Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equivalent to the behavior of `` ts`substitute() `` (see [](#the-entire-runner), lines 14–32):
 
+<figure>
+
+|                                                                                                 |     |                                                                                                                                 |                         |
+| ----------------------------------------------------------------------------------------------: | :-: | :------------------------------------------------------------------------------------------------------------------------------ | :---------------------- |
+|   `` js`( `` `` math`x ``  `` js`=> ``  `` math`e `` `` js`) `` `` math`[x_p \backslash v_a] `` |  =  | `` math`x ``  `` js`=> ``  `` js`( `` `` math`e `` `` math`[x_p \backslash v_a] `` `` js`) ``                                   | if `` math`x \ne x_p `` |
+| `` js`( `` `` math`x_p ``  `` js`=> ``  `` math`e `` `` js`) `` `` math`[x_p \backslash v_a] `` |  =  | `` math`x_p ``  `` js`=> ``  `` math`e ``                                                                                       |                         |
+| `` js`( `` `` math`e_f `` `` js`( `` `` math`e_a `` `` js`)) `` `` math`[x_p \backslash v_a] `` |  =  | `` js`( `` `` math`e_f `` `` math`[x_p \backslash v_a] `` `` js`( `` `` math`e_a `` `` math`[x_p \backslash v_a] `` `` js`)) `` |                         |
+|                                                    `` math`x `` `` math`[x_p \backslash v_a] `` |  =  | `` math`x ``                                                                                                                    | if `` math`x \ne x_p `` |
+|                                                  `` math`x_p `` `` math`[x_p \backslash v_a] `` |  =  | `` math`v_a ``                                                                                                                  |                         |
+
+</figure>
 </fieldset>
 
 ### Parser
@@ -900,7 +930,7 @@ The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScr
 
 \item [Lines 6, 7, 13, 15, 17, 23, 25:]
 
-Similar to `` ts`run() `` and `` ts`substitute() `` (see § \ref{Step 0: The Entire Runner}), `` ts`checkFeatures() `` starts by determining which type of `` ts`estree.Node `` it is given.
+Similar to `` ts`run() `` and `` ts`substitute() `` (see [](#the-entire-runner)), `` ts`checkFeatures() `` starts by determining which type of `` ts`estree.Node `` it is given.
 
 \item [Lines 8–11:]
 
@@ -980,7 +1010,7 @@ Yocto-JavaScript may express any program that a computer may run (see § \ref{T
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see § \ref{Step 0: The Entire Runner})} & & \\
+\textbf{Line} & \multicolumn{1}{l}{(see [](#the-entire-runner))} & & \\
 3 & `` ts`expression `` & = & `` js`(f => f(f))(f => f(f)) `` \\
 9 & `` ts`parameter `` & = & `` js`f `` \\
 10 & `` ts`body `` & = & `` js`f(f) `` \\
@@ -1003,7 +1033,7 @@ There are also programs for which interpretation does not terminate that never p
 
 \begin{center}
 \begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see § \ref{Step 0: The Entire Runner})} & & where `` js`F = f => (f(f))(f(f)) `` \\
+\textbf{Line} & \multicolumn{1}{l}{(see [](#the-entire-runner))} & & where `` js`F = f => (f(f))(f(f)) `` \\
 3 & `` ts`expression `` & = & `` js`F(F) `` \\
 9 & `` ts`parameter `` & = & `` js`f `` \\
 10 & `` ts`body `` & = & `` js`(f(f))(f(f)) `` \\
@@ -1106,7 +1136,7 @@ The occurrences of `` ts`{ age: 29 ``} are objects with the same key and value, 
 
 ### Adding an Environment to the Runner
 
-The runner needs to maintain an environment, so we modify the implementation of `` ts`run() `` from § \ref{Step 0: The Entire Runner} to introduce an auxiliary function called `` ts`step() `` that receives an `` ts`environment `` as an extra parameter:
+The runner needs to maintain an environment, so we modify the implementation of `` ts`run() `` from [](#the-entire-runner) to introduce an auxiliary function called `` ts`step() `` that receives an `` ts`environment `` as an extra parameter:
 
 ```ts{number}{2-3,11-13}
 function run(expression: Expression): Value {
@@ -1899,7 +1929,7 @@ TODO: Variations
 1. <span id="racket-guide"></span> Matthew Flatt, Robert Bruce Findler, and PLT. _The Racket Guide_. <https://docs.racket-lang.org/guide/>. Accessed 2020-04-13.
 1. <span id="pl-book"></span> Mike Grant, Zachary Palmer, and Scott Smith. _Principles of Programming Languages_. 2020.
 1. <span id="jet-brains-developer-survey"></span> JetBrains. _The State of Developer Ecosystem 2019_. <https://www.jetbrains.com/lp/devecosystem-2019/>. Accessed 2020-01-14.
-1. <span id="operational-semantics"> Gilles Kahn. _Natural Semantics_. Annual Symposium on Theoretical Aspects of Computer Science. 1987.
+1. <span id="natural-semantics"> Gilles Kahn. _Natural Semantics_. Annual Symposium on Theoretical Aspects of Computer Science. 1987.
 1. <span id="closures"></span> Peter Landin. _The Mechanical Evaluation of Expressions_. The Computer Journal. 1964.
 1. <span id="emacs-lisp"></span> Bil Lewis, Dan LaLiberte, and Richard Stallman. _GNU Emacs Lisp Reference Manual_. 2015.
 1. <span id="lisp-history"></span> John McCarthy. _History of LISP_. History of Programming Languages. 1978. <https://doi.org/10.1145/800025.1198360>.
