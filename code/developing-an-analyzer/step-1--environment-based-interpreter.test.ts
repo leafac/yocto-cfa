@@ -155,37 +155,41 @@ describe("run()", () => {
 describe("parse()", () => {
   test("Syntax error", () => {
     expect(() => {
-      evaluate("x =>");
-    }).toThrowErrorMatchingInlineSnapshot(`"Line 1: Unexpected end of input"`);
+      evaluate(`x =>`);
+    }).toThrowErrorMatchingInlineSnapshot(`"Unexpected token (1:4)"`);
   });
 
   test("Program with multiple statements", () => {
     expect(() => {
-      evaluate("x => x; y => y");
-    }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: Program with multiple statements"`
-    );
+      evaluate(`x => x; y => y`);
+    }).toThrowErrorMatchingInlineSnapshot(`"Unexpected token (1:6)"`);
+  });
+
+  test("Variable declaration", () => {
+    expect(() => {
+      evaluate(`const f = x => x`);
+    }).toThrowErrorMatchingInlineSnapshot(`"Unexpected token (1:0)"`);
   });
 
   test("Function of multiple parameters", () => {
     expect(() => {
-      evaluate("(x, y) => x");
+      evaluate(`(x, y) => x`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: SequenceExpression"`
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"`
     );
   });
 
   test("Function with parameter that is a pattern", () => {
     expect(() => {
-      evaluate("([x, y]) => x");
+      evaluate(`([x, y]) => x`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: ArrayExpression"`
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"`
     );
   });
 
   test("Call with multiple arguments", () => {
     expect(() => {
-      evaluate("f(a, b)");
+      evaluate(`f(a, b)`);
     }).toThrowErrorMatchingInlineSnapshot(
       `"Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"`
     );
@@ -193,17 +197,9 @@ describe("parse()", () => {
 
   test("Number", () => {
     expect(() => {
-      evaluate("29");
+      evaluate(`29`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: Literal"`
-    );
-  });
-
-  test("Variable declaration", () => {
-    expect(() => {
-      evaluate("const f = x => x");
-    }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: VariableDeclarator"`
+      `"Unsupported Yocto-JavaScript feature: NumericLiteral"`
     );
   });
 });
