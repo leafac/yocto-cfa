@@ -192,7 +192,7 @@ The implementation of `` ts`evaluate() `` is separated into three parts called `
 
 <figure>
 
-![](images/1.svg)
+![](images/architecture.drawio.svg)
 
 </figure>
 
