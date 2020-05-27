@@ -5,6 +5,7 @@ const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
 const katex = require("katex");
+const mathJax = require("mathjax-node");
 
 (async () => {
   // Render Markdown
@@ -37,26 +38,30 @@ const katex = require("katex");
     );
 
   // Render mathematics
-  document.head.insertAdjacentHTML(
-    "beforeend",
-    `<link rel="stylesheet" href="node_modules/katex/dist/katex.css">`
-  );
-  const katexOptions = { output: "mathml" };
+  // document.head.insertAdjacentHTML(
+  //   "beforeend",
+  //   `<style>${(await mathJax.typeset({ css: true })).css}</style>`
+  // );
+  mathJax.config({ MathJax: { SVG: { font: "Gyre-Termes" } } });
   for (const element of document.querySelectorAll("code")) {
     const isBlock = element.parentElement.tagName === "PRE";
     if (isBlock) {
       if (element.className !== "language-math") continue;
-      const renderedMath = katex.renderToString(
-        `\\displaystyle ${element.textContent}`,
-        katexOptions
-      );
+      const renderedMath = (
+        await mathJax.typeset({
+          math: element.textContent,
+          svg: true,
+        })
+      ).svg;
       element.parentElement.outerHTML = `<figure>${renderedMath}</figure>`;
     } else {
       if (!element.textContent.startsWith("math`")) continue;
-      element.outerHTML = katex.renderToString(
-        element.textContent.slice("math`".length),
-        katexOptions
-      );
+      element.outerHTML = (
+        await mathJax.typeset({
+          math: element.textContent.slice("math`".length),
+          svg: true,
+        })
+      ).svg;
     }
   }
 

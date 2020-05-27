@@ -7,6 +7,7 @@
     "jsdom": "^16.2.2",
     "katex": "^0.11.1",
     "marked": "^0.8.2",
+    "mathjax-node": "^2.1.1",
     "nodemon": "^2.0.3",
     "parse-numeric-range": "^1.2.0",
     "prettier": "^2.0.5",
