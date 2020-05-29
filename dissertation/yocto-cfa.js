@@ -4,7 +4,6 @@ const marked = require("marked");
 const { JSDOM } = require("jsdom");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
-const katex = require("katex");
 const mathJax = require("mathjax-node");
 
 (async () => {
