@@ -13,14 +13,14 @@ const mathJax = require("mathjax-node");
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
-  // Add non-content head stuff
+  // Add non-content head material
   document.head.insertAdjacentHTML(
     "afterbegin",
     `
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link rel="stylesheet" href="yocto-cfa.css">
-      `
+    `
   );
 
   // Add timestamp
@@ -37,11 +37,7 @@ const mathJax = require("mathjax-node");
     );
 
   // Render mathematics
-  // document.head.insertAdjacentHTML(
-  //   "beforeend",
-  //   `<style>${(await mathJax.typeset({ css: true })).css}</style>`
-  // );
-  mathJax.config({ MathJax: { SVG: { font: "Gyre-Termes" } } });
+  mathJax.config({ MathJax: { SVG: { font: "Asana-Math" } } });
   for (const element of document.querySelectorAll("code")) {
     const isBlock = element.parentElement.tagName === "PRE";
     if (isBlock) {
@@ -128,14 +124,37 @@ const mathJax = require("mathjax-node");
   }
 
   // Inline SVGs
-  // TODO: (cd dissertation/images && (for page in {1..9}; do inkscape --export-plain-svg --export-area-drawing --pdf-page=$page --export-filename=$page.svg images.pdf; done) && npx svgo  --enable=prefixIds *.svg)
   for (const element of document.querySelectorAll(`img[src$=".svg"]`)) {
     const src = element.getAttribute("src");
-    try {
-      element.outerHTML = fs.readFileSync(src, "utf8");
-    } catch (error) {
-      console.error(`Error inlining SVG: ${src}: ${error}`);
+    if (!fs.existsSync(src)) {
+      console.error(`Image not found: ${src}`);
+      continue;
     }
+    const svg = JSDOM.fragment(fs.readFileSync(src, "utf8")).querySelector(
+      "svg"
+    );
+    for (const elementToHighlight of svg.querySelectorAll("a")) {
+      const language = elementToHighlight.getAttribute("xlink:href");
+      for (const text of elementToHighlight.querySelectorAll("text")) {
+        let highlightedText;
+        try {
+          highlightedText = highlighter.codeToHtml(text.textContent, language);
+        } catch (error) {
+          console.error(error);
+          continue;
+        }
+        const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
+          "code"
+        );
+        for (const span of highlightedCode.querySelectorAll("span")) {
+          const style = span.getAttribute("style").replace(/color:/g, "fill:");
+          span.outerHTML = `<tspan style="${style}">${span.innerHTML}</tspan>`;
+        }
+        text.innerHTML = highlightedCode.innerHTML;
+      }
+      elementToHighlight.outerHTML = elementToHighlight.innerHTML;
+    }
+    element.outerHTML = svg.outerHTML;
   }
 
   // Make URLs monospaced
