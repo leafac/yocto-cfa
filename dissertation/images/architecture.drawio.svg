@@ -1,147 +1,147 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="361px" height="376px" viewBox="-0.5 -0.5 361 376" content="&lt;mxfile host=&quot;&quot; modified=&quot;2020-05-29T21:17:05.347Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;vlzOszGjksdlEmUJrRD3&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;7VrLkps4FP0aV3UWmTISYHvZz2SR1KQqmZpkKYMa0y0jl5C77fn6kUA8hMDgDgYmk43LuhICnXN0pIuYwdvt4QNDu81n6mMyA3P/MIN3MwCgsxK/MnBMA8Cx00DAQj8NWUXga/gPVsG5iu5DH8daQ04p4eFOD3o0irDHtRhijL7qzR4p0e+6QwE2Al89RMzo36HPN2l0CRZF/CMOg012Z8tVA96irLEaSbxBPn0theD9DN4ySnn6b3u4xURil+GSXvfQUJs/GMMRr7ngrxizP9dPEhMwJ2gtaEka4RdE9ojjq3dpBySMntMaHqeR7A5O8ZT53WN+zJBhdB/5WLa1ZvDmkUb8AW1DInn+8k00/UwjKioQ8xSrUJb2nMZpcS6L65iSPcfXeSPZF6MccbQmWRmRMIjEf4IfxUhvXjDjoWDoWoU53YlovENeGAWqY1X6JqvKgU9JF3eWDAnJcBRGmKkmJqAKY3lDfCiFFCYfMN1izo6iiapdKa6V2GGm4tdCOtBVsU1JNmCpgkjJNci7LhgVfxQPWbHE8UnOxZjiDoSDi/Jtdea7ByKsZYUJaDKxqCPiojywfdTOAvyFWKjMB9s1WXAuxoJhmWrlkQao0FTOXMCLfeH+qkgZ39CARojcF9GbggDpGUWbTzTxGoncE+b8qJCV0IvQhm9JG2c48q/liiXCa0K95zT0EBLSxkhM98zDpUksFknEAsxLigJzObaTrDFMEA9f9JXvDA4MwJdj4IsPIf8uL//DUaUfpZq7g+o5KRxV4cKcOH0ToC79QsOIF9MNWI423VxYmUepKNRVFRrzx6hjtsnQAiyWz26biV/I1Ra6qzmO6Wqr4VzN/T+4GjRdrfdJ1dXVFh0ANwfdDSvxKCXvksUfmV/JQuFeSemYl8qAPu23u4ztiEY42epuQ69tm1sGF3QEt2Uhz2I9G1u+dcu6SKViGJvZ0ULvCFb33b075JVEKfnrBjxBf358d3UwggfDQZ8qDro66aDCu2RPMWf0Gd9SQlnB/qPQRiWUpVSeEIFMgIykahv6fo0zNEo3GbIwDh+zyq30xKxi2j3YMYC6Hee5VEmbFhzOj8Gq3R8CgequcezqXYZatWb5g56Dia3rvGaJAvMaTKz5+aA0SV+oibSJ2iqPw1S1CIS7GJu6adShCWrOR2f0agRkD54ravbQAuLpxH0cEIHutLaJ6YBz0oId1myyThbszAn1vYsys2KlPemGzQCWNzVWzcJrdV15f3Zb04fu7AnqzrInJTznPyM8e2ThHVvl5k5JbsfGtQIMKK8uucjw8qp5B2W5k5fXckryUrWuvrcdWW0ddrYTUdtyZLUd2tRWOgKcjtosMCW55angtORmm3LLAJiw3KaYIlQP6UaW2zRzhDq5DZUjmCdoHbazF3+3YeuqceambJY1snHPl40xfqeDJZXGbwyqefxlqGynHgA14PfgYgPuISmEp096+nAa5/x3hI6B2OWSwDebtH35l2FnQNecPw9oyjYY25QzxLTTKMc0ZdsayJTfLq/TX5aMMzMrCc7Iauvyhcg01DbaNx32woSkdLysANBPjcrHjzWnkwN95NEjTTUsrUySViM7wpuOGe3f54zdzhndmn3n5T4pFKHiU+H0OLr43hre/ws=&lt;/diagram&gt;&lt;/mxfile&gt;">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="392px" height="457px" viewBox="-0.5 -0.5 392 457" content="&lt;mxfile host=&quot;&quot; modified=&quot;2020-05-29T22:30:38.439Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;6gsR8YOv_KUYBbBrlImG&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;7Vtbc9soGP01nkkf2hG62XnMtX1op51pd7Z9xBaRSbDwIJzY++sXJNANbMteS5Yn+xTzCd3OORy+D5SRd7dYf2ZwOf9GI0RGrhOtR979yHWBE4Tij4xs8sjYH+eBmOFIdSoDP/E/SJ+poiscobTWkVNKOF7WgzOaJGjGazHIGH2rd3uipH7XJYyREfg5g8SM/o0jPs+j145Txr8gHM/VnUN9YAF1XxVI5zCib5WQ9zDy7hilPP+1WN8hIrHTsOTnPW45WjwXQwm3nPBXitj36bOExHUInApask7oFZIV5OjqQ34BgpOX/AhP84i+Q1A+ZXH3lG80MIyukgjJvmDk3T7RhD/CBSaS5h+/RNdvNKHiAGQzRaonWytO07zpyOY0pWTF0U3RSV6LUQ45nBLdhgTHifhN0JN409tXxDgWBN2oMKdLEU2XcIaTWF1YtX7JQ9XA1+wS90CGhGI4xAliqot8Bf0UoWibACvM5QOgdSWkMPqM6AJxthFd1NGCfCV+oZu8/VZKydOxeUVGXqCCUMk3Lq5dUix+KGJ0s0L6ThGIl0pbKMDtVACgtQCazJRcg9Pw5DlBjSfPDQyeJjaaOmWJrZL9HHnvhiNQH0v+2ORo3BlHhv/66vmFmyqslc2X4KNIzCSqSRmf05gmkDyU0duSHmlAZZ+vNDMuidwz4nyjgJXEiNCcL8g+RlES3cjZT4SnhM5e8tAjJmQLX1sZSumKzVDFEMQEDFmMeEV/riPfdSeLDBHI8Wt9Vj2AE4OAyTnwRmvMf8vTPwWq9ady5H6trpw1NpV5pUeOglMTok79QXHCK8PRr1tmeN0YZ7lI1FkNWovHsDG9zQ5jJObqdpnLe/HEIp9QJASW/AKA/kwxfI+m6JmmePIx2NYUxy0IMEFoh514lIr1yeYfbXeyUZpf1toUrSrAz6vFUrOf0ARlafgCz0YHpuBVsN2WYFfGRGAZEjp2Yl90m5l8Lh3DF40L+c2cdNK1wV5JlLKfYcwz9J3Nh6u1EVwbBvzcMODrnQYszE1eKeWMvqA7Sigr1fAktNII6fJvJkQgizWjAFzgKLI4x1YpZ68sjCVCrHGrehHZ8PwO6sOizCvEYua0wJbUut34d07cbv+IBcrL4yc3tU6jZslR8SbHg2Yr1tzQAho4oqjeNlaE/Mi+UQCq72EOAxHAyxTZhWYV7qGQF3S2xhY4dWyBmU/YkO22Dq65zx7Idy9ZDBFyv454aCLu95fAAa9FAkGmWfagbbieWCknLaf9nVa831M1oNWMC1iyANA2DfivOdcpVOpfnErBZFAyDS5Wpv6ZZbrZK87w8sTZmLQss5bXozjbFGHnF6dlLQ+Egxfn5OLEORmWOFtk+AMV5+TM4lzvE2dlW/dSxAmCQamzqKCHrU7fVKcuYweszssrjZrb5+dW52UURzZ19lUcmdukLTL1868ojd1P9cXWwDWVNglMpYWHK82AKGhhesdCVMDfxGIbbFsx+tgYix89y1KlaxmMxZJSvzW2t3sTsHu7Cw5eDW6sBFnMrrsS++hpxT/3IufhODfKRctSRo+Tiu8ObVLRgNb2OANzUvFBT5PK8drc/XHUELW5f5mtT222+chpmNo822dJ+vPmLZ88KEDqO5XVLXDLDnlP3yl1SJuFtWuTtOsz+8lRW93+/3vdx23bhoHpbbZPoU+z1S1C5af2+ScS5f8reA//Ag==&lt;/diagram&gt;&lt;/mxfile&gt;">
     <defs/>
     <g>
         <a xlink:href="ts">
-            <rect x="0" y="47" width="360" height="280" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" font-size="12px">
-                <text x="9.5" y="62.5">
+            <rect x="0" y="47" width="390" height="350" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" font-size="16px">
+                <text x="9.5" y="66.5">
                     evaluate()
                 </text>
             </g>
         </a>
         <a xlink:href="ts">
-            <rect x="90" y="67" width="70" height="20" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="124.5" y="81.5">
+            <rect x="85" y="82" width="80" height="30" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="124.5" y="103.5">
                     parse()
                 </text>
             </g>
         </a>
         <a xlink:href="ts">
-            <rect x="100" y="197" width="50" height="20" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="124.5" y="211.5">
+            <rect x="90" y="232" width="70" height="30" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="124.5" y="253.5">
                     run()
                 </text>
             </g>
         </a>
-        <path d="M 125 87 L 125 188.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
-        <path d="M 125 195.88 L 121.5 188.88 L 128.5 188.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 125 307 L 125 358.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
-        <path d="M 125 365.88 L 121.5 358.88 L 128.5 358.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 125 112 L 125 223.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 125 230.88 L 121.5 223.88 L 128.5 223.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 125 377 L 125 438.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 125 445.88 L 121.5 438.88 L 128.5 438.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
         <a xlink:href="ts">
-            <rect x="80" y="287" width="90" height="20" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="124.5" y="301.5">
+            <rect x="70" y="347" width="110" height="30" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="124.5" y="368.5">
                     generate()
                 </text>
             </g>
         </a>
-        <path d="M 125 217 L 125 278.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
-        <path d="M 125 285.88 L 121.5 278.88 L 128.5 278.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
-        <path d="M 125 7 L 125 58.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
-        <path d="M 125 65.88 L 121.5 58.88 L 128.5 58.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 125 262 L 125 338.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 125 345.88 L 121.5 338.88 L 128.5 338.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 125 7 L 125 73.88" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 125 80.88 L 121.5 73.88 L 128.5 73.88 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
         <a xlink:href="js">
-            <rect x="140" y="17" width="130" height="20" fill="none" stroke="none" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="204.5" y="31.5">
+            <rect x="130" y="12" width="170" height="20" fill="none" stroke="none" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="214.5" y="28.5">
                     (y =&gt; y)(x =&gt; x)
                 </text>
             </g>
         </a>
         <a xlink:href="js">
-            <ellipse cx="244" cy="97" rx="20" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="243.5" y="101.5">
+            <ellipse cx="260" cy="107" rx="30" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="259.5" y="113.5">
                     call
                 </text>
             </g>
         </a>
         <a xlink:href="js">
-            <ellipse cx="184" cy="137" rx="15" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="183.5" y="141.5">
+            <ellipse cx="190" cy="157" rx="20" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="189.5" y="163.5">
                     =&gt;
                 </text>
             </g>
         </a>
-        <path d="M 232 105 L 194.61 129.93" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 242.6 119.22 L 204.51 146.67" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="304" cy="137" rx="15" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="303.5" y="141.5">
+            <ellipse cx="330" cy="157" rx="20" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="329.5" y="163.5">
                     =&gt;
                 </text>
             </g>
         </a>
-        <path d="M 256 105 L 293.39 129.93" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 277.4 119.22 L 315.49 146.67" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="154" cy="177" rx="10" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="153.5" y="181.5">
+            <ellipse cx="155" cy="207" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="154.5" y="213.5">
                     y
                 </text>
             </g>
         </a>
-        <path d="M 177.29 145.94 L 160 169" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 180.83 170.33 L 163.52 194.66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="214" cy="177" rx="10" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="213.5" y="181.5">
+            <ellipse cx="225" cy="207" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="224.5" y="213.5">
                     y
                 </text>
             </g>
         </a>
-        <path d="M 190.71 145.94 L 208 169" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 199.17 170.33 L 216.48 194.66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="274" cy="177" rx="10" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="273.5" y="181.5">
+            <ellipse cx="295" cy="207" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="294.5" y="213.5">
                     x
                 </text>
             </g>
         </a>
-        <path d="M 297.31 145.95 L 280 169" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 320.83 170.33 L 303.52 194.66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="334" cy="177" rx="10" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="333.5" y="181.5">
+            <ellipse cx="365" cy="207" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="364.5" y="213.5">
                     x
                 </text>
             </g>
         </a>
-        <path d="M 310.71 145.94 L 328 169" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 339.17 170.33 L 356.48 194.66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="190" cy="227" rx="15" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="189.5" y="231.5">
+            <ellipse cx="192.5" cy="267" rx="20" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="192" y="273.5">
                     =&gt;
                 </text>
             </g>
         </a>
         <a xlink:href="js">
-            <ellipse cx="160" cy="267" rx="10" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="159.5" y="271.5">
+            <ellipse cx="157.5" cy="317" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="157" y="323.5">
                     x
                 </text>
             </g>
         </a>
-        <path d="M 183.31 235.95 L 166 259" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 183.33 280.33 L 166.02 304.66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <ellipse cx="220" cy="267" rx="10" ry="10" fill="#ffffff" stroke="#000000" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="219.5" y="271.5">
+            <ellipse cx="227.5" cy="317" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="227" y="323.5">
                     x
                 </text>
             </g>
         </a>
-        <path d="M 196.71 235.94 L 214 259" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
-        <path d="M 205 37 L 205 37" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 201.67 280.33 L 218.98 304.66" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 215 32 L 215 32" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
         <a xlink:href="js">
-            <rect x="140" y="337" width="70" height="20" fill="none" stroke="none" pointer-events="all"/>
-            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="12px">
-                <text x="174.5" y="351.5">
+            <rect x="130" y="407" width="90" height="20" fill="none" stroke="none" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="174.5" y="423.5">
                     (x =&gt; x)
                 </text>
             </g>
