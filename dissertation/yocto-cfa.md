@@ -428,7 +428,7 @@ Finally, we setup an auxiliary function called `` ts`substitute() `` that implem
 
 <figure>
 
-![](images/4.svg)
+![](images/a-call-involving-immediate-functions--1.drawio.svg)
 
 </figure>
 
