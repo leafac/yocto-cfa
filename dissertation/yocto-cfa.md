@@ -607,7 +607,7 @@ This case is similar to [](#substitution-in-function-definitions): all `` ts`sub
 
 <figure>
 
-![](images/9.svg)
+![](images/substitution-in-function-calls.drawio.svg)
 
 </figure>
 
