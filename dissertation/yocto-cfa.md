@@ -473,7 +473,7 @@ In our current example the `` ts`expression `` is `` ts`y ``, an `` ts`Identifie
 
 <figure>
 
-![](images/5.svg)
+![](images/a-call-involving-immediate-functions--2.drawio.svg)
 
 </figure>
 
@@ -497,7 +497,7 @@ When `` ts`substitute() `` (see [](#a-call-involving-immediate-functions)) start
 
 <figure>
 
-![](images/6.svg)
+![](images/substitution-in-function-definitions.drawio.svg)
 
 </figure>
 
@@ -524,7 +524,7 @@ The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` i
 
 <figure>
 
-![](images/7.svg)
+![](images/name-mismatch.drawio.svg)
 
 </figure>
 
@@ -552,7 +552,7 @@ case "Identifier":
 
 </figure>
 
-In the program above, <code><span style="color: #795E26">x</span></code> may refer to either <code><span style="color: #FF0000">x</span></code> or <code><span style="color: #008000">x</span></code>:
+In the program above, <code><span style="color: #795E26">x</span></code> could refer to either <code><span style="color: #FF0000">x</span></code> or <code><span style="color: #008000">x</span></code>:
 
 <figure>
 
@@ -569,7 +569,7 @@ We avoid this issue by modifying `` ts`substitute() `` to implement Option 2, w
 
 <figure>
 
-![](images/8.svg)
+![](images/name-reuse.drawio.svg)
 
 </figure>
 

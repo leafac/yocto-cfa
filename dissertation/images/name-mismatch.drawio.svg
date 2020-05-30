@@ -1,0 +1,142 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="500px" height="322px" viewBox="-0.5 -0.5 500 322" content="&lt;mxfile host=&quot;&quot; modified=&quot;2020-05-30T22:01:15.051Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;_7n10jHyU80J8B2enFTl&quot; version=&quot;13.1.3&quot;&gt;&lt;diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;&gt;7VrbcuI4EP0aqnYfSNkWNuYxQEiym9mdqcxUNnlJCVsBJcJyyXKA+fqRsXy/soHgTIUHym61LblP9+ljQQ9MVptLBt3lF2oj0tMUe9MD056mmSNTfAeGbWgwgB4aFgzboUlNDLf4J5JGRVp9bCMv48gpJRy7WaNFHQdZPGODjNF11u2JkuysLlygguHWgqRovcM2X8qnUJTEfoXwYilnHkUDKxj5SoO3hDZdp0zgogcmjFIeHq02E0SC0EVhCa+bVYzG62LI4SUX/PAQ+3f+HIREUwicC1R2TuICuEIcsfB6gp2XcIB7oSWaYKDHi4wn9/g2igtHGzHt2OOMvqAJJZQJu0MdMTx+woREpp4GnnYfYYcELxxhs8SSxQLA+BUxjkWsz+XACts22d2BOnwGV5gEWfP1u5j6C3WoHJBJohrB/C60sLMQp0owgc+pJ0fFaTFEMmrBvGiTMsnHvERUxIZthYscHUr0ZPbGablOckGNIF+m8iBCHcr0W8R3TiASBzKy0WkKtFoQIVv4q+ChGjDUtU8MBYZ6FkOziOHo3SGcU3vbBJ+hfMInsMnCB0ZF+PR3h8/z5x7H3OfIHrdA8u+bB49vTHdtz/uXV+v184v62P+EN8RzdAaGjRCrxtEwLvTW+wvg6C6EeD19MF/Ot4/Tf3h/KIXMKyS+REg29gQy5NjngeYQZ3NCLZEM4yVfERmsLJICtvOZokzHYsTy2SuypZu4yQwT0hRhZGeESzG+DfUR2RgikOPXrNwpC6ic4SvFQeOJqzPbIAd5SDzqMwvJi9J6Jncf1Wy4ERdND/HCjUS84Tbl5gYOXvV69dw0hlK7rNyqdKXeXVVztzcb/LWcv97gP8j5jxr8h3uuPw/nsME/j1rT+vPhz4pWcRDimVRunNBlxVyo3G/8buqDa/evyQNgy/urR45Q3ygpVFE8t/KUMr6kC+pAcpFYx4z6jr2ryYD2Ep8bSl1Zms+I862kyoAXs9WONpj/Jy8Pju+D4zNdnk03qaHpVp4UGELZfUJSiJhFtoCEJpQ6mgjrry46Sks+eSNRFFJFUc5UBQwGphBoppG/YUW5N+dEc8f+48+mdl0TqMp2nSSMWtdeIbNkyoBiO4VzjxKxwvPYSd2lIocczglK3bu8Qx+oJWs5FgOmXuzHoKSngOP043I4oseq68fHL/NKoEu0QLaz52HsfgmDYgkfuWi/MyjS1oMkW5+lAs1MP/Tp5fQtYvhpXz0dOJcJxAMUdV7JlOxkmCUlfdzXqJ95Jn7OMXF/Muf4yrCuRpMb50Id+x4BTUwsDNj1UHl093znKdXts5nsygeARVVyuxODIi7vSLW66z300R3l1z++Wk/Pl+j6m9Y3jGaqXQgmddvHI96wlX2tl94UbbERB9puxBn7x6kqWXffxoLHwFenbXkY6wnq6GmrjExDN0vTth729u/yRVAGR8vdKpgKmzHtwKnfKv3I4GwrwTk5sYAWGo7MdyIqar0tXobaY3IoFNISrab2NSVUSI15eEgttyfL/c/yGfy25VPRgDpYTfpnNZWm5TtUUwGhNq+n76yZ4i3Vbmqmk3dgpVLVG3vL+k4ooU1jyMHvEPJOMHLENN0h3+bYpnk20h1pSo3k2cm0SHMC1/9J5YMkcBcVRpt3/g+Xz/qp1MBwtJcaaN36S4RDZXoNtMIP7R1XBOaJ9/lyKVeCSjr6IcYfXBE0bKJ/kJB3gkFNrdsMmmPBsshmKTX6eSBNqWbXFIHZLUn7Ns7olCIwO65wD5PPoByQt+azOE3+6h3+Hpr8XR5c/AI=&lt;/diagram&gt;&lt;/mxfile&gt;">
+    <defs/>
+    <g>
+        <a xlink:href="ts">
+            <rect x="9" y="0" width="100" height="20" fill="#ffffff" stroke="none" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="58.5" y="16.5">
+                    parameter
+                </text>
+            </g>
+        </a>
+        <a xlink:href="ts">
+            <rect x="14" y="70" width="90" height="20" fill="#ffffff" stroke="none" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="58.5" y="86.5">
+                    argument
+                </text>
+            </g>
+        </a>
+        <a xlink:href="ts">
+            <rect x="34" y="180" width="50" height="20" fill="#ffffff" stroke="none" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="58.5" y="196.5">
+                    body
+                </text>
+            </g>
+        </a>
+        <a xlink:href="ts">
+            <rect x="338.37" y="180" width="160" height="20" fill="#ffffff" stroke="none" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="417.87" y="196.5">
+                    substitutedBody
+                </text>
+            </g>
+        </a>
+        <path d="M 29 210 Q -11 250 4 270 Q 19 290 34 280 Q 49 270 54 255 Q 59 240 69 260 Q 79 280 94 285 Q 109 290 119 275 Q 129 260 124 250 Q 119 240 104 225 Q 89 210 110.88 210" fill="none" stroke="#af00db" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 117.88 210 L 110.88 213.5 L 110.88 206.5 Z" fill="#af00db" stroke="#af00db" stroke-miterlimit="10" pointer-events="all"/>
+        <path d="M 149 190 L 119 190 L 119 190.1" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <a xlink:href="ts">
+            <rect x="149" y="175" width="130" height="30" rx="1.5" ry="1.5" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="213.5" y="196.5">
+                    substitute()
+                </text>
+            </g>
+        </a>
+        <path d="M 279 190 L 310.88 190" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <path d="M 317.88 190 L 310.88 193.5 L 310.88 186.5 Z" fill="#000000" stroke="#000000" stroke-miterlimit="10" pointer-events="all"/>
+        <rect x="19" y="300" width="80" height="20" fill="#ffffff" stroke="none" pointer-events="all"/>
+        <g fill="#AF00DB" font-family="PT Serif" text-anchor="middle" font-size="16px">
+            <text x="58.5" y="316.5">
+                Traversal
+            </text>
+        </g>
+        <a xlink:href="js">
+            <ellipse cx="59" cy="45" rx="15" ry="15" fill="#ffffff" stroke="#ff0000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="58.5" y="51.5">
+                    z
+                </text>
+            </g>
+        </a>
+        <a xlink:href="js">
+            <ellipse cx="59" cy="115" rx="20" ry="15" fill="#ffffff" stroke="#098658" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="58.5" y="121.5">
+                    =&gt;
+                </text>
+            </g>
+        </a>
+        <a xlink:href="js">
+            <ellipse cx="24" cy="145" rx="15" ry="15" fill="#ffffff" stroke="#098658" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="23.5" y="151.5">
+                    y
+                </text>
+            </g>
+        </a>
+        <path d="M 45.94 126.36 L 35.39 135.24" fill="none" stroke="#098658" stroke-miterlimit="10" pointer-events="stroke"/>
+        <a xlink:href="js">
+            <ellipse cx="94" cy="145" rx="15" ry="15" fill="#ffffff" stroke="#098658" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="93.5" y="151.5">
+                    y
+                </text>
+            </g>
+        </a>
+        <path d="M 72.06 126.36 L 82.61 135.24" fill="none" stroke="#098658" stroke-miterlimit="10" pointer-events="stroke"/>
+        <a xlink:href="js">
+            <ellipse cx="59" cy="225" rx="20" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="58.5" y="231.5">
+                    =&gt;
+                </text>
+            </g>
+        </a>
+        <a xlink:href="js">
+            <ellipse cx="24" cy="255" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="23.5" y="261.5">
+                    x
+                </text>
+            </g>
+        </a>
+        <path d="M 45.94 236.36 L 35.39 245.24" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <a xlink:href="js">
+            <ellipse cx="94" cy="255" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="93.5" y="261.5">
+                    x
+                </text>
+            </g>
+        </a>
+        <path d="M 72.06 236.36 L 82.61 245.24" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <a xlink:href="js">
+            <ellipse cx="418.37" cy="225" rx="20" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="417.87" y="231.5">
+                    =&gt;
+                </text>
+            </g>
+        </a>
+        <a xlink:href="js">
+            <ellipse cx="383.37" cy="255" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="382.87" y="261.5">
+                    x
+                </text>
+            </g>
+        </a>
+        <path d="M 405.31 236.36 L 394.76 245.24" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+        <a xlink:href="js">
+            <ellipse cx="453.37" cy="255" rx="15" ry="15" fill="#ffffff" stroke="#000000" pointer-events="all"/>
+            <g fill="#000000" font-family="PT Mono" text-anchor="middle" font-size="16px">
+                <text x="452.87" y="261.5">
+                    x
+                </text>
+            </g>
+        </a>
+        <path d="M 431.43 236.36 L 441.98 245.24" fill="none" stroke="#000000" stroke-miterlimit="10" pointer-events="stroke"/>
+    </g>
+</svg>
