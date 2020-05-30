@@ -2,9 +2,9 @@ const fs = require("fs");
 const child_process = require("child_process");
 const marked = require("marked");
 const { JSDOM } = require("jsdom");
+const mathJax = require("mathjax-node");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
-const mathJax = require("mathjax-node");
 
 (async () => {
   // Render Markdown
