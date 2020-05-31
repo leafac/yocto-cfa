@@ -7,7 +7,7 @@
   <meta name="author" content="Leandro Facchinetti">
   <meta name="subject" content="TODO">
   <meta name="keywords" content="todo, todo, ...">
-<meta name="date" content="2020-05-30"></head>
+<meta name="date" content="2020-05-31"></head>
 <body>
 <header>
 <div class="title-page">
@@ -15,33 +15,26 @@
   <div class="author">by<br>Leandro Facchinetti</div>
   <div class="statement">A dissertation submitted to Johns Hopkins University<br>in conformity with the requirements for the degree of Doctor of Philosophy</div>
   <div class="publishing-location">Baltimore, Maryland<br>August 2020</div>
-<div class="timestamp draft">2020-05-30T22:18:32.277Z</div></div>
-
+<div class="timestamp draft">2020-05-31T14:54:01.251Z</div></div>
 <!-- TODO
 # Abstract
 
 - **Primary Reader and Advisor:** Dr. Scott Fraser Smith.
 - **Readers:** Dr. Zachary Eli Palmer and Dr. Matthew Daniel Green.
 -->
-
 <!-- TODO: # Acknowledgements -->
-
 <!-- TODO: # Dedication -->
-
 <h1 id="table-of-contents">Table of Contents</h1><div class="table-of-contents-item"><a href="#developing-an-analyzer" data-section="main"><span class="heading-counter">1</span> Developing an Analyzer</a></div><div class="table-of-contents-item"><a href="#the-analyzed-language-yocto-javascript" data-section="main"><span class="heading-counter">1.1</span> The Analyzed Language: Yocto-JavaScript</a></div><div class="table-of-contents-item"><a href="#values-in-yocto-javascript" data-section="main"><span class="heading-counter">1.1.1</span> Values in Yocto-JavaScript</a></div><div class="table-of-contents-item"><a href="#operations-in-yocto-javascript" data-section="main"><span class="heading-counter">1.1.2</span> Operations in Yocto-JavaScript</a></div><div class="table-of-contents-item"><a href="#the-computational-power-of-yocto-javascript" data-section="main"><span class="heading-counter">1.1.3</span> The Computational Power of Yocto-JavaScript</a></div><div class="table-of-contents-item"><a href="#a-formal-grammar-for-yocto-javascript" data-section="main"><span class="heading-counter">1.1.4</span> A Formal Grammar for Yocto-JavaScript</a></div><div class="table-of-contents-item"><a href="#the-analyzer-language-typescript" data-section="main"><span class="heading-counter">1.2</span> The Analyzer Language: TypeScript</a></div><div class="table-of-contents-item"><a href="#step-0-substitution-based-interpreter" data-section="main"><span class="heading-counter">1.3</span> Step 0: Substitution-Based Interpreter</a></div><div class="table-of-contents-item"><a href="#architecture" data-section="main"><span class="heading-counter">1.3.1</span> Architecture</a></div><div class="table-of-contents-item"><a href="#data-structures-to-represent-yocto-javascript-programs" data-section="main"><span class="heading-counter">1.3.2</span> Data Structures to Represent Yocto-JavaScript Programs</a></div><div class="table-of-contents-item"><a href="#an-expression-that-already-is-a-value" data-section="main"><span class="heading-counter">1.3.3</span> An Expression That Already Is a Value</a></div><div class="table-of-contents-item"><a href="#a-call-involving-immediate-functions" data-section="main"><span class="heading-counter">1.3.4</span> A Call Involving Immediate Functions</a></div><div class="table-of-contents-item"><a href="#substitution-in-function-definitions" data-section="main"><span class="heading-counter">1.3.5</span> Substitution in Function Definitions</a></div><div class="table-of-contents-item"><a href="#name-mismatch" data-section="main"><span class="heading-counter">1.3.6</span> Name Mismatch</a></div><div class="table-of-contents-item"><a href="#name-reuse" data-section="main"><span class="heading-counter">1.3.7</span> Name Reuse</a></div><div class="table-of-contents-item"><a href="#substitution-in-function-calls" data-section="main"><span class="heading-counter">1.3.8</span> Substitution in Function Calls</a></div><div class="table-of-contents-item"><a href="#an-argument-that-is-not-immediate" data-section="main"><span class="heading-counter">1.3.9</span> An Argument That Is Not Immediate</a></div><div class="table-of-contents-item"><a href="#a-function-that-is-not-immediate" data-section="main"><span class="heading-counter">1.3.10</span> A Function That Is Not Immediate</a></div><div class="table-of-contents-item"><a href="#continuing-to-run-after-a-function-call" data-section="main"><span class="heading-counter">1.3.11</span> Continuing to Run After a Function Call</a></div><div class="table-of-contents-item"><a href="#a-reference-to-an-undefined-variable" data-section="main"><span class="heading-counter">1.3.12</span> A Reference to an Undefined Variable</a></div><div class="table-of-contents-item"><a href="#the-entire-runner" data-section="main"><span class="heading-counter">1.3.13</span> The Entire Runner</a></div><div class="table-of-contents-item"><a href="#an-operational-semantics-for-the-interpreter" data-section="main"><span class="heading-counter">1.3.14</span> An Operational Semantics for the Interpreter</a></div><div class="table-of-contents-item"><a href="#parser" data-section="main"><span class="heading-counter">1.3.15</span> Parser</a></div><div class="table-of-contents-item"><a href="#generator" data-section="main"><span class="heading-counter">1.3.16</span> Generator</a></div><div class="table-of-contents-item"><a href="#programs-that-do-not-terminate" data-section="main"><span class="heading-counter">1.3.17</span> Programs That Do Not Terminate</a></div><div class="table-of-contents-item"><a href="#step-1-environment-based-interpreter" data-section="main"><span class="heading-counter">1.4</span> Step 1: Environment-Based Interpreter</a></div><div class="table-of-contents-item"><a href="#avoiding-substitution-by-introducing-environments-and-closures" data-section="main"><span class="heading-counter">1.4.1</span> Avoiding Substitution by Introducing Environments and Closures</a></div><div class="table-of-contents-item"><a href="#new-data-structures" data-section="main"><span class="heading-counter">1.4.2</span> New Data Structures</a></div><div class="table-of-contents-item"><a href="#adding-an-environment-to-the-runner" data-section="main"><span class="heading-counter">1.4.3</span> Adding an Environment to the Runner</a></div><div class="table-of-contents-item"><a href="#a-function-definition" data-section="main"><span class="heading-counter">1.4.4</span> A Function Definition</a></div><div class="table-of-contents-item"><a href="#a-function-call" data-section="main"><span class="heading-counter">1.4.5</span> A Function Call</a></div><div class="table-of-contents-item"><a href="#name-reuse-1" data-section="main"><span class="heading-counter">1.4.6</span> Name Reuse</a></div><div class="table-of-contents-item"><a href="#a-variable-reference" data-section="main"><span class="heading-counter">1.4.7</span> A Variable Reference</a></div><div class="table-of-contents-item"><a href="#a-function-body-is-evaluated-with-the-environment-in-its-closure" data-section="main"><span class="heading-counter">1.4.8</span> A Function Body Is Evaluated with the Environment in Its Closure</a></div><div class="table-of-contents-item"><a href="#the-entire-runner-1" data-section="main"><span class="heading-counter">1.4.9</span> The Entire Runner</a></div><div class="table-of-contents-item"><a href="#operational-semantics" data-section="main"><span class="heading-counter">1.4.10</span> Operational Semantics</a></div><div class="table-of-contents-item"><a href="#generator-1" data-section="main"><span class="heading-counter">1.4.11</span> Generator</a></div><div class="table-of-contents-item"><a href="#programs-that-do-not-terminate-1" data-section="main"><span class="heading-counter">1.4.12</span> Programs That Do Not Terminate</a></div><div class="table-of-contents-item"><a href="#step-2-store-based-interpreter" data-section="main"><span class="heading-counter">1.5</span> Step 2: Store-Based Interpreter</a></div><div class="table-of-contents-item"><a href="#avoiding-nested-environments-by-introducing-a-store" data-section="main"><span class="heading-counter">1.5.1</span> Avoiding Nested Environments by Introducing a Store</a></div><div class="table-of-contents-item"><a href="#new-data-structures-1" data-section="main"><span class="heading-counter">1.5.2</span> New Data Structures</a></div><div class="table-of-contents-item"><a href="#adding-a-store-to-the-runner" data-section="main"><span class="heading-counter">1.5.3</span> Adding a Store to the Runner</a></div><div class="table-of-contents-item"><a href="#adding-a-value-to-the-store" data-section="main"><span class="heading-counter">1.5.4</span> Adding a Value to the Store</a></div><div class="table-of-contents-item"><a href="#retrieving-a-value-from-the-store" data-section="main"><span class="heading-counter">1.5.5</span> Retrieving a Value from the Store</a></div><div class="table-of-contents-item"><a href="#the-entire-runner-2" data-section="main"><span class="heading-counter">1.5.6</span> The Entire Runner</a></div><div class="table-of-contents-item"><a href="#operational-semantics-1" data-section="main"><span class="heading-counter">1.5.7</span> Operational Semantics</a></div><div class="table-of-contents-item"><a href="#programs-that-do-not-terminate-2" data-section="main"><span class="heading-counter">1.5.8</span> Programs That Do Not Terminate</a></div><div class="table-of-contents-item"><a href="#step-3-finitely-many-addresses" data-section="main"><span class="heading-counter">1.6</span> Step 3: Finitely Many Addresses</a></div><div class="table-of-contents-item"><a href="#the-entire-runner-3" data-section="main"><span class="heading-counter">1.6.1</span> The Entire Runner</a></div><div class="table-of-contents-item"><a href="#bibliography" data-section="footer">Bibliography</a></div>
 </header>
 <main>
-
 <!-- TODO:
 
 # Introduction
 
 - Link to GitHub
 -->
-
 <h1 id="developing-an-analyzer"><span class="heading-counter">1</span> Developing an Analyzer<code class="draft"> [](#developing-an-analyzer)</code></h1>
 <!-- TODO: An overview of the rest of the section -->
-
 <h2 id="the-analyzed-language-yocto-javascript"><span class="heading-counter">1.1</span> The Analyzed Language: Yocto-JavaScript<code class="draft"> [](#the-analyzed-language-yocto-javascript)</code></h2>
 <p>Our first decision when developing a program analyzer is which language it should analyze. This decision is important, among other reasons, because it influences how difficult it is to develop the analyzer. In this dissertation we are interested in analysis techniques for higher-order functions, so we have plenty of options from which to choose, because higher-order functions are present in most languages, including JavaScript, Java, Python, Ruby, and so forth.</p>
 <p>From all these options, we would like to choose JavaScript because it is the most popular programming language&nbsp;[<a href="#stack-overflow-developer-survey">29</a>, <a href="#jet-brains-developer-survey">11</a>], but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call <em>Yocto-JavaScript</em> (JavaScript<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.553ex" height="1.843ex" style="vertical-align: -0.338ex;" viewBox="0 -647.8 668.5 793.3" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -55,7 +48,6 @@
 </svg>10<sup>-24</sup>).</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>On the surface the choice of analyzed language is important because it influences how difficult it is to develop the analyzer, but it has deeper consequences as well: the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.088ex" height="2.343ex" style="vertical-align: -0.338ex;" viewBox="0 -863.1 468.5 1008.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">k</title>
 <defs aria-hidden="true">
@@ -66,10 +58,8 @@
 </g>
 </svg>-CFA&nbsp;[<a href="#k-cfa">28</a>] that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial&nbsp;[<a href="#m-cfa">18</a>].</p>
 </fieldset>
-
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.437ex" height="2.176ex" style="vertical-align: -0.338ex;" viewBox="0 -791.3 618.5 936.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\lambda</title>
@@ -90,11 +80,9 @@
 </svg>-calculus.</li>
 </ul>
 </fieldset>
-
 <h3 id="values-in-yocto-javascript"><span class="heading-counter">1.1.1</span> Values in Yocto-JavaScript<code class="draft"> [](#values-in-yocto-javascript)</code></h3>
 <p>JavaScript has many kinds of values:</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -102,7 +90,8 @@
 <th align="center">Example</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #267F99">String</span></code></td>
 <td align="center"><code><span style="color: #A31515">"Leandro"</span></code></td>
 </tr>
@@ -126,24 +115,21 @@
 <td align="center">…</td>
 <td align="center">…</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>From all these kinds of values, Yocto-JavaScript supports only one: <code><span style="color: #267F99">Function</span></code>. An Yocto-JavaScript function is written as <code><span style="color: #800000">&lt;parameter&gt;</span><span style="color: #000000"> =&gt; </span><span style="color: #800000">&lt;body&gt;</span></code>, for example, <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>, in which the <code><span style="color: #800000">&lt;parameter&gt;</span></code> is called <code><span style="color: #001080">x</span></code> and the <code><span style="color: #800000">&lt;body&gt;</span></code> is a reference to the variable <code><span style="color: #001080">x</span></code> (see <a href="#operations-in-yocto-javascript">§&nbsp;1.1.2</a> for more on variable references). An Yocto-JavaScript function must have exactly one parameter. Because an Yocto-JavaScript function is a value, it may be passed as argument in a function call or returned as the result of a function call (see <a href="#operations-in-yocto-javascript">§&nbsp;1.1.2</a> for more on function calls).</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong>Arrow Function Expressions&nbsp;[<a href="#javascript-arrow-function-expressions">19</a>]:</strong> The notation we use for writing functions.</li>
 <li><strong>Identity Function:</strong> The function given as example, <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>.</li>
 <li><strong>High-Order Functions:</strong> Functions that may act as values.</li>
 </ul>
 </fieldset>
-
 <h3 id="operations-in-yocto-javascript"><span class="heading-counter">1.1.2</span> Operations in Yocto-JavaScript<code class="draft"> [](#operations-in-yocto-javascript)</code></h3>
 <p>JavaScript has many kinds of operations on the values introduced in <a href="#values-in-yocto-javascript">§&nbsp;1.1.1</a>:</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -152,7 +138,8 @@
 <th align="center">Result</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center">Access a character in a <code><span style="color: #267F99">String</span></code></td>
 <td align="center"><code><span style="color: #A31515">"Leandro"</span><span style="color: #000000">[</span><span style="color: #098658">2</span><span style="color: #000000">]</span></code></td>
 <td align="center"><code><span style="color: #A31515">"a"</span></code></td>
@@ -172,13 +159,12 @@
 <td align="center">…</td>
 <td align="center">…</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>From all these operations, Yocto-JavaScript supports only two: function calls and variable references. A function call is written as <code><span style="color: #800000">&lt;function&gt;</span><span style="color: #000000">(</span><span style="color: #800000">&lt;argument&gt;</span><span style="color: #000000">)</span></code>, for example, <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">)</span></code>, in which the <code><span style="color: #800000">&lt;function&gt;</span></code> is a hypothetical function <code><span style="color: #001080">f</span></code> and the <code><span style="color: #800000">&lt;argument&gt;</span></code> is a hypothetical argument <code><span style="color: #001080">a</span></code>. An Yocto-JavaScript function call must have exactly one argument (because an Yocto-JavaScript function must have exactly one parameter; see <a href="#values-in-yocto-javascript">§&nbsp;1.1.1</a>). A variable reference is written as a bare identifier, for example, <code><span style="color: #001080">x</span></code>.</p>
 <p>The following is a complete Yocto-JavaScript program that exemplifies all the supported operations:</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -186,46 +172,41 @@
 <th align="center">Result</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>This program is a function call in which the <code><span style="color: #800000">&lt;function&gt;</span></code> is <code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code> and the <code><span style="color: #800000">&lt;argument&gt;</span></code> is <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>. When called, an Yocto-JavaScript function returns the result of computing its <code><span style="color: #800000">&lt;body&gt;</span></code>. The <code><span style="color: #800000">&lt;body&gt;</span></code> of <code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code> is a reference to the variable <code><span style="color: #001080">y</span></code>, so <code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code> is a function that returns its argument unchanged.</p>
 <p>In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the <code><span style="color: #800000">&lt;body&gt;</span></code> of a function definition, or as the <code><span style="color: #800000">&lt;function&gt;</span></code> or <code><span style="color: #800000">&lt;argument&gt;</span></code> of a call; for example, in the program <code><span style="color: #000000">(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">))(</span><span style="color: #001080">b</span><span style="color: #000000">)</span></code> the function call <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">)</span></code> appears as the <code><span style="color: #800000">&lt;function&gt;</span></code> of a call.</p>
 <p>We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions <code><span style="color: #001080">f</span></code>, <code><span style="color: #001080">g</span></code>, and <code><span style="color: #001080">h</span></code>, in <code><span style="color: #000000">(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">g</span><span style="color: #000000">))(</span><span style="color: #001080">h</span><span style="color: #000000">)</span></code> the call <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">g</span><span style="color: #000000">)</span></code> happens first and the result is a function that is called with <code><span style="color: #001080">h</span></code>, and in <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #795E26">g</span><span style="color: #000000">(</span><span style="color: #001080">h</span><span style="color: #000000">))</span></code> the call <code><span style="color: #795E26">g</span><span style="color: #000000">(</span><span style="color: #001080">h</span><span style="color: #000000">)</span></code> happens first and the result is passed as argument to <code><span style="color: #001080">f</span></code>. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example, <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> is equivalent to <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code> and <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">)(</span><span style="color: #001080">b</span><span style="color: #000000">)</span></code> is equivalent to <code><span style="color: #000000">(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">))(</span><span style="color: #001080">b</span><span style="color: #000000">)</span></code>.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong>Precedence:</strong> The order in which operations are computed. Operations that are computed first have <em>higher precedence</em>; operations that are computed later have <em>lower precedence</em>.</li>
 <li><strong>Associativity:</strong> The order in which operations of the same type are computed. Function definitions are <em>right-associative</em> and function calls are <em>left-associative</em>.</li>
 </ul>
 </fieldset>
-
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <h3 id="the-computational-power-of-yocto-javascript"><span class="heading-counter">1.1.3</span> The Computational Power of Yocto-JavaScript<code class="draft"> [](#the-computational-power-of-yocto-javascript)</code></h3>
 <p>Yocto-JavaScript has only a few features, which makes it the ideal language for discussing the analysis of higher-order functions, but does it have enough features to support every kind of computation? Perhaps surprisingly, the answer is positive: Yocto-JavaScript is equivalent to JavaScript (and Java, Python, Ruby, and so forth) in the sense that any program in any one of these languages may be translated into an equivalent program in any other language&nbsp;[<a href="#understanding-computation">30 (§&nbsp;6)</a>].</p>
 <p>As an example of how this translation could be done, consider a JavaScript function of two parameters: <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000">, </span><span style="color: #001080">y</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>. This function is not supported by Yocto-JavaScript because it does not have exactly one parameter (see <a href="#values-in-yocto-javascript">§&nbsp;1.1.1</a>), but we may encode it as <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>, which is a function that receives the first parameter and returns another function that receives the second parameter. Similarly, we may encode a call with multiple arguments as a sequence of calls that passes one argument at a time; for example, <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">, </span><span style="color: #001080">b</span><span style="color: #000000">)</span></code> may be encoded as <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000">)(</span><span style="color: #001080">b</span><span style="color: #000000">)</span></code>.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong>Computational Power:</strong> The ability of expressing computations.</li>
 <li><strong>Turing Complete&nbsp;[<a href="#understanding-computation">30 (§&nbsp;7)</a>]:</strong> Property of a language that may express any computation of which a computer is capable. Yocto-JavaScript, JavaScript, Java, Python, Ruby, and so forth are all Turing Complete.</li>
 <li><strong>Currying&nbsp;[<a href="#understanding-computation">30 (page&nbsp;163)</a>]:</strong> The translation technique we used to encode functions with multiple parameters and calls with multiple arguments.</li>
 </ul>
 </fieldset>
-
 <p>For our goal of exploring analysis techniques, we are concerned only with computational power, but it is worth noting that programmers would be more interested in other language properties: Does the language promote writing programs of higher quality? (It most probably does not&nbsp;[<a href="#code-quality">4</a>].) Does the language improve productivity? Does the language work well in the domain of the problem? (For example, we would probably write an operating system in C and a web application in JavaScript, not the other way around.) Is the language more expressive than others? (Perhaps surprisingly, it is possible to make formal arguments about expressiveness without resorting to personal preference and anecdotal evidence&nbsp;[<a href="#expressive-power">7</a>].) Despite having the same computational power as other languages, Yocto-JavaScript fares badly in these other aspects: it is remarkably unproductive and inexpressive.</p>
 <h3 id="a-formal-grammar-for-yocto-javascript"><span class="heading-counter">1.1.4</span> A Formal Grammar for Yocto-JavaScript<code class="draft"> [](#a-formal-grammar-for-yocto-javascript)</code></h3>
 <p>The description of Yocto-JavaScript given in <a href="#values-in-yocto-javascript">§&nbsp;1.1.1</a> and <a href="#operations-in-yocto-javascript">§&nbsp;1.1.2</a> is informal; the following is a grammar in <em>Backus–Naur Form</em>&nbsp;(BNF)&nbsp;[<a href="#bnf">17</a>, <a href="#dragon-book">1 (§&nbsp;4.2)</a>] that formalizes it:</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -235,7 +216,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.902ex" height="1.676ex" style="vertical-align: -0.338ex;" viewBox="0 -576.1 388.5 721.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">e</title>
 <defs aria-hidden="true">
@@ -303,16 +285,15 @@
 <td align="left"><code>&lt;A JavaScript Identifier&gt;</code></td>
 <td align="left">Variables</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
 </fieldset>
-
 <h2 id="the-analyzer-language-typescript"><span class="heading-counter">1.2</span> The Analyzer Language: TypeScript<code class="draft"> [](#the-analyzer-language-typescript)</code></h2>
 <p>After choosing our analyzed language (Yocto-JavaScript; see <a href="#the-analyzed-language-yocto-javascript">§&nbsp;1.1</a>), we must decide in which language to develop the analyzer itself. Our analyzed language is based on JavaScript, so it is a natural first candidate, but JavaScript lacks a feature which we will need: the ability to express the <em>types</em> of data structures, functions, and so forth (see, for example, <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>). We choose instead to implement our analyzer in a JavaScript extension with support for types called <em>TypeScript</em>&nbsp;[<a href="#typescript-documentation">32</a>, <a href="#typescript-deep-dive">31</a>, <a href="#understanding-typescript">5</a>].</p>
 <h2 id="step-0-substitution-based-interpreter"><span class="heading-counter">1.3</span> Step 0: Substitution-Based Interpreter<code class="draft"> [](#step-0-substitution-based-interpreter)</code></h2>
 <p>Having chosen the analyzed language (Yocto-JavaScript; see <a href="#the-analyzed-language-yocto-javascript">§&nbsp;1.1</a>) and the language in which to develop the analyzer itself (TypeScript; see <a href="#the-analyzer-language-typescript">§&nbsp;1.2</a>), we are ready to start developing the analyzer. We begin in Step&nbsp;0 by developing an interpreter that executes Yocto-JavaScript programs and produces the same outputs that would be produced by a regular JavaScript interpreter. This is a good starting point for two reasons: first, this interpreter is the basis upon which we will build the analyzer; and second, the outputs of this interpreter are the ground truth against which we will validate the outputs of the analyzer.</p>
 <!-- TODO: Forward reference to where we validate the outputs of the analyzer. -->
-
 <h3 id="architecture"><span class="heading-counter">1.3.1</span> Architecture<code class="draft"> [](#architecture)</code></h3>
 <p>Our interpreter is defined as a function called <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code>, which receives an Yocto-JavaScript program represented as a string and returns the result of running it.</p>
 <p>The following are two examples of how we will be able to use <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> by the end of Step&nbsp;0 (the <code><span style="color: #000000">&gt;</span></code> represents the console, and by convention strings that represent Yocto-JavaScript programs are delimited by backticks (<code><span style="color: #A31515">`</span></code>)&nbsp;[<a href="#javascript-template-literals">24</a>]):</p>
@@ -322,7 +303,6 @@
 <span style="color: #A31515">`x =&gt; x`</span></code></pre>
 <p>The implementation of <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> is separated into three parts called <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code>, <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>, and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code>:</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="391px" height="396px" viewBox="-0.5 -0.5 391 396" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T10:18:15.839Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;4EhQCWFqqKDJrGF3Eali&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7VrLkps4FP0aV3U2KZ5+LPuZWSQ1qUqmZrKUQY3VLSOXkLvt+fqRQAKBZBs7BuPq2bisixBwztHR1YWRf7/cfKFgtfhGYohHnhNvRv7DyPOmsyn/FYFtERj7YRFIKIqLkFsFfqB/oQw6MrpGMcxqHRkhmKFVPRiRNIURq8UApeS93u2Z4PpVVyCBRuBHBLAZ/RvFbCGfwnGq+B8QJQt55Zk6sASqrwxkCxCTdy3kP478e0oIK/4tN/cQC+gULMV5TzuOlvdFYcosJ/yVQfrn/EVA4jkYzDkreSf4BvAaMHjzqRgAo/S1OMKyIqKuEFZ3WV49Y1sFDCXrNIairzvy755Jyp7AEmFB8/efvOs3khJ+ANBIkuqL1pqRrGg6ojnPCF4zeFt2EmNRwgADc6zaAKMk5f8xfOZPevcGKUOcoFsZZmTFo9kKRChN5MCy9VMc0gNf8yEeXBHiimEApZDKLuIR1F2MedsEWGIubgButJDE6AskS8jolndRRx0pdil+X6njvZKSP5OxhSYjTwWBlG9Sjl1RzP9IYlRTI32vCPhDZS0U4HUqALe1AJrMVFy7Z+JJwa14Uial8TS10OR3yhJdp4c58j8OR/W5FAQmR5POODL8N5D3z91UYi1tvgIfxnwlkU1C2YIkJAX4sYreVfQIA6r6fCW5cQnkXiBjWwmsIIaHFmyJDzEK0/hWrH48PMckei1CTwjjHXztZCgjaxpBzRD4AgxoApmmP88Rz7qXRQoxYOitvqoewYlBwPQSeMMNYv+I0z+HsvVLO/KwkSPnja22rvTIUXhuQuSp3wlKWTUdy3ml8rqgMc8KkcizGrSWt2FjepcdJpCv1e0ylw/jiZO6J4aBmV+4bn+mOP6Ipuibpnj2OdjWFCctCDBBaIcdvxXN+kTzl7I70ajML29ty5YO8Mt6uVLspySFeRq+RNHoyBRcB9trCbY2J0LLlFCxM/si3yrWhyikY/iiOVAzJ21uCc5usDcCpfzvOGE5+s72083GCG4MA35pGPBsrwFzcxMjZYySV3hPMKGVGp65Vhohtf2LuAjEZs3YAC5RHFucY6eU80fmxhJD2rhUfRPZ8PwO9oeeHzbEYua0ri2p9brx74K4/f6RcJRXpy9usk4jV8lR+SSng2bbrJWzTgetXAmPQG3XXOHyw4dmgas/hzkNeACtMmgXmlW4x0Je0nlEwaJuOq6ZT9iQ7XYfXHOfA5DvL1kMEfKgjrglgwv6S+Bcv0UCged59qBsuJ5YSSetlv29VnzYUxWgesblWrIAt20a8Ls51zlUGlydSt3poGQaXq1MgwvLdHtQnOPrE2ddmxNTm36P2myzB7u8Ni2lPHc8eG1Or06b00Fps0V+P1BtTi+szc0hbWovda9Fm244JHGW2+dhizMwxan2sAMW5/Xti0pUhyHO69gY2cTZ18bIfEU6MSHSqv8SkHrRTq8GW4rFPb2y65A2ywuEmUna7MKGclLVN/i/7HtaBXNs+SzI+lVQN94Wtlh4f7Pqa2CzqxDcGrNgbGLmehbQpseDdoYSj7//HXT3C254tCobhUhL6be7Cs/JiU1w6Rr78Tg3qhWWSlqPeU3gDS2vCS0rpJr7+hIZuBdeIw9rc/+3eUPU5uEqb5/abPON3TC12ddXcbxZfUFevPmvvsL3H/8D</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -474,7 +454,6 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts"><span style="color: #0000FF">export</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">evaluate</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">)));</span>
 <span style="color: #000000">}</span></code></pre>
@@ -482,17 +461,14 @@
 <p>In later Steps the implementations of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> will change, but the implementations of <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> will remain the same, because the architecture and the data structures used to represent Yocto-JavaScript programs will remain the same.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>The <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> function is named after a native JavaScript function called <code><span style="color: #795E26">eval</span><span style="color: #000000">()</span></code>&nbsp;[<a href="#javascript-eval">21</a>], which is similar to <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> but for JavaScript programs instead of Yocto-JavaScript. The <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> functions are named after the library functions used to implement them (see <a href="#parser">§&nbsp;1.3.15</a> and <a href="#generator">§&nbsp;1.3.16</a>).</p>
 </fieldset>
-
 <h3 id="data-structures-to-represent-yocto-javascript-programs"><span class="heading-counter">1.3.2</span> Data Structures to Represent Yocto-JavaScript Programs<code class="draft"> [](#data-structures-to-represent-yocto-javascript-programs)</code></h3>
 <p>The <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> function receives an Yocto-JavaScript program represented as a string (see <a href="#architecture">§&nbsp;1.3.1</a>), which is convenient for humans to write and read, but inconvenient for <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> to manipulate directly, because it is concerned with the <em>structure</em> rather than the <em>text</em> of the program: for <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> it does not matter, for example, whether a function is written as <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> or <code><span style="color: #001080">x</span><span style="color: #0000FF">=&gt;</span><span style="color: #001080">x</span></code>. So before <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> starts interpreting the program, <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> transforms it from a string into more convenient data structures (see <a href="#parser">§&nbsp;1.3.15</a> for <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code>’s implementation).</p>
 <p>The following are two examples of Yocto-JavaScript programs and the data structures used to represent them:</p>
 <table>
 <tbody><tr>
 <td>
-
 <pre><code class="language-ts"><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`x =&gt; x`</span><span style="color: #000000">)</span>
 <span style="color: #000000">{</span>
 <span style="color: #000000">  </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span>
@@ -509,7 +485,6 @@
 <span style="color: #000000">}</span></code></pre>
 </td>
 <td align="center">
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="101px" height="61px" viewBox="-0.5 -0.5 101 61" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T10:20:02.006Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;5iildHULOTPwmeuIzloY&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>1ZZdb4IwFEB/De9I0ejj/NyL2RK37LnCFepKS0pR3K9foReBMbe4ZMt8IfTcltJzbwsOmSXFStE0XssQuOO5YeGQueN548nYXEtwsmBEhhZEioUWDRqwYW+A0EWasxCyTkctJdcs7cJACgGB7jCqlDx2u+0k786a0gh6YBNQ3qcvLNQxrsJ1G34PLIpx5kkdSGjdF0EW01AeW4gsHDJTUmp7lxQz4KW6Wosdt7wQPb+XAqE/GfCcgXrY7kslnsvp1mSl6lRdR5EZMrVP4Ey82tA+s6SewmaqO32mT7UZA0wSTGNKcy0zm7mBae6k0EuaMF6m/PHJjFpLITGAGR6MTDtLacBEhMP6C8I1HkBpKFoIX2kFMgGtTqYLRr0xysZi82v5xyZ1PqK4lTWCjGKxROcnN0LNDVqomy3FXyovvhPtD25O9PCD6GFfNPk10b3N4Hu4AMpzlIabrm1xW22/cpHM7G8jAkR4Vx4RhgopwJIlK2eeu9f4vWg0k7kKoL2dzPFFVQS6nXnPhbBzCvW9K+BUs0P3ULrC4s9rk9xabRLvf9Wmf6u1Sf6oNk2z+QxWsdavBFm8Aw==</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -545,7 +520,6 @@
 </tr>
 <tr>
 <td>
-
 <pre><code class="language-ts"><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`(y =&gt; y)(x =&gt; x)`</span><span style="color: #000000">)</span>
 <span style="color: #000000">{</span>
 <span style="color: #000000">  </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">,</span>
@@ -580,7 +554,6 @@
 <span style="color: #000000">}</span></code></pre>
 </td>
 <td align="center">
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="241px" height="91px" viewBox="-0.5 -0.5 241 91" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T10:20:17.929Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;xZETy3_wJtwz6eiXSjrZ&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>1ZjRcqMgFIafxnsFY83lbtq0N512pt3Za6JUaREySBqzT78YjgZj2k5n2kZuHPkB4fzn48xggBdVc63IuryVOeUBCvMmwJcBQuk8Nc9W2FkhwTMrFIrlVooOwgP7R0EMQd2wnNaDgVpKrtl6KGZSCJrpgUaUktvhsCfJh6uuSUFHwkNG+Fj9y3JdQhRheNBvKCtKWHnedVSkGwtCXZJcbh0JXwV4oaTU9q1qFpS31nW22HnLN3r7fSkq9IkJf2qq7lbPrSUo5GRlsrIfZCLjdipn4sVqz7VV+m9H/f76dWu96ywxgnHfNH6TjZa1TVlkmk9S6CWpGG9zff9oZt1KIaEDUhslpl2vScZEAdPGkUBwr1Rp2jgSbOmayopqtTNDoBddgMtAWRwCZVs3Z1YqnXRh0AhQUvRfPjhpXsCFrul4+67X+2dS6D7GdyxH3lkeHVmOx5bH32b5+DxgCIDwDZgG5851cbU/gW2QzBwEYwQV+a+2ShhVSEGtsmTtypfhZ/x909FablTWFZOughFVUO1mHoU0HxSise+KcqLZ67AufcLFr6A09o1SPJsWpTNfKY3PTOnuQzYT39iM0iM2kzGb+AfZvPCBTXSCzWTybKa+sYmO6+aZ2Zz7ymZ6Zjabj9h0LiOesInRpNjsA5g0m/GYzc7GCbPp3a0Iz6fFphe3olNs/tStyDQP/2D2fc5/LHz1Hw==</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -651,7 +624,6 @@
 </td>
 </tr>
 </tbody></table>
-
 <p>We choose to represent Yocto-JavaScript programs with the data structures above because they match the data structures used by Babel&nbsp;[<a href="#babel">2</a>], which is a library to manipulate JavaScript programs that we use to implement the <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> functions (see <a href="#parser">§&nbsp;1.3.15</a> and <a href="#generator">§&nbsp;1.3.16</a>).</p>
 <p>In general, the data structures used to represent Yocto-JavaScript programs have the following types (written as TypeScript types adapted from the Babel types&nbsp;[<a href="#babel-types">3</a>] to include only the features supported by Yocto-JavaScript):</p>
 <pre><code class="language-ts"><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Expression</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000"> | </span><span style="color: #267F99">CallExpression</span><span style="color: #000000"> | </span><span style="color: #267F99">Identifier</span><span style="color: #000000">;</span>
@@ -675,16 +647,13 @@
 <p>In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong>Parsing&nbsp;[<a href="#dragon-book">1 (§&nbsp;4)</a>]:</strong> The process of converting a program represented as a string into more convenient data structures.</li>
 <li><strong>Abstract Syntax Tree&nbsp;(AST)&nbsp;[<a href="#dragon-book">1 (§&nbsp;4)</a>]:</strong> The data structures that represent a program.</li>
 </ul>
 </fieldset>
-
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>The definitions of the data structures used to represent programs correspond to elements of the Yocto-JavaScript grammar (see <a href="#a-formal-grammar-for-yocto-javascript">§&nbsp;1.1.4</a>); for example, <code><span style="color: #001080">Expression</span></code> corresponds to <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.902ex" height="1.676ex" style="vertical-align: -0.338ex;" viewBox="0 -576.1 388.5 721.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">e</title>
 <defs aria-hidden="true">
@@ -695,10 +664,8 @@
 </g>
 </svg>.</p>
 </fieldset>
-
 <h3 id="an-expression-that-already-is-a-value"><span class="heading-counter">1.3.3</span> An Expression That Already Is a Value<code class="draft"> [](#an-expression-that-already-is-a-value)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -707,14 +674,15 @@
 <th align="center">Expected Output</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 <td align="center">—</td>
 <td align="center"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>Having defined the architecture (<a href="#architecture">§&nbsp;1.3.1</a>) and the data structures to represent Yocto-JavaScript programs (<a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>), we start developing the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function. The development is driven by a series of example programs that highlight different aspects of the interpreter. In <a href="#an-expression-that-already-is-a-value">§&nbsp;1.3.3</a>–<a href="#a-reference-to-an-undefined-variable">§&nbsp;1.3.12</a> we begin with these example programs and modify the implementation to achieve the expected output.</p>
 <p>Consider the example program above. As mentioned in <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>, the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function receives as parameter an Yocto-JavaScript program represented as an <code><span style="color: #001080">Expression</span></code>. The <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see <a href="#values-in-yocto-javascript">§&nbsp;1.1.1</a>), so we start the implementation of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> with the following (we use <code><span style="color: #0000FF">throw</span></code> as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):</p>
 <pre><code class="language-ts"><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span>
@@ -740,7 +708,6 @@
 </div></code></pre>
 <h3 id="a-call-involving-immediate-functions"><span class="heading-counter">1.3.4</span> A Call Involving Immediate Functions<code class="draft"> [](#a-call-involving-immediate-functions)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -749,14 +716,15 @@
 <th align="center">Expected Output</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code>NOT IMPLEMENTED YET</code></td>
 <td align="center"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step&nbsp;0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the called function with the argument. This is similar to how we reason about functions in mathematics; for example, given the function <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="11.788ex" height="2.843ex" style="vertical-align: -0.838ex; margin-left: -0.057ex;" viewBox="-24.5 -863.1 5075.5 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">f(x) = x + 1</title>
 <defs aria-hidden="true">
@@ -880,7 +848,6 @@
 </div><span style="color: #000000">  </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre>
 <p>Finally, we setup an auxiliary function called <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> that implements the traversal of the <code><span style="color: #001080">body</span></code> looking for references to <code><span style="color: #001080">parameter</span></code> and substituting them with the <code><span style="color: #001080">argument</span></code> (for now the result of substitution is restricted to be an <code><span style="color: #001080">ArrowFunctionExpression</span></code>):</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="601px" height="312px" viewBox="-0.5 -0.5 601 312" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T21:38:49.873Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;fz0L9eT2jwWXTwq6Rcz6&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7Vxbc5s4FP41mdl9CCMQF/GYxHHb3Xab3WQ3TV462Cg2CTZekGO7v36FEcaAAPnCxd5mOh1zJJD8feemg6wLeDNZfvCt2fiLZ2P3QgH28gL2LhQFmYj+HwpWkUDVtEgw8h07EsmJ4N75gZkQMOncsXGQ6kg8zyXOLC0cetMpHpKUzPJ9b5Hu9uK56VFn1gjnBPdDy81LHx2bjCOpDkAi/4id0ZiNbMYNEyvuywTB2LK9xZYI3l7AG9/zSPRpsrzBbghdDEt0X7+gdTMvH08J54a/A+x/HbyGkCjAtQaUlXUneoM1wQT70f2uM32LGkgQSeIBVG0zyc3gAVnFuBC8pMNeB8T33vCN53o+lU+9KW2+fnFcNxZdKPBl/UflluuMplQ2pFOmE4DX79gnDsX6ijVMHNt210/wpqRvTRw31Jq7Bzr0F2/qsQamJLIejj+zhs50RC9BOMCceAFrpZd5iBhq4bh4uSViX/MD9ig2/op2Ya0GY49pr6Ky60WiC3JM+XhLD2LWLaZ+o82TE4roB4ZsfLlFGp911WBfwHLnjAimXQkz9A5qHCGKi7FD8D1FKGxZUPOksjGZuAyeDE39PqB/RZxawSwyrxdnie3jgCvLWhpdg4duHlx5d3CLzMHyR/NJ+A0qrEFTfloD5SfNFwR5vszajKGIwoFnr6ro08FP+ig3GfrMPH1a4/QF80FAHDIn2L4WYPL3z88BWaLZwh5cfvi4WLy+yd8vz4beHJccxgvphaYpQaOSYllvLl493cKpNrMsZ9F7Rm9Xq++9P8hlPH5ZEBv53nxWiAlL9qxB3B3sipWZjusQ5nHiwQR3hymHiQbri+HARLqGDojh5YQJexpFqyuQ5+HUzx9OLZOF1pYm5dEVSDipqU7tEIC1X/N8MvZG3tRyP3vejOH6iglZMV8YOr406nhqX4VLtQRaKuk74aR6+YR0m5cdEQ+8uT/EaTMkNAXEJK1L2E4tCvO8+Ni1iPOeXiMehLN6xlrcgtpq/yu1VdtSW/605Wrw647vStpjqpz4zs2DjCMonz8hN4+uevfuvv7749Huj26+Pl7qSo0GDvZYuVekmiXMFidVUDKaC/x8mGtMrvYqkNQAs9xeOsDHXMDeW3C2sVFwfWPaqZZa7LanLdW5vXk9ulvmT7POFKMjHggaUqak2LZtCKx1z9o21NOwjW7mizFNeOmQb6xX+PkpfiL93FtuNfRW7GJvYlVRYlFTxLJb7zwnLNPHlq6bUqYarSrpZ0Tfld2W0Y/NPA5QGYG6QwdURu6QyhjtqoxhtK0yNb6960oEziLcdvxFZwx5VzA2T8ITNhA8DUFPaCjtekJTkxRZVXUdmCrQDQWmbRZJGtQ0CE2gmVAx4kjXkJc0up0yNxhYhdXpUEdyoDrJAOUiq9mszgiUIE6+7APSZR+9ZbcfO7GzDK38F28NQs6frUB1s+7KOg0LkpnZScIrr3Pfn5tHQGb55bO8+Ac9XN8NZPnp0199Z/5wJuV1WO4AoCrBBgvsfKDr3L3QEaBVmA1nDZYR+ah3OycSyHBKrXY7wynVur2ZPXoZkT9NgRJ7B1LXo66ESvmqJla4JnQosQWpqwwSn1p7VYgPwWnUno+63jlQafS2lQa1rjR17nrrSBhG2Zd5DRa6Sp3VWYLeFYwFCrYd8IYNhFBd0BsanCVco94QahKCZvvVRD6Mp1GcFo+ulGN/9W374mn7IrlpfdWcFjaWoRdooWrmY7JYEZLzLFnSVQOpMjRNZKA4rY+rQLJk6qZBdV6BhqybMD1KBFVtCi1SHj/ZINR62a1UtzuzObuO4pKidQvzrm2IrwPzjJ6jtjEXKKK2vmt+9xhmiK4rDeHNaq1WmQyBgsHJmwbomGl0c49zc6ahnYZp1LndpyOmoSgdezfRTdPYrLCaXS8pogYlvH+2pvWSCSRT1hUTqKoCDHbARaJUUIIyov8ATVIUDcXNTS1yBFbtJ2/Hmeyv7cqbcQo/9d0jxCFRizRPIsShOtf/XTEN0DHT6OZe/8ZMAzVWYj5oe5RQ9pegPHC94VuagxzGV30Aete0ZTj339fsyili5GL4BbZUVRy8E8sO3e2bMabsWS/CZVG94kEFSQHF21ptdZuFHYLi+Wbjogr404rbjfJ2DRS0x7t90sNVdc+CUDQ6v7sml3fPnDenZU8BLKe2qnt2Va2aFf2VHZ+v7fZt5Qz2KtoJHVWreHyWK72if9ZSKqaTC1NFmho/Pzv/qv5ZS4AV/WGmf5ou+iEyxX1T9T/JY28OP81+u3mG/vjp43eC8WbFs+1jqSu8Z5dJILxNpNeHB0vOe1ggaaVvzsrWiOWhV9TDp2MuHy5wYIQsoB5lqAdAkgFUVaQYGtKzD9x7+VZ9itsvv0ZDFR/hVo1L/gi3RGHWaWvRkWuWP2QqAy9yR6xZg8Bz6QyvNp3ktSoSK94PHT+bf2rbkY5p26Sp8dljiLOlN7bkAw8fEzmjjU+HyA8q6jfzQqI5aVw6KcvSWGDCgvYqxO+BJgzzJlyz0T74FtXkwHLT9snNrdH2l27/iMV77DsvpdYK8g4g7MzL7Y9g1BnuNM4PIhDHpI9z7CIVJedIR+qQnMUNb/8D</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -978,7 +945,6 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts{13-19}"><span style="color: #008000">// run()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span>
@@ -1012,7 +978,6 @@
 </div><span style="color: #000000">}</span></code></pre>
 <p>In our current example the <code><span style="color: #001080">expression</span></code> is <code><span style="color: #001080">y</span></code>, an <code><span style="color: #001080">Identifier</span></code>, and it must be substituted with the <code><span style="color: #001080">argument</span></code> (<code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>):</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="491px" height="282px" viewBox="-0.5 -0.5 491 282" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T21:48:51.179Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;Rv0rVVvNJ_OAsZCgRwif&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7Vpbb+I4GP01SLsPVEmcG49cStvdzm5HnVGnfalMYsCtiSPHKTC/fhziJIRcaQu9qDwg/Nmxne+c4+8kogOGi9UZg/78G3UR6WiKu+qAUUfT7J4tvqPAOg6YwIgDM4bdOKRmgWv8G8mgIqMhdlGQG8gpJRz7+aBDPQ85PBeDjNFlftiUkvyqPpyhQuDagaQYvcEun8u7UJQsfo7wbC5X7iUdC5iMlYFgDl263AqB0w4YMkp5/GuxGiISpS5JS3zduKI33RdDHi+54GeA2P+ThyglmkLgRKCyGSQugAvEEYuvJ9h7jDt4EEeSBXQj3WS6eMDXSV44WollBwFn9BENKaFMxD3qie7BFBOShDoamG4+Ig4Jnnki5ogtiw2AwRNiHItc92XHArsu2cxAPT6GC0wi1lz9EEt/ox6VHZIkqhmt70MHezPRVKIFQk4D2SuaxRTJrEXrotVWSN7mGaIiN2wthsheS6In2ZvScplxQU0gn2/xIEEdSvrN0pkziMQPmdmkuQVaLYiQzcJFdFMNGBraF4YCQyOPoV3EsHd0CCfUXTfBZypf8Als8vCBXhE+4+jwBeEk4JiHHLmDFkj+e3kX8JXtL91J9+x8uXx4VO+7X/DGePZOgNUIsWoeDONCbb09BZ7hQ4iXozv7sb++H/3Hu5Y0Mk+QhBIhWdgzyJDn9iPPIVoTQh1BhsGcL4hMVh5JAVt/rCijgehxQvaEXDlMTDLGhDRlGLk541LMb4M+khhDBHL8lLc7ZQmVK1xRHBWeVJ35AqnvQhLQkDlIXrTtZ3bmSfGtmoiLood4YSKRb7jeGuZHA4L2+zWV/bbVNF4vv42MjPGGM2qmiJWxtUDN7/xmFIIL/5/hHWDz2/N7jlDXLGGiYMe1bFLG53RGPUhOs+iA0dBzN6SLdJ2NuaTUl9x7QJyv5VkQCT9PZ7TC/Je8PPp9G/0+MWRrtNrqGq1loyABZfOJWZ9IR55xmQ6UOh3EBKvLjtJSMC9UgmrvQK8oJ6oCdN0WDsQ2dyes4HMzJ5pL0l9/N9WjmkRV1qOMMGpd/YDMkZQBxXoBJwElYof9dJC6oSKHHE4I2pq7vAS9Us1JbXxScGyjWHBAyaEJDlNwyuFIbquu4Bxe5pVAlxS7fOnahfH9SxgUJXxg0f5gUNA2gCSvz1IHYm/f9Nv7xWvE8HRfwxgNLnNAryDqXeysoom0j/6cUHgyeNg5ibvDCcfnpnPeG156p+ogDAhoOolFAPsBKs/unqa+1JiOx7IqV2BQglQlLKqy8/itF3E54lFr+MFdF91QfvHzypk+nKGL71rXNJuP2pk4Sf3KfMjXj7KIdVJWtc/Tzpsm0PZNk7l/nqrIuvk2ZzwFvpq25WmsP6AOTlulZ5uG3Za2NUyoflgtgqIfjLtVMK2eB079u8CPDM66Epw3P1hACw9HJhsTlZTeFg9D7TFpQGHHULXGIO/Zag4DTYktU1tiPsfL7XnKPVM++qeVT0UBeodqMr7U1KgmvRzkQ6mp0eCW79J6WzUd0uCmby7fk3J6zco5tMHVtcKL/rJUvXeTa73xs9lrFIJeLVAf2ORan+AJpAKc91uWLe3TleVey7KceKbGsmy99IXlUUyuBT6tfD6MybX0LzU1qgmUg/xSNYlm9oe8+KV+9qdGcPoH</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -1138,14 +1103,12 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts{3}"><span style="color: #008000">// substitute()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span>
 <div style="background-color: #e0ffff;"><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000">;</span>
 </div></code></pre>
 <h3 id="substitution-in-function-definitions"><span class="heading-counter">1.3.5</span> Substitution in Function Definitions<code class="draft"> [](#substitution-in-function-definitions)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -1154,17 +1117,17 @@
 <th align="center">Expected Output</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code>NOT IMPLEMENTED YET</code></td>
 <td align="center"><code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>When <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> (see <a href="#a-call-involving-immediate-functions">§&nbsp;1.3.4</a>) starts traversing the <code><span style="color: #001080">body</span></code> of the example above, the <code><span style="color: #001080">expression</span></code> is an <code><span style="color: #001080">ArrowFunctionExpression</span></code> (<code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code>), and we want substitution to proceed deeper to find and substitute <code><span style="color: #001080">y</span></code>, so we call <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> recursively (we use a feature called <em>spread syntax</em>&nbsp;[<a href="#javascript-spread-syntax">23</a>] to build an <code><span style="color: #001080">expression</span></code> based on the existing one with a new <code><span style="color: #001080">body</span></code>):</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="505px" height="322px" viewBox="-0.5 -0.5 505 322" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T21:59:01.277Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;L8GRUyrTQfOJWiMNf885&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7VvbcuI4EP0aqmYfSNmWbzwGCElmM7uZykxlk5eUwAKcCIuSRYD5+pGxfDeWyXBxsslDymq3ZblPn+5W27RAb7a6pHA+/UYchFua4qxaoN/SNGB0+P9AsA4FmqGHggl1nVCkJoI79xcSQkVIF66D/IwiIwQzd54VjojnoRHLyCClZJlVGxOcvescTlBBcDeCuCi9dx02DaWmoiTyK+ROpuLOnejEDEa6QuBPoUOWKRG4aIEeJYSFR7NVD+HAdJFZwusGW87G66LIYyUX/PQR/Xf4HJhEUzAcclQ2Spv/5oRf0g1nwK73Ep569kNJdAtj7j+20T1h1z9vR+PnS3T9XWtbydrjNflsHZmLCzgyfNCFC0b8EE6VD8fEYwM4c3HgB7c/+FXfiEfECQG7avKxP4cj15uIy3xGyQvqEUzo5gZA6dimYcerTz+/MMkrogytUiKx2EtEZojRNVcRZ/WOfgas8Crhnroh4FomYOtCNE3hDIQMCveaxJMnEPADYaJomAKlEiT+VJBPh2geIpaDSDcq0eB2YAUjesQL8Bm7GKfsOt78Bbhhd+Jx2YjblS8AdAN7upwQ5+LEzHUcjN4GqVJ0jD3gaCkZDOPYkcJQVUpA1A4KIqSTxSx4KAmGhvaJIcfQyGJoFzHsHB3CIXHWMvjM6oD4P4Gvk4UPdIrwGUeHz18MfeayBUNOtwaSf988+mxlz5fOsH15tVw+v6hP7U94Qzw7+UxZBrFqHgzjQgH0cAE8Yw6hu+w/2i/n66f+P6xt2eLJIF4IhET1lSpRPOc8KAz5aIjJiDtDd8pmeFvBcT5QlH6Xnxkt6CtyhBqfZOBiLLMwcjLVZdG+En5EMoowZO5rtiYtM6i4wy1xg8QTszObIPU8JD5Z0BESF6WLztw8qi2ZiPGkh1hhIm5vuE6pzQMFf/t6jdxtTKVyWblVGUq1uqrmprcl+lpO35Do6zn9jkTf2nH9eTgtiX4eNdn68+bP7iz4QYhnwtzYocvIXGDud3bfX4Dr+dfeI6DTh6snhlDbLCEqJ8+dGBLKpmRCPIgvEmmXkoXnbDgZhL1E54aQuaDmM2JsLUJlEBezbEcrl/0nLg+OH4LjM0OM+qvUqf5aDIpbks1fGBSiyCJSQBImlKowEfKvyjpKzXjyh4Gi4CqKcqYqQNdtXqDZZn7CLXSX+4Q8Y3/5S5auKwy1NV0nDlO5J4V0JFwGFNMpHPoE8xWex0rqxhUZZHCI0/vd7dvaPaRkLRfFgG0U8zEoySn72brWZHX0WFX5+PA03wp0SS2Qzex5GJtPYVCk8IFJ+4NC7rY+xFl+lhZodvqhT19O3yHqjnetpwPlsgJxD6TOVzIlnQy7hNKH3UYVNk75RmG7N2TulTm66vRuvAu1u/AxkEXigzcKBwORlfcAi6rkuhN6EZcjhtrSxqxpykPthEfSeX17xF11kdda6c51jUYcqNuIM3e306H622Z1gDplf7sa9vp7+SZ0uFdvA6e6VfqewVlvBefkgQXUqOHwcFNERam3xmaoPib7QiFdolVwX1PCCknqh/us5XaMcm+kj/5h6bMlATWQTcYnm0rd8ghsKiBUZ3uaqplqF0gl5VVdl41bqs2smU6egZVMVV+CSNry5juohH5JTQ4+gskbEZGjSNOc4Ju1bS4Cllk2G3ijQiQdYzP+coRaRNoeMKs/Ujl2J+DPYkajKow6e/73789GOSCH8ucdsqF1Ys/eLTRLPoYzCq/4y2qRBiZIy/xAKGhFFEo+STxijLGsdxxjSkJM9KFZOsRkPOiQGw6r01RjcpPRdfwqPBg8pAfJq/DNKHoXvj8I5B8b7+8VmaGoWYbpZnaKvb8ie1u/xmpuL3rnVygGKH5rXfIF2anbM5bWNIJKMZA2YqKSVU63ul+tNautaZ16g7zPnySY74MmjdtIH5Mm4Eg04cPk90Fh8kl+YwUufgM=</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -1326,7 +1289,6 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts{3-6}"><span style="color: #008000">// substitute()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span>
 <div style="background-color: #e0ffff;"><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> {</span>
@@ -1336,7 +1298,6 @@
 </div></code></pre>
 <h3 id="name-mismatch"><span class="heading-counter">1.3.6</span> Name Mismatch<code class="draft"> [](#name-mismatch)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -1345,17 +1306,17 @@
 <th align="center">Expected Output</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #000000">(</span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>The implementation of <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> in the case of <code><span style="color: #001080">Identifier</span></code> introduced in <a href="#a-call-involving-immediate-functions">§&nbsp;1.3.4</a> <em>always</em> substitutes variable references, regardless of whether they refer to the <code><span style="color: #001080">parameter</span></code> of the called function. For example, in the program above <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> is substituting the <code><span style="color: #001080">x</span></code> even though the <code><span style="color: #001080">parameter</span></code> is <code><span style="color: #001080">z</span></code>. To fix this, we check whether the variable reference matches the <code><span style="color: #001080">parameter</span></code>, and if it does not then we prevent the substitution by retuning the variable reference unchanged:</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="500px" height="322px" viewBox="-0.5 -0.5 500 322" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T22:01:15.051Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;_7n10jHyU80J8B2enFTl&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7VrbcuI4EP0aqnYfSNkWNuYxQEiym9mdqcxUNnlJCVsBJcJyyXKA+fqRsXy/soHgTIUHym61LblP9+ljQQ9MVptLBt3lF2oj0tMUe9MD056mmSNTfAeGbWgwgB4aFgzboUlNDLf4J5JGRVp9bCMv48gpJRy7WaNFHQdZPGODjNF11u2JkuysLlygguHWgqRovcM2X8qnUJTEfoXwYilnHkUDKxj5SoO3hDZdp0zgogcmjFIeHq02E0SC0EVhCa+bVYzG62LI4SUX/PAQ+3f+HIREUwicC1R2TuICuEIcsfB6gp2XcIB7oSWaYKDHi4wn9/g2igtHGzHt2OOMvqAJJZQJu0MdMTx+woREpp4GnnYfYYcELxxhs8SSxQLA+BUxjkWsz+XACts22d2BOnwGV5gEWfP1u5j6C3WoHJBJohrB/C60sLMQp0owgc+pJ0fFaTFEMmrBvGiTMsnHvERUxIZthYscHUr0ZPbGablOckGNIF+m8iBCHcr0W8R3TiASBzKy0WkKtFoQIVv4q+ChGjDUtU8MBYZ6FkOziOHo3SGcU3vbBJ+hfMInsMnCB0ZF+PR3h8/z5x7H3OfIHrdA8u+bB49vTHdtz/uXV+v184v62P+EN8RzdAaGjRCrxtEwLvTW+wvg6C6EeD19MF/Ot4/Tf3h/KIXMKyS+REg29gQy5NjngeYQZ3NCLZEM4yVfERmsLJICtvOZokzHYsTy2SuypZu4yQwT0hRhZGeESzG+DfUR2RgikOPXrNwpC6ic4SvFQeOJqzPbIAd5SDzqMwvJi9J6Jncf1Wy4ERdND/HCjUS84Tbl5gYOXvV69dw0hlK7rNyqdKXeXVVztzcb/LWcv97gP8j5jxr8h3uuPw/nsME/j1rT+vPhz4pWcRDimVRunNBlxVyo3G/8buqDa/evyQNgy/urR45Q3ygpVFE8t/KUMr6kC+pAcpFYx4z6jr2ryYD2Ep8bSl1Zms+I862kyoAXs9WONpj/Jy8Pju+D4zNdnk03qaHpVp4UGELZfUJSiJhFtoCEJpQ6mgjrry46Sks+eSNRFFJFUc5UBQwGphBoppG/YUW5N+dEc8f+48+mdl0TqMp2nSSMWtdeIbNkyoBiO4VzjxKxwvPYSd2lIocczglK3bu8Qx+oJWs5FgOmXuzHoKSngOP043I4oseq68fHL/NKoEu0QLaz52HsfgmDYgkfuWi/MyjS1oMkW5+lAs1MP/Tp5fQtYvhpXz0dOJcJxAMUdV7JlOxkmCUlfdzXqJ95Jn7OMXF/Muf4yrCuRpMb50Id+x4BTUwsDNj1UHl093znKdXts5nsygeARVVyuxODIi7vSLW66z300R3l1z++Wk/Pl+j6m9Y3jGaqXQgmddvHI96wlX2tl94UbbERB9puxBn7x6kqWXffxoLHwFenbXkY6wnq6GmrjExDN0vTth729u/yRVAGR8vdKpgKmzHtwKnfKv3I4GwrwTk5sYAWGo7MdyIqar0tXobaY3IoFNISrab2NSVUSI15eEgttyfL/c/yGfy25VPRgDpYTfpnNZWm5TtUUwGhNq+n76yZ4i3Vbmqmk3dgpVLVG3vL+k4ooU1jyMHvEPJOMHLENN0h3+bYpnk20h1pSo3k2cm0SHMC1/9J5YMkcBcVRpt3/g+Xz/qp1MBwtJcaaN36S4RDZXoNtMIP7R1XBOaJ9/lyKVeCSjr6IcYfXBE0bKJ/kJB3gkFNrdsMmmPBsshmKTX6eSBNqWbXFIHZLUn7Ns7olCIwO65wD5PPoByQt+azOE3+6h3+Hpr8XR5c/AI=</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -1499,14 +1460,12 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts{3}"><span style="color: #008000">// substitute()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span>
 <div style="background-color: #e0ffff;"><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000"> !== </span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">) </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000">;</span>
 </div><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000">;</span></code></pre>
 <h3 id="name-reuse"><span class="heading-counter">1.3.7</span> Name Reuse<code class="draft"> [](#name-reuse)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -1515,24 +1474,23 @@
 <th align="center">Expected Output</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #000000">(</span><span style="color: #FF0000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code></td>
 <td align="center"><code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <!--
 | `` js`(x => x => x)(y => y) `` | `` js`x => (y => y) `` | `` js`x => x `` |
 <code><span style="color: #FF0000">x</span></code>
 <code><span style="color: #008000">x</span></code>
 <code><span style="color: #795E26">x</span></code>
 -->
-
 </figure>
-
 <p>In the program above, <code><span style="color: #795E26">x</span></code> could refer to either <code><span style="color: #FF0000">x</span></code> or <code><span style="color: #008000">x</span></code>:</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -1541,7 +1499,8 @@
 <th align="center">Then the Output of Example Program Is</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><strong>Option 1</strong></td>
 <td align="center"><code><span style="color: #FF0000">x</span></code></td>
 <td align="center"><code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code></td>
@@ -1551,13 +1510,12 @@
 <td align="center"><code><span style="color: #008000">x</span></code></td>
 <td align="center"><code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>Currently <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> is implementing Option&nbsp;1, but this leads to an issue: we are unable to reason about <code><span style="color: #008000">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">x</span></code> independently; we must know where it appears and whether a variable called <code><span style="color: #FF0000">x</span></code> is already defined there.</p>
 <p>We avoid this issue by modifying <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> to implement Option&nbsp;2, which is also the choice of JavaScript and every other popular programming language. We change <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code>’s behavior when encountering a function definition so that if the parameter of the function definition matches the parameter that <code><span style="color: #795E26">subsitute</span><span style="color: #000000">()</span></code> is looking for, then <code><span style="color: #795E26">subsitute</span><span style="color: #000000">()</span></code> returns the function unchanged, preventing further substitution (there is no recursive call to <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> in this case):</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="500px" height="322px" viewBox="-0.5 -0.5 500 322" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T22:07:08.341Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;8f6yjkPPo5QL37UzM_ti&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7Vrbcqs2FP0az7QPzghkMH70NUmb0+ZMzpk0ecnIoNgkMmKEiO1+fYURdwy49YV04gcP2tpIYq99WRJ04Hi1uWbIXX6jFiYdFVibDpx0VNUYGOI/EGxDgQ61ULBgthWKlETwYP+NpRBIqW9b2MsockoJt92s0KSOg02ekSHG6Dqr9kpJdlYXLXBB8GAiUpQ+2hZfyqcAIJHfYHuxlDMPoo4VinSlwFsii65TIjjtwDGjlIdXq80Yk8B0kVnC+2Z7euN1Mezwkht+epj9OX8LTKICguYClZ2SuAGtMMcsvJ/YznvYwb1QEk3Q0+JFxpN7fBvZheONmHbkcUbf8ZgSyoTcoY7oHr3ahESijgpfdz8hR8ReOEJmiiWLBcDRB2bcFrYeyo6VbVlkNwJ1+AytbBJ4zf0PMfU36lDZIZ1E0YP5XWTazkI0QTCBz6kne0WzaCJptWBevEmJ5GNeYypsw7ZCRfb2JXrSe2O3XCe+oESQL1N+EKGOpPst4pETiMSFtGzUTIFWCSJiC38VPFQNhpr6haHAUMtiaBQxHJwdwjm1tnXw6eALPoFNFj44KMKnnR0+z5973OY+x9aoAZK/3z17fGO4a2vevb5Zr9/elZfuF7whnoMr2K+FWNFPhnGhtj5NoaO5CNnrybPxPty+TP7g3b4kMh+I+BIhWdgTyLBjDQPOIVpzQk3hDKMlXxFprCySArbhDIDJSPSYPvvAllQTg8xsQuosjK0McSnatyY+IhnDBHH7I0t3ygwqZ7indlB44ujMFsheHhKP+szE8qY0n8mNoxg1A3FR9DAvDCTsjbYpNTdQ8PavV8tNo4PKZeVWpYFqdUXJDW/U6Ks5fa1Gv5fTH9To9w9cfx7Ofo1+HrW69efNnyWt4iLEM4nc2KHLgrkQud/548SHt+5v42fIlk83Lxzjrl4SqCJ4HmSTMr6kC+ogMk2kI0Z9x9rFZJD2Ep07Sl0Zmm+Y861MlUFezEY73tj8L3l7cP0UXF9psjXZpLomW9koZAiw+4VJIcossgQkaQJUpYkw/qqsAxrmk/+YKAquAsCVAmCvZwiCZuj5AfeEe71P1FfsX36tK9cVhtpbrhOHUarKK2KmdBlYLKdo7lEiVjiMlZSdK3LE0Zzg1NjlFfpIJVnNZTFoaMV6DEtqCjxNPS6HI3qsqnp8+jDfC3QJF8hW9jyM7Q9hWAzhEwftD4aE23qIZOOzlKAZ6Ye+PJ1+wMx+PZRPB8plBPEIQZ1nMiUnGUZJSJ92G7XJ4todz7l9o5s3g/GdM1VGvkdgXd4VAtv1cLktD9zhlLL02UzW4Bw4sfwI4Cggd0bRK6JzxoSrud5zFz9Sfvvz3nx9u8a339Wurtcn3IXIp25ze8THtrK6ddJHow2O42DT4zj9cDvtc9ndv77gMfAJjXjLH7+VmrE6TZ3cncHA0DWj1G2rYW++oy+C0juZ7+6DqXAk0wyc6gPTzwzOdi84F08ssAGTI/MdlYoKcIMtUXNMjoVCmqhVxL4KQp5U64fHZHQHZrl/GT69/2347ClALYwm7SuaSt3yDNFUQKjJJvXMnCk+WG0nZ7p4BQZ7Wb1+MK1vBRPK7bHCatsCA+e2UwAYRzB8K/JylG/ak4LrnTqdbSP2kU6sEUm7GCPJu3H15ykXc+P+QJuq5cd5h+ePVrGNJvv/T+fV2qWYQX9weWbQUwuv3lvODowLnwVWuFwM6KdmBzWH6G1kBwcYvhV51FA/Tx6NbJvOo9FbgnQeNZp+lHImdmC0lORWsIPD80er2IHxiThvY68+F+cVzeRD8PBtafIxPZz+Aw==</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -1691,7 +1649,6 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts{3}"><span style="color: #008000">// substitute()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span>
 <div style="background-color: #e0ffff;"><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">params</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">].</span><span style="color: #001080">name</span><span style="color: #000000"> === </span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">) </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000">;</span>
@@ -1701,16 +1658,13 @@
 <span style="color: #000000">  };</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong>Local Reasoning:</strong> The ability to reason about a function without having to know the context under which it appears. Option&nbsp;1 defeats local reasoning and Option&nbsp;2 enables it.</li>
 <li><strong>Shadowing:</strong> The behavior exhibited by Option&nbsp;2: <code><span style="color: #FF0000">x</span></code> is <em>shadowed</em> by <code><span style="color: #008000">x</span></code> because there is no way to refer to <code><span style="color: #FF0000">x</span></code> from the body of the inner function.</li>
 </ul>
 </fieldset>
-
 <h3 id="substitution-in-function-calls"><span class="heading-counter">1.3.8</span> Substitution in Function Calls<code class="draft"> [](#substitution-in-function-calls)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -1718,7 +1672,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><strong>Example Program</strong></td>
 <td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">y</span><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000">))(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 </tr>
@@ -1730,12 +1685,11 @@
 <td align="right"><strong>Expected Output</strong></td>
 <td align="left"><code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>This case is similar to <a href="#substitution-in-function-definitions">§&nbsp;1.3.5</a>: all <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> has to do is continue traversing the function call recursively:</p>
 <figure>
-
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="544px" height="362px" viewBox="-0.5 -0.5 544 362" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T22:15:12.590Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;CBvrOUY_KjD85OVVFj0H&quot; version=&quot;13.1.3&quot; pages=&quot;2&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7VzbcqM4EP0aV+0+2IUQAvEY27ntZHYzlZmaTV5S2Cg2CUYukBN7vn6FETZ3cAyGySYPKaslBO7TffqCkh4cLdaXrrGcf6UmsXuyZK57cNyTZaxj/tsXbAKBClEgmLmWGYjAXnBn/SJCKAnpyjKJF1vIKLWZtYwLp9RxyJTFZIbr0rf4sidqx++6NGYkJbibGnZa+tMy2Vx8C0nay6+INZuLO+vhxMII1wqBNzdM+hYRwfMeHLmUsuDTYj0itq+6UC3BdRc5s7vnconDMi744RH3n8mzrxJZso0JR2W7iF9gLAgjbnC9bTkvwQTzAkl4AwXtHnJ3c49tQr0wsua3HXrMpS9kRG3qcrlDHT49fLJsOxT1ZPi0/eFyw7ZmDpdN+SPzB4DDV+Iyi+v6TEwsLNO0tztQh10YC8v2reb2O7/1V+pQMSGMBKj+/ZfG1HJmfCj5N1gx6olZPkyrSGjNvy9ZR0Tia14SynXjbvgSMasJ9IT17szybW8LIIR8HrGDEHVDmN9st/MeIv5BaDYcRkArBNFwZ6uF/6VKMETyJ4YcQxTHEKcx1E8O4YSamzL4VOkTPo5NHD6op+FDJ4fPW008ZrEVI+awApJfbh48tsbLN3PSv7x6e3t+AY/9T3gDPPUB1EohBmpjGKdi6/05dNDSMKy38QN+Ods8jv9mfU0kMq+GvRIIicC+h4w45pmfc/DRxKZTbgzDOVvYQllxJDlsZxeSNB7ymenKfSWmWMY3ubBsu0zDxIwlLmn9lvhHKHOJbTDrNZ7uZClU3OGWWn7g2XlnPEAqSUg8unKnRFwUzWcS+wBcshHjQY+w1EZc38YmsmzpL/DynzcR0BVFKnwslFiOi5cntIGk4uUAJLbXStbDA9cn9kfgsP0RKlmf0CZKJq1lIOsl65P6LNlfPvD5ZfWw50nur5TpR0msh7H1/ENgvnui2vlvFneliOob+zlewevlX6MH6M7vrx4ZIX01g5c4V9yJIXXZnM6oY9jne+nQpSvH3FKQz/L7NTeULgUTPRPGNiIy+GEgTm5kbbF/xeX+53v/8wCJ0XgdmRpvxCBFiNL2J+DAkEhFxNuzolTEigHdFGlHqkifR/JiytQlaQAkqCiY56NYTW6Yw27lNlGeoPzxZ68kOylQVG52sjcYUJRNGO5UmAxMZw/GxKM2f8Kz3SKwNUVmMGNik8je2QlJTRmInGBJiEXGGU0/Qs+PhtBQVnP6kQ1H+LWK0o/m3TwX6IzUJ57IJGHsvgvDtAs37LTfXYObrWfYcf/MzEdx9Eu3Xz3cEdd6OrR88Bdn5cM1ODXOzgSiPo0zXLrZqjFVJz4nmLg/mjDrSp1e6aMb5xwMV54Ny5iYC6ylR7K1e2CJl1mmXFyIqFwDLEBKNGOUNC4npFq09B765Cdl1z9up0/Pl+T6m9xX1XKqnXEmXVbXx64/LeJaL9oDrtB3hFX7jurhesoz1u1vdcZ2wOebbbYaiwmqcbOVdKwinGm2xbBXb12kQVEas908mNbvA0f+sOBscsFpnVhghRzOnmyTqDD0ViiGqmNSFwrRFK3A92UpyJBK7bDOXO5Alnun+ygf1n1yAlAHvQl9elOmWZ7Am1IIzbTbx6XkXPRHEv7ybWle37Avfb0CQpFEqnLWlJFzVbXjXVs59moBpS0ZJIu9IzimNO3P1h5sl2MSaX8GOlEUCgwgF5tE91U7JcfkYcVJwn4XXPi0VVpjoCQKZ5juhWW9iWuI+LM1LbdL/JkcW1nxcb4vMKU435dTRH2NL6QNoKpgVcaKrOhIi7+d1eQBQpoOkC4rqqJo8d3f3ROriL3yib3YUWkEe6DKAxUiADWANASUAuix3vRLjHcGzpaT8+YDJ4DxLlonImever+o9e6DlNvRLE5kf6/W0K9SHFpOMRvEoRN1q9pytKpN4dGwFbZsohEq7GydvvCs0qz/ECouzBaafhWqwQHCiqZBFUJVUoAeCz8QDWQV61iDSNd0qCHUcF7w7iIt+GuEbhVpxYFEUVLHIxXUvZpM19t1w0w3KD1eUGAjFZwPSFojzqYgZaBrqioBDWgYyGocfV0ZQB1CHctYBlgLp09UgO36Ym0hzfF0N7uTZv7gPjrYnzTbjsKjZq3YB2ioPJfwQMIA+qW5DnUVw4SBoAHYnjXEGOiaDJpm4wMS/xyT6lY5cBRfZxxnz+o5d7AYyMGmWyXCcdioGbG01QIhR+cdLxtqoVHh9ZXi7LE8etRbrN2RpU840jl0jVmPIg90tK8x5ISfJmuMzge1aHLY/hGB44gTp4lTTxchHTz8lIPNacvAZrFBKWxQxku79oNayxViGQg1sahWOagdS6N1H3TKqWFaPnxcp6so8u/hKqDK33r8j1wlZoMncJWjYz9ou2iq0WlQ2ml+69gPunV08zhCSzcbuklonaugmiA0ACsT2rFnN04U+9WP4yoo3fvppqton66Sa4M1ugof7v/3VtAm2P//Mnj+Hw==</diagram><diagram id=&quot;yXMqpa1IgjGufazfH77A&quot; name=&quot;Page-2&quot;>7Vtdb+I4FP01SJ2HXcVJgPDYDzor7YxaqV3t9tEQN4SaGDmmhfn1ayd2Pk0SKAHC9KXCN4lx7jnn3utr2rNuF+vvFC5nP4mLcM803HXPuuuZpjNy+F9h2MSGgdWPDR713dgEUsOT/wtJoyGtK99FYe5GRghm/jJvnJIgQFOWs0FKyUf+tleC89+6hB4qGZ6mEJet//oum8m3MIzU/hfyvZn85pG6sIDqXmkIZ9AlHxmTNe5Zt5QQFn9arG8RFq5TbhltPh4f5q/Ow/MYj1f019PL3+4f8WT3uzySvAFFAWs69T8hog+TufCoaWA44aBGT6J3iFeQoatv8azYD97iKyyMLZVrMZMXT9Yeso3yNSWrwEXiedCzbl5JwO7hwseCOY/P/NafJCD8AqRTyRNLjFaMhPHQEMNJSPCKoevkJjEXJQwyOMFqDLHvBfwzRq/cJTfviDKfY34tzYwsuTVcwqkfeHJiOXoWl7KGH9EUd0CYOAkZ9ANE5S3iFdQqBnwce0h8G1oX6FUDDsg47jsiC8Tohj+nZjGkqKTILMXCj5Sy1kjaZhm6msoIpUy8ZO6UC/yDREsNM+yoZAt/rXBfqlitUgU0pkoRw5QVoE1EFTAKURU2M4g6GkCtVvGkq2BPNO3fHM28Pm27jOawNTSbpQm5IhHfJSoyb6UwIZenRjkklM2IRwKIx6n1JgVShL/0nh8kCpvCx3PE2EZCICDkphlb4DrsUeBei3TOzRNMpm+x6d7HeAuy8erFkvdAkr82WdEpqotPvBiB1ENV89l6ZlCEIfPf84vbAedmoA5OgSFa++w/8fiffTl6yVy5W8uZo8Emkym7gfvwk3jKRx+JH7A0QiRSV2WyXZB+zDP5VIEVyTJ0RNkWyz3E65T9K7msG37DgD7MB/S+XS64ADhxRHe+IvpOyrYbRvTPRoBPRfRRA1DLjm2GB19fJm6L4YuK1WKQRu5otElGWdDmq8VSMSogAYp2RQt/2qvaEe2NaS1Wlh6rjEz7GpUq24GDujkoqD+mZCmolycq7gaK27aDZ4cr4aXo48BjEU7G5tvVumRcl7LHvEn2AEbGa+X0waO1mD9klLyhW4IJTdn0yrlWMKnd/JRzRuy9S/v5he+6mmi2VQqRI3iwcxEtfFW+J1DIWMfa7ptWv8Cr8nYC6PYT5hGzDwD1kcrjeCwbJnHZ4JOpv5e8S/vu1e29Eyln3Ztk/B38u02AnL14P2lV99i4wV+GSE9erRhaq7Dqelr5mAfKFZYOg3YbILngtw841V2tzoBj57HRVL/2iYtfYDcolPAkqpJUusgXpTLip+VNZco4WGHTtFoFZsMSCGypgT5br7amkf5laAQ45y+SwZdINKQ7gkg2+0mjuuvSHWnklTEsK8M6tTKaNE86rYym/WvQUrvjwMoYXYYynLNXRrLv+lLGSA9lW8pY76UMM0u4DisD9M9fGualS6PfUBrmFizPTBoXshtPemFnLI2L3443lkZL2/GGOPTLbs+cAUon59vk2fMbzfHOkX4hcHoqNGWC0bR+MNphwtYznYMd35iDysD5dXxTHa4L5wsDza81tT/WPGa8HtbH611ObzRe3Hagc2Dv2oOyd4Gpca+zu3vbaoGaTkcKE3NLc0B/TKA5wmmvA3rgUrEr/YUaRAqdN01P+tSVotXR/oKKmLX1gek0rRQ70V+wutJfqFFG/WnNyZXR0fbC4ZVhtdRe4MP0H7LiH0+l/9Rmjf8H</diagram></mxfile>">
     <defs></defs>
     <g>
@@ -1951,7 +1905,6 @@
     </g>
 </svg></p>
 </figure>
-
 <pre><code class="language-ts{3-7}"><span style="color: #008000">// substitute()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span>
 <div style="background-color: #e0ffff;"><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> {</span>
@@ -1963,7 +1916,6 @@
 <p>This concludes the implementation of <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code>.</p>
 <h3 id="an-argument-that-is-not-immediate"><span class="heading-counter">1.3.9</span> An Argument That Is Not Immediate<code class="draft"> [](#an-argument-that-is-not-immediate)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -1971,7 +1923,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><strong>Example Program</strong></td>
 <td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">a</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000">)((</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">))</span></code></td>
 </tr>
@@ -1983,9 +1936,9 @@
 <td align="right"><strong>Expected Output</strong></td>
 <td align="left"><code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>The <code><span style="color: #001080">argument</span></code>s in the example programs from <a href="#an-expression-that-already-is-a-value">§&nbsp;1.3.3</a>–<a href="#substitution-in-function-calls">§&nbsp;1.3.8</a> are <code><span style="color: #001080">ArrowFunctionExpression</span></code>s, but in general an <code><span style="color: #001080">argument</span></code> may be any kind of <code><span style="color: #001080">Expression</span></code>; for example, in the program above the <code><span style="color: #001080">argument</span></code> is a <code><span style="color: #001080">CallExpression</span></code>. We address the general case by calling <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> recursively on the <code><span style="color: #001080">argument</span></code> to evaluate it to a <code><span style="color: #001080">Value</span></code>:</p>
 <pre><code class="language-ts{9}"><span style="color: #008000">// run()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span>
@@ -2005,21 +1958,16 @@
 <span style="color: #000000">  }</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <ul>
 <li><strong>Big-Step Interpreter&nbsp;[<a href="#natural-semantics">12</a>]:</strong> An interpreter using the technique of calling <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> recursively to evaluate the <code><span style="color: #001080">argument</span></code>.</li>
 </ul>
 </fieldset>
-
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a <em>call-by-value</em> language&nbsp;[<a href="#call-by-name-call-by-value-and-the-lambda-calculus">25</a>]. JavaScript and most other popular programming languages are call-by-value as well, but there is one notable exception, Haskell, which is a <em>call-by-need</em> language. In a call-by-need language the argument is interpreted only if it is <em>needed</em>, for example, if it is used in the function position of another call (see <a href="#a-function-that-is-not-immediate">§&nbsp;1.3.10</a>), or if it is the result of the program (see <a href="#continuing-to-run-after-a-function-call">§&nbsp;1.3.11</a>). In a call-by-need language the result of the program above would be <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> ((</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">))</span></code>, and the call <code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code> would not be computed is not computed, because it is not needed. There is yet another policy for when to interpret arguments called <em>call-by-name</em>: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.</p>
 </fieldset>
-
 <h3 id="a-function-that-is-not-immediate"><span class="heading-counter">1.3.10</span> A Function That Is Not Immediate<code class="draft"> [](#a-function-that-is-not-immediate)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -2027,7 +1975,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><strong>Example Program</strong></td>
 <td align="left"><code><span style="color: #000000">((</span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">))(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 </tr>
@@ -2039,9 +1988,9 @@
 <td align="right"><strong>Expected Output</strong></td>
 <td align="left"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>This is the dual of <a href="#an-argument-that-is-not-immediate">§&nbsp;1.3.9</a> for the called function, and the solution is the same: to call <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> recursively:</p>
 <pre><code class="language-ts{6}"><span style="color: #008000">// run()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span>
@@ -2059,7 +2008,6 @@
 <span style="color: #000000">  }</span></code></pre>
 <h3 id="continuing-to-run-after-a-function-call"><span class="heading-counter">1.3.11</span> Continuing to Run After a Function Call<code class="draft"> [](#continuing-to-run-after-a-function-call)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -2067,7 +2015,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><strong>Example Program</strong></td>
 <td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">z</span><span style="color: #000000">))(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 </tr>
@@ -2079,9 +2028,9 @@
 <td align="right"><strong>Expected Output</strong></td>
 <td align="left"><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>This is similar to <a href="#an-argument-that-is-not-immediate">§&nbsp;1.3.9</a> and <a href="#a-function-that-is-not-immediate">§&nbsp;1.3.10</a>: the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>:</p>
 <pre><code class="language-ts{8}"><span style="color: #008000">// run()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span>
@@ -2096,7 +2045,6 @@
 <span style="color: #000000">  }</span></code></pre>
 <h3 id="a-reference-to-an-undefined-variable"><span class="heading-counter">1.3.12</span> A Reference to an Undefined Variable<code class="draft"> [](#a-reference-to-an-undefined-variable)</code></h3>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -2104,7 +2052,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><strong>Example Program</strong></td>
 <td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">u</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
 </tr>
@@ -2116,16 +2065,15 @@
 <td align="right"><strong>Expected Output</strong></td>
 <td align="left"><code>Reference to undefined variable: u</code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>The only case in which <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> may encounter a variable reference directly is if the referenced variable is undefined, otherwise <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> would have already substituted it (see <a href="#a-call-involving-immediate-functions">§&nbsp;1.3.4</a>–<a href="#continuing-to-run-after-a-function-call">§&nbsp;1.3.11</a>). In this case, we throw an exception:</p>
 <pre><code class="language-ts{3}"><span style="color: #008000">// run()</span>
 <span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span>
 <div style="background-color: #e0ffff;"><span style="color: #000000">  </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">`Reference to undefined variable: </span><span style="color: #0000FF">${</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #0000FF">}</span><span style="color: #A31515">`</span><span style="color: #000000">);</span>
 </div></code></pre>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -2134,14 +2082,15 @@
 <th align="center">Expected Output</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="center"><code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">u</span></code></td>
 <td align="center"><code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">u</span></code></td>
 <td align="center"><code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">u</span></code></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>If the reference to an undefined variable occurs in the body of a function that is not called, then we do not reach the case addressed in this section and an exception is not thrown. This is consistent with JavaScript’s behavior.</p>
 <h3 id="the-entire-runner"><span class="heading-counter">1.3.13</span> The Entire Runner<code class="draft"> [](#the-entire-runner)</code></h3>
 <p>The implementation of the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function is complete:</p>
@@ -2183,13 +2132,11 @@
 <span style="color: #aaa;">36</span>  <span style="color: #000000">}</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <h3 id="an-operational-semantics-for-the-interpreter"><span class="heading-counter">1.3.14</span> An Operational Semantics for the Interpreter<code class="draft"> [](#an-operational-semantics-for-the-interpreter)</code></h3>
 <p>What we accomplished in <a href="#an-expression-that-already-is-a-value">§&nbsp;1.3.3</a>–<a href="#the-entire-runner">§&nbsp;1.3.13</a> is more than defining an interpreter for Yocto-JavaScript; we also defined formally the <em>meaning</em> of Yocto-JavaScript programs: an Yocto-JavaScript program means what the interpreter produces for it. The definition of the meaning of programs in a language is something called the <em>semantics</em> of the language, and there are several techniques to specify semantics; the technique we have been using so far is known as a <em>definitional interpreter</em>&nbsp;[<a href="#definitional-interpreters">27</a>].</p>
 <p>A definitional interpreter has some advantages over other techniques for specifying semantics: it is executable and it is easier to understand for most programmers. But a definitional interpreter also has one disadvantage: to understand the meaning of an Yocto-JavaScript program we have to understand an interpreter written in TypeScript, which is a big language with many complex features. To address this, there are other techniques for defining semantics that do not depend on other programming languages, and in this section we introduce one of them: <em>operational semantics</em>&nbsp;[<a href="#natural-semantics">12</a>, <a href="#semantics-engineering">8</a>, <a href="#pl-book">10</a>].</p>
 <p>First, we extend the grammar from <a href="#a-formal-grammar-for-yocto-javascript">§&nbsp;1.1.4</a> with the notion of values that is equivalent to the type <code><span style="color: #001080">Value</span></code> (see <a href="#the-entire-runner">§&nbsp;1.3.13</a>, line 1):</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -2199,7 +2146,8 @@
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.16ex" height="1.676ex" style="vertical-align: -0.338ex;" viewBox="0 -576.1 499.5 721.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">v</title>
 <defs aria-hidden="true">
@@ -2229,9 +2177,9 @@
 </svg></td>
 <td align="left">Values</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
-
 <p>Next, we define a <em>relation</em> <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="5.707ex" height="1.843ex" style="vertical-align: -0.338ex;" viewBox="0 -647.8 2457.1 793.3" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">e \Rightarrow v</title>
 <defs aria-hidden="true">
@@ -2250,9 +2198,9 @@
 <tbody><tr>
 <th>Value</th>
 <td>
-
 <figure><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="6.801ex" height="3.676ex" style="vertical-align: -1.838ex;" viewBox="0 -791.3 2928.1 1582.7" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
-<title id="MathJax-SVG-1-Title">\frac{}{v \Rightarrow v}</title>
+<title id="MathJax-SVG-1-Title">\frac{}{v \Rightarrow v}
+</title>
 <defs aria-hidden="true">
 <path stroke-width="1" id="E1-ASANAMATHNORMAL-1D463" d="M166 420c-38 0 -22 2 -55 2c-24 0 -44 -11 -51 -28l-17 -42h-22c13 55 24 91 38 118c11 5 20 7 32 7c1 0 6 0 12 -1l12 -1c29 -3 71 -5 99 -5s41 3 61 12l10 -18c-98 -122 -137 -213 -137 -318c0 -65 31 -107 80 -107c88 0 185 163 185 311c0 40 -16 63 -43 63 c-9 0 -18 -3 -27 -9l-11 19l50 47c8 8 20 12 33 12c36 0 62 -41 62 -98c0 -148 -153 -395 -291 -395c-64 0 -110 55 -110 132c0 100 42 183 153 303c-26 -3 -42 -4 -63 -4Z"></path>
 <path stroke-width="1" id="E1-ASANAMATHMAIN-21D2" d="M949 273l-253 -266l-30 31l80 98h-681v59h732l63 76l-64 78h-731v59h681l-80 98l30 33Z"></path>
@@ -2273,7 +2221,6 @@
 <tr>
 <th>Function Call</th>
 <td>
-
 <figure><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="44.281ex" height="8.009ex" style="vertical-align: -3.338ex;" viewBox="0 -2011.3 19065.2 3448.4" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\frac{
 e_f \Rightarrow \texttt{(}x_p \texttt{ =&gt; } e_b\texttt{)} \quad
@@ -2281,7 +2228,8 @@ e_a \Rightarrow v_a \quad
 e_b[x_p \backslash v_a] \Rightarrow v
 }{
 e_f\texttt{(}e_a\texttt{)} \Rightarrow v
-}</title>
+}
+</title>
 <defs aria-hidden="true">
 <path stroke-width="1" id="E1-ASANAMATHNORMAL-1D452" d="M328 111l8 -19c-92 -75 -148 -103 -205 -103c-72 0 -116 46 -116 124c0 67 30 186 60 236c37 74 147 147 215 133c50 0 84 -31 84 -78c0 -62 -39 -108 -124 -145c-25 -11 -134 -41 -151 -45c-5 -29 -8 -56 -8 -81c0 -60 29 -97 76 -97c36 0 84 20 137 58zM113 274l-9 -37 c45 10 81 21 109 35c52 25 87 72 87 116c0 32 -19 52 -48 52c-24 0 -55 -12 -73 -28c-29 -26 -49 -69 -66 -138Z"></path>
 <path stroke-width="1" id="E1-ASANAMATHNORMAL-1D453" d="M345 437c63 0 62 2 91 9l4 -7c-6 -14 -13 -37 -17 -56h-104c-84 -401 -104 -497 -175 -581c-39 -47 -93 -78 -134 -78c-11 0 -26 3 -35 8c5 9 19 57 23 80l14 4c18 -22 29 -29 52 -29c36 0 66 31 84 90c22 69 59 255 89 450l9 56h-81l5 22c25 9 45 17 86 37l15 79 c11 57 23 87 45 109c23 24 105 85 129 96c8 4 24 7 35 7c23 0 54 -6 70 -13l-5 -15c-8 -20 -18 -51 -23 -67l-10 -4c-15 24 -42 39 -72 39c-46 0 -74 -38 -90 -124l-21 -112h16Z"></path>
@@ -2367,7 +2315,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </tr>
 </tbody></table>
 </figure>
-
 <p>Finally, we define a <em>metafunction</em> <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="10.369ex" height="2.676ex" style="vertical-align: -0.671ex;" viewBox="0 -863.1 4464.6 1152.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">e[x \backslash v] = e</title>
 <defs aria-hidden="true">
@@ -2391,7 +2338,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </g>
 </svg> that is equivalent to the behavior of <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> (see <a href="#the-entire-runner">§&nbsp;1.3.13</a>, lines 14–32):</p>
 <figure>
-
 <table>
 <thead>
 <tr>
@@ -2401,7 +2347,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <th align="left"></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td align="right"><code><span style="color: #000000">(</span></code> <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.16ex" height="1.676ex" style="vertical-align: -0.338ex;" viewBox="0 -576.1 499.5 721.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">x</title>
 <defs aria-hidden="true">
@@ -2797,10 +2744,10 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </svg></td>
 <td align="left"></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </figure>
 </fieldset>
-
 <h3 id="parser"><span class="heading-counter">1.3.15</span> Parser<code class="draft"> [](#parser)</code></h3>
 <p>The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see <a href="#architecture">§&nbsp;1.3.1</a> for a high-level view of the architecture and <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a> for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree&nbsp;[??, ??] because it allows us to use tools from the JavaScript ecosystem, including a parser called Esprima&nbsp;[??], and the Esprima Interactive Online Demonstration&nbsp;[??], which shows the data structures used to represent a given program.</p>
 <p>Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:</p>
@@ -2889,7 +2836,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 \end{center}</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <p>This example program is also known as the <em><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.915ex" height="2.176ex" style="vertical-align: -0.338ex;" viewBox="0 -791.3 824.5 936.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\Omega</title>
 <defs aria-hidden="true">
@@ -2927,7 +2873,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </g>
 </svg>).</p>
 </fieldset>
-
 <p>Yocto-JavaScript may express any program that a computer may run (see §&nbsp;\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>:</p>
 <p>\begin{center}
 \begin{tabular}{rrcl}
@@ -2979,10 +2924,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <p>Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the <em>halting problem</em>, is said to be <em>uncomputable</em>&nbsp;[<a href="#understanding-computation">30 (§&nbsp;8)</a>], and is a direct consequence of the Turing completeness of Yocto-JavaScript (see §&nbsp;\ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.</p>
 </fieldset>
-
 <h2 id="step-1-environment-based-interpreter"><span class="heading-counter">1.4</span> Step 1: Environment-Based Interpreter<code class="draft"> [](#step-1-environment-based-interpreter)</code></h2>
 <p>The interpreter in Step&nbsp;0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see §&nbsp;\ref{Step 0: Programs That Do Not Terminate}). The source of non-termination in Step&nbsp;0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step&nbsp;1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step&nbsp;1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.</p>
 <h3 id="avoiding-substitution-by-introducing-environments-and-closures"><span class="heading-counter">1.4.1</span> Avoiding Substitution by Introducing Environments and Closures<code class="draft"> [](#avoiding-substitution-by-introducing-environments-and-closures)</code></h3>
@@ -3010,7 +2953,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 \end{center}</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <p>A map from variables to the values with which they would have been replaced (for example, <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.772ex" height="2.676ex" style="vertical-align: -0.671ex;" viewBox="0 -863.1 332.5 1152.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">[</title>
 <defs aria-hidden="true">
@@ -3029,14 +2971,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </g>
 </svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle] \rangle`) is something called a <em>closure</em>&nbsp;[<a href="#closures">13</a>].</p>
 </fieldset>
-
 <p>In Step&nbsp;1 we have a different notion of <em>value</em>: while in Step&nbsp;0 the interpreter produced a <em>function</em>, now it produces a <em>closure</em>. It is possible to use the closure produced in Step&nbsp;1 to recreate the function that would have been produced in Step&nbsp;0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent, but in Step&nbsp;1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Alternative Argument</strong></span></legend>
-
 <p>Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.</p>
 </fieldset>
-
 <h3 id="new-data-structures"><span class="heading-counter">1.4.2</span> New Data Structures<code class="draft"> [](#new-data-structures)</code></h3>
 <p>The following are the data structures used to represent environments and closures:</p>
 <pre><code class="language-ts"><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span>
@@ -3049,7 +2988,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Value</span><span style="color: #000000">&gt;;</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Implementation Details</strong></span></legend>
-
 <p>The <code><span style="color: #001080">MapDeepEqual</span></code> data structure is provided by a JavaScript package developed by the author called Collections Deep Equal&nbsp;[<a href="#collections-deep-equal">6</a>]. A <code><span style="color: #001080">MapDeepEqual</span></code> is similar to a <code><span style="color: #267F99">Map</span></code>, except that the keys are compared by value, not by reference, for example:</p>
 <pre><code class="language-ts"><span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Map</span><span style="color: #000000">([[{ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> }, </span><span style="color: #A31515">"Leandro"</span><span style="color: #000000">]]).</span><span style="color: #795E26">get</span><span style="color: #000000">({ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> });</span>
 <span style="color: #0000FF">undefined</span>
@@ -3057,7 +2995,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <span style="color: #A31515">"Leandro"</span></code></pre>
 <p>The occurrences of <code><span style="color: #000000">{ </span><span style="color: #001080">age</span><span style="color: #000000">: </span><span style="color: #098658">29</span></code>} are objects with the same key and value, but they are not the same object.</p>
 </fieldset>
-
 <h3 id="adding-an-environment-to-the-runner"><span class="heading-counter">1.4.3</span> Adding an Environment to the Runner<code class="draft"> [](#adding-an-environment-to-the-runner)</code></h3>
 <p>The runner needs to maintain an environment, so we modify the implementation of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> from <a href="#the-entire-runner">§&nbsp;1.3.13</a> to introduce an auxiliary function called <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> that receives an <code><span style="color: #001080">environment</span></code> as an extra parameter:</p>
 <pre><code class="language-ts{number}{2-3,11-13}"><span style="color: #aaa;"> 1</span>  <span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span>
@@ -3320,16 +3257,12 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </div><span style="color: #000000">  );</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <p>The principle of being able to reason about a function only by looking at its definition is something called <em>local reasoning</em> (see §&nbsp;\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called <em>dynamic scoping</em>, because the <em>scope</em> of a variable (where a variable is defined) is <em>dynamic</em>, depending on where the function is called. The treatment given to the environment in this section is something called <em>static scoping</em> or <em>lexical scoping</em>, because the scope of a variable is determined before we start interpreting the program.</p>
 </fieldset>
-
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP&nbsp;[<a href="#lisp-original">16</a>], though that was later considered a mistake&nbsp;[<a href="#lisp-history">15</a>]. In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp&nbsp;[<a href="#emacs-lisp">14 (§&nbsp;12.10)</a>]. In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s <code><span style="color: #000000">parameterize</span></code>&nbsp;[<a href="#racket-guide">9 (§&nbsp;4.13)</a>].</p>
 </fieldset>
-
 <h3 id="the-entire-runner-1"><span class="heading-counter">1.4.9</span> The Entire Runner<code class="draft"> [](#the-entire-runner-1)</code></h3>
 <p>We completed the changes necessary to transform the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function from the substitution-based interpreter in Step&nbsp;0 into an environment-based interpreter:</p>
 <pre><code class="language-ts{number}"><span style="color: #aaa;"> 1</span>  <span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span>
@@ -3372,7 +3305,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <span style="color: #aaa;">38</span>  <span style="color: #000000">}</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <h3 id="operational-semantics"><span class="heading-counter">1.4.10</span> Operational Semantics<code class="draft"> [](#operational-semantics)</code></h3>
 <p>We adapt the operational semantics from <a href="#an-operational-semantics-for-the-interpreter">§&nbsp;1.3.14</a> to the interpreter defined in Step&nbsp;1. First, we change the notion of values:</p>
 <p>\begin{center}
@@ -3429,7 +3361,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 {\rho \vdash x \Rightarrow \rho(x)}
 \end{mathpar}</p>
 </fieldset>
-
 <h3 id="generator-1"><span class="heading-counter">1.4.11</span> Generator<code class="draft"> [](#generator-1)</code></h3>
 <p>We modify the generator from <a href="#generator">§&nbsp;1.3.16</a> to support closures. For example, the following is the representation of the closure from §&nbsp;\ref{A Function Call}:</p>
 <p>\begin{center}
@@ -3559,10 +3490,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <p>The interpreter in Step&nbsp;1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step&nbsp;2.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-
 <p>The nesting of environments in Step&nbsp;1 characterizes them as something called <em>recursive data structures</em>: data structures that may contain themselves. The data structures used to represented Yocto-JavaScript programs are recursive as well (see <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>).</p>
 </fieldset>
-
 <h2 id="step-2-store-based-interpreter"><span class="heading-counter">1.5</span> Step 2: Store-Based Interpreter<code class="draft"> [](#step-2-store-based-interpreter)</code></h2>
 <p>The source of non-termination in Step&nbsp;1 is the nesting of the environments (see §&nbsp;\ref{Step 1: Programs That Do Not Terminate}). In Step&nbsp;2, we address this issue by introducing a layer of indirection between a name in the environment and its corresponding value. The interpreter in Step&nbsp;2 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.</p>
 <h3 id="avoiding-nested-environments-by-introducing-a-store"><span class="heading-counter">1.5.1</span> Avoiding Nested Environments by Introducing a Store<code class="draft"> [](#avoiding-nested-environments-by-introducing-a-store)</code></h3>
@@ -3690,10 +3619,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 \end{center}</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <p>The technique used in Step&nbsp;2 is related to the run-time environments that are the target of traditional compilers for languages such as C&nbsp;[<a href="#dragon-book">1 (§&nbsp;7)</a>]: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.</p>
 </fieldset>
-
 <h3 id="new-data-structures-1"><span class="heading-counter">1.5.2</span> New Data Structures<code class="draft"> [](#new-data-structures-1)</code></h3>
 <p>The following are the data structures used to represent environments, stores, and addresses:</p>
 <pre><code class="language-ts"><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Address</span><span style="color: #000000">&gt;;</span>
@@ -3835,7 +3762,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <span style="color: #aaa;">41</span>  <span style="color: #000000">}</span></code></pre>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-
 <h3 id="operational-semantics-1"><span class="heading-counter">1.5.7</span> Operational Semantics<code class="draft"> [](#operational-semantics-1)</code></h3>
 <p>We adapt the operational semantics from §&nbsp;\ref{Step 2: Operational Semantics} to the interpreter defined in Step&nbsp;2. First, we change the notion of environments:</p>
 <p>\begin{center}
@@ -3961,7 +3887,6 @@ A = \lvert \sigma_a \rvert \
 {\rho, \sigma \vdash x \Rightarrow \sigma(\rho(x))}
 \end{mathpar}</p>
 </fieldset>
-
 <h3 id="programs-that-do-not-terminate-2"><span class="heading-counter">1.5.8</span> Programs That Do Not Terminate<code class="draft"> [](#programs-that-do-not-terminate-2)</code></h3>
 <p>The programs that do not terminate in Step&nbsp;1 (see §&nbsp;\ref{Step 1: Programs That Do Not Terminate}) do not terminate in Step&nbsp;2 either, because the interpreters are equivalent except for the treatment of environments, but the sources of non-termination are different. In both cases the issue is that the interpreter may create infinitely many environments, but in Step&nbsp;1 the environments are nested, and in Step&nbsp;2 they contain different addresses, for example:</p>
 <p>\begin{center}
@@ -4085,10 +4010,8 @@ TODO: Variations
         Filtered environments to contain only the non-locals
         Filtered stores (proper garbage collection)
 -->
-
 </main>
 <footer>
-
 <h1 id="bibliography">Bibliography</h1>
 <ol>
 <li><span id="dragon-book"></span> Alfred Aho, Monica Lam, Ravi Sethi, and Jeffrey Ullman. <em>Compilers: Principles, Techniques, and Tools</em>. Addison-Wesley. 2006.</li>
@@ -4141,7 +4064,6 @@ TODO: Variations
 <li><span id="typescript-documentation"></span> <em>TypeScript Documentation</em>. <a href="https://www.typescriptlang.org/docs"><code>https://www.typescriptlang.org/docs</code></a>. Accessed 2020-01-17.</li>
 </ol>
 <!-- TODO: # Biographical Statement -->
-
 </footer>
 
 

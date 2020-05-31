@@ -1,15 +1,17 @@
 const fs = require("fs");
 const child_process = require("child_process");
-const marked = require("marked");
+const remark = require("remark");
+const remarkHTML = require("remark-html");
 const { JSDOM } = require("jsdom");
 const mathJax = require("mathjax-node");
 const shiki = require("shiki");
 const rangeParser = require("parse-numeric-range");
+const GitHubSlugger = require("github-slugger");
 
 (async () => {
   // Render Markdown
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
-  const html = marked(markdown);
+  const html = remark().use(remarkHTML).processSync(markdown).contents;
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
@@ -162,7 +164,12 @@ const rangeParser = require("parse-numeric-range");
     if (element.innerHTML === element.getAttribute("href"))
       element.innerHTML = `<code>${element.innerHTML}</code>`;
 
-  // Add heading counter
+  // Slugify headings
+  const slugger = new GitHubSlugger();
+  for (const element of document.querySelectorAll("h1, h2, h3, h4, h5, h6"))
+    element.id = slugger.slug(element.textContent);
+
+  // Add heading counters
   const counter = [];
   for (const element of document.querySelectorAll(
     "main h1, main h2, main h3, main h4, main h5, main h6"
@@ -192,7 +199,7 @@ const rangeParser = require("parse-numeric-range");
       .join("")
   );
 
-  // Add heading id
+  // Add heading identifiers
   for (const element of document.querySelectorAll(
     "main h1, main h2, main h3, main h4, main h5, main h6"
   ))
