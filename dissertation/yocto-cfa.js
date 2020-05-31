@@ -11,7 +11,12 @@ const GitHubSlugger = require("github-slugger");
 (async () => {
   // Render Markdown
   const markdown = fs.readFileSync("yocto-cfa.md", "utf8");
-  const html = remark().use(remarkHTML).processSync(markdown).contents;
+  const html = remark()
+    .use({
+      settings: { commonmark: true },
+    })
+    .use(remarkHTML)
+    .processSync(markdown).contents;
   const dom = new JSDOM(html);
   const document = dom.window.document;
 
