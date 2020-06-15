@@ -6,15 +6,17 @@
 <a href="https://github.com/leafac/yocto-cfa/actions"><img alt="Continuous Integration" src="https://github.com/leafac/yocto-cfa/workflows/.github/workflows/main.yml/badge.svg"></a>
 </p>
 
+## Requirements
+
 Install [Node.js](https://nodejs.org/).
 
-## Build Dissertation
+## Rebuild Dissertation
 
 ```console
 $ (cd dissertation && npm install-test)
 ```
 
-## Run Code Tests
+## Run Tests
 
 ```console
 $ (cd code && npm install-test)
