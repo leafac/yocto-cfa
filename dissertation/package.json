@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "nodemon --ext md,js,css,svg --exec 'node yocto-cfa && open yocto-cfa.pdf'",
-    "test": "node yocto-cfa && prettier --check '*.{md,js,css}'"
+    "test": "prettier --check '*.{md,js,css}' && node yocto-cfa"
   },
   "dependencies": {
     "github-slugger": "^1.3.0",
