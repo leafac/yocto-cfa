@@ -369,18 +369,18 @@ describe("parse()", () => {
 
 test("§ Programs That Do Not Terminate", () => {
   expect(() => {
-    evaluate("(f => f(f))(f => f(f))");
+    evaluate(`(f => f(f))(f => f(f))`);
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
   expect(() => {
-    evaluate("(f => (f(f))(f(f)))(f => (f(f))(f(f)))");
+    evaluate(`(f => (f(f))(f(f)))(f => (f(f))(f(f)))`);
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
   expect(() => {
-    evaluate("(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)");
+    evaluate(`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y)`);
   }).toThrowErrorMatchingInlineSnapshot(`"Maximum call stack size exceeded"`);
 });
 
 test("§ A Function Body Is Evaluated with the Environment in Its Closure", () => {
-  expect(evaluate("(f => (x => f(x))(a => a))((x => z => x)(y => y))"))
+  expect(evaluate(`(f => (x => f(x))(a => a))((x => z => x)(y => y))`))
     .toMatchInlineSnapshot(`
     "{
       \\"value\\": [
