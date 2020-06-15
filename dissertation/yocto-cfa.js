@@ -44,26 +44,33 @@ const GitHubSlugger = require("github-slugger");
     );
 
   // Render mathematics
-  mathJax.config({ MathJax: { SVG: { font: "Asana-Math" } } });
+  mathJax.config({
+    fontURL: "node_modules/mathjax/fonts/HTML-CSS",
+  });
+  document.head.insertAdjacentHTML(
+    "beforeend",
+    `<style>${(await mathJax.typeset({ css: true })).css}</style>`
+  );
   for (const element of document.querySelectorAll("code")) {
     const isBlock = element.parentElement.tagName === "PRE";
     if (isBlock) {
       if (element.className !== "language-math") continue;
-      const renderedMath = (
+      element.parentElement.outerHTML = (
         await mathJax.typeset({
           math: element.textContent,
-          svg: true,
+          format: "TeX",
+          html: true,
         })
-      ).svg;
-      element.parentElement.outerHTML = `<figure>${renderedMath}</figure>`;
+      ).html;
     } else {
       if (!element.textContent.startsWith("math`")) continue;
       element.outerHTML = (
         await mathJax.typeset({
           math: element.textContent.slice("math`".length),
-          svg: true,
+          format: "inline-TeX",
+          html: true,
         })
-      ).svg;
+      ).html;
     }
   }
 
