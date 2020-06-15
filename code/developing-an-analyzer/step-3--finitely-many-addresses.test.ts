@@ -2,7 +2,7 @@ import { evaluate } from "./step-3--finitely-many-addresses";
 
 describe("run()", () => {
   test("§ An Expression That Already Is a Value", () => {
-    expect(evaluate("x => x")).toMatchInlineSnapshot(`
+    expect(evaluate(`x => x`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
@@ -16,20 +16,20 @@ describe("run()", () => {
   });
 
   test("§ A Call Involving Immediate Functions", () => {
-    expect(evaluate("(x => x)(y => y)")).toMatchInlineSnapshot(`
+    expect(evaluate(`(y => y)(x => x)`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"y => y\\",
+            \\"function\\": \\"x => x\\",
             \\"environment\\": []
           }
         ],
         \\"store\\": [
           [
-            \\"x\\",
+            \\"y\\",
             [
               {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
@@ -40,25 +40,25 @@ describe("run()", () => {
   });
 
   test("§ Substitution in Function Definitions", () => {
-    expect(evaluate("(x => z => x)(y => y)")).toMatchInlineSnapshot(`
+    expect(evaluate(`(y => z => y)(x => x)`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"z => x\\",
+            \\"function\\": \\"z => y\\",
             \\"environment\\": [
               [
-                \\"x\\",
-                \\"x\\"
+                \\"y\\",
+                \\"y\\"
               ]
             ]
           }
         ],
         \\"store\\": [
           [
-            \\"x\\",
+            \\"y\\",
             [
               {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
@@ -69,22 +69,22 @@ describe("run()", () => {
   });
 
   test("§ Name Mismatch", () => {
-    expect(evaluate("(x => z => z)(y => y)")).toMatchInlineSnapshot(`
+    expect(evaluate(`(z => x => x)(y => y)`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"z => z\\",
+            \\"function\\": \\"x => x\\",
             \\"environment\\": [
               [
-                \\"x\\",
-                \\"x\\"
+                \\"z\\",
+                \\"z\\"
               ]
             ]
           }
         ],
         \\"store\\": [
           [
-            \\"x\\",
+            \\"z\\",
             [
               {
                 \\"function\\": \\"y => y\\",
@@ -98,7 +98,7 @@ describe("run()", () => {
   });
 
   test("§ Name Reuse", () => {
-    expect(evaluate("(x => x => x)(y => y)")).toMatchInlineSnapshot(`
+    expect(evaluate(`(x => x => x)(y => y)`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
@@ -124,23 +124,23 @@ describe("run()", () => {
         ]
       }"
     `);
-    expect(evaluate("(x => x => z => x)(a => a)(y => y)"))
+    expect(evaluate(`(y => y => z => y)(a => a)(x => x)`))
       .toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"z => x\\",
+            \\"function\\": \\"z => y\\",
             \\"environment\\": [
               [
-                \\"x\\",
-                \\"x\\"
+                \\"y\\",
+                \\"y\\"
               ]
             ]
           }
         ],
         \\"store\\": [
           [
-            \\"x\\",
+            \\"y\\",
             [
               {
                 \\"function\\": \\"a => a\\",
@@ -149,10 +149,10 @@ describe("run()", () => {
             ]
           ],
           [
-            \\"x\\",
+            \\"y\\",
             [
               {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
@@ -163,25 +163,25 @@ describe("run()", () => {
   });
 
   test("§ Substitution in Function Calls", () => {
-    expect(evaluate("(x => z => x(x))(y => y)")).toMatchInlineSnapshot(`
+    expect(evaluate(`(y => z => y(y))(x => x)`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"z => x(x)\\",
+            \\"function\\": \\"z => y(y)\\",
             \\"environment\\": [
               [
-                \\"x\\",
-                \\"x\\"
+                \\"y\\",
+                \\"y\\"
               ]
             ]
           }
         ],
         \\"store\\": [
           [
-            \\"x\\",
+            \\"y\\",
             [
               {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
@@ -192,34 +192,34 @@ describe("run()", () => {
   });
 
   test("§ An Argument That Is Not Immediate", () => {
-    expect(evaluate("(x => z => x)((a => a)(y => y))")).toMatchInlineSnapshot(`
+    expect(evaluate(`(a => z => a)((y => y)(x => x))`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"z => x\\",
+            \\"function\\": \\"z => a\\",
             \\"environment\\": [
               [
-                \\"x\\",
-                \\"x\\"
+                \\"a\\",
+                \\"a\\"
               ]
             ]
           }
         ],
         \\"store\\": [
           [
-            \\"a\\",
+            \\"y\\",
             [
               {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
           ],
           [
-            \\"x\\",
+            \\"a\\",
             [
               {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
@@ -230,11 +230,44 @@ describe("run()", () => {
   });
 
   test("§ A Function That Is Not Immediate", () => {
-    expect(evaluate("((z => z)(x => x))(y => y)")).toMatchInlineSnapshot(`
+    expect(evaluate(`((z => z)(y => y))(x => x)`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"y => y\\",
+            \\"function\\": \\"x => x\\",
+            \\"environment\\": []
+          }
+        ],
+        \\"store\\": [
+          [
+            \\"z\\",
+            [
+              {
+                \\"function\\": \\"y => y\\",
+                \\"environment\\": []
+              }
+            ]
+          ],
+          [
+            \\"y\\",
+            [
+              {
+                \\"function\\": \\"x => x\\",
+                \\"environment\\": []
+              }
+            ]
+          ]
+        ]
+      }"
+    `);
+  });
+
+  test("§ Continuing to Run After a Function Call", () => {
+    expect(evaluate(`(z => (y => y)(z))(x => x)`)).toMatchInlineSnapshot(`
+      "{
+        \\"value\\": [
+          {
+            \\"function\\": \\"x => x\\",
             \\"environment\\": []
           }
         ],
@@ -249,43 +282,10 @@ describe("run()", () => {
             ]
           ],
           [
-            \\"x\\",
+            \\"y\\",
             [
               {
-                \\"function\\": \\"y => y\\",
-                \\"environment\\": []
-              }
-            ]
-          ]
-        ]
-      }"
-    `);
-  });
-
-  test("§ Continuing to Run After a Function Call", () => {
-    expect(evaluate("(x => (z => z)(x))(y => y)")).toMatchInlineSnapshot(`
-      "{
-        \\"value\\": [
-          {
-            \\"function\\": \\"y => y\\",
-            \\"environment\\": []
-          }
-        ],
-        \\"store\\": [
-          [
-            \\"x\\",
-            [
-              {
-                \\"function\\": \\"y => y\\",
-                \\"environment\\": []
-              }
-            ]
-          ],
-          [
-            \\"z\\",
-            [
-              {
-                \\"function\\": \\"y => y\\",
+                \\"function\\": \\"x => x\\",
                 \\"environment\\": []
               }
             ]
@@ -297,15 +297,15 @@ describe("run()", () => {
 
   test("§ A Reference to an Undefined Variable", () => {
     expect(() => {
-      evaluate("(x => y)(y => y)");
+      evaluate(`(y => u)(x => x)`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Reference to undefined variable: y"`
+      `"Reference to undefined variable: u"`
     );
-    expect(evaluate("x => y")).toMatchInlineSnapshot(`
+    expect(evaluate(`y => u`)).toMatchInlineSnapshot(`
       "{
         \\"value\\": [
           {
-            \\"function\\": \\"x => y\\",
+            \\"function\\": \\"y => u\\",
             \\"environment\\": []
           }
         ],
@@ -380,21 +380,21 @@ test("§ Programs That Do Not Terminate", () => {
 });
 
 test("§ A Function Body Is Evaluated with the Environment in Its Closure", () => {
-  expect(evaluate(`(f => (x => f(x))(a => a))((x => z => x)(y => y))`))
+  expect(evaluate(`(f => (y => f(y))(a => a))((y => z => y)(x => x))`))
     .toMatchInlineSnapshot(`
     "{
       \\"value\\": [
         {
-          \\"function\\": \\"y => y\\",
+          \\"function\\": \\"x => x\\",
           \\"environment\\": []
         }
       ],
       \\"store\\": [
         [
-          \\"x\\",
+          \\"y\\",
           [
             {
-              \\"function\\": \\"y => y\\",
+              \\"function\\": \\"x => x\\",
               \\"environment\\": []
             }
           ]
@@ -403,18 +403,18 @@ test("§ A Function Body Is Evaluated with the Environment in Its Closure", () =
           \\"f\\",
           [
             {
-              \\"function\\": \\"z => x\\",
+              \\"function\\": \\"z => y\\",
               \\"environment\\": [
                 [
-                  \\"x\\",
-                  \\"x\\"
+                  \\"y\\",
+                  \\"y\\"
                 ]
               ]
             }
           ]
         ],
         [
-          \\"x\\",
+          \\"y\\",
           [
             {
               \\"function\\": \\"a => a\\",
