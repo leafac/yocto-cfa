@@ -244,20 +244,20 @@ const GitHubSlugger = require("github-slugger");
   for (const element of document.querySelectorAll(`a[href=""]`)) {
     const citations = [];
     for (const segment of element.textContent.split(",")) {
-      const [id, ...description] = segment.trim().split(" ");
+      const { id, description } = segment
+        .trim()
+        .match(/^(?<id>[^ ]+)(?<description>.*)?$/).groups;
       const target = document.querySelector(`#${id}`);
       if (target === null) {
         console.error(`Undefined citation: ${id}`);
-        citations.push(["??", ...description].join(" "));
+        citations.push(`??${description ?? ""}`);
         continue;
       }
       unusedCitations.delete(id);
       const listItem = target.parentElement;
       const index = [...listItem.parentElement.children].indexOf(listItem);
       const number = index + 1;
-      citations.push(
-        `<a href="#${id}">${[number, ...description].join(" ")}</a>`
-      );
+      citations.push(`<a href="#${id}">${number}${description ?? ""}</a>`);
     }
     element.outerHTML = `[${citations.join(", ")}]`;
   }
