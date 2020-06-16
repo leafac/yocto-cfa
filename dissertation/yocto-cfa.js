@@ -51,65 +51,53 @@ const GitHubSlugger = require("github-slugger");
     "beforeend",
     `<style>${(await mathJax.typeset({ css: true })).css}</style>`
   );
-  for (const element of document.querySelectorAll("code")) {
-    const isBlock = element.parentElement.tagName === "PRE";
-    if (isBlock) {
-      if (element.className !== "language-math") continue;
-      element.parentElement.outerHTML = (
-        await mathJax.typeset({
-          math: element.textContent,
-          format: "TeX",
-          html: true,
-        })
-      ).html;
-    } else {
-      if (!element.textContent.startsWith("math`")) continue;
-      element.outerHTML = (
-        await mathJax.typeset({
-          math: element.textContent.slice("math`".length),
-          format: "inline-TeX",
-          html: true,
-        })
-      ).html;
-    }
+  for (const element of document.querySelectorAll("pre > code.language-math"))
+    element.parentElement.outerHTML = (
+      await mathJax.typeset({
+        math: element.textContent,
+        format: "TeX",
+        html: true,
+      })
+    ).html;
+  for (const element of [
+    ...document.querySelectorAll(":not(pre) > code"),
+  ].filter((element) => element.textContent.startsWith("math`"))) {
+    element.outerHTML = (
+      await mathJax.typeset({
+        math: element.textContent.slice("math`".length),
+        format: "inline-TeX",
+        html: true,
+      })
+    ).html;
   }
 
   // Add syntax highlighting
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
-  for (const element of document.querySelectorAll("code")) {
-    let code;
-    let language;
+  for (const element of document.querySelectorAll(
+    `pre > code[class^="language-"]`
+  )) {
+    const { language, options } = element.className.match(
+      /^language-(?<language>[a-z]+)(?<options>.*)$/
+    ).groups;
+    const code = element.textContent;
     let shouldNumberLines = false;
     let linesToHighlight = [];
-    const isBlock = element.parentElement.tagName === "PRE";
-    if (isBlock) {
-      const match = element.className.match(
-        /^language-(?<language>.*?)(?:\{(?<options>.*)\})?$/
-      );
-      if (match === null) continue;
-      code = element.textContent;
-      language = match.groups.language;
-      for (const option of (match.groups.options ?? "").split("}{"))
-        if (option === "number") shouldNumberLines = true;
-        else if (option.match(/^[0-9,\-\.]+$/))
-          linesToHighlight = rangeParser(option);
-        else console.error(`Unrecognized option for code block: ${option}`);
-    } else {
-      const [languageSegment, ...codeSegments] = element.textContent.split("`");
-      if (codeSegments.length === 0) continue;
-      code = codeSegments.join("`");
-      language = languageSegment;
-    }
-    let highlightedCode;
+    for (const option of options.match(/(?<=\{).*?(?=\})/g) ?? [])
+      if (option === "number") shouldNumberLines = true;
+      else if (option.match(/^[0-9,\-\.]+$/))
+        linesToHighlight = rangeParser(option);
+      else console.error(`Unrecognized option for code block: ${option}`);
+    let highlightedText;
     try {
-      highlightedCode = highlighter.codeToHtml(code, language);
+      highlightedText = highlighter.codeToHtml(code, language);
     } catch (error) {
       console.error(error);
       continue;
     }
-    const highlightedLines = JSDOM.fragment(highlightedCode)
-      .querySelector("code")
-      .innerHTML.split("\n");
+    const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
+      "code"
+    );
+    const highlightedLines = highlightedCode.innerHTML.split("\n");
     if (shouldNumberLines) {
       const width = String(highlightedLines.length).length;
       for (const [index, line] of Object.entries(highlightedLines)) {
@@ -135,6 +123,24 @@ const GitHubSlugger = require("github-slugger");
       }`;
     }
     element.innerHTML = highlightedLines.join("\n");
+  }
+  for (const element of [
+    ...document.querySelectorAll(":not(pre) > code"),
+  ].filter((element) => element.textContent.match(/^[a-z]+`/))) {
+    const { language, code } = element.textContent.match(
+      /^(?<language>[a-z]+)`(?<code>.*)$/
+    ).groups;
+    let highlightedText;
+    try {
+      highlightedText = highlighter.codeToHtml(code, language);
+    } catch (error) {
+      console.error(error);
+      continue;
+    }
+    const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
+      "code"
+    );
+    element.innerHTML = highlightedCode.innerHTML;
   }
 
   // Inline SVGs
