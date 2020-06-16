@@ -156,9 +156,10 @@ const GitHubSlugger = require("github-slugger");
     for (const elementToHighlight of svg.querySelectorAll("a")) {
       const language = elementToHighlight.getAttribute("xlink:href");
       for (const text of elementToHighlight.querySelectorAll("text")) {
+        const code = text.textContent;
         let highlightedText;
         try {
-          highlightedText = highlighter.codeToHtml(text.textContent, language);
+          highlightedText = highlighter.codeToHtml(code, language);
         } catch (error) {
           console.error(error);
           continue;
