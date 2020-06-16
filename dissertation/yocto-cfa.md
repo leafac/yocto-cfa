@@ -1929,7 +1929,7 @@ TODO: Variations
 1. <span id="racket-guide"></span> Matthew Flatt, Robert Bruce Findler, and PLT. _The Racket Guide_. <https://docs.racket-lang.org/guide/>. Accessed 2020-04-13.
 1. <span id="pl-book"></span> Mike Grant, Zachary Palmer, and Scott Smith. _Principles of Programming Languages_. 2020.
 1. <span id="jet-brains-developer-survey"></span> JetBrains. _The State of Developer Ecosystem 2019_. <https://www.jetbrains.com/lp/devecosystem-2019/>. Accessed 2020-01-14.
-1. <span id="natural-semantics"> Gilles Kahn. _Natural Semantics_. Annual Symposium on Theoretical Aspects of Computer Science. 1987.
+1. <span id="natural-semantics"></span> Gilles Kahn. _Natural Semantics_. Annual Symposium on Theoretical Aspects of Computer Science. 1987.
 1. <span id="closures"></span> Peter Landin. _The Mechanical Evaluation of Expressions_. The Computer Journal. 1964.
 1. <span id="emacs-lisp"></span> Bil Lewis, Dan LaLiberte, and Richard Stallman. _GNU Emacs Lisp Reference Manual_. 2015.
 1. <span id="lisp-history"></span> John McCarthy. _History of LISP_. History of Programming Languages. 1978. <https://doi.org/10.1145/800025.1198360>.

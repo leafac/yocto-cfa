@@ -237,7 +237,7 @@ const GitHubSlugger = require("github-slugger");
 
   // Resolve citations
   const unusedCitations = new Set(
-    [...document.querySelectorAll("#bibliography + ol span:first-child")].map(
+    [...document.querySelectorAll("#bibliography + ol > li > span:first-child")].map(
       (element) => element.id
     )
   );
