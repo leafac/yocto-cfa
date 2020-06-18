@@ -61,6 +61,24 @@ pre {
   white-space: pre-wrap;
 }
 
+.line {
+  display: table-row;
+}
+
+.highlighted-line {
+  background-color: #e0ffff;
+}
+
+.line-number,
+.rest-of-line {
+  display: table-cell;
+}
+
+.line-number {
+  color: #aaa;
+  padding-right: 1em;
+}
+
 figure {
   text-align: center;
   margin: 1.12em 0;

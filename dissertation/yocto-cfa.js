@@ -97,16 +97,18 @@ const GitHubSlugger = require("github-slugger");
     const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
       "code"
     );
-    const highlightedLines = highlightedCode.innerHTML.split("\n");
+    highlightedCode.innerHTML = `<div class="line">${highlightedCode.innerHTML.replace(
+      /\n/g,
+      `\n</div><div class="line">`
+    )}</div>`;
     if (shouldNumberLines) {
-      const width = String(highlightedLines.length).length;
-      for (const [index, line] of Object.entries(highlightedLines)) {
+      const width = String(highlightedCode.children.length).length;
+      for (const [index, line] of Object.entries(highlightedCode.children)) {
         const lineNumber = String(Number(index) + 1).padStart(width);
-        highlightedLines[
-          index
-        ] = `<span style="color: #aaa;">${lineNumber}</span>  ${line}`;
+        line.innerHTML = `<span class="line-number">${lineNumber}</span><span class="rest-of-line">${line.innerHTML}</span>`;
       }
     }
+    const highlightedLines = highlightedCode.querySelectorAll(".line");
     for (const lineToHighlight of linesToHighlight) {
       const index = lineToHighlight - 1;
       if (highlightedLines[index] === undefined) {
@@ -115,14 +117,9 @@ const GitHubSlugger = require("github-slugger");
         );
         continue;
       }
-      highlightedLines[
-        index
-      ] = `<div style="background-color: #e0ffff;">${highlightedLines[index]}`;
-      highlightedLines[index + 1] = `</div>${
-        highlightedLines[index + 1] ?? ""
-      }`;
+      highlightedLines[index].classList.add("highlighted-line");
     }
-    element.innerHTML = highlightedLines.join("\n");
+    element.innerHTML = highlightedCode.innerHTML;
   }
   for (const element of [
     ...document.querySelectorAll(":not(pre) > code"),
@@ -237,9 +234,11 @@ const GitHubSlugger = require("github-slugger");
 
   // Resolve citations
   const unusedCitations = new Set(
-    [...document.querySelectorAll("#bibliography + ol > li > span:first-child")].map(
-      (element) => element.id
-    )
+    [
+      ...document.querySelectorAll(
+        "#bibliography + ol > li > span:first-child"
+      ),
+    ].map((element) => element.id)
   );
   for (const element of document.querySelectorAll(`a[href=""]`)) {
     const citations = [];
