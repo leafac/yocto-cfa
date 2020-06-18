@@ -97,29 +97,40 @@ const GitHubSlugger = require("github-slugger");
     const highlightedCode = JSDOM.fragment(highlightedText).querySelector(
       "code"
     );
-    highlightedCode.innerHTML = `<div class="line">${highlightedCode.innerHTML.replace(
-      /\n/g,
-      `\n</div><div class="line">`
-    )}</div>`;
-    if (shouldNumberLines) {
-      const width = String(highlightedCode.children.length).length;
-      for (const [index, line] of Object.entries(highlightedCode.children)) {
-        const lineNumber = String(Number(index) + 1).padStart(width);
-        line.innerHTML = `<span class="line-number">${lineNumber}</span><span class="rest-of-line">${line.innerHTML}</span>`;
+    const listing = JSDOM.fragment(
+      `
+        <table class="listing">
+          <tbody>
+            ${highlightedCode.innerHTML
+              .split("\n")
+              .map(
+                (line) => `<tr><td><pre><code>${line}</code></pre></td></tr>`
+              )
+              .join("\n")}
+          </tbody>
+        </table>
+    `
+    ).querySelector("table");
+    const lines = listing.querySelectorAll("tr");
+    if (shouldNumberLines)
+      for (const [index, line] of Object.entries(lines)) {
+        const lineNumber = Number(index) + 1;
+        line.insertAdjacentHTML(
+          "afterbegin",
+          `<td class="line-number"><pre><code>${lineNumber}</code></pre></td>`
+        );
       }
-    }
-    const highlightedLines = highlightedCode.querySelectorAll(".line");
     for (const lineToHighlight of linesToHighlight) {
-      const index = lineToHighlight - 1;
-      if (highlightedLines[index] === undefined) {
+      const line = lines[lineToHighlight - 1];
+      if (line === undefined) {
         console.error(
           `Failed to highlight line out of range: ${lineToHighlight}`
         );
         continue;
       }
-      highlightedLines[index].classList.add("highlighted-line");
+      line.classList.add("highlighted-line");
     }
-    element.innerHTML = highlightedCode.innerHTML;
+    element.parentElement.outerHTML = listing.outerHTML;
   }
   for (const element of [
     ...document.querySelectorAll(":not(pre) > code"),

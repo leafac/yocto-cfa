@@ -43,7 +43,7 @@ h1,
 h2,
 h3 {
   margin-top: 2em;
-  line-height: 1.2;
+  line-height: 1.3;
   text-align: left;
 }
 
@@ -57,26 +57,22 @@ h1 {
 
 pre {
   font-size: 10pt;
-  line-height: 1.2;
+  line-height: 1.3;
   white-space: pre-wrap;
 }
 
-.line {
-  display: table-row;
+.listing pre {
+  margin: 0;
 }
 
-.highlighted-line {
-  background-color: #e0ffff;
-}
-
-.line-number,
-.rest-of-line {
-  display: table-cell;
-}
-
-.line-number {
+.listing .line-number {
+  text-align: right;
+  vertical-align: top;
   color: #aaa;
-  padding-right: 1em;
+}
+
+.listing .highlighted-line {
+  background-color: #e0ffff;
 }
 
 figure {
@@ -90,16 +86,12 @@ figure > table {
 
 table {
   line-height: 1.5em;
+  border-collapse: collapse;
 }
 
 th,
 td {
-  padding: 0 0.5em;
-}
-
-th:first-child,
-td:first-child {
-  padding-left: 0;
+  padding: 0 1em 0 0;
 }
 
 th:last-child,
@@ -149,7 +141,7 @@ header {
 
 .title-page {
   page: title-page;
-  line-height: 1.2;
+  line-height: 1.3;
   text-align: center;
 }
 
