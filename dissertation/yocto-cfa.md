@@ -916,7 +916,7 @@ The parser is defined as a function called `` ts`parse() ``, which receives the 
 
 Call `` ts`esprima.parseScript() ``, which parses the `` ts`input `` as a JavaScript program and produces a data structure following the ESTree specification. The `` ts`esprima.parseScript() `` function also detects syntax errors, for example, in the program `` js`x => ``, which is missing the function body.
 
-The `` ts`{ range: true ``} argument causes Esprima to include in the generated data structures some information about the part of the `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see [](#data-structures-to-represent-yocto-javascript-programs)), but in programs with expressions that repeat, for example, `` ts`x => x => x ``, this information distinguishes the `` ts`x ``s.
+The `` ts`{ range: true } `` argument causes Esprima to include in the generated data structures some information about the part of the `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see [](#data-structures-to-represent-yocto-javascript-programs)), but in programs with expressions that repeat, for example, `` ts`x => x => x ``, this information distinguishes the `` ts`x ``s.
 
 We pass as argument to `` ts`esprima.parseScript() `` a function called `` ts`checkFeatures() `` which is called with every fragment of data structure that represents a part of the program. The purpose of `` ts`checkFeatures() `` is to check that the program uses only the features that are supported by Yocto-JavaScript.
 
