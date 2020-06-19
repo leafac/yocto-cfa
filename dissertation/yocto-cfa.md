@@ -95,7 +95,7 @@ JavaScript has many kinds of values:
 |      `` js`Array ``      |       `` js`["Leandro", 29] ``        |
 |     `` js`Object ``      | `` js`{ name: "Leandro", age: 29 } `` |
 |    `` js`Function ``     |            `` js`x => x ``            |
-|            …             |                   …                   |
+|    `` math`\vdots ``     |           `` math`\vdots ``           |
 
 </figure>
 
@@ -116,12 +116,12 @@ JavaScript has many kinds of operations on the values introduced in [](#values-i
 
 <figure>
 
-|      Kind of JavaScript Operation       |         Example         |    Result    |
-| :-------------------------------------: | :---------------------: | :----------: |
-| Access a character in a `` js`String `` |  `` js`"Leandro"[2] ``  | `` js`"a" `` |
-|          Add `` js`Number ``s           |     `` js`29 + 1 ``     | `` js`30 ``  |
-|        Call a `` js`Function ``         | `` js`parseInt("29") `` | `` js`29 ``  |
-|                    …                    |            …            |      …       |
+|      Kind of JavaScript Operation       |         Example         |      Result       |
+| :-------------------------------------: | :---------------------: | :---------------: |
+| Access a character in a `` js`String `` |  `` js`"Leandro"[2] ``  |   `` js`"a" ``    |
+|          Add `` js`Number ``s           |     `` js`29 + 1 ``     |    `` js`30 ``    |
+|        Call a `` js`Function ``         | `` js`parseInt("29") `` |    `` js`29 ``    |
+|            `` math`\vdots ``            |    `` math`\vdots ``    | `` math`\vdots `` |
 
 </figure>
 
