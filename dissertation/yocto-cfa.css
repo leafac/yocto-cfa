@@ -12,7 +12,7 @@
 
 @media screen {
   body {
-    max-width: 600px;
+    max-width: 6in;
     margin: 2em auto;
     padding: 0 1em;
   }
@@ -43,7 +43,7 @@ h1,
 h2,
 h3 {
   margin-top: 2em;
-  line-height: 1.3;
+  line-height: 1.5;
   text-align: left;
 }
 
@@ -57,8 +57,12 @@ h1 {
 
 pre {
   font-size: 10pt;
-  line-height: 1.3;
+  line-height: 1.5;
   white-space: pre-wrap;
+}
+
+.listing {
+  width: 100%;
 }
 
 .listing pre {
@@ -85,7 +89,7 @@ figure > table {
 }
 
 table {
-  line-height: 1.5em;
+  line-height: 1.5;
   border-collapse: collapse;
 }
 
@@ -141,7 +145,7 @@ header {
 
 .title-page {
   page: title-page;
-  line-height: 1.3;
+  line-height: 1.5;
   text-align: center;
 }
 
