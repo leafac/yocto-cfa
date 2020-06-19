@@ -46,7 +46,7 @@
 
 Our first decision when developing a program analyzer is which language it should analyze. This decision is important, among other reasons, because it influences how difficult it is to develop the analyzer. In this dissertation we are interested in analysis techniques for higher-order functions, so we have plenty of options from which to choose, because higher-order functions are present in most languages, including JavaScript, Java, Python, Ruby, and so forth.
 
-From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call _Yocto-JavaScript_ (JavaScript`` math` \times ``10<sup>-24</sup>).
+From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call _Yocto-JavaScript_ (`` math` \text{JavaScript} \times 10^{-24} ``).
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>

@@ -45,31 +45,28 @@ const GitHubSlugger = require("github-slugger");
 
   // Render mathematics
   mathJax.config({
-    fontURL: "node_modules/mathjax/fonts/HTML-CSS",
+    MathJax: {
+      SVG: { font: "Asana-Math", blacker: 0 },
+    },
   });
-  document.head.insertAdjacentHTML(
-    "beforeend",
-    `<style>${(await mathJax.typeset({ css: true })).css}</style>`
-  );
-  for (const element of document.querySelectorAll("pre > code.language-math"))
-    element.parentElement.outerHTML = (
+  for (const element of document.querySelectorAll("pre > code.language-math")) {
+    const renderedMath = (
       await mathJax.typeset({
         math: element.textContent,
-        format: "TeX",
-        html: true,
+        svg: true,
       })
-    ).html;
+    ).svg;
+    element.parentElement.outerHTML = `<figure>${renderedMath}</figure>`;
+  }
   for (const element of [
     ...document.querySelectorAll(":not(pre) > code"),
-  ].filter((element) => element.textContent.startsWith("math`"))) {
+  ].filter((element) => element.textContent.startsWith("math`")))
     element.outerHTML = (
       await mathJax.typeset({
         math: element.textContent.slice("math`".length),
-        format: "inline-TeX",
-        html: true,
+        svg: true,
       })
-    ).html;
-  }
+    ).svg;
 
   // Add syntax highlighting
   const highlighter = await shiki.getHighlighter({ theme: "light_plus" });
