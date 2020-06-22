@@ -46,7 +46,7 @@ const GitHubSlugger = require("github-slugger");
   // Render mathematics
   mathJax.config({
     MathJax: {
-      SVG: { font: "Asana-Math", blacker: 0 },
+      SVG: { blacker: 0 },
     },
   });
   for (const element of document.querySelectorAll("pre > code.language-math")) {
