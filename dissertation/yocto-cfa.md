@@ -64,21 +64,21 @@ August 2020
 
 ## The Analyzed Language: Yocto-JavaScript
 
-Our first decision when developing a program analyzer is which language it should analyze. This decision is important, among other reasons, because it influences how difficult it is to develop the analyzer. In this dissertation we are interested in analysis techniques for higher-order functions, so we have plenty of options from which to choose, because higher-order functions are present in most languages, including JavaScript, Java, Python, Ruby, and so forth.
+Our first decision when developing a program analyzer is which language it should analyze. This decision is important, among other reasons, because it influences how difficult it is to develop the analyzer. In this dissertation we are interested in analysis techniques for higher-order functions, a feature that is present in most languages, so we have plenty of options from which to choose, including JavaScript, Java, Python, Ruby, and so forth.
 
-From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our analyzer. As a compromise, we analyze some parts of JavaScript, but not the entire language: we analyze only the JavaScript features that are related to higher-order functions, a language subset which we call _Yocto-JavaScript_ (`` math` \text{JavaScript} \times 10^{-24} ``).
+From all these options, we would like to choose JavaScript because it is the most popular programming language [stack-overflow-developer-survey, jet-brains-developer-survey](), but JavaScript has many features besides higher-order functions that would complicate our study. As a compromise, we analyze some parts of JavaScript, not the entire language. We select the JavaScript features that are related to higher-order functions to design our own artificial little language called _Yocto-JavaScript_ (`` math` \text{JavaScript} \times 10^{-24} ``), which becomes the language over which our analyzer works. We design Yocto-JavaScript such that every Yocto-JavaScript program is also a JavaScript program, but the converse does not hold.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-On the surface the choice of analyzed language is important because it influences how difficult it is to develop the analyzer, but it has deeper consequences as well: the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
+On the surface the choice of analyzed language is important because it influences how difficult it is to develop the analyzer, but that choice has deeper consequences as well: the analyzed language may also influence the analyzer’s precision and running time. For example, there is an analysis technique called `` math`k ``-CFA [k-cfa]() that may be slower when applied to a language with higher-order functions than when applied to a language with objects, because the algorithmic complexity of the former is exponential and of the latter is polynomial [m-cfa]().
 
 </fieldset>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **`` math`\lambda ``-Calculus [understanding-computation (§ 6)]():** Given the subset of JavaScript features that Yocto-JavaScript supports, it is a representation of the `` math`\lambda ``-calculus.
+- **`` math`\lambda ``-Calculus [understanding-computation (§ 6)]():** A mathematical theory to study higher-order functions and their applications. Yocto-JavaScript is a representation of the `` math`\lambda ``-calculus.
 
 </fieldset>
 
@@ -131,23 +131,32 @@ The following is a complete Yocto-JavaScript program that exemplifies all the su
 
 <figure>
 
-| Example Yocto-JavaScript Program |      Result       |
-| :------------------------------: | :---------------: |
-|    `` js`(y => y)(x => x) ``     | `` js`(x => x) `` |
+| Example Yocto-JavaScript Program |     Result      |
+| :------------------------------: | :-------------: |
+|    `` js`(y => y)(x => x) ``     | `` js`x => x `` |
 
 </figure>
 
-This program is a function call in which the `` js`<function> `` is `` js`y => y `` and the `` js`<argument> `` is `` js`x => x ``. When called, an Yocto-JavaScript function returns the result of computing its `` js`<body> ``. The `` js`<body> `` of `` js`y => y `` is a reference to the variable `` js`y ``, so `` js`y => y `` is a function that returns its argument unchanged.
+This program is a function call in which the `` js`<function> `` is `` js`y => y `` and the `` js`<argument> `` is `` js`x => x ``. When an Yocto-JavaScript function is called, it returns the result of computing its `` js`<body> ``, and the `` js`<body> `` of `` js`y => y `` is a reference to the variable `` js`y ``, so `` js`y => y `` is a function that returns its argument unchanged and the result of the program above is `` js`x => x ``.
 
-In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the `` js`<body> `` of a function definition, or as the `` js`<function> `` or `` js`<argument> `` of a call; for example, in the program `` js`(f(a))(b) `` the function call `` js`f(a) `` appears as the `` js`<function> `` of a call.
+In general, all kinds of Yocto-JavaScript expressions (function definitions, function calls, and variable references) may appear in the `` js`<body> `` of a function definition, or as the `` js`<function> `` or `` js`<argument> `` of a call. For example, in the program `` js`(f(a))(b) `` the function call `` js`f(a) `` appears as the `` js`<function> `` of a call.
 
-We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions `` js`f ``, `` js`g ``, and `` js`h ``, in `` js`(f(g))(h) `` the call `` js`f(g) `` happens first and the result is a function that is called with `` js`h ``, and in `` js`f(g(h)) `` the call `` js`g(h) `` happens first and the result is passed as argument to `` js`f ``. If there are no parentheses, then nested function definitions are read right-to-left and a sequence of function calls are read left-to-right; for example, `` js`x => y => x `` is equivalent to `` js`x => (y => x) `` and `` js`f(a)(b) `` is equivalent to `` js`(f(a))(b) ``.
+We use parentheses to resolve ambiguities on where function definitions start and end, and in which order operations are computed. For example, given hypothetical functions `` js`f ``, `` js`g ``, and `` js`h ``, in `` js`(f(g))(h) `` the call `` js`f(g) `` happens first and the result is a function that is called with `` js`h `` as argument, and in `` js`f(g(h)) `` the call `` js`g(h) `` happens first and the result is passed as argument in a call to `` js`f ``. If there are no parentheses in a sequence of expressions, then the following conventions apply:
+
+<figure>
+
+|   Kind of Sequence   | Reading Direction |       Example        |     Equivalent to      |
+| :------------------: | :---------------: | :------------------: | :--------------------: |
+| Function Definitions |   Right-to-Left   | `` js`x => y => x `` | `` js`x => (y => x) `` |
+|    Function Calls    |   Left-to-Right   |   `` js`f(a)(b) ``   |   `` js`(f(a))(b) ``   |
+
+</figure>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Precedence:** The order in which operations are computed. Operations that are computed first have _higher precedence_; operations that are computed later have _lower precedence_.
-- **Associativity:** The order in which operations of the same type are computed. Function definitions are _right-associative_ and function calls are _left-associative_.
+- **Precedence:** The order in which operations of different kinds are computed. Operations that are computed first have _higher precedence_ and operations that are computed later have _lower precedence_.
+- **Associativity:** The order in which a sequence of operations of the same kind is computed. Function definitions are _right-associative_ and function calls are _left-associative_.
 
 </fieldset>
 
