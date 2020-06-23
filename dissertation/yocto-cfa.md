@@ -246,7 +246,7 @@ The `` ts`evaluate() `` function is named after a native JavaScript function cal
 
 ### Data Structures to Represent Yocto-JavaScript Programs
 
-The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because it is concerned with the _structure_ rather than the _text_ of the program: for `` ts`run() `` it does not matter, for example, whether a function is written as `` js`x => x `` or `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
+The `` ts`evaluate() `` function receives an Yocto-JavaScript program represented as a string (see [](#architecture)), which is convenient for humans to write and read, but inconvenient for `` ts`run() `` to manipulate directly, because `` ts`run() `` is concerned with the _structure_ rather than the _text_ of the program: for `` ts`run() `` it does not matter, for example, whether a function is written as `` js`x => x `` or `` js`x=>x ``. So before `` ts`run() `` starts interpreting the program, `` ts`parse() `` transforms it from a string into more convenient data structures (see [](#parser) for `` ts`parse() ``’s implementation).
 
 The following are two examples of Yocto-JavaScript programs and the data structures used to represent them:
 
@@ -363,7 +363,7 @@ In later Steps almost everything about the interpreter will change, but the data
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The definitions of the data structures used to represent programs correspond to elements of the Yocto-JavaScript grammar (see [](#a-formal-grammar-for-yocto-javascript)); for example, `` ts`Expression `` corresponds to `` math`e ``.
+The data structures used to represent programs correspond to the Yocto-JavaScript grammar (see [](#a-formal-grammar-for-yocto-javascript)); for example, `` ts`Expression `` corresponds to `` math`e ``.
 
 </fieldset>
 
@@ -379,7 +379,7 @@ The definitions of the data structures used to represent programs correspond to 
 
 Having defined the architecture ([](#architecture)) and the data structures to represent Yocto-JavaScript programs ([](#data-structures-to-represent-yocto-javascript-programs)), we start developing the `` ts`run() `` function. The development is driven by a series of example programs that highlight different aspects of the interpreter. In [](#an-expression-that-already-is-a-value)–[](#a-reference-to-an-undefined-variable) we begin with these example programs and modify the implementation to achieve the expected output.
 
-Consider the example program above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see [](#values-in-yocto-javascript)), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not be written yet to prevent the TypeScript compiler from signaling type errors):
+Consider the example program above. As mentioned in [](#data-structures-to-represent-yocto-javascript-programs), the `` ts`run() `` function receives as parameter an Yocto-JavaScript program represented as an `` ts`Expression ``. The `` ts`run() `` function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see [](#values-in-yocto-javascript)), so we start the implementation of `` ts`run() `` with the following (we use `` ts`throw `` as a placeholder for code that has not been written yet to prevent the TypeScript compiler from signaling type errors):
 
 ```ts
 type Value = ArrowFunctionExpression;
@@ -422,9 +422,9 @@ case "ArrowFunctionExpression":
 
 </figure>
 
-Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the called function with the argument. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`x + 1 `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in [](#substitution-in-function-calls).
+Interpreting function calls is the main responsibility of our interpreter. There are several techniques to do this and in Step 0 we use one of the simplest: when the interpreter encounters a function call, it substitutes the variable references in the body of the called function with the argument. This is similar to how we reason about functions in mathematics; for example, given the function `` math`f(x) = x + 1 ``, we begin to calculate `` math`f(29) `` by substituting the references to `` math`x `` in `` math`x + 1 `` with the argument `` math`29 ``: `` math`f(29) = 29 + 1 ``. The implementation of this substitution technique starts in this section and will only be complete in [](#substitution-in-function-calls).
 
-In the example we are considering both the function that is called (`` js`y => y ``) and the argument (`` js`x => x ``) are immediate functions, as opposed to being the result of other operations, so for now we may limit the interpreter to handle only this case:
+In the example program above, both the function that is called (`` js`y => y ``) and the argument (`` js`x => x ``) are immediate functions, as opposed to being the result of other operations, so for now we may restrict the interpreter to handle only this case:
 
 ```ts{3-7}
 // run()
@@ -500,7 +500,7 @@ function substitute(expression: Expression): Expression {
 }
 ```
 
-In our current example the `` ts`expression `` is `` ts`y ``, an `` ts`Identifier ``, and it must be substituted with the `` ts`argument `` (`` js`x => x ``):
+In our current example the `` ts`expression `` is `` ts`y ``, which is an `` ts`Identifier `` that must be substituted with the `` ts`argument `` (`` js`x => x ``):
 
 <figure>
 
@@ -551,7 +551,7 @@ case "ArrowFunctionExpression":
 
 </figure>
 
-The implementation of `` ts`substitute() `` in the case of `` ts`Identifier `` introduced in [](#a-call-involving-immediate-functions) _always_ substitutes variable references, regardless of whether they refer to the `` ts`parameter `` of the called function. For example, in the program above `` ts`substitute() `` is substituting the `` js`x `` even though the `` ts`parameter `` is `` js`z ``. To fix this, we check whether the variable reference matches the `` ts`parameter ``, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
+The implementation of `` ts`substitute() `` introduced in [](#a-call-involving-immediate-functions) _always_ substitutes variable references, regardless of whether they refer to the `` ts`parameter ``. For example, in the program above `` ts`substitute() `` is substituting the `` js`x `` even though the `` ts`parameter `` is `` js`z ``. To fix this, we check whether the variable reference matches the `` ts`parameter ``, and if it does not then we prevent the substitution by retuning the variable reference unchanged:
 
 <figure>
 
@@ -617,7 +617,7 @@ case "ArrowFunctionExpression":
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Local Reasoning:** The ability to reason about a function without having to know the context under which it appears. Option 1 defeats local reasoning and Option 2 enables it.
+- **Local Reasoning:** The ability to reason about a function without having to know the context under which it is defined. Option 1 defeats local reasoning and Option 2 enables it.
 - **Shadowing:** The behavior exhibited by Option 2: <code><span style="color: #FF0000">x</span></code> is _shadowed_ by <code><span style="color: #008000">x</span></code> because there is no way to refer to <code><span style="color: #FF0000">x</span></code> from the body of the inner function.
 
 </fieldset>
@@ -634,7 +634,7 @@ case "ArrowFunctionExpression":
 
 </figure>
 
-This case is similar to [](#substitution-in-function-definitions): all `` ts`substitute() `` has to do is continue traversing the function call recursively:
+This case is analogous to [](#substitution-in-function-definitions) for function calls. The `` ts`substitute() `` function must continue traversing the function call recursively:
 
 <figure>
 
@@ -666,7 +666,7 @@ This concludes the implementation of `` ts`substitute() ``.
 
 </figure>
 
-The `` js`argument ``s in the example programs from [](#an-expression-that-already-is-a-value)–[](#substitution-in-function-calls) are `` ts`ArrowFunctionExpression ``s, but in general an `` js`argument `` may be any kind of `` ts`Expression ``; for example, in the program above the `` js`argument `` is a `` ts`CallExpression ``. We address the general case by calling `` ts`run() `` recursively on the `` js`argument `` to evaluate it to a `` ts`Value ``:
+The `` js`argument ``s in the example programs from [](#an-expression-that-already-is-a-value)–[](#substitution-in-function-calls) are `` ts`ArrowFunctionExpression ``s, but in general an `` js`argument `` may be any kind of `` ts`Expression ``; for example, in the program above the `` js`argument `` is a `` ts`CallExpression `` (`` js`(y => y)(x => x) ``). We address the general case by calling `` ts`run() `` recursively on the `` js`argument `` to evaluate it to a `` ts`Value ``:
 
 ```ts{9}
 // run()
@@ -697,7 +697,7 @@ case "CallExpression":
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript and most other popular programming languages are call-by-value as well, but there is one notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see [](#a-function-that-is-not-immediate)), or if it is the result of the program (see [](#continuing-to-run-after-a-function-call)). In a call-by-need language the result of the program above would be `` js`z => ((y => y)(x => x)) ``, and the call `` js`(y => y)(x => x) `` would not be computed is not computed, because it is not needed. There is yet another policy for when to interpret arguments called _call-by-name_: the difference between call-by-name and call-by-need is that in a call-by-name language the an argument may be computed multiple times if it is used multiple times, but in a call-by-need language an argument is guaranteed to be computed at most once.
+The notion that the argument is interpreted to produce a value as soon as the function call is encountered characterizes Yocto-JavaScript as a _call-by-value_ language [call-by-name-call-by-value-and-the-lambda-calculus](). JavaScript and most other popular programming languages are call-by-value as well, but there is one notable exception, Haskell, which is a _call-by-need_ language. In a call-by-need language the argument is interpreted only if it is _needed_, for example, if it is used in the function position of another call (see [](#a-function-that-is-not-immediate)), or if it is the result of the program (see [](#continuing-to-run-after-a-function-call)). In a call-by-need language the result of the program above would be `` js`z => ((y => y)(x => x)) ``, and the call `` js`(y => y)(x => x) `` would not be computed, because it is not needed. Besides call-by-value and call-by-need, there is yet another policy for when to interpret arguments: _call-by-name_. The policy of call-by-name is similar to call-by-need, except that an argument that is used multiple times could be computed multiple times in a call-by-name language, and it is guaranteed to be computed at most once in a call-by-need language.
 
 </fieldset>
 
@@ -744,7 +744,7 @@ case "CallExpression":
 
 </figure>
 
-This is similar to [](#an-argument-that-is-not-immediate) and [](#a-function-that-is-not-immediate): the result of substitution may be not an immediate function but another call, and more work may be necessary to interpret it. We solve this with yet another recursive call to `` ts`run() ``:
+This is similar to [](#an-argument-that-is-not-immediate) and [](#a-function-that-is-not-immediate): the result of substitution may be not an immediate function but another call, in which case more computation is required. We solve this with yet another recursive call to `` ts`run() ``:
 
 ```ts{8}
 // run()
@@ -846,9 +846,9 @@ First, we extend the grammar from [](#a-formal-grammar-for-yocto-javascript) wit
 
 <figure>
 
-|              |     |                                         |        |
-| -----------: | :-: | :-------------------------------------- | :----- |
-| `` math`v `` | ::= | `` math`x ``  `` js`=> ``  `` math`e `` | Values |
+|              |     |                            |        |
+| -----------: | :-: | :------------------------- | :----- |
+| `` math`v `` | ::= | `` math`x\texttt{ => }e `` | Values |
 
 </figure>
 
@@ -872,7 +872,7 @@ Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ 
 
 ```math
 \frac{
-e_f \Rightarrow \texttt{(}x_p \texttt{ => } e_b\texttt{)} \quad
+e_f \Rightarrow \texttt{(}x_p\texttt{ => }e_b\texttt{)} \quad
 e_a \Rightarrow v_a \quad
 e_b[x_p \backslash v_a] \Rightarrow v
 }{
@@ -889,39 +889,37 @@ Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equ
 
 <figure>
 
-|                                                                                                 |     |                                                                                                                                 |                         |
-| ----------------------------------------------------------------------------------------------: | :-: | :------------------------------------------------------------------------------------------------------------------------------ | :---------------------- |
-|   `` js`( `` `` math`x ``  `` js`=> ``  `` math`e `` `` js`) `` `` math`[x_p \backslash v_a] `` |  =  | `` math`x ``  `` js`=> ``  `` js`( `` `` math`e `` `` math`[x_p \backslash v_a] `` `` js`) ``                                   | if `` math`x \ne x_p `` |
-| `` js`( `` `` math`x_p ``  `` js`=> ``  `` math`e `` `` js`) `` `` math`[x_p \backslash v_a] `` |  =  | `` math`x_p ``  `` js`=> ``  `` math`e ``                                                                                       |                         |
-| `` js`( `` `` math`e_f `` `` js`( `` `` math`e_a `` `` js`)) `` `` math`[x_p \backslash v_a] `` |  =  | `` js`( `` `` math`e_f `` `` math`[x_p \backslash v_a] `` `` js`( `` `` math`e_a `` `` math`[x_p \backslash v_a] `` `` js`)) `` |                         |
-|                                                    `` math`x `` `` math`[x_p \backslash v_a] `` |  =  | `` math`x ``                                                                                                                    | if `` math`x \ne x_p `` |
-|                                                  `` math`x_p `` `` math`[x_p \backslash v_a] `` |  =  | `` math`v_a ``                                                                                                                  |                         |
+|                                                                      |     |                                                                                          |                         |
+| -------------------------------------------------------------------: | :-: | :--------------------------------------------------------------------------------------- | :---------------------- |
+|   `` math`\texttt{(}x\texttt{ => }e\texttt{)}[x_p \backslash v_a] `` |  =  | `` math`x\texttt{ => (}e[x_p \backslash v_a]\texttt{)} ``                                | if `` math`x \ne x_p `` |
+| `` math`\texttt{(}x_p\texttt{ => }e\texttt{)}[x_p \backslash v_a] `` |  =  | `` math`x_p\texttt{ => }e ``                                                             |                         |
+| `` math`\texttt{(}e_f\texttt{(}e_a\texttt{))}[x_p \backslash v_a] `` |  =  | `` math`\texttt{(}e_f[x_p \backslash v_a]\texttt{(}e_a[x_p \backslash v_a]\texttt{))} `` |                         |
+|                                     `` math`x[x_p \backslash v_a] `` |  =  | `` math`x ``                                                                             | if `` math`x \ne x_p `` |
+|                                   `` math`x_p[x_p \backslash v_a] `` |  =  | `` math`v_a ``                                                                           |                         |
 
 </figure>
 </fieldset>
 
 ### Parser
 
-The parser is responsible for converting an Yocto-JavaScript program written as a string into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose to represent Yocto-JavaScript programs with data structures that are compatible with a specification for representing JavaScript programs called ESTree [estree, estree-types]() because it allows us to use tools from the JavaScript ecosystem, including a parser called Esprima [esprima](), and the Esprima Interactive Online Demonstration [esprima-demonstration](), which shows the data structures used to represent a given program.
+The parser is responsible for converting a string representing an Yocto-JavaScript program into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose data structures that are compatible with Babel [babel](), which is a library to manipulate JavaScript programs that we reuse to implement the Yocto-JavaScript parser and the generator (see [](#generator)).
 
-Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Esprima and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
+Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Babel and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
 ```ts{number}
 function parse(input: string): Expression {
-  const program = esprima.parseScript(input, { range: true }, checkFeatures);
-  const expression = (program as any).body[0].expression as Expression;
-  return expression;
-  function checkFeatures(node: estree.Node): void {
+  const expression = babelParser.parseExpression(input);
+  babelTypes.traverse(expression, (node) => {
     switch (node.type) {
-      case "Program":
-        if (node.body.length !== 1)
-          throw new Error(
-            "Unsupported Yocto-JavaScript feature: Program with multiple statements"
-          );
-        break;
-      case "ExpressionStatement":
-        break;
       case "ArrowFunctionExpression":
+        if (node.params.length !== 1)
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"
+          );
+        if (node.params[0].type !== "Identifier")
+          throw new Error(
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"
+          );
         break;
       case "CallExpression":
         if (node.arguments.length !== 1)
@@ -934,55 +932,32 @@ function parse(input: string): Expression {
       default:
         throw new Error(`Unsupported Yocto-JavaScript feature: ${node.type}`);
     }
-  }
+  });
+  return expression as Expression;
 }
 ```
 
-\begin{description}
-\item [Line 1:]
+- **Line 1:** The parser is defined as a function called `` ts`parse() ``, which receives the `` ts`string `` called `` ts`input `` representing a program and returns an `` ts`Expression `` (see [](#data-structures-to-represent-yocto-javascript-programs)).
 
-The parser is defined as a function called `` ts`parse() ``, which receives the program `` ts`input `` represented as a `` ts`string `` and returns an `` ts`Expression `` (see [](#data-structures-to-represent-yocto-javascript-programs)).
+- **Line 2:** Call `` ts`babelParser.parseExpression() ``, which parses the `` ts`input `` as a JavaScript program and produces a data structure following the Babel types [babel-types](). The `` ts`babelParser.parseExpression() `` function signals problems if there is a syntax error (for example, the missing function body in the program `` js`x => ``) or if the `` ts`input `` is not a simple JavaScript expression, and therefore is not supported by Yocto-JavaScript (for example, `` js`x => x; y => y ``, which is a sequence of two expressions, and `` js` const f = x => x ``, which is a variable declaration).
 
-\item [Line 2:]
+---
 
-Call `` ts`esprima.parseScript() ``, which parses the `` ts`input `` as a JavaScript program and produces a data structure following the ESTree specification. The `` ts`esprima.parseScript() `` function also detects syntax errors, for example, in the program `` js`x => ``, which is missing the function body.
+- **Line 3:** Extract the single `` ts`Expression `` from within the `` ts`Program `` returned by `` ts`esprima.parseScript() ``. The `` ts`as <something> `` forms sidestep the TypeScript type checker and assert that the `` ts`expression `` is of the correct type. This is safe to do because of `` ts`checkFeatures() ``.
 
-The `` ts`{ range: true } `` argument causes Esprima to include in the generated data structures some information about the part of the `` ts`input `` from where they came. We do not use this information (it is not even part of the definition of the data structures; see [](#data-structures-to-represent-yocto-javascript-programs)), but in programs with expressions that repeat, for example, `` ts`x => x => x ``, this information distinguishes the `` ts`x ``s.
+- **Line 5:** The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see [](#data-structures-to-represent-yocto-javascript-programs)). The `` ts`checkFeatures() `` does not return anything (`` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
 
-We pass as argument to `` ts`esprima.parseScript() `` a function called `` ts`checkFeatures() `` which is called with every fragment of data structure that represents a part of the program. The purpose of `` ts`checkFeatures() `` is to check that the program uses only the features that are supported by Yocto-JavaScript.
+- **Lines 6, 7, 13, 15, 17, 23, 25:** Similar to `` ts`run() `` and `` ts`substitute() `` (see [](#the-entire-runner)), `` ts`checkFeatures() `` starts by determining which type of `` ts`estree.Node `` it is given.
 
-\item [Line 3:]
+- **Lines 8–11:** Check that the `` ts`Program `` contains a single statement. This prevents programs such as `` js`x => x; y => y ``.
 
-Extract the single `` ts`Expression `` from within the `` ts`Program `` returned by `` ts`esprima.parseScript() ``. The `` ts`as <something> `` forms sidestep the TypeScript type checker and assert that the `` ts`expression `` is of the correct type. This is safe to do because of `` ts`checkFeatures() ``.
+- **Lines 13, 15:** `` ts`ExpressionStatement ``s and `` ts`ArrowFunctionExpression ``s are supported in Yocto-JavaScript unconditionally. We could check that the `` ts`ArrowFunctionExpression `` includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as `` js`[x, y] ``, for example), but this would be redundant because Esprima already calls `` ts`checkFeatures() `` with other unsupported `` ts`node ``s that subsume these cases. For example, given the program `` js`(x, y) => x ``, which is a function of multiple parameters, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`SequenceExpression ``. Similarly, given the program `` js`([x, y]) => x ``, which is a function in which the parameter is a pattern, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`ArrayExpression ``.
 
-\item [Line 5:]
+- **Lines 18–21:** Check that the `` ts`CallExpression `` contains a single argument. This prevents programs such as `` js`f(a, b) ``.
 
-The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see [](#data-structures-to-represent-yocto-javascript-programs)). The `` ts`checkFeatures() `` does not return anything (`` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+- **Line 23:** `` ts`Identifier ``s are supported in Yocto-JavaScript unconditionally. An `` ts`Identifier `` may be an expression or the parameter of an `` ts`ArrowFunctionExpression ``.
 
-\item [Lines 6, 7, 13, 15, 17, 23, 25:]
-
-Similar to `` ts`run() `` and `` ts`substitute() `` (see [](#the-entire-runner)), `` ts`checkFeatures() `` starts by determining which type of `` ts`estree.Node `` it is given.
-
-\item [Lines 8–11:]
-
-Check that the `` ts`Program `` contains a single statement. This prevents programs such as `` js`x => x; y => y ``.
-
-\item [Lines 13, 15:]
-
-`` ts`ExpressionStatement ``s and `` ts`ArrowFunctionExpression ``s are supported in Yocto-JavaScript unconditionally. We could check that the `` ts`ArrowFunctionExpression `` includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as `` js`[x, y] ``, for example), but this would be redundant because Esprima already calls `` ts`checkFeatures() `` with other unsupported `` ts`node ``s that subsume these cases. For example, given the program `` js`(x, y) => x ``, which is a function of multiple parameters, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`SequenceExpression ``. Similarly, given the program `` js`([x, y]) => x ``, which is a function in which the parameter is a pattern, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`ArrayExpression ``.
-
-\item [Lines 18–21:]
-
-Check that the `` ts`CallExpression `` contains a single argument. This prevents programs such as `` js`f(a, b) ``.
-
-\item [Line 23:]
-
-`` ts`Identifier ``s are supported in Yocto-JavaScript unconditionally. An `` ts`Identifier `` may be an expression or the parameter of an `` ts`ArrowFunctionExpression ``.
-
-\item [Line 26:]
-
-All other types of `` ts`estree.Node `` are not supported by Yocto-JavaScript. This includes programs such as `` js`29 `` (`` ts`estree.Literal ``) and `` js`const f = x => x `` (`` ts`estree.VariableDeclarator ``).
-\end{description}
+- **Line 26:** All other types of `` ts`estree.Node `` are not supported by Yocto-JavaScript. This includes programs such as `` js`29 `` (`` ts`estree.Literal ``) and `` js`const f = x => x `` (`` ts`estree.VariableDeclarator ``).
 
 In later Steps almost everything about the interpreter will change, but the parser will remain the same.
 
