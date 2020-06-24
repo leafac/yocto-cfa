@@ -82,17 +82,17 @@ function parse(input: string): Expression {
       case "ArrowFunctionExpression":
         if (node.params.length !== 1)
           throw new Error(
-            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression doesn’t have exactly one parameter"
           );
         if (node.params[0].type !== "Identifier")
           throw new Error(
-            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param isn’t an Identifier"
           );
         break;
       case "CallExpression":
         if (node.arguments.length !== 1)
           throw new Error(
-            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+            "Unsupported Yocto-JavaScript feature: CallExpression doesn’t have exactly one argument"
           );
         break;
       case "Identifier":

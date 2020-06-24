@@ -902,9 +902,9 @@ Finally, we define a _metafunction_ `` math`e[x \backslash v] = e `` that is equ
 
 ### Parser
 
-The parser is responsible for converting a string representing an Yocto-JavaScript program into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose data structures that are compatible with Babel [babel](), which is a library to manipulate JavaScript programs that we reuse to implement the Yocto-JavaScript parser and the generator (see [](#generator)).
+The parser is responsible for converting a string representing an Yocto-JavaScript program into data structures that are more convenient for the runner to manipulate (see [](#architecture) for a high-level view of the architecture and [](#data-structures-to-represent-yocto-javascript-programs) for the definition of the data structures). We choose data structures that are compatible with Babel [babel](), which is a library to manipulate JavaScript programs that we use to implement the Yocto-JavaScript parser and the generator (see [](#generator)).
 
-Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Babel and check that the program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
+Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Babel and check that the input program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:
 
 ```ts{number}
 function parse(input: string): Expression {
@@ -914,17 +914,17 @@ function parse(input: string): Expression {
       case "ArrowFunctionExpression":
         if (node.params.length !== 1)
           throw new Error(
-            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression doesn’t have exactly one parameter"
           );
         if (node.params[0].type !== "Identifier")
           throw new Error(
-            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"
+            "Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param isn’t an Identifier"
           );
         break;
       case "CallExpression":
         if (node.arguments.length !== 1)
           throw new Error(
-            "Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"
+            "Unsupported Yocto-JavaScript feature: CallExpression doesn’t have exactly one argument"
           );
         break;
       case "Identifier":
@@ -937,27 +937,23 @@ function parse(input: string): Expression {
 }
 ```
 
-- **Line 1:** The parser is defined as a function called `` ts`parse() ``, which receives the `` ts`string `` called `` ts`input `` representing a program and returns an `` ts`Expression `` (see [](#data-structures-to-represent-yocto-javascript-programs)).
+- **Line 1:** The parser is defined as a function called `` ts`parse() ``, which receives a `` ts`string `` called `` ts`input `` that represents a program and returns an `` ts`Expression `` (see [](#data-structures-to-represent-yocto-javascript-programs)).
 
-- **Line 2:** Call `` ts`babelParser.parseExpression() ``, which parses the `` ts`input `` as a JavaScript program and produces a data structure following the Babel types [babel-types](). The `` ts`babelParser.parseExpression() `` function signals problems if there is a syntax error (for example, the missing function body in the program `` js`x => ``) or if the `` ts`input `` is not a simple JavaScript expression, and therefore is not supported by Yocto-JavaScript (for example, `` js`x => x; y => y ``, which is a sequence of two expressions, and `` js` const f = x => x ``, which is a variable declaration).
+- **Line 2:** Call `` ts`babelParser.parseExpression() ``, which parses the `` ts`input `` as a JavaScript program and produces data structures of the Babel types [babel-types](). The `` ts`babelParser.parseExpression() `` function throws an exception if there is a syntax error (for example, the missing function body in the program `` js`x => ``) or if the `` ts`input `` is not a simple JavaScript expression, and therefore is not supported by Yocto-JavaScript (for example, `` js`x => x; y => y ``, which is a sequence of two expressions, and `` js` const f = x => x ``, which is a variable declaration).
 
----
+- **Lines 3–26:** Traverse the `` ts`expression `` produced by Babel to check that the input program uses only the features supported by Yocto-JavaScript. This traversal is similar to what happens in `` ts`substitute() `` (see [](#the-entire-runner), lines 14–32), but we use the Babel auxiliary function `` ts`babelTypes.traverse() `` to drive it. The data structure fragments are called `` ts`node ``s because they form something called the *Abstract Syntax Tree* (AST) of the program (see [](#data-structures-to-represent-yocto-javascript-programs)).
 
-- **Line 3:** Extract the single `` ts`Expression `` from within the `` ts`Program `` returned by `` ts`esprima.parseScript() ``. The `` ts`as <something> `` forms sidestep the TypeScript type checker and assert that the `` ts`expression `` is of the correct type. This is safe to do because of `` ts`checkFeatures() ``.
+- **Line 6:** Check that a function definition has exactly one parameter (see [](#values-in-yocto-javascript)). This rejects programs such as `` js`() => x `` and `` js`(x, y) => x ``.
 
-- **Line 5:** The `` ts`checkFeatures() `` function, which is passed to `` ts`esprima.parseScript() `` is called with every fragment of data structure used to represent the program. These fragments are called _nodes_, because the data structure as a whole forms a _tree_, also known as the *Abstract Syntax Tree* (AST) of the program (see [](#data-structures-to-represent-yocto-javascript-programs)). The `` ts`checkFeatures() `` does not return anything (`` ts`void ``); its purpose is only to throw an exception in case the program uses a feature that is not supported by Yocto-JavaScript.
+- **Line 10:** Check that the parameter in a function definition is a variable instead of a pattern for destructuring assignment [javascript-destructuring-assignment](). This rejects programs such as `` js`([x, y]) => x ``, in which the parameter is the array pattern `` js`[x, y] ``.
 
-- **Lines 6, 7, 13, 15, 17, 23, 25:** Similar to `` ts`run() `` and `` ts`substitute() `` (see [](#the-entire-runner)), `` ts`checkFeatures() `` starts by determining which type of `` ts`estree.Node `` it is given.
+- **Line 16:** Check that a function call has exactly one argument (see [](#operations-in-yocto-javascript)). This rejects programs such as `` js`f() `` and `` js`f(a, b) ``.
 
-- **Lines 8–11:** Check that the `` ts`Program `` contains a single statement. This prevents programs such as `` js`x => x; y => y ``.
+- **Line 21:** An `` ts`Identifier `` is accept unconditionally.
 
-- **Lines 13, 15:** `` ts`ExpressionStatement ``s and `` ts`ArrowFunctionExpression ``s are supported in Yocto-JavaScript unconditionally. We could check that the `` ts`ArrowFunctionExpression `` includes only one parameter and that this parameter is a variable (as opposed to being a pattern such as `` js`[x, y] ``, for example), but this would be redundant because Esprima already calls `` ts`checkFeatures() `` with other unsupported `` ts`node ``s that subsume these cases. For example, given the program `` js`(x, y) => x ``, which is a function of multiple parameters, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`SequenceExpression ``. Similarly, given the program `` js`([x, y]) => x ``, which is a function in which the parameter is a pattern, Esprima calls `` ts`checkFeatures() `` with a `` ts`node `` of type `` ts`ArrayExpression ``.
+- **Line 23:** Any kind of `` ts`node `` that has not been explicitly accepted above is reject as unsupported in Yocto-JavaScript. This rejects programs such as `` js`29 ``, which is a `` ts`NumericLiteral ``.
 
-- **Lines 18–21:** Check that the `` ts`CallExpression `` contains a single argument. This prevents programs such as `` js`f(a, b) ``.
-
-- **Line 23:** `` ts`Identifier ``s are supported in Yocto-JavaScript unconditionally. An `` ts`Identifier `` may be an expression or the parameter of an `` ts`ArrowFunctionExpression ``.
-
-- **Line 26:** All other types of `` ts`estree.Node `` are not supported by Yocto-JavaScript. This includes programs such as `` js`29 `` (`` ts`estree.Literal ``) and `` js`const f = x => x `` (`` ts`estree.VariableDeclarator ``).
+- **Line 27:** We convert the type of `` js`expression `` from a Babel `` ts`Expression `` into an Yocto-JavaScript `` ts`Expression `` (see [](#data-structures-to-represent-yocto-javascript-programs)). This is safe because of the checks performed above.
 
 In later Steps almost everything about the interpreter will change, but the parser will remain the same.
 

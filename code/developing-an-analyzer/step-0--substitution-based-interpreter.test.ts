@@ -78,9 +78,14 @@ describe("parse()", () => {
 
   test("Function of multiple parameters", () => {
     expect(() => {
+      evaluate(`() => x`);
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression doesn’t have exactly one parameter"`
+    );
+    expect(() => {
       evaluate(`(x, y) => x`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression with multiple parameters"`
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression doesn’t have exactly one parameter"`
     );
   });
 
@@ -88,15 +93,20 @@ describe("parse()", () => {
     expect(() => {
       evaluate(`([x, y]) => x`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param that isn’t Identifier"`
+      `"Unsupported Yocto-JavaScript feature: ArrowFunctionExpression param isn’t an Identifier"`
     );
   });
 
   test("Call with multiple arguments", () => {
     expect(() => {
+      evaluate(`f()`);
+    }).toThrowErrorMatchingInlineSnapshot(
+      `"Unsupported Yocto-JavaScript feature: CallExpression doesn’t have exactly one argument"`
+    );
+    expect(() => {
       evaluate(`f(a, b)`);
     }).toThrowErrorMatchingInlineSnapshot(
-      `"Unsupported Yocto-JavaScript feature: CallExpression with multiple arguments"`
+      `"Unsupported Yocto-JavaScript feature: CallExpression doesn’t have exactly one argument"`
     );
   });
 
