@@ -270,13 +270,10 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 }
 ```
 
-</td>
 <td align="center">
 
 ![](images/data-structures-to-represent-yocto-javascript-programs--1.drawio.svg)
 
-</td>
-</tr>
 <tr>
 <td>
 
@@ -315,13 +312,10 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 }
 ```
 
-</td>
 <td align="center">
 
 ![](images/data-structures-to-represent-yocto-javascript-programs--2.drawio.svg)
 
-</td>
-</tr>
 </table>
 
 We choose to represent Yocto-JavaScript programs with the data structures above because they match the data structures used by Babel [babel](), which is a library to manipulate JavaScript programs that we use to implement the `` ts`parse() `` and `` ts`generate() `` functions (see [](#parser) and [](#generator)).
@@ -856,17 +850,15 @@ Next, we define a _relation_ `` math`e \Rightarrow v `` using _inference rules_ 
 <figure>
 <table>
 <tr>
-<th>Value</th>
+<th>Value
 <td>
 
 ```math
 \frac{}{v \Rightarrow v}
 ```
 
-</td>
-</tr>
 <tr>
-<th>Function Call</th>
+<th>Function Call
 <td>
 
 ```math
@@ -879,8 +871,6 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 }
 ```
 
-</td>
-</tr>
 </table>
 </figure>
 
@@ -1072,33 +1062,27 @@ The issue with this strategy is that the expression `` js`z => x => x `` does no
 
 <table>
 <tr>
-<th align="left">Example Program</th>
+<th align="left">Example Program
 <td align="left">
 
 `` js`x => x ``
 
-</td>
-</tr>
 <tr>
-<th align="left">Step 1 Output</th>
+<th align="left">Step 1 Output
 <td align="left">
 
 ```json
 { "function": `x => x`, "environment": {} }
 ```
 
-</td>
-</tr>
 <tr>
-<th align="left">Example Program</th>
+<th align="left">Example Program
 <td align="left">
 
 `` js`(y => z => y)(x => x) ``
 
-</td>
-</tr>
 <tr>
-<th align="left">Step 1 Output</th>
+<th align="left">Step 1 Output
 <td align="left">
 
 ```json
@@ -1110,8 +1094,6 @@ The issue with this strategy is that the expression `` js`z => x => x `` does no
 }
 ```
 
-</td>
-</tr>
 </table>
 
 </figure>
