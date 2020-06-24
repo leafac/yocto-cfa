@@ -255,6 +255,9 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 
 ```ts
 > parse(`x => x`)
+```
+
+```json
 {
   "type": "ArrowFunctionExpression",
   "params": [
@@ -279,6 +282,9 @@ The following are two examples of Yocto-JavaScript programs and the data structu
 
 ```ts
 > parse(`(y => y)(x => x)`)
+```
+
+```json
 {
   "type": "CallExpression",
   "callee": {

@@ -24,7 +24,7 @@ in conformity with the requirements for the degree of Doctor of Philosophy</p>
 <p>Baltimore, Maryland<br>
 August 2020</p>
 </div>
-<div class="timestamp draft">2020-06-24T18:22:27.650Z</div></div>
+<div class="timestamp draft">2020-06-24T18:31:03.526Z</div></div>
 <!-- TODO
 # Abstract
 
@@ -583,17 +583,19 @@ August 2020</p>
 <td>
 <table class="listing">
           <tbody><tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`x =&gt; x`</span><span style="color: #000000">)</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"params"</span><span style="color: #000000">: [</span></code></pre></td></tr>
+        </tbody></table>
+<table class="listing">
+          <tbody><tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"params"</span><span style="color: #000000">: [</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"type"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"name"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  ],</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"body"</span><span style="color: #000000">: {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #A31515">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"body"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
         </tbody></table>
@@ -633,33 +635,35 @@ August 2020</p>
 <td>
 <table class="listing">
           <tbody><tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`(y =&gt; y)(x =&gt; x)`</span><span style="color: #000000">)</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"callee"</span><span style="color: #000000">: {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #A31515">"params"</span><span style="color: #000000">: [</span></code></pre></td></tr>
+        </tbody></table>
+<table class="listing">
+          <tbody><tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"callee"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"params"</span><span style="color: #000000">: [</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">      {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #A31515">"type"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #A31515">"name"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"y"</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #0451A5">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"y"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">      }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    ],</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #A31515">"body"</span><span style="color: #000000">: {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"y"</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"body"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"y"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  },</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"arguments"</span><span style="color: #000000">: [</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"arguments"</span><span style="color: #000000">: [</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"type"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"params"</span><span style="color: #001080">:</span><span style="color: #000000"> [</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"params"</span><span style="color: #000000">: [</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">        {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">          </span><span style="color: #A31515">"type"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">          </span><span style="color: #A31515">"name"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">          </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">          </span><span style="color: #0451A5">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">        }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">      ],</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">"body"</span><span style="color: #001080">:</span><span style="color: #000000"> {</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #A31515">"type"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #A31515">"name"</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"body"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #0451A5">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">        </span><span style="color: #0451A5">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">      }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  ]</span></code></pre></td></tr>
