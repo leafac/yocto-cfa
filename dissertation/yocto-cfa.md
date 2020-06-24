@@ -959,52 +959,31 @@ In later Steps almost everything about the interpreter will change, but the pars
 
 ### Generator
 
-The generator transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see [](#architecture) for a high-level view of the architecture). Similar to what happened in the parser (see [](#parser)), we may implement the generator by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen [escodegen]() to generate a string representation of an ESTree data structure, and a library called Prettier [prettier]() to format that string. The following is the full implementation of the generator:
+The generator transforms a `` ts`Value `` produced by `` ts`run() `` into a human-readable format (see [](#architecture) for a high-level view of the architecture). Similar to what happened in the parser (see [](#parser)), we delegate most of the implementation to Babel [babel](). The following is the full implementation of the generator:
 
-```ts{number}
+```ts
 function generate(value: Value): string {
-  return prettier
-    .format(escodegen.generate(value), {
-      parser: "babel",
-      semi: false,
-      arrowParens: "avoid",
-    })
-    .trim();
+  return babelGenerator.default(value as any).code;
 }
 ```
 
-\begin{description}
-\item [Line 4:]
-
-Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see [](#architecture)), and it may use different parsers. We choose Babel [babel](), which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).
-
-\item [Line 5:]
-
-Instruct Prettier not to produce semicolons at the end of the line, for example, `` js`x => y `` instead of `` js`x => y; ``.
-
-\item [Line 6:]
-
-Instruct Prettier not to wrap parameters in parentheses, for example, `` js`x => y `` instead of `` js`(x) => y ``.
-
-\item [Line 8:]
-
-Remove the newline at the end of the output produced by Prettier.
-\end{description}
+We convert the `` ts`value `` from the Yocto-JavaScript `` ts`Value `` type into the `` ts`any `` type to sidestep the TypeScript type checker. This conversion is safe because the Yocto-JavaScript `` ts`Value `` type is compatible with the parts of the Babel `` ts`Node `` type that the `` ts`babelGenerator.default() `` function needs.
 
 ### Programs That Do Not Terminate
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(f => f(f))(f => f(f)) `` \\
-\textbf{Current Output} & `` text`DOES NOT TERMINATE `` \\
-\textbf{Expected Output} & `` text`DOES NOT TERMINATE `` \\
-\end{tabular}
-\end{center}
+<figure>
+
+|         Example Program         |   Current Output   |  Expected Output   |
+| :-----------------------------: | :----------------: | :----------------: |
+| `` js`(f => f(f))(f => f(f)) `` | Does not terminate | Does not terminate |
+
+</figure>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-This example program is also known as the _`` math`\Omega ``-combinator_. The function `` js`f => f(f) `` that is part of this program is also known as the _`` math`U ``-combinator_ (`` math`\Omega = (U)(U) ``).
+- **`` math`\Omega ``-Combinator:** The example program: `` js`(f => f(f))(f => f(f)) ``.
+- **`` math`U ``-Combinator:** The function `` js`f => f(f) `` that is part of the `` math`\Omega ``-combinator (`` math`\Omega = \texttt{(}U\texttt{)(}U\texttt{)} ``).
 
 </fieldset>
 

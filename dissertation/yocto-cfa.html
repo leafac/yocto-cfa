@@ -27,7 +27,7 @@ in conformity with the requirements for the degree of Doctor of Philosophy</p>
 <p>Baltimore, Maryland<br>
 August 2020</p>
 </div>
-<div class="timestamp draft">2020-06-24T14:02:11.348Z</div></div>
+<div class="timestamp draft">2020-06-24T14:24:39.376Z</div></div>
 <!-- TODO
 # Abstract
 
@@ -2966,41 +2966,38 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </ul>
 <p>In later Steps almost everything about the interpreter will change, but the parser will remain the same.</p>
 <h3 id="generator"><span class="heading-counter">1.3.16</span> Generator<code class="draft"> [](#generator)</code></h3>
-<p>The generator transforms a <code><span style="color: #001080">Value</span></code> produced by <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> into a human-readable format (see <a href="#architecture">§&nbsp;1.3.1</a> for a high-level view of the architecture). Similar to what happened in the parser (see <a href="#parser">§&nbsp;1.3.15</a>), we may implement the generator by reusing existing tools from the JavaScript ecosystem, because we are representing Yocto-JavaScript programs and values with data structures that follow the ESTree specification. In particular, we use a library called Escodegen&nbsp;[??] to generate a string representation of an ESTree data structure, and a library called Prettier&nbsp;[<a href="#prettier">26</a>] to format that string. The following is the full implementation of the generator:</p>
+<p>The generator transforms a <code><span style="color: #001080">Value</span></code> produced by <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> into a human-readable format (see <a href="#architecture">§&nbsp;1.3.1</a> for a high-level view of the architecture). Similar to what happened in the parser (see <a href="#parser">§&nbsp;1.3.15</a>), we delegate most of the implementation to Babel&nbsp;[<a href="#babel">2</a>]. The following is the full implementation of the generator:</p>
 <table class="listing">
           <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">Value</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">prettier</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">    .</span><span style="color: #795E26">format</span><span style="color: #000000">(</span><span style="color: #001080">escodegen</span><span style="color: #000000">.</span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">), {</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">      </span><span style="color: #001080">parser:</span><span style="color: #000000"> </span><span style="color: #A31515">"babel"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>5</code></pre></td><td><pre><code><span style="color: #000000">      </span><span style="color: #001080">semi:</span><span style="color: #000000"> </span><span style="color: #0000FF">false</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>6</code></pre></td><td><pre><code><span style="color: #000000">      </span><span style="color: #001080">arrowParens:</span><span style="color: #000000"> </span><span style="color: #A31515">"avoid"</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>7</code></pre></td><td><pre><code><span style="color: #000000">    })</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>8</code></pre></td><td><pre><code><span style="color: #000000">    .</span><span style="color: #795E26">trim</span><span style="color: #000000">();</span></code></pre></td></tr>
-<tr><td class="line-number"><pre><code>9</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
+            <tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">Value</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">babelGenerator</span><span style="color: #000000">.</span><span style="color: #795E26">default</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000"> </span><span style="color: #0000FF">as</span><span style="color: #000000"> </span><span style="color: #267F99">any</span><span style="color: #000000">).</span><span style="color: #001080">code</span><span style="color: #000000">;</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
           </tbody>
         </table>
-<p>\begin{description}
-\item [Line 4:]</p>
-<p>Prettier needs to parse and regenerate the string representing the value, in an architecture similar to that of the interpreter (see <a href="#architecture">§&nbsp;1.3.1</a>), and it may use different parsers. We choose Babel&nbsp;[<a href="#babel">2</a>], which is the default parser for JavaScript (Prettier also supports formatting other languages, for example, TypeScript and Markdown).</p>
-<p>\item [Line 5:]</p>
-<p>Instruct Prettier not to produce semicolons at the end of the line, for example, <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code> instead of <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">;</span></code>.</p>
-<p>\item [Line 6:]</p>
-<p>Instruct Prettier not to wrap parameters in parentheses, for example, <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code> instead of <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code>.</p>
-<p>\item [Line 8:]</p>
-<p>Remove the newline at the end of the output produced by Prettier.
-\end{description}</p>
+<p>We convert the <code><span style="color: #001080">value</span></code> from the Yocto-JavaScript <code><span style="color: #001080">Value</span></code> type into the <code><span style="color: #001080">any</span></code> type to sidestep the TypeScript type checker. This conversion is safe because the Yocto-JavaScript <code><span style="color: #001080">Value</span></code> type is compatible with the parts of the Babel <code><span style="color: #267F99">Node</span></code> type that the <code><span style="color: #001080">babelGenerator</span><span style="color: #000000">.</span><span style="color: #795E26">default</span><span style="color: #000000">()</span></code> function needs.</p>
 <h3 id="programs-that-do-not-terminate"><span class="heading-counter">1.3.17</span> Programs That Do Not Terminate<code class="draft"> [](#programs-that-do-not-terminate)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code> \
-\textbf{Current Output} &amp; <code><span style="color: undefined">DOES NOT TERMINATE</span></code> \
-\textbf{Expected Output} &amp; <code><span style="color: undefined">DOES NOT TERMINATE</span></code> \
-\end{tabular}
-\end{center}</p>
+<figure>
+<table>
+<thead>
+<tr>
+<th align="center">Example Program</th>
+<th align="center">Current Output</th>
+<th align="center">Expected Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center"><code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code></td>
+<td align="center">Does not terminate</td>
+<td align="center">Does not terminate</td>
+</tr>
+</tbody>
+</table>
+</figure>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-<p>This example program is also known as the <em><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.677ex" height="2.009ex" style="vertical-align: -0.171ex;" viewBox="0 -791.3 722 865.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<ul>
+<li><strong><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.677ex" height="2.009ex" style="vertical-align: -0.171ex;" viewBox="0 -791.3 722 865.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\Omega</title>
 <defs aria-hidden="true">
 <path stroke-width="0" id="E1-MJMAIN-3A9" d="M55 454Q55 503 75 546T127 617T197 665T272 695T337 704H352Q396 704 404 703Q527 687 596 615T666 454Q666 392 635 330T559 200T499 83V80H543Q589 81 600 83T617 93Q622 102 629 135T636 172L637 177H677V175L660 89Q645 3 644 2V0H552H488Q461 0 456 3T451 20Q451 89 499 235T548 455Q548 512 530 555T483 622T424 656T361 668Q332 668 303 658T243 626T193 560T174 456Q174 380 222 233T270 20Q270 7 263 0H77V2Q76 3 61 89L44 175V177H84L85 172Q85 171 88 155T96 119T104 93Q109 86 120 84T178 80H222V83Q206 132 162 199T87 329T55 454Z"></path>
@@ -3008,7 +3005,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
  <use xlink:href="#E1-MJMAIN-3A9" x="0" y="0"></use>
 </g>
-</svg>-combinator</em>. The function <code><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code> that is part of this program is also known as the <em><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.781ex" height="2.176ex" style="vertical-align: -0.338ex;" viewBox="0 -791.3 767 936.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+</svg>-Combinator:</strong> The example program: <code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code>.</li>
+<li><strong><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.781ex" height="2.176ex" style="vertical-align: -0.338ex;" viewBox="0 -791.3 767 936.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">U</title>
 <defs aria-hidden="true">
 <path stroke-width="0" id="E1-MJMATHI-55" d="M107 637Q73 637 71 641Q70 643 70 649Q70 673 81 682Q83 683 98 683Q139 681 234 681Q268 681 297 681T342 682T362 682Q378 682 378 672Q378 670 376 658Q371 641 366 638H364Q362 638 359 638T352 638T343 637T334 637Q295 636 284 634T266 623Q265 621 238 518T184 302T154 169Q152 155 152 140Q152 86 183 55T269 24Q336 24 403 69T501 205L552 406Q599 598 599 606Q599 633 535 637Q511 637 511 648Q511 650 513 660Q517 676 519 679T529 683Q532 683 561 682T645 680Q696 680 723 681T752 682Q767 682 767 672Q767 650 759 642Q756 637 737 637Q666 633 648 597Q646 592 598 404Q557 235 548 205Q515 105 433 42T263 -22Q171 -22 116 34T60 167V183Q60 201 115 421Q164 622 164 628Q164 635 107 637Z"></path>
@@ -3016,26 +3014,37 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
  <use xlink:href="#E1-MJMATHI-55" x="0" y="0"></use>
 </g>
-</svg>-combinator</em> (<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="11.951ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 5145.6 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
-<title id="MathJax-SVG-1-Title">\Omega = (U)(U)</title>
+</svg>-Combinator:</strong> The function <code><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code> that is part of the <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.677ex" height="2.009ex" style="vertical-align: -0.171ex;" viewBox="0 -791.3 722 865.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">\Omega</title>
+<defs aria-hidden="true">
+<path stroke-width="0" id="E1-MJMAIN-3A9" d="M55 454Q55 503 75 546T127 617T197 665T272 695T337 704H352Q396 704 404 703Q527 687 596 615T666 454Q666 392 635 330T559 200T499 83V80H543Q589 81 600 83T617 93Q622 102 629 135T636 172L637 177H677V175L660 89Q645 3 644 2V0H552H488Q461 0 456 3T451 20Q451 89 499 235T548 455Q548 512 530 555T483 622T424 656T361 668Q332 668 303 658T243 626T193 560T174 456Q174 380 222 233T270 20Q270 7 263 0H77V2Q76 3 61 89L44 175V177H84L85 172Q85 171 88 155T96 119T104 93Q109 86 120 84T178 80H222V83Q206 132 162 199T87 329T55 454Z"></path>
+</defs>
+<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
+ <use xlink:href="#E1-MJMAIN-3A9" x="0" y="0"></use>
+</g>
+</svg>-combinator (<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="13.214ex" height="2.343ex" style="vertical-align: -0.505ex;" viewBox="0 -791.3 5689.6 1008.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<title id="MathJax-SVG-1-Title">\Omega = \texttt{(}U\texttt{)(}U\texttt{)}</title>
 <defs aria-hidden="true">
 <path stroke-width="0" id="E1-MJMAIN-3A9" d="M55 454Q55 503 75 546T127 617T197 665T272 695T337 704H352Q396 704 404 703Q527 687 596 615T666 454Q666 392 635 330T559 200T499 83V80H543Q589 81 600 83T617 93Q622 102 629 135T636 172L637 177H677V175L660 89Q645 3 644 2V0H552H488Q461 0 456 3T451 20Q451 89 499 235T548 455Q548 512 530 555T483 622T424 656T361 668Q332 668 303 658T243 626T193 560T174 456Q174 380 222 233T270 20Q270 7 263 0H77V2Q76 3 61 89L44 175V177H84L85 172Q85 171 88 155T96 119T104 93Q109 86 120 84T178 80H222V83Q206 132 162 199T87 329T55 454Z"></path>
 <path stroke-width="0" id="E1-MJMAIN-3D" d="M56 347Q56 360 70 367H707Q722 359 722 347Q722 336 708 328L390 327H72Q56 332 56 347ZM56 153Q56 168 72 173H708Q722 163 722 153Q722 140 707 133H70Q56 140 56 153Z"></path>
-<path stroke-width="0" id="E1-MJMAIN-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path>
+<path stroke-width="0" id="E1-MJTT-28" d="M437 -53Q437 -82 399 -82H394Q377 -82 342 -55Q259 7 213 102T166 306Q166 412 211 507T342 667Q377 694 393 694H399Q437 694 437 665Q437 654 426 643T397 620T356 584T311 525Q301 511 290 488T264 412T250 306Q250 191 300 105T422 -27Q437 -37 437 -53Z"></path>
 <path stroke-width="0" id="E1-MJMATHI-55" d="M107 637Q73 637 71 641Q70 643 70 649Q70 673 81 682Q83 683 98 683Q139 681 234 681Q268 681 297 681T342 682T362 682Q378 682 378 672Q378 670 376 658Q371 641 366 638H364Q362 638 359 638T352 638T343 637T334 637Q295 636 284 634T266 623Q265 621 238 518T184 302T154 169Q152 155 152 140Q152 86 183 55T269 24Q336 24 403 69T501 205L552 406Q599 598 599 606Q599 633 535 637Q511 637 511 648Q511 650 513 660Q517 676 519 679T529 683Q532 683 561 682T645 680Q696 680 723 681T752 682Q767 682 767 672Q767 650 759 642Q756 637 737 637Q666 633 648 597Q646 592 598 404Q557 235 548 205Q515 105 433 42T263 -22Q171 -22 116 34T60 167V183Q60 201 115 421Q164 622 164 628Q164 635 107 637Z"></path>
-<path stroke-width="0" id="E1-MJMAIN-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path>
+<path stroke-width="0" id="E1-MJTT-29" d="M87 664Q87 694 126 694Q138 694 147 690T183 667Q266 605 312 510T358 306Q358 193 307 93T161 -70Q142 -82 126 -82Q105 -82 96 -73T87 -53Q87 -47 88 -44Q92 -36 116 -19T173 34T230 119Q273 206 273 306Q273 408 231 494T109 635Q87 649 87 664Z"></path>
 </defs>
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
  <use xlink:href="#E1-MJMAIN-3A9" x="0" y="0"></use>
  <use xlink:href="#E1-MJMAIN-3D" x="999" y="0"></use>
- <use xlink:href="#E1-MJMAIN-28" x="2055" y="0"></use>
- <use xlink:href="#E1-MJMATHI-55" x="2444" y="0"></use>
- <use xlink:href="#E1-MJMAIN-29" x="3211" y="0"></use>
- <use xlink:href="#E1-MJMAIN-28" x="3600" y="0"></use>
- <use xlink:href="#E1-MJMATHI-55" x="3989" y="0"></use>
- <use xlink:href="#E1-MJMAIN-29" x="4756" y="0"></use>
+ <use xlink:href="#E1-MJTT-28" x="2055" y="0"></use>
+ <use xlink:href="#E1-MJMATHI-55" x="2580" y="0"></use>
+<g transform="translate(3347,0)">
+ <use xlink:href="#E1-MJTT-29"></use>
+ <use xlink:href="#E1-MJTT-28" x="525" y="0"></use>
 </g>
-</svg>).</p>
+ <use xlink:href="#E1-MJMATHI-55" x="4397" y="0"></use>
+ <use xlink:href="#E1-MJTT-29" x="5164" y="0"></use>
+</g>
+</svg>).</li>
+</ul>
 </fieldset>
 <p>Yocto-JavaScript may express any program that a computer may run (see §&nbsp;\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>:</p>
 <p>\begin{center}
