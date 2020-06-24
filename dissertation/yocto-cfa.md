@@ -1,12 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
 <title>Yocto-CFA: A Program Analyzer That You Can Understand</title>
 <meta name="author" content="Leandro Facchinetti">
 <meta name="subject" content="TODO">
 <meta name="keywords" content="todo, todo, ...">
-</head>
-<body>
+
 <header>
 <div class="title-page">
 <div class="title">
@@ -2022,5 +2021,4 @@ TODO: Variations
 <!-- TODO: # Biographical Statement -->
 
 </footer>
-</body>
 </html>
