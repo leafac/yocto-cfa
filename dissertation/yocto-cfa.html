@@ -27,7 +27,7 @@ in conformity with the requirements for the degree of Doctor of Philosophy</p>
 <p>Baltimore, Maryland<br>
 August 2020</p>
 </div>
-<div class="timestamp draft">2020-06-24T14:24:39.376Z</div></div>
+<div class="timestamp draft">2020-06-24T16:51:15.607Z</div></div>
 <!-- TODO
 # Abstract
 
@@ -3046,44 +3046,144 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </svg>).</li>
 </ul>
 </fieldset>
-<p>Yocto-JavaScript may express any program that a computer may run (see §&nbsp;\ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>:</p>
-<p>\begin{center}
-\begin{tabular}{rrcl}
-\textbf{Line} &amp; \multicolumn{1}{l}{(see <a href="#the-entire-runner">§&nbsp;1.3.13</a>)} &amp; &amp; \
-3 &amp; <code><span style="color: #001080">expression</span></code> &amp; = &amp; <code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code> \
-9 &amp; <code><span style="color: #001080">parameter</span></code> &amp; = &amp; <code><span style="color: #001080">f</span></code> \
-10 &amp; <code><span style="color: #001080">body</span></code> &amp; = &amp; <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code> \
-12 &amp; <code><span style="color: #001080">argument</span></code> &amp; = &amp; <code><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code> \
-13 &amp; <code><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">)</span></code> &amp; = &amp; <code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code> \
-\end{tabular}
-\end{center}</p>
-<p>The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> in line&nbsp;13, it causes <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> to go into an infinite loop.</p>
-<p>\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)))</span></code> \
-\textbf{Current Output} &amp; <code><span style="color: undefined">DOES NOT TERMINATE</span></code> \
-\textbf{Expected Output} &amp; <code><span style="color: undefined">DOES NOT TERMINATE</span></code> \
-\end{tabular}
-\end{center}</p>
+<p>Yocto-JavaScript may express any program that a computer may run (see <a href="#the-computational-power-of-yocto-javascript">§&nbsp;1.1.3</a>), including some programs that do not terminate. For example, consider the program above; the following is a trace of the first call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> (see&nbsp;<a href="#the-entire-runner">§&nbsp;1.3.13</a>) on this program:</p>
+<figure>
+<table>
+<thead>
+<tr>
+<th align="right">Line</th>
+<th align="right"></th>
+<th align="center"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right">3</td>
+<td align="right"><code><span style="color: #001080">expression</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code></td>
+</tr>
+<tr>
+<td align="right">9</td>
+<td align="right"><code><span style="color: #001080">parameter</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #001080">f</span></code></td>
+</tr>
+<tr>
+<td align="right">10</td>
+<td align="right"><code><span style="color: #001080">body</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code></td>
+</tr>
+<tr>
+<td align="right">12</td>
+<td align="right"><code><span style="color: #001080">argument</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code></td>
+</tr>
+<tr>
+<td align="right">13</td>
+<td align="right"><code><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">)</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code></td>
+</tr>
+</tbody>
+</table>
+</figure>
+<p>This causes the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function to go into an infinite loop because the result of substitution that is passed as argument to the recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> in line&nbsp;13 is the same as the initial <code><span style="color: #001080">expression</span></code>.</p>
+<figure>
+<table>
+<thead>
+<tr>
+<th align="right"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right"><strong>Example Program</strong></td>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)))</span></code></td>
+</tr>
+<tr>
+<td align="right"><strong>Current Output</strong></td>
+<td align="left">Does not terminate</td>
+</tr>
+<tr>
+<td align="right"><strong>Expected Output</strong></td>
+<td align="left">Does not terminate</td>
+</tr>
+</tbody>
+</table>
+</figure>
 <p>There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the program above, which is a variation of the first program in which every variable reference to <code><span style="color: #001080">f</span></code> has been replaced with <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code>. The following is a trace of the first call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>:</p>
-<p>\begin{center}
-\begin{tabular}{rrcl}
-\textbf{Line} &amp; \multicolumn{1}{l}{(see <a href="#the-entire-runner">§&nbsp;1.3.13</a>)} &amp; &amp; where <code><span style="color: #795E26">F</span><span style="color: #000000"> = </span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code> \
-3 &amp; <code><span style="color: #001080">expression</span></code> &amp; = &amp; <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code> \
-9 &amp; <code><span style="color: #001080">parameter</span></code> &amp; = &amp; <code><span style="color: #001080">f</span></code> \
-10 &amp; <code><span style="color: #001080">body</span></code> &amp; = &amp; <code><span style="color: #000000">(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code> \
-12 &amp; <code><span style="color: #001080">argument</span></code> &amp; = &amp; <code><span style="color: #000000">F</span></code> \
-13 &amp; <code><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">)</span></code> &amp; = &amp; <code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code> \
-\end{tabular}
-\end{center}</p>
+<figure>
+<table>
+<thead>
+<tr>
+<th align="right">Line</th>
+<th align="right"></th>
+<th align="center"></th>
+<th align="left">where <code><span style="color: #795E26">F</span><span style="color: #000000"> = </span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="right">3</td>
+<td align="right"><code><span style="color: #001080">expression</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code></td>
+</tr>
+<tr>
+<td align="right">9</td>
+<td align="right"><code><span style="color: #001080">parameter</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #001080">f</span></code></td>
+</tr>
+<tr>
+<td align="right">10</td>
+<td align="right"><code><span style="color: #001080">body</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code></td>
+</tr>
+<tr>
+<td align="right">12</td>
+<td align="right"><code><span style="color: #001080">argument</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #000000">F</span></code></td>
+</tr>
+<tr>
+<td align="right">13</td>
+<td align="right"><code><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">)</span></code></td>
+<td align="center">=</td>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code></td>
+</tr>
+</tbody>
+</table>
+</figure>
 <p>The result of substitution (<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code>) is an expression that contains the initial expression (the first <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code>) in addition to some extra work (the second <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code>), so when it is passed as argument to the recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> in line&nbsp;13, it causes <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> never repeat themselves:</p>
-<p>\begin{center}
-\begin{tabular}{l}
-<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code> \
-<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code> \
-<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code> \
-<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code> \
-\multicolumn{1}{c}{<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.646ex" height="3.676ex" style="vertical-align: -0.338ex;" viewBox="0 -1437.2 278 1582.7" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<figure>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code></td>
+</tr>
+<tr>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code></td>
+</tr>
+<tr>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code></td>
+</tr>
+<tr>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code></td>
+</tr>
+<tr>
+<td align="left"><div align="center"><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.646ex" height="3.676ex" style="vertical-align: -0.338ex;" viewBox="0 -1437.2 278 1582.7" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\vdots</title>
 <defs aria-hidden="true">
 <path stroke-width="0" id="E1-MJMAIN-22EE" d="M78 30Q78 54 95 72T138 90Q162 90 180 74T199 31Q199 6 182 -12T139 -30T96 -13T78 30ZM78 440Q78 464 95 482T138 500Q162 500 180 484T199 441Q199 416 182 398T139 380T96 397T78 440ZM78 840Q78 864 95 882T138 900Q162 900 180 884T199 841Q199 816 182 798T139 780T96 797T78 840Z"></path>
@@ -3091,39 +3191,82 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
  <use xlink:href="#E1-MJMAIN-22EE" x="0" y="0"></use>
 </g>
-</svg>} \
-\end{tabular}
-\end{center}</p>
-<p>Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.</p>
+</svg></div></td>
+</tr>
+</tbody>
+</table>
+</figure>
+<p>Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually terminate regardless of the program on which it is working.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
-<p>Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the <em>halting problem</em>, is said to be <em>uncomputable</em>&nbsp;[<a href="#understanding-computation">30 (§&nbsp;8)</a>], and is a direct consequence of the Turing completeness of Yocto-JavaScript (see §&nbsp;\ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.</p>
+<p>Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the <em>halting problem</em>, is said to be <em>uncomputable</em>&nbsp;[<a href="#understanding-computation">30 (§&nbsp;8)</a>], and is a direct consequence of the Turing completeness of Yocto-JavaScript (see <a href="#the-computational-power-of-yocto-javascript">§&nbsp;1.1.3</a>). In our analyzer we will guarantee termination by allowing some information to be lost.</p>
 </fieldset>
 <h2 id="step-1-environment-based-interpreter"><span class="heading-counter">1.4</span> Step 1: Environment-Based Interpreter<code class="draft"> [](#step-1-environment-based-interpreter)</code></h2>
-<p>The interpreter in Step&nbsp;0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see §&nbsp;\ref{Step 0: Programs That Do Not Terminate}). The source of non-termination in Step&nbsp;0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step&nbsp;1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step&nbsp;1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.</p>
+<p>The interpreter in Step&nbsp;0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see <a href="#programs-that-do-not-terminate">§&nbsp;1.3.17</a>). The source of non-termination in Step&nbsp;0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step&nbsp;1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step&nbsp;1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.</p>
 <h3 id="avoiding-substitution-by-introducing-environments-and-closures"><span class="heading-counter">1.4.1</span> Avoiding Substitution by Introducing Environments and Closures<code class="draft"> [](#avoiding-substitution-by-introducing-environments-and-closures)</code></h3>
-<p>When the interpreter from Step&nbsp;0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument, for example:</p>
-<p>\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} (see <a href="#substitution-in-function-definitions">§&nbsp;1.3.5</a>) &amp; <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> \
-\textbf{Step&nbsp;0 Output} &amp; <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> \
-\end{tabular}
-\end{center}</p>
-<p>The issue with this strategy is that the expression <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> does not exist in the original program, and as mentioned in §&nbsp;\ref{Step 0: Programs That Do Not Terminate}, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step&nbsp;1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:</p>
-<p>\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} &amp; <code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code> \
-\textbf{Step&nbsp;1 Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
-<title id="MathJax-SVG-1-Title">\langle</title>
-<defs aria-hidden="true">
-<path stroke-width="0" id="E1-MJMAIN-27E8" d="M333 -232Q332 -239 327 -244T313 -250Q303 -250 296 -240Q293 -233 202 6T110 250T201 494T296 740Q299 745 306 749L309 750Q312 750 313 750Q331 750 333 732Q333 727 243 489Q152 252 152 250T243 11Q333 -227 333 -232Z"></path>
-</defs>
-<g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
- <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
-</g>
-</svg> js<code>(y =&gt; y) ``, [] \rangle `` \\ \textbf{Example Program} &amp; `` js</code>(x =&gt; z =&gt; x)(y =&gt; y) <code>\\ \textbf{Step 1 Output} &amp;</code> math<code>\langle `` js</code>(z =&gt; x) <code>, [</code> js<code>x `` \mapsto \langle `` js</code>(y =&gt; y) <code>, [] \rangle] \rangle</code> \
-\end{tabular}
-\end{center}</p>
+<p>When the interpreter from Step&nbsp;0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument (see <a href="#substitution-in-function-definitions">§&nbsp;1.3.5</a>), for example:</p>
+<figure>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>Example Program</strong></td>
+<td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
+</tr>
+<tr>
+<td align="left"><strong>Step&nbsp;0 Output</strong></td>
+<td align="left"><code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></td>
+</tr>
+</tbody>
+</table>
+</figure>
+<p>The issue with this strategy is that the expression <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> does not exist in the original program, and as mentioned in <a href="#programs-that-do-not-terminate">§&nbsp;1.3.17</a>, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step&nbsp;1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:</p>
+<figure>
+<table>
+<tbody><tr>
+<th align="left">Example Program</th>
+<td align="left">
+<p><code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code></p>
+</td>
+</tr>
+<tr>
+<th align="left">Step&nbsp;1 Output</th>
+<td align="left">
+<table class="listing">
+          <tbody>
+            <tr><td><pre><code><span style="color: #000000">{ </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">, </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {} }</span></code></pre></td></tr>
+          </tbody>
+        </table>
+</td>
+</tr>
+<tr>
+<th align="left">Example Program</th>
+<td align="left">
+<p><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></p>
+</td>
+</tr>
+<tr>
+<th align="left">Step&nbsp;1 Output</th>
+<td align="left">
+<table class="listing">
+          <tbody>
+            <tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`z</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">y`</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: { </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">, </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {} }</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
+          </tbody>
+        </table>
+</td>
+</tr>
+</tbody></table>
+</figure>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
 <p>A map from variables to the values with which they would have been replaced (for example, <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.646ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 278 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3230,8 +3373,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 \end{description}</p>
 <p>The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the <code><span style="color: #001080">environment</span></code> for each type of <code><span style="color: #001080">expression</span></code>.</p>
 <h3 id="a-function-definition"><span class="heading-counter">1.4.4</span> A Function Definition<code class="draft"> [](#a-function-definition)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> \
 \textbf{Current Output} &amp; — \
 \textbf{Expected Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3243,8 +3386,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(x =&gt; x)</code>, [] \rangle` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>When the interpreter encounters a function definition, it captures the current <code><span style="color: #001080">environment</span></code> in a closure:</p>
 <table class="listing">
           <tbody>
@@ -3254,8 +3397,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
           </tbody>
         </table>
 <h3 id="a-function-call"><span class="heading-counter">1.4.5</span> A Function Call<code class="draft"> [](#a-function-call)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> \
 \textbf{Current Output} &amp; — \
 \textbf{Expected Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3267,8 +3410,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle] \rangle` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>First, we remove <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code>, which is the goal of Step&nbsp;1:</p>
 <table class="listing">
           <tbody>
@@ -3326,8 +3469,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
           </tbody>
         </table>
 <h3 id="name-reuse-1"><span class="heading-counter">1.4.6</span> Name Reuse<code class="draft"> [](#name-reuse-1)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">a</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> \
 \textbf{Current Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\langle</title>
@@ -3338,12 +3481,12 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y) ``, [] \rangle] \rangle `` \\ \textbf{Expected Output} &amp; `` math</code>\langle <code><span style="color: #000000">(</span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code>, [<code><span style="color: #001080">x</span></code> \mapsto \langle <code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>, [] \rangle] \rangle `` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>If a name is reused (for example, <code><span style="color: #001080">x</span></code> in the example program above), then the second time it is encountered by <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> it is overwritten in the <code><span style="color: #001080">environment</span></code> (see the call to <code><span style="color: #795E26">set</span><span style="color: #000000">()</span></code> in line&nbsp;13 of §&nbsp;\ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to <code><span style="color: #001080">x</span></code> to refer to the second (inner) <code><span style="color: #001080">x</span></code>, which is the expected behavior (it is what we called Option&nbsp;2 in §&nbsp;\ref{Step 0: Name Reuse}).</p>
 <h3 id="a-variable-reference"><span class="heading-counter">1.4.7</span> A Variable Reference<code class="draft"> [](#a-variable-reference)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code> \
 \textbf{Current Output} &amp; — \
 \textbf{Expected Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3355,8 +3498,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(y =&gt; y) ``, [] \rangle `` \\ \\ \textbf{Example Program} &amp; `` js</code>(x =&gt; y)(y =&gt; y) <code>\\ \textbf{Current Output} &amp; — \\ \textbf{Expected Output} &amp;</code> text<code>Reference to undefined variable: y `` \\ \\ \textbf{Example Program} &amp; `` js</code>x =&gt; y <code>\\ \textbf{Current Output} &amp; — \\ \textbf{Expected Output} &amp;</code> math<code>\langle `` js</code>(x =&gt; y) <code>, [] \rangle</code> \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>When we encounter a variable reference, we look it up in the current environment:</p>
 <table class="listing">
           <tbody>
@@ -3371,8 +3514,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
           </tbody>
         </table>
 <h3 id="a-function-body-is-evaluated-with-the-environment-in-its-closure"><span class="heading-counter">1.4.8</span> A Function Body Is Evaluated with the Environment in Its Closure<code class="draft"> [](#a-function-body-is-evaluated-with-the-environment-in-its-closure)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; \
 \multicolumn{2}{l}{<code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000">))(</span><span style="color: #001080">a</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000">))((</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">))</span></code>} \
 \textbf{Current Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3384,11 +3527,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(a =&gt; a) ``, [ `` js</code>f <code>\mapsto \langle</code> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y) ``, [] \rangle ] \rangle] \rangle `` \\ \textbf{Expected Output} &amp; `` math</code>\langle <code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>, [] \rangle `` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code>, when a closure is created:</p>
-<p>\begin{center}
-\begin{tabular}{rrcl}
+<figure>
+<p>\begin{tabular}{rrcl}
 \multicolumn{4}{c}{\textbf{Trace 1: First Call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> ·&nbsp;Closure Creation}} \
 \textbf{Line} &amp; \multicolumn{1}{l}{(see §&nbsp;\ref{A Function Call})} &amp; &amp; \
 &amp; <code><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span></code> &amp; = &amp; <code><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000">))(</span><span style="color: #001080">a</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">a</span><span style="color: #000000">)</span></code> \
@@ -3402,11 +3545,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle] \rangle` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>And the following is a trace of the recursive call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> in which that closure is called:</p>
-<p>\begin{center}
-\begin{tabular}{rrcl}
+<figure>
+<p>\begin{tabular}{rrcl}
 \multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> ·&nbsp;Closure Call}} \
 \textbf{Line} &amp; \multicolumn{1}{l}{(see §&nbsp;\ref{A Function Call})} &amp; &amp; \
 &amp; <code><span style="color: #001080">expression</span></code> &amp; = &amp; <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000">)</span></code> \
@@ -3427,8 +3570,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true"></g>
 </svg> ts<code>step( ``\cdots `` ts</code>) <code>&amp; = &amp;</code> math<code>\langle `` js</code> (z =&gt; x) <code>, [</code> js <code>x</code>\mapsto \langle<code>js</code> (y =&gt; y) <code>, [] \rangle] \rangle</code> \ 5 &amp; <code>ts `parameter `&amp; = &amp;` js` z</code> \ \rowcolor[rgb]{.88,1,1} 6 &amp; <code>ts `body `&amp; = &amp;` js` x</code> \ \rowcolor[rgb]{.88,1,1} 8 &amp; <code>ts `functionEnvironment `&amp; = &amp;` math` [</code> js <code>x</code>\mapsto \langle<code>js</code>(y =&gt; y) <code>, [] \rangle]</code> \
 \multicolumn{4}{c}{Paused before line 10}\
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>At this point, there are two expressions left to evaluate: the argument (<code><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">arguments</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">]</span></code>; line 10), and the body of the called function (<code><span style="color: #001080">body</span></code>; lines 11–14). Both of these expressions have the same code (<code><span style="color: #001080">x</span></code>), and our current implementation looks up this variable both times on the current <code><span style="color: #001080">environment</span></code>, which produces the same value: <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\langle</title>
 <defs aria-hidden="true">
@@ -3439,9 +3582,9 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </g>
 </svg> js<code>(a =&gt; a)</code>, [\cdots] \rangle`.</p>
 <p>But this leads to an issue: we may not reason about <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step&nbsp;0 (see §&nbsp;\ref{Step 0: Name Reuse}). We would like, instead, for each <code><span style="color: #001080">x</span></code> to refer to the value that existed in the environment where the closure is <em>created</em>, not where it is <em>called</em>:</p>
-<p>\begin{center}
-\includegraphics[page = 8]{images.pdf}
-\end{center}</p>
+<figure>
+<p>\includegraphics[page = 8]{images.pdf}</p>
+</figure>
 <p>To implement this, we change the recursive call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> that evaluates the function body so that it uses the environment coming from the closure (<code><span style="color: #001080">functionEnvironment</span></code>) instead of the current environment (<code><span style="color: #001080">environment</span></code>):</p>
 <table class="listing">
           <tbody>
@@ -3517,8 +3660,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
 <h3 id="operational-semantics"><span class="heading-counter">1.4.10</span> Operational Semantics<code class="draft"> [](#operational-semantics)</code></h3>
 <p>We adapt the operational semantics from <a href="#an-operational-semantics-for-the-interpreter">§&nbsp;1.3.14</a> to the interpreter defined in Step&nbsp;1. First, we change the notion of values:</p>
-<p>\begin{center}
-\begin{tabular}{rcll}
+<figure>
+<p>\begin{tabular}{rcll}
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.126ex" height="1.676ex" style="vertical-align: -0.338ex;" viewBox="0 -576.1 485 721.6" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">v</title>
 <defs aria-hidden="true">
@@ -3536,8 +3679,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>( ``x `` js</code> =&gt; <code>e</code> js<code>) ``, \rho \rangle `` &amp; Values / Closures \\ `` math</code>\rho <code>&amp; = &amp;</code> math`{x \mapsto v, \cdots} `` &amp; Environments \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>We then define the relation <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="9.732ex" height="2.676ex" style="vertical-align: -0.838ex;" viewBox="0 -791.3 4190.1 1152.1" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\rho \vdash e \Rightarrow v</title>
 <defs aria-hidden="true">
@@ -3573,8 +3716,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </fieldset>
 <h3 id="generator-1"><span class="heading-counter">1.4.11</span> Generator<code class="draft"> [](#generator-1)</code></h3>
 <p>We modify the generator from <a href="#generator">§&nbsp;1.3.16</a> to support closures. For example, the following is the representation of the closure from §&nbsp;\ref{A Function Call}:</p>
-<p>\begin{center}
-<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
+<figure>
+<p><svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\langle</title>
 <defs aria-hidden="true">
 <path stroke-width="0" id="E1-MJMAIN-27E8" d="M333 -232Q332 -239 327 -244T313 -250Q303 -250 296 -240Q293 -233 202 6T110 250T201 494T296 740Q299 745 306 749L309 750Q312 750 313 750Q331 750 333 732Q333 727 243 489Q152 252 152 250T243 11Q333 -227 333 -232Z"></path>
@@ -3582,8 +3725,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true">
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
-</svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle] \rangle`
-\end{center}</p>
+</svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle] \rangle`</p>
+</figure>
 <table class="listing">
           <tbody>
             <tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
@@ -3636,10 +3779,10 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 \end{description}</p>
 <p>This implementation of <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> supports not only closures but any data structure (because of <code><span style="color: #267F99">JSON</span><span style="color: #000000">.</span><span style="color: #795E26">stringify</span><span style="color: #000000">()</span></code>), so it will remain the same in the following Steps.</p>
 <h3 id="programs-that-do-not-terminate-1"><span class="heading-counter">1.4.12</span> Programs That Do Not Terminate<code class="draft"> [](#programs-that-do-not-terminate-1)</code></h3>
-<p>The programs that do not terminate in Step&nbsp;0 (see §&nbsp;\ref{Step 0: Programs That Do Not Terminate}) do not terminate in Step&nbsp;1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step&nbsp;0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step&nbsp;1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.</p>
+<p>The programs that do not terminate in Step&nbsp;0 (see <a href="#programs-that-do-not-terminate">§&nbsp;1.3.17</a>) do not terminate in Step&nbsp;1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step&nbsp;0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step&nbsp;1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.</p>
 <p>This difference is significant because there are programs that produce infinitely many different expressions in Step&nbsp;0, but produce the same expression and environment repeatedly in Step&nbsp;1, and in these cases we could detect non-termination by checking whether the runner is in a loop with the same arguments, for example:</p>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \multicolumn{2}{c}{<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code>, where <code><span style="color: #795E26">F</span><span style="color: #000000"> = </span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> (</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code>} \
 \multicolumn{1}{c}{\textbf{Step&nbsp;0}} &amp; \multicolumn{1}{c}{\textbf{Step&nbsp;1}} \
 <code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code> &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3677,11 +3820,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-22EE" x="0" y="0"></use>
 </g>
 </svg>} \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>But this strategy is insufficient to guarantee termination, because there are programs that do not terminate which produce infinitely many different environments, for example:</p>
-<p>\begin{center}
-\begin{tabular}{l}
+<figure>
+<p>\begin{tabular}{l}
 \multicolumn{1}{c}{<code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000">))(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>} \
 \multicolumn{1}{c}{or <code><span style="color: #795E26">F</span><span style="color: #000000">(F)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>, where <code><span style="color: #795E26">F</span><span style="color: #000000"> = </span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)(C)</span></code> and <code><span style="color: #795E26">C</span><span style="color: #000000"> = </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span></code>} \
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3702,8 +3845,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>f(f)(C) ``, [ `` js</code>c <code>\mapsto \langle</code> js<code>C ``, [ `` js</code>c <code>\mapsto \langle</code> js<code>C ``, [ `` js</code>c <code>\mapsto \langle</code> js<code>C ``, [ `` js</code>c <code>\mapsto \langle</code> js<code>(y =&gt; y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\ \multicolumn{1}{c}{`` math</code>\vdots ``} \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>The program above is a variation on the shortest non-terminating program, <code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">))</span></code>, in which each <code><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code> receives an additional parameter <code><span style="color: #001080">c</span></code>, and each <code><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)</span></code> receives an additional argument <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span></code>.</p>
 <p>The interpreter in Step&nbsp;1 may produce infinitely many different environments because environments may be nested. That is the issue that we address in Step&nbsp;2.</p>
 <fieldset>
@@ -3714,8 +3857,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <p>The source of non-termination in Step&nbsp;1 is the nesting of the environments (see §&nbsp;\ref{Step 1: Programs That Do Not Terminate}). In Step&nbsp;2, we address this issue by introducing a layer of indirection between a name in the environment and its corresponding value. The interpreter in Step&nbsp;2 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.</p>
 <h3 id="avoiding-nested-environments-by-introducing-a-store"><span class="heading-counter">1.5.1</span> Avoiding Nested Environments by Introducing a Store<code class="draft"> [](#avoiding-nested-environments-by-introducing-a-store)</code></h3>
 <p>In Step&nbsp;1 a closure contains an environment mapping names to other closures, which in turn contain their own environments mapping to yet more closures. In Step&nbsp;2, we remove this circularity by introducing a layer of indirection: an environment maps names to <em>addresses</em>, which may be used to lookup values in a <em>store</em>, for example:</p>
-<p>\begin{center}
-\begin{tabular}{rcc}
+<figure>
+<p>\begin{tabular}{rcc}
 (See §&nbsp;\ref{A Variable Reference}) &amp; \textbf{Step&nbsp;1} &amp; \textbf{Step&nbsp;2} \
 \textbf{Variable Reference} &amp; <code><span style="color: #001080">x</span></code> &amp; <code><span style="color: #001080">x</span></code> \
 \textbf{Environment} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.646ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 278 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3753,11 +3896,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(y =&gt; y) ``, [] \rangle `` &amp; `` math</code>\langle <code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>, [] \rangle `` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>Each closure continues to include its own environment, because it needs to look up variable references from where the closure was created (see §&nbsp;\ref{A Function Body Is Evaluated with the Environment in Its Closure}), but there is only one store for the entire interpreter, and we avoid ambiguities by allocating different addresses, for example:</p>
-<p>\begin{center}
-\begin{tabular}{rll}
+<figure>
+<p>\begin{tabular}{rll}
 (See §&nbsp;\ref{A Function Body Is Evaluated with the Environment in Its Closure}) &amp; \multicolumn{1}{c}{\textbf{Step&nbsp;1}} &amp; \multicolumn{1}{c}{\textbf{Step&nbsp;2}} \
 <code><span style="color: #001080">environment</span></code> &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.646ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 278 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">[</title>
@@ -3809,11 +3952,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </defs>
 <g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)" aria-hidden="true"></g>
 </svg> js<code>1 `` \mapsto \langle `` js</code>(y =&gt; y) <code>, [] \rangle]</code>
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>The runner must return the store along with the value, for the variable references to be looked up, for example:</p>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} (see §&nbsp;\ref{A Function Call}) &amp; <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> \
 \textbf{Step&nbsp;1 Output} &amp; <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\langle</title>
@@ -3833,8 +3976,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-5B" x="0" y="0"></use>
 </g>
 </svg> js<code>0 `` \mapsto \langle `` js</code>(y =&gt; y) <code>, [] \rangle]</code> \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
 <p>The technique used in Step&nbsp;2 is related to the run-time environments that are the target of traditional compilers for languages such as C&nbsp;[<a href="#dragon-book">1 (§&nbsp;7)</a>]: an environment corresponds to some of the data stored in an activation frame on the call stack, and the store corresponds to the heap.</p>
@@ -3870,8 +4013,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <p>The <code><span style="color: #001080">store</span></code> is unique for the whole interpreter, unlike <code><span style="color: #001080">environment</span></code>s which are different for each closure, so we create only one store that is always available to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> instead of adding it as an extra parameter.
 \end{description}</p>
 <h3 id="adding-a-value-to-the-store"><span class="heading-counter">1.5.4</span> Adding a Value to the Store<code class="draft"> [](#adding-a-value-to-the-store)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code> \
 \textbf{Current Output} &amp; — \
 \textbf{Expected Output} &amp; <code><span style="color: #001080">value</span></code> = <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3883,8 +4026,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto</code> js<code>0 ``] \rangle `` \\ &amp; `` ts</code>store <code>=</code> math<code>[ `` js</code>0 <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle]` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>In Step&nbsp;1, when we encounter a function call we extend the <code><span style="color: #001080">functionEnvironment</span></code> with a mapping from the <code><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span></code> to the <code><span style="color: #001080">argument</span></code> (see §&nbsp;\ref{A Function Call},&nbsp;\ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step&nbsp;2, we introduce the <code><span style="color: #001080">store</span></code> as a layer of indirection:</p>
 <table class="listing">
           <tbody>
@@ -3916,8 +4059,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <p>Extend the <code><span style="color: #001080">store</span></code> with a mapping from the <code><span style="color: #001080">address</span></code> to the <code><span style="color: #001080">argument</span></code>. This is mutating the unique <code><span style="color: #001080">store</span></code> that is available to the entire <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> function, not creating a new <code><span style="color: #001080">store</span></code> in the same way that extending an <code><span style="color: #001080">environment</span></code> creates a new <code><span style="color: #001080">environment</span></code> (see line&nbsp;15).
 \end{description}</p>
 <h3 id="retrieving-a-value-from-the-store"><span class="heading-counter">1.5.5</span> Retrieving a Value from the Store<code class="draft"> [](#retrieving-a-value-from-the-store)</code></h3>
-<p>\begin{center}
-\begin{tabular}{ll}
+<figure>
+<p>\begin{tabular}{ll}
 \textbf{Example Program} &amp; <code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code> \
 \textbf{Current Output} &amp; — \
 \textbf{Expected Output} &amp; <code><span style="color: #001080">value</span></code> = <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
@@ -3929,8 +4072,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJMAIN-27E8" x="0" y="0"></use>
 </g>
 </svg> js<code>(y =&gt; y) ``, [] \rangle `` \\ &amp; `` ts</code>store <code>=</code> math<code>[ `` js</code>0 <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle]` \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>In Step&nbsp;1 we retrieved values directly from the <code><span style="color: #001080">environment</span></code> (see §&nbsp;\ref{A Variable Reference}), but in Step&nbsp;2 we have to go through the <code><span style="color: #001080">store</span></code>:</p>
 <table class="listing">
           <tbody>
@@ -4002,8 +4145,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
 <h3 id="operational-semantics-1"><span class="heading-counter">1.5.7</span> Operational Semantics<code class="draft"> [](#operational-semantics-1)</code></h3>
 <p>We adapt the operational semantics from §&nbsp;\ref{Step 2: Operational Semantics} to the interpreter defined in Step&nbsp;2. First, we change the notion of environments:</p>
-<p>\begin{center}
-\begin{tabular}{rcll}
+<figure>
+<p>\begin{tabular}{rcll}
 <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1.201ex" height="2.176ex" style="vertical-align: -0.838ex;" viewBox="0 -576.1 517 936.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\rho</title>
 <defs aria-hidden="true">
@@ -4079,8 +4222,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
  <use xlink:href="#E1-MJAMS-4E" x="0" y="0"></use>
 </g>
 </svg> &amp; Addresses \
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>We then define the relation <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="16.261ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 7001.4 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle</title>
 <defs aria-hidden="true">
@@ -4127,8 +4270,8 @@ A = \lvert \sigma_a \rvert \
 </fieldset>
 <h3 id="programs-that-do-not-terminate-2"><span class="heading-counter">1.5.8</span> Programs That Do Not Terminate<code class="draft"> [](#programs-that-do-not-terminate-2)</code></h3>
 <p>The programs that do not terminate in Step&nbsp;1 (see §&nbsp;\ref{Step 1: Programs That Do Not Terminate}) do not terminate in Step&nbsp;2 either, because the interpreters are equivalent except for the treatment of environments, but the sources of non-termination are different. In both cases the issue is that the interpreter may create infinitely many environments, but in Step&nbsp;1 the environments are nested, and in Step&nbsp;2 they contain different addresses, for example:</p>
-<p>\begin{center}
-\begin{tabular}{l}
+<figure>
+<p>\begin{tabular}{l}
 \multicolumn{1}{c}{<code><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000">))(</span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000">))(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>} \
 \multicolumn{1}{c}{or <code><span style="color: #795E26">F</span><span style="color: #000000">(F)(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)</span></code>, where <code><span style="color: #795E26">F</span><span style="color: #000000"> = </span><span style="color: #001080">f</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #795E26">f</span><span style="color: #000000">(</span><span style="color: #001080">f</span><span style="color: #000000">)(C)</span></code> and <code><span style="color: #795E26">C</span><span style="color: #000000"> = </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">c</span></code>} \
 \multicolumn{1}{c}{\textbf{Step&nbsp;1}} \
@@ -4177,8 +4320,8 @@ A = \lvert \sigma_a \rvert \
  <use xlink:href="#E1-MJMAIN-5B" x="0" y="0"></use>
 </g>
 </svg> js<code>0 `` \mapsto \langle `` js</code>(y =&gt; y) <code>, [] \rangle,</code> js<code>1 `` \mapsto \langle `` js</code>C <code>, [</code> js<code>c `` \mapsto `` c</code>0 <code>, \cdots] \rangle,</code> js<code>2 `` \mapsto \langle `` js</code>C <code>, [</code> js<code>c `` \mapsto `` c</code>1 <code>, \cdots] \rangle, \cdots]</code>}
-\end{tabular}
-\end{center}</p>
+\end{tabular}</p>
+</figure>
 <p>We address this issue in Step&nbsp;3.</p>
 <h2 id="step-3-finitely-many-addresses"><span class="heading-counter">1.6</span> Step 3: Finitely Many Addresses<code class="draft"> [](#step-3-finitely-many-addresses)</code></h2>
 <h3 id="the-entire-runner-3"><span class="heading-counter">1.6.1</span> The Entire Runner<code class="draft"> [](#the-entire-runner-3)</code></h3>

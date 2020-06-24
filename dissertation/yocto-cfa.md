@@ -987,86 +987,135 @@ We convert the `` ts`value `` from the Yocto-JavaScript `` ts`Value `` type into
 
 </fieldset>
 
-Yocto-JavaScript may express any program that a computer may run (see § \ref{The Computational Power of Yocto-JavaScript}), including some programs that do not terminate. For example, consider the program above, which is the shortest non-terminating program in Yocto-JavaScript. The following is a trace of the first call to `` ts`run() ``:
+Yocto-JavaScript may express any program that a computer may run (see [](#the-computational-power-of-yocto-javascript)), including some programs that do not terminate. For example, consider the program above; the following is a trace of the first call to `` ts`run() `` (see [](#the-entire-runner)) on this program:
 
-\begin{center}
-\begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see [](#the-entire-runner))} & & \\
-3 & `` ts`expression `` & = & `` js`(f => f(f))(f => f(f)) `` \\
-9 & `` ts`parameter `` & = & `` js`f `` \\
-10 & `` ts`body `` & = & `` js`f(f) `` \\
-12 & `` ts`argument `` & = & `` js`f => f(f) `` \\
-13 & `` ts`substitute(body) `` & = & `` js`(f => f(f))(f => f(f)) `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-The result of substitution is the same as the initial expression, so when it is passed as argument to the recursive call to `` ts`run() `` in line 13, it causes `` ts`run() `` to go into an infinite loop.
+| Line |                           |     |                                 |
+| ---: | ------------------------: | :-: | :------------------------------ |
+|    3 |       `` ts`expression `` |  =  | `` js`(f => f(f))(f => f(f)) `` |
+|    9 |        `` ts`parameter `` |  =  | `` js`f ``                      |
+|   10 |             `` ts`body `` |  =  | `` js`f(f) ``                   |
+|   12 |         `` ts`argument `` |  =  | `` js`f => f(f) ``              |
+|   13 | `` ts`substitute(body) `` |  =  | `` js`(f => f(f))(f => f(f)) `` |
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(f => (f(f))(f(f)))(f => (f(f))(f(f))) `` \\
-\textbf{Current Output} & `` text`DOES NOT TERMINATE `` \\
-\textbf{Expected Output} & `` text`DOES NOT TERMINATE `` \\
-\end{tabular}
-\end{center}
+</figure>
+
+This causes the `` ts`run() `` function to go into an infinite loop because the result of substitution that is passed as argument to the recursive call to `` ts`run() `` in line 13 is the same as the initial `` ts`expression ``.
+
+<figure>
+
+|                     |                                                 |
+| ------------------: | :---------------------------------------------- |
+| **Example Program** | `` js`(f => (f(f))(f(f)))(f => (f(f))(f(f))) `` |
+|  **Current Output** | Does not terminate                              |
+| **Expected Output** | Does not terminate                              |
+
+</figure>
 
 There are also programs for which interpretation does not terminate that never produce the same expression twice. For example, consider the program above, which is a variation of the first program in which every variable reference to `` js`f `` has been replaced with `` js`f(f) ``. The following is a trace of the first call to `` ts`run() ``:
 
-\begin{center}
-\begin{tabular}{rrcl}
-\textbf{Line} & \multicolumn{1}{l}{(see [](#the-entire-runner))} & & where `` js`F = f => (f(f))(f(f)) `` \\
-3 & `` ts`expression `` & = & `` js`F(F) `` \\
-9 & `` ts`parameter `` & = & `` js`f `` \\
-10 & `` ts`body `` & = & `` js`(f(f))(f(f)) `` \\
-12 & `` ts`argument `` & = & `` js`F `` \\
-13 & `` ts`substitute(body) `` & = & `` js`(F(F))(F(F)) `` \\
-\end{tabular}
-\end{center}
+<figure>
+
+| Line |                           |     | where `` js`F = f => (f(f))(f(f)) `` |
+| ---: | ------------------------: | :-: | :----------------------------------- |
+|    3 |       `` ts`expression `` |  =  | `` js`F(F) ``                        |
+|    9 |        `` ts`parameter `` |  =  | `` js`f ``                           |
+|   10 |             `` ts`body `` |  =  | `` js`(f(f))(f(f)) ``                |
+|   12 |         `` ts`argument `` |  =  | `` js`F ``                           |
+|   13 | `` ts`substitute(body) `` |  =  | `` js`(F(F))(F(F)) ``                |
+
+</figure>
 
 The result of substitution (`` js`(F(F))(F(F)) ``) is an expression that contains the initial expression (the first `` js`F(F) ``) in addition to some extra work (the second `` js`F(F) ``), so when it is passed as argument to the recursive call to `` ts`run() `` in line 13, it causes `` ts`run() `` to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to `` ts`run() `` never repeat themselves:
 
-\begin{center}
-\begin{tabular}{l}
-`` js`(F(F)) `` \\
-`` js`(F(F))(F(F)) `` \\
-`` js`(F(F))(F(F))(F(F)) `` \\
-`` js`(F(F))(F(F))(F(F))(F(F)) `` \\
-\multicolumn{1}{c}{`` math`\vdots ``} \\
-\end{tabular}
-\end{center}
+<figure>
 
-Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether `` ts`run() `` is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually finish its work regardless of the program it is given.
+|                                             |
+| :------------------------------------------ |
+| `` js`(F(F)) ``                             |
+| `` js`(F(F))(F(F)) ``                       |
+| `` js`(F(F))(F(F))(F(F)) ``                 |
+| `` js`(F(F))(F(F))(F(F))(F(F)) ``           |
+| <div align="center">`` math`\vdots ``</div> |
+
+</figure>
+
+Non-termination is what we expect from an interpreter, but not from an analyzer, and as the second example demonstrates, preventing non-termination is not as simple as checking whether `` ts`run() `` is being called with the same expression multiple times. As we move forward from an interpreter to an analyzer in the next Steps one of the main issues we address is termination: even if it takes a long time, an analyzer must eventually terminate regardless of the program on which it is working.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
 
-Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the _halting problem_, is said to be *uncomputable* [understanding-computation (§ 8)](), and is a direct consequence of the Turing completeness of Yocto-JavaScript (see § \ref{The Computational Power of Yocto-JavaScript}). In our analyzer we will guarantee termination by allowing some information to be lost.
+Detecting non-termination in an interpreter without losing any information about the original program is a problem that cannot be solved, regardless of the sophistication of the detector and the computational power available to it. The problem, which is known as the _halting problem_, is said to be *uncomputable* [understanding-computation (§ 8)](), and is a direct consequence of the Turing completeness of Yocto-JavaScript (see [](#the-computational-power-of-yocto-javascript)). In our analyzer we will guarantee termination by allowing some information to be lost.
 
 </fieldset>
 
 ## Step 1: Environment-Based Interpreter
 
-The interpreter in Step 0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see § \ref{Step 0: Programs That Do Not Terminate}). The source of non-termination in Step 0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step 1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step 1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
+The interpreter in Step 0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see [](#programs-that-do-not-terminate)). The source of non-termination in Step 0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step 1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step 1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
 
 ### Avoiding Substitution by Introducing Environments and Closures
 
-When the interpreter from Step 0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument, for example:
+When the interpreter from Step 0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument (see [](#substitution-in-function-definitions)), for example:
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} (see [](#substitution-in-function-definitions)) & `` js`(x => z => x)(y => y) `` \\
-\textbf{Step 0 Output} & `` js`z => (y => y) `` \\
-\end{tabular}
-\end{center}
+<figure>
 
-The issue with this strategy is that the expression `` js`z => (y => y) `` does not exist in the original program, and as mentioned in § \ref{Step 0: Programs That Do Not Terminate}, there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
+|                     |                                |
+| :------------------ | :----------------------------- |
+| **Example Program** | `` js`(y => z => y)(x => x) `` |
+| **Step 0 Output**   | `` js`z => x => x ``           |
 
-\begin{center}
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`y => y `` \\
-\textbf{Step 1 Output} & `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ \textbf{Example Program} & `` js `(x => z => x)(y => y) `\\ \textbf{Step 1 Output} &` math` \langle `` js `(z => x) `, [` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle] \rangle` \\
-\end{tabular}
-\end{center}
+</figure>
+
+The issue with this strategy is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
+
+<figure>
+
+<table>
+<tr>
+<th align="left">Example Program</th>
+<td align="left">
+
+`` js`x => x ``
+
+</td>
+</tr>
+<tr>
+<th align="left">Step 1 Output</th>
+<td align="left">
+
+```json
+{ "function": `x => x`, "environment": {} }
+```
+
+</td>
+</tr>
+<tr>
+<th align="left">Example Program</th>
+<td align="left">
+
+`` js`(y => z => y)(x => x) ``
+
+</td>
+</tr>
+<tr>
+<th align="left">Step 1 Output</th>
+<td align="left">
+
+```json
+{
+  "function": `z => y`,
+  "environment": {
+    "y": { "function": `x => x`, "environment": {} }
+  }
+}
+```
+
+</td>
+</tr>
+</table>
+
+</figure>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -1178,13 +1227,15 @@ The listing above does not compile yet because we are not producing closures. In
 
 ### A Function Definition
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & `` js`x => x `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js`(x => x)`, [] \rangle` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 When the interpreter encounters a function definition, it captures the current `` ts`environment `` in a closure:
 
@@ -1196,13 +1247,15 @@ case "ArrowFunctionExpression":
 
 ### A Function Call
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 First, we remove `` ts`substitute() ``, which is the goal of Step 1:
 
@@ -1254,24 +1307,28 @@ case "CallExpression":
 
 ### Name Reuse
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & `` js`(x => x => z => x)(a => a)(y => y) `` \\
 \textbf{Current Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle `` js`(z => x) ``, [`` js`x `` \mapsto \langle `` js`(y => y) ``, [] \rangle] \rangle `` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 If a name is reused (for example, `` js`x `` in the example program above), then the second time it is encountered by `` ts`step() `` it is overwritten in the `` ts`environment `` (see the call to `` ts`set() `` in line 13 of § \ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to `` js`x `` to refer to the second (inner) `` ts`x ``, which is the expected behavior (it is what we called Option 2 in § \ref{Step 0: Name Reuse}).
 
 ### A Variable Reference
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & `` js`(y => y)(x => x) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ \\ \textbf{Example Program} & `` js `(x => y)(y => y) `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` text` Reference to undefined variable: y `` \\ \\ \textbf{Example Program} & `` js `x => y `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` math` \langle `` js `(x => y) `, [] \rangle` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 When we encounter a variable reference, we look it up in the current environment:
 
@@ -1288,17 +1345,20 @@ case "Identifier":
 
 ### A Function Body Is Evaluated with the Environment in Its Closure
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & \\
 \multicolumn{2}{l}{`` js`(f => (x => f(x))(a => a))((x => z => x)(y => y)) ``} \\
 \textbf{Current Output} & `` math`\langle `` js` (a => a) ``, [ `` js `f `\mapsto \langle` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle ] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle `` js`(y => y) ``, [] \rangle `` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to `` ts`step() ``, when a closure is created:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{rrcl}
 \multicolumn{4}{c}{\textbf{Trace 1: First Call to `` ts`step() `` · Closure Creation}} \\
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
@@ -1306,11 +1366,13 @@ This example program shows the difference between the current environment with w
 & `` ts`expression.arguments[0] `` & = & `` js`(x => z => x)(y => y) `` \\
 \rowcolor[rgb]{.88,1,1} 10 & `` ts`argument `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 And the following is a trace of the recursive call to `` ts`step() `` in which that closure is called:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{rrcl}
 \multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to `` ts`step() `` · Closure Call}} \\
 \textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
@@ -1321,15 +1383,18 @@ And the following is a trace of the recursive call to `` ts`step() `` in which t
 9 & `` math` `` ts` step( ``\cdots `` ts `) `& = &` math` \langle `` js ` (z => x) `, [` js `x`\mapsto \langle`js` (y => y) `, [] \rangle] \rangle` \\ 5 & `` ts `parameter `& = &` js` z `` \\ \rowcolor[rgb]{.88,1,1} 6 & `` ts `body `& = &` js` x `` \\ \rowcolor[rgb]{.88,1,1} 8 & `` ts `functionEnvironment `& = &` math` [ `` js `x`\mapsto \langle`js`(y => y) `, [] \rangle]` \\
 \multicolumn{4}{c}{Paused before line 10}\\
 \end{tabular}
-\end{center}
+
+</figure>
 
 At this point, there are two expressions left to evaluate: the argument (`` ts`expression.arguments[0] ``; line 10), and the body of the called function (`` ts`body ``; lines 11–14). Both of these expressions have the same code (`` js`x ``), and our current implementation looks up this variable both times on the current `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a)`, [\cdots] \rangle`.
 
 But this leads to an issue: we may not reason about `` js`z => x `` by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step 0 (see § \ref{Step 0: Name Reuse}). We would like, instead, for each `` js`x `` to refer to the value that existed in the environment where the closure is _created_, not where it is _called_:
 
-\begin{center}
+<figure>
+
 \includegraphics[page = 8]{images.pdf}
-\end{center}
+
+</figure>
 
 To implement this, we change the recursive call to `` ts`step() `` that evaluates the function body so that it uses the environment coming from the closure (`` js`functionEnvironment ``) instead of the current environment (`` js`environment ``):
 
@@ -1416,11 +1481,13 @@ function run(expression: Expression): Value {
 
 We adapt the operational semantics from [](#an-operational-semantics-for-the-interpreter) to the interpreter defined in Step 1. First, we change the notion of values:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{rcll}
 `` math`v `` & = & `` math`\langle `` js` ( ``x `` js ` => `e` js` ) ``, \rho \rangle `` & Values / Closures \\ `` math `\rho `& = &` math`\{x \mapsto v, \cdots\} `` & Environments \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equivalent to the new implementation of `` ts`run() ``:
 
@@ -1448,9 +1515,11 @@ We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equival
 
 We modify the generator from [](#generator) to support closures. For example, the following is the representation of the closure from § \ref{A Function Call}:
 
-\begin{center}
+<figure>
+
 `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle`
-\end{center}
+
+</figure>
 
 ```js
 {
@@ -1515,11 +1584,12 @@ This implementation of `` ts`generate() `` supports not only closures but any da
 
 ### Programs That Do Not Terminate
 
-The programs that do not terminate in Step 0 (see § \ref{Step 0: Programs That Do Not Terminate}) do not terminate in Step 1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step 0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step 1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
+The programs that do not terminate in Step 0 (see [](#programs-that-do-not-terminate)) do not terminate in Step 1 either, because the interpreters are equivalent except for the technique used to interpret function calls, but the sources of non-termination are different. In Step 0 substitution may produce infinitely many expressions, including expressions that do not occur in the original program. In Step 1 the interpreter considers only the finitely many expressions that occur in the original program, but it may produce infinitely many environments.
 
 This difference is significant because there are programs that produce infinitely many different expressions in Step 0, but produce the same expression and environment repeatedly in Step 1, and in these cases we could detect non-termination by checking whether the runner is in a loop with the same arguments, for example:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \multicolumn{2}{c}{`` js`(F(F)) ``, where `` js`F = f => (f(f))(f(f)) ``} \\
 \multicolumn{1}{c}{\textbf{Step 0}} & \multicolumn{1}{c}{\textbf{Step 1}} \\
@@ -1527,18 +1597,21 @@ This difference is significant because there are programs that produce infinitel
 `` js`(F(F))(F(F))(F(F)) `` & `` math`\langle `` js` (F(F)) ``, [ `` js `f `\mapsto \langle` js` F ``, [] \rangle] \rangle `` \\ `` js `(F(F))(F(F))(F(F))(F(F)) `&` math` \langle `` js `(F(F)) `, [` js` f `` \mapsto \langle `` js `F `, [] \rangle] \rangle` \\
 \multicolumn{1}{c}{`` math`\vdots ``} & \multicolumn{1}{c}{`` math`\vdots ``} \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 But this strategy is insufficient to guarantee termination, because there are programs that do not terminate which produce infinitely many different environments, for example:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{l}
 \multicolumn{1}{c}{`` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
 \multicolumn{1}{c}{or `` js`F(F)(y => y) ``, where `` js`F = f => c => f(f)(C) `` and `` js`C = x => c ``} \\
 `` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle `` \\ `` math `\langle `` js`f(f)(C) ``, [`` js`c `` \mapsto \langle `` js`C ``, [`` js`c `` \mapsto \langle `` js`(y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle `\\` math` \langle `` js `f(f)(C) `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `C `, [` js` c `` \mapsto \langle `` js `(y => y) `, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle` \\
 `` math`\langle `` js` f(f)(C) ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` C ``, [ `` js `c `\mapsto \langle` js` (y => y) ``, [] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle, \cdots] \rangle `` \\ \multicolumn{1}{c}{`` math `\vdots ``} \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 The program above is a variation on the shortest non-terminating program, `` js`(f => f(f))(f => f(f)) ``, in which each `` js`f => f(f) `` receives an additional parameter `` js`c ``, and each `` js`f(f) `` receives an additional argument `` js`x => c ``.
 
@@ -1559,7 +1632,8 @@ The source of non-termination in Step 1 is the nesting of the environments (see
 
 In Step 1 a closure contains an environment mapping names to other closures, which in turn contain their own environments mapping to yet more closures. In Step 2, we remove this circularity by introducing a layer of indirection: an environment maps names to _addresses_, which may be used to lookup values in a _store_, for example:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{rcc}
 (See § \ref{A Variable Reference}) & \textbf{Step 1} & \textbf{Step 2} \\
 \textbf{Variable Reference} & `` js`x `` & `` js`x `` \\
@@ -1567,11 +1641,13 @@ In Step 1 a closure contains an environment mapping names to other closures, wh
 \textbf{Store} & — & `` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle]` \\
 \textbf{Value} & `` math`\langle `` js` (y => y) ``, [] \rangle `` & `` math `\langle `` js`(y => y) ``, [] \rangle `` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 Each closure continues to include its own environment, because it needs to look up variable references from where the closure was created (see § \ref{A Function Body Is Evaluated with the Environment in Its Closure}), but there is only one store for the entire interpreter, and we avoid ambiguities by allocating different addresses, for example:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{rll}
 (See § \ref{A Function Body Is Evaluated with the Environment in Its Closure}) & \multicolumn{1}{c}{\textbf{Step 1}} & \multicolumn{1}{c}{\textbf{Step 2}} \\
 `` ts`environment `` & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` & `` math`[ `` js` x `` \mapsto `` js `0 `, \cdots]` \\
@@ -1579,17 +1655,20 @@ Each closure continues to include its own environment, because it needs to look 
 \textbf{Store} & \multicolumn{1}{c}{—} & `` math`[ `` js` 0 `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle,` \\
 & & `` math`\phantom{[} `` js` 1 `` \mapsto \langle `` js `(y => y) `, [] \rangle]`
 \end{tabular}
-\end{center}
+
+</figure>
 
 The runner must return the store along with the value, for the variable references to be looked up, for example:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} (see § \ref{A Function Call}) & `` js`(x => z => x)(y => y) `` \\
 \textbf{Step 1 Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ \textbf{Step 2 Output} & `` ts `value `=` math` \langle `` js `(z => x) `, [` js` x `` \mapsto `` js `0 `] \rangle` \\
 & `` ts`store `` = `` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle]` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
@@ -1636,13 +1715,15 @@ The `` ts`store `` is unique for the whole interpreter, unlike `` ts`environment
 
 ### Adding a Value to the Store
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` ts`value `` = `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto` js` 0 ``] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 In Step 1, when we encounter a function call we extend the `` ts`functionEnvironment `` with a mapping from the `` ts`parameter.name `` to the `` ts`argument `` (see § \ref{A Function Call}, \ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step 2, we introduce the `` ts`store `` as a layer of indirection:
 
@@ -1682,13 +1763,15 @@ Extend the `` ts`store `` with a mapping from the `` ts`address `` to the `` ts`
 
 ### Retrieving a Value from the Store
 
-\begin{center}
+<figure>
+
 \begin{tabular}{ll}
 \textbf{Example Program} & `` js`(y => y)(x => x) `` \\
 \textbf{Current Output} & — \\
 \textbf{Expected Output} & `` ts`value `` = `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ & `` ts `store `=` math` [ `` js `0 `\mapsto \langle` js`(y => y)`, [] \rangle]` \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 In Step 1 we retrieved values directly from the `` ts`environment `` (see § \ref{A Variable Reference}), but in Step 2 we have to go through the `` ts`store ``:
 
@@ -1769,13 +1852,15 @@ function run(expression: Expression): { value: Value; store: Store } {
 
 We adapt the operational semantics from § \ref{Step 2: Operational Semantics} to the interpreter defined in Step 2. First, we change the notion of environments:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{rcll}
 `` math`\rho `` & = & `` math`\{x \mapsto A, \cdots\} `` & Environments \\
 `` math`\sigma `` & = & `` math`\{A \mapsto v, \cdots\} `` & Stores \\
 `` math`A `` & = & `` math`\mathbb{N} `` & Addresses \\
 \end{tabular}
-\end{center}
+
+</figure>
 
 We then define the relation `` math`\rho, \sigma \vdash e \Rightarrow \langle v, \sigma \rangle `` to be equivalent to the new implementation of `` ts`run() ``:
 
@@ -1804,7 +1889,8 @@ A = \lvert \sigma_a \rvert \\
 
 The programs that do not terminate in Step 1 (see § \ref{Step 1: Programs That Do Not Terminate}) do not terminate in Step 2 either, because the interpreters are equivalent except for the treatment of environments, but the sources of non-termination are different. In both cases the issue is that the interpreter may create infinitely many environments, but in Step 1 the environments are nested, and in Step 2 they contain different addresses, for example:
 
-\begin{center}
+<figure>
+
 \begin{tabular}{l}
 \multicolumn{1}{c}{`` js`(f => c => f(f)(x => c))(f => c => f(f)(x => c))(y => y) ``} \\
 \multicolumn{1}{c}{or `` js`F(F)(y => y) ``, where `` js`F = f => c => f(f)(C) `` and `` js`C = x => c ``} \\
@@ -1815,7 +1901,8 @@ The programs that do not terminate in Step 1 (see § \ref{Step 1: Programs Tha
 \multicolumn{1}{c}{`` math`\vdots ``} \\
 \multicolumn{1}{c}{`` math`[ `` js` 0 `` \mapsto \langle `` js `(y => y) `, [] \rangle,` js` 1 `` \mapsto \langle `` js `C `, [` js` c `` \mapsto `` c `0 `, \cdots] \rangle,` js` 2 `` \mapsto \langle `` js `C `, [` js` c `` \mapsto `` c `1 `, \cdots] \rangle, \cdots]`}
 \end{tabular}
-\end{center}
+
+</figure>
 
 We address this issue in Step 3.
 
