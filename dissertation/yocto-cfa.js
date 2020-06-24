@@ -97,14 +97,12 @@ const GitHubSlugger = require("github-slugger");
     const listing = JSDOM.fragment(
       `
         <table class="listing">
-          <tbody>
-            ${highlightedCode.innerHTML
-              .split("\n")
-              .map(
-                (line) => `<tr><td><pre><code>${line}</code></pre></td></tr>`
-              )
-              .join("\n")}
-          </tbody>
+          ${highlightedCode.innerHTML
+            .split("\n")
+            .map(
+              (line) => `<tr><td><pre><code>${line}</code></pre></td></tr>`
+            )
+            .join("\n")}
         </table>
     `
     ).querySelector("table");

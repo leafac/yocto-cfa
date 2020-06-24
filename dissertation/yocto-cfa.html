@@ -27,7 +27,7 @@ in conformity with the requirements for the degree of Doctor of Philosophy</p>
 <p>Baltimore, Maryland<br>
 August 2020</p>
 </div>
-<div class="timestamp draft">2020-06-24T16:51:15.607Z</div></div>
+<div class="timestamp draft">2020-06-24T18:10:51.352Z</div></div>
 <!-- TODO
 # Abstract
 
@@ -409,13 +409,11 @@ August 2020</p>
 <p>Our interpreter is defined as a function called <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code>, which receives an Yocto-JavaScript program represented as a string and returns the result of running it.</p>
 <p>The following are two examples of how we will be able to use <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> by the end of Step&nbsp;0 (the <code><span style="color: #000000">&gt;</span></code> represents the console, and by convention strings that represent Yocto-JavaScript programs are delimited by backticks (<code><span style="color: #A31515">`</span></code>)&nbsp;[<a href="#javascript-template-literals">24</a>]):</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">evaluate</span><span style="color: #000000">(</span><span style="color: #A31515">`x =&gt; x`</span><span style="color: #000000">)</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">evaluate</span><span style="color: #000000">(</span><span style="color: #A31515">`x =&gt; x`</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #A31515">`x =&gt; x`</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">evaluate</span><span style="color: #000000">(</span><span style="color: #A31515">`(y =&gt; y)(x =&gt; x)`</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #A31515">`x =&gt; x`</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>The implementation of <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> is separated into three parts called <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code>, <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>, and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code>:</p>
 <figure>
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="391px" height="396px" viewBox="-0.5 -0.5 391 396" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T10:18:15.839Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;4EhQCWFqqKDJrGF3Eali&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7VrLkps4FP0aV3U2KZ5+LPuZWSQ1qUqmZrKUQY3VLSOXkLvt+fqRQAKBZBs7BuPq2bisixBwztHR1YWRf7/cfKFgtfhGYohHnhNvRv7DyPOmsyn/FYFtERj7YRFIKIqLkFsFfqB/oQw6MrpGMcxqHRkhmKFVPRiRNIURq8UApeS93u2Z4PpVVyCBRuBHBLAZ/RvFbCGfwnGq+B8QJQt55Zk6sASqrwxkCxCTdy3kP478e0oIK/4tN/cQC+gULMV5TzuOlvdFYcosJ/yVQfrn/EVA4jkYzDkreSf4BvAaMHjzqRgAo/S1OMKyIqKuEFZ3WV49Y1sFDCXrNIairzvy755Jyp7AEmFB8/efvOs3khJ+ANBIkuqL1pqRrGg6ojnPCF4zeFt2EmNRwgADc6zaAKMk5f8xfOZPevcGKUOcoFsZZmTFo9kKRChN5MCy9VMc0gNf8yEeXBHiimEApZDKLuIR1F2MedsEWGIubgButJDE6AskS8jolndRRx0pdil+X6njvZKSP5OxhSYjTwWBlG9Sjl1RzP9IYlRTI32vCPhDZS0U4HUqALe1AJrMVFy7Z+JJwa14Uial8TS10OR3yhJdp4c58j8OR/W5FAQmR5POODL8N5D3z91UYi1tvgIfxnwlkU1C2YIkJAX4sYreVfQIA6r6fCW5cQnkXiBjWwmsIIaHFmyJDzEK0/hWrH48PMckei1CTwjjHXztZCgjaxpBzRD4AgxoApmmP88Rz7qXRQoxYOitvqoewYlBwPQSeMMNYv+I0z+HsvVLO/KwkSPnja22rvTIUXhuQuSp3wlKWTUdy3ml8rqgMc8KkcizGrSWt2FjepcdJpCv1e0ylw/jiZO6J4aBmV+4bn+mOP6Ipuibpnj2OdjWFCctCDBBaIcdvxXN+kTzl7I70ajML29ty5YO8Mt6uVLspySFeRq+RNHoyBRcB9trCbY2J0LLlFCxM/si3yrWhyikY/iiOVAzJ21uCc5usDcCpfzvOGE5+s72083GCG4MA35pGPBsrwFzcxMjZYySV3hPMKGVGp65Vhohtf2LuAjEZs3YAC5RHFucY6eU80fmxhJD2rhUfRPZ8PwO9oeeHzbEYua0ri2p9brx74K4/f6RcJRXpy9usk4jV8lR+SSng2bbrJWzTgetXAmPQG3XXOHyw4dmgas/hzkNeACtMmgXmlW4x0Je0nlEwaJuOq6ZT9iQ7XYfXHOfA5DvL1kMEfKgjrglgwv6S+Bcv0UCged59qBsuJ5YSSetlv29VnzYUxWgesblWrIAt20a8Ls51zlUGlydSt3poGQaXq1MgwvLdHtQnOPrE2ddmxNTm36P2myzB7u8Ni2lPHc8eG1Or06b00Fps0V+P1BtTi+szc0hbWovda9Fm244JHGW2+dhizMwxan2sAMW5/Xti0pUhyHO69gY2cTZ18bIfEU6MSHSqv8SkHrRTq8GW4rFPb2y65A2ywuEmUna7MKGclLVN/i/7HtaBXNs+SzI+lVQN94Wtlh4f7Pqa2CzqxDcGrNgbGLmehbQpseDdoYSj7//HXT3C254tCobhUhL6be7Cs/JiU1w6Rr78Tg3qhWWSlqPeU3gDS2vCS0rpJr7+hIZuBdeIw9rc/+3eUPU5uEqb5/abPON3TC12ddXcbxZfUFevPmvvsL3H/8D</diagram></mxfile>">
@@ -570,12 +568,10 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">export</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">evaluate</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">export</span><span style="color: #000000"> </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">evaluate</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">)));</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>The <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> function prepares the <code><span style="color: #001080">input</span></code> for interpretation, converting it from a string into more convenient data structures (see <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a> for more on these data structures). The <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function is responsible for the interpretation itself. The <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> function converts the outputs of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> into a human-readable format. In the following sections (<a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>–<a href="#an-operational-semantics-for-the-interpreter">§&nbsp;1.3.14</a>) we address the implementation of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>, deferring <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> to <a href="#parser">§&nbsp;1.3.15</a> and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> to <a href="#generator">§&nbsp;1.3.16</a>.</p>
 <p>In later Steps the implementations of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> will change, but the implementations of <code><span style="color: #795E26">evaluate</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> will remain the same, because the architecture and the data structures used to represent Yocto-JavaScript programs will remain the same.</p>
 <fieldset>
@@ -589,8 +585,7 @@ August 2020</p>
 <tbody><tr>
 <td>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`x =&gt; x`</span><span style="color: #000000">)</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`x =&gt; x`</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"params"</span><span style="color: #000000">: [</span></code></pre></td></tr>
@@ -604,8 +599,7 @@ August 2020</p>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #A31515">"name"</span><span style="color: #000000">: </span><span style="color: #A31515">"x"</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 </td>
 <td align="center">
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="101px" height="61px" viewBox="-0.5 -0.5 101 61" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T10:20:02.006Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;5iildHULOTPwmeuIzloY&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>1ZZdb4IwFEB/De9I0ejj/NyL2RK37LnCFepKS0pR3K9foReBMbe4ZMt8IfTcltJzbwsOmSXFStE0XssQuOO5YeGQueN548nYXEtwsmBEhhZEioUWDRqwYW+A0EWasxCyTkctJdcs7cJACgGB7jCqlDx2u+0k786a0gh6YBNQ3qcvLNQxrsJ1G34PLIpx5kkdSGjdF0EW01AeW4gsHDJTUmp7lxQz4KW6Wosdt7wQPb+XAqE/GfCcgXrY7kslnsvp1mSl6lRdR5EZMrVP4Ey82tA+s6SewmaqO32mT7UZA0wSTGNKcy0zm7mBae6k0EuaMF6m/PHJjFpLITGAGR6MTDtLacBEhMP6C8I1HkBpKFoIX2kFMgGtTqYLRr0xysZi82v5xyZ1PqK4lTWCjGKxROcnN0LNDVqomy3FXyovvhPtD25O9PCD6GFfNPk10b3N4Hu4AMpzlIabrm1xW22/cpHM7G8jAkR4Vx4RhgopwJIlK2eeu9f4vWg0k7kKoL2dzPFFVQS6nXnPhbBzCvW9K+BUs0P3ULrC4s9rk9xabRLvf9Wmf6u1Sf6oNk2z+QxWsdavBFm8Aw==</diagram></mxfile>">
@@ -644,8 +638,7 @@ August 2020</p>
 <tr>
 <td>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`(y =&gt; y)(x =&gt; x)`</span><span style="color: #000000">)</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #A31515">`(y =&gt; y)(x =&gt; x)`</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"type"</span><span style="color: #000000">: </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"callee"</span><span style="color: #000000">: {</span></code></pre></td></tr>
@@ -677,8 +670,7 @@ August 2020</p>
 <tr><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  ]</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 </td>
 <td align="center">
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="241px" height="91px" viewBox="-0.5 -0.5 241 91" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T10:20:17.929Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;xZETy3_wJtwz6eiXSjrZ&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>1ZjRcqMgFIafxnsFY83lbtq0N512pt3Za6JUaREySBqzT78YjgZj2k5n2kZuHPkB4fzn48xggBdVc63IuryVOeUBCvMmwJcBQuk8Nc9W2FkhwTMrFIrlVooOwgP7R0EMQd2wnNaDgVpKrtl6KGZSCJrpgUaUktvhsCfJh6uuSUFHwkNG+Fj9y3JdQhRheNBvKCtKWHnedVSkGwtCXZJcbh0JXwV4oaTU9q1qFpS31nW22HnLN3r7fSkq9IkJf2qq7lbPrSUo5GRlsrIfZCLjdipn4sVqz7VV+m9H/f76dWu96ywxgnHfNH6TjZa1TVlkmk9S6CWpGG9zff9oZt1KIaEDUhslpl2vScZEAdPGkUBwr1Rp2jgSbOmayopqtTNDoBddgMtAWRwCZVs3Z1YqnXRh0AhQUvRfPjhpXsCFrul4+67X+2dS6D7GdyxH3lkeHVmOx5bH32b5+DxgCIDwDZgG5851cbU/gW2QzBwEYwQV+a+2ShhVSEGtsmTtypfhZ/x909FablTWFZOughFVUO1mHoU0HxSise+KcqLZ67AufcLFr6A09o1SPJsWpTNfKY3PTOnuQzYT39iM0iM2kzGb+AfZvPCBTXSCzWTybKa+sYmO6+aZ2Zz7ymZ6Zjabj9h0LiOesInRpNjsA5g0m/GYzc7GCbPp3a0Iz6fFphe3olNs/tStyDQP/2D2fc5/LHz1Hw==</diagram></mxfile>">
@@ -754,8 +746,7 @@ August 2020</p>
 <p>We choose to represent Yocto-JavaScript programs with the data structures above because they match the data structures used by Babel&nbsp;[<a href="#babel">2</a>], which is a library to manipulate JavaScript programs that we use to implement the <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code> functions (see <a href="#parser">§&nbsp;1.3.15</a> and <a href="#generator">§&nbsp;1.3.16</a>).</p>
 <p>In general, the data structures used to represent Yocto-JavaScript programs have the following types (written as TypeScript types adapted from the Babel types&nbsp;[<a href="#babel-types">3</a>] to include only the features supported by Yocto-JavaScript):</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Expression</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000"> | </span><span style="color: #267F99">CallExpression</span><span style="color: #000000"> | </span><span style="color: #267F99">Identifier</span><span style="color: #000000">;</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Expression</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000"> | </span><span style="color: #267F99">CallExpression</span><span style="color: #000000"> | </span><span style="color: #267F99">Identifier</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000"> = {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #001080">type</span><span style="color: #000000">: </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">;</span></code></pre></td></tr>
@@ -773,8 +764,7 @@ August 2020</p>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #001080">type</span><span style="color: #000000">: </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #001080">name</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">};</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>In later Steps almost everything about the interpreter will change, but the data structures used to represent Yocto-JavaScript programs will remain the same.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
@@ -817,18 +807,15 @@ August 2020</p>
 <p>Having defined the architecture (<a href="#architecture">§&nbsp;1.3.1</a>) and the data structures to represent Yocto-JavaScript programs (<a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>), we start developing the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function. The development is driven by a series of example programs that highlight different aspects of the interpreter. In <a href="#an-expression-that-already-is-a-value">§&nbsp;1.3.3</a>–<a href="#a-reference-to-an-undefined-variable">§&nbsp;1.3.12</a> we begin with these example programs and modify the implementation to achieve the expected output.</p>
 <p>Consider the example program above. As mentioned in <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>, the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function receives as parameter an Yocto-JavaScript program represented as an <code><span style="color: #001080">Expression</span></code>. The <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function is then responsible for interpreting the program and producing a value. In Yocto-JavaScript, the only kind of value is a function (see <a href="#values-in-yocto-javascript">§&nbsp;1.1.1</a>), so we start the implementation of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> with the following (we use <code><span style="color: #0000FF">throw</span></code> as a placeholder for code that has not been written yet to prevent the TypeScript compiler from signaling type errors):</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>The first thing that <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> has to do is determine which type of <code><span style="color: #001080">expression</span></code> it is given:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">switch</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000">) {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">      </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
@@ -838,16 +825,13 @@ August 2020</p>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">      </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>In our current example, the <code><span style="color: #001080">expression</span></code> already is a <code><span style="color: #001080">Value</span></code>, so we return it unchanged:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000">;</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="a-call-involving-immediate-functions"><span class="heading-counter">1.3.4</span> A Call Involving Immediate Functions<code class="draft"> [](#a-call-involving-immediate-functions)</code></h3>
 <figure>
 <table>
@@ -967,8 +951,7 @@ August 2020</p>
 </svg>. The implementation of this substitution technique starts in this section and will only be complete in <a href="#substitution-in-function-calls">§&nbsp;1.3.8</a>.</p>
 <p>In the example program above, both the function that is called (<code><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code>) and the argument (<code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>) are immediate functions, as opposed to being the result of other operations, so for now we may restrict the interpreter to handle only this case:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000"> !== </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000"> ||</span></code></pre></td></tr>
@@ -976,12 +959,10 @@ August 2020</p>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  )</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>Next, we unpack the called function (using something called <em>destructuring assignment</em>&nbsp;[<a href="#javascript-destructuring-assignment">20</a>]) and the argument:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000"> !== </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000"> ||</span></code></pre></td></tr>
@@ -994,8 +975,7 @@ August 2020</p>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  } = </span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000"> = </span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">arguments</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">];</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>Finally, we setup an auxiliary function called <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> that implements the traversal of the <code><span style="color: #001080">body</span></code> looking for references to <code><span style="color: #001080">parameter</span></code> and substituting them with the <code><span style="color: #001080">argument</span></code> (for now the result of substitution is restricted to be an <code><span style="color: #001080">ArrowFunctionExpression</span></code>):</p>
 <figure>
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="601px" height="312px" viewBox="-0.5 -0.5 601 312" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T21:38:49.873Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;fz0L9eT2jwWXTwq6Rcz6&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7Vxbc5s4FP41mdl9CCMQF/GYxHHb3Xab3WQ3TV462Cg2CTZekGO7v36FEcaAAPnCxd5mOh1zJJD8feemg6wLeDNZfvCt2fiLZ2P3QgH28gL2LhQFmYj+HwpWkUDVtEgw8h07EsmJ4N75gZkQMOncsXGQ6kg8zyXOLC0cetMpHpKUzPJ9b5Hu9uK56VFn1gjnBPdDy81LHx2bjCOpDkAi/4id0ZiNbMYNEyvuywTB2LK9xZYI3l7AG9/zSPRpsrzBbghdDEt0X7+gdTMvH08J54a/A+x/HbyGkCjAtQaUlXUneoM1wQT70f2uM32LGkgQSeIBVG0zyc3gAVnFuBC8pMNeB8T33vCN53o+lU+9KW2+fnFcNxZdKPBl/UflluuMplQ2pFOmE4DX79gnDsX6ijVMHNt210/wpqRvTRw31Jq7Bzr0F2/qsQamJLIejj+zhs50RC9BOMCceAFrpZd5iBhq4bh4uSViX/MD9ig2/op2Ya0GY49pr6Ky60WiC3JM+XhLD2LWLaZ+o82TE4roB4ZsfLlFGp911WBfwHLnjAimXQkz9A5qHCGKi7FD8D1FKGxZUPOksjGZuAyeDE39PqB/RZxawSwyrxdnie3jgCvLWhpdg4duHlx5d3CLzMHyR/NJ+A0qrEFTfloD5SfNFwR5vszajKGIwoFnr6ro08FP+ig3GfrMPH1a4/QF80FAHDIn2L4WYPL3z88BWaLZwh5cfvi4WLy+yd8vz4beHJccxgvphaYpQaOSYllvLl493cKpNrMsZ9F7Rm9Xq++9P8hlPH5ZEBv53nxWiAlL9qxB3B3sipWZjusQ5nHiwQR3hymHiQbri+HARLqGDojh5YQJexpFqyuQ5+HUzx9OLZOF1pYm5dEVSDipqU7tEIC1X/N8MvZG3tRyP3vejOH6iglZMV8YOr406nhqX4VLtQRaKuk74aR6+YR0m5cdEQ+8uT/EaTMkNAXEJK1L2E4tCvO8+Ni1iPOeXiMehLN6xlrcgtpq/yu1VdtSW/605Wrw647vStpjqpz4zs2DjCMonz8hN4+uevfuvv7749Huj26+Pl7qSo0GDvZYuVekmiXMFidVUDKaC/x8mGtMrvYqkNQAs9xeOsDHXMDeW3C2sVFwfWPaqZZa7LanLdW5vXk9ulvmT7POFKMjHggaUqak2LZtCKx1z9o21NOwjW7mizFNeOmQb6xX+PkpfiL93FtuNfRW7GJvYlVRYlFTxLJb7zwnLNPHlq6bUqYarSrpZ0Tfld2W0Y/NPA5QGYG6QwdURu6QyhjtqoxhtK0yNb6960oEziLcdvxFZwx5VzA2T8ITNhA8DUFPaCjtekJTkxRZVXUdmCrQDQWmbRZJGtQ0CE2gmVAx4kjXkJc0up0yNxhYhdXpUEdyoDrJAOUiq9mszgiUIE6+7APSZR+9ZbcfO7GzDK38F28NQs6frUB1s+7KOg0LkpnZScIrr3Pfn5tHQGb55bO8+Ac9XN8NZPnp0199Z/5wJuV1WO4AoCrBBgvsfKDr3L3QEaBVmA1nDZYR+ah3OycSyHBKrXY7wynVur2ZPXoZkT9NgRJ7B1LXo66ESvmqJla4JnQosQWpqwwSn1p7VYgPwWnUno+63jlQafS2lQa1rjR17nrrSBhG2Zd5DRa6Sp3VWYLeFYwFCrYd8IYNhFBd0BsanCVco94QahKCZvvVRD6Mp1GcFo+ulGN/9W374mn7IrlpfdWcFjaWoRdooWrmY7JYEZLzLFnSVQOpMjRNZKA4rY+rQLJk6qZBdV6BhqybMD1KBFVtCi1SHj/ZINR62a1UtzuzObuO4pKidQvzrm2IrwPzjJ6jtjEXKKK2vmt+9xhmiK4rDeHNaq1WmQyBgsHJmwbomGl0c49zc6ahnYZp1LndpyOmoSgdezfRTdPYrLCaXS8pogYlvH+2pvWSCSRT1hUTqKoCDHbARaJUUIIyov8ATVIUDcXNTS1yBFbtJ2/Hmeyv7cqbcQo/9d0jxCFRizRPIsShOtf/XTEN0DHT6OZe/8ZMAzVWYj5oe5RQ9pegPHC94VuagxzGV30Aete0ZTj339fsyili5GL4BbZUVRy8E8sO3e2bMabsWS/CZVG94kEFSQHF21ptdZuFHYLi+Wbjogr404rbjfJ2DRS0x7t90sNVdc+CUDQ6v7sml3fPnDenZU8BLKe2qnt2Va2aFf2VHZ+v7fZt5Qz2KtoJHVWreHyWK72if9ZSKqaTC1NFmho/Pzv/qv5ZS4AV/WGmf5ou+iEyxX1T9T/JY28OP81+u3mG/vjp43eC8WbFs+1jqSu8Z5dJILxNpNeHB0vOe1ggaaVvzsrWiOWhV9TDp2MuHy5wYIQsoB5lqAdAkgFUVaQYGtKzD9x7+VZ9itsvv0ZDFR/hVo1L/gi3RGHWaWvRkWuWP2QqAy9yR6xZg8Bz6QyvNp3ktSoSK94PHT+bf2rbkY5p26Sp8dljiLOlN7bkAw8fEzmjjU+HyA8q6jfzQqI5aVw6KcvSWGDCgvYqxO+BJgzzJlyz0T74FtXkwHLT9snNrdH2l27/iMV77DsvpdYK8g4g7MzL7Y9g1BnuNM4PIhDHpI9z7CIVJedIR+qQnMUNb/8D</diagram></mxfile>">
@@ -1096,8 +1076,7 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000"> !== </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000"> ||</span></code></pre></td></tr>
@@ -1116,12 +1095,10 @@ August 2020</p>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>Similar to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> itself, <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> starts by determining which type of <code><span style="color: #001080">expression</span></code> is passed to it:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">switch</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000">) {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">      </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
@@ -1131,8 +1108,7 @@ August 2020</p>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">      </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>In our current example the <code><span style="color: #001080">expression</span></code> is <code><span style="color: #001080">y</span></code>, which is an <code><span style="color: #001080">Identifier</span></code> that must be substituted with the <code><span style="color: #001080">argument</span></code> (<code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code>):</p>
 <figure>
 <p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="491px" height="282px" viewBox="-0.5 -0.5 491 282" content="<mxfile host=&quot;&quot; modified=&quot;2020-05-30T21:48:51.179Z&quot; agent=&quot;5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Code/1.45.1 Chrome/78.0.3904.130 Electron/7.2.4 Safari/537.36&quot; etag=&quot;Rv0rVVvNJ_OAsZCgRwif&quot; version=&quot;13.1.3&quot;><diagram id=&quot;6hGFLwfOUW9BJ-s0fimq&quot; name=&quot;Page-1&quot;>7Vpbb+I4GP01SLsPVEmcG49cStvdzm5HnVGnfalMYsCtiSPHKTC/fhziJIRcaQu9qDwg/Nmxne+c4+8kogOGi9UZg/78G3UR6WiKu+qAUUfT7J4tvqPAOg6YwIgDM4bdOKRmgWv8G8mgIqMhdlGQG8gpJRz7+aBDPQ85PBeDjNFlftiUkvyqPpyhQuDagaQYvcEun8u7UJQsfo7wbC5X7iUdC5iMlYFgDl263AqB0w4YMkp5/GuxGiISpS5JS3zduKI33RdDHi+54GeA2P+ThyglmkLgRKCyGSQugAvEEYuvJ9h7jDt4EEeSBXQj3WS6eMDXSV44WollBwFn9BENKaFMxD3qie7BFBOShDoamG4+Ig4Jnnki5ogtiw2AwRNiHItc92XHArsu2cxAPT6GC0wi1lz9EEt/ox6VHZIkqhmt70MHezPRVKIFQk4D2SuaxRTJrEXrotVWSN7mGaIiN2wthsheS6In2ZvScplxQU0gn2/xIEEdSvrN0pkziMQPmdmkuQVaLYiQzcJFdFMNGBraF4YCQyOPoV3EsHd0CCfUXTfBZypf8Als8vCBXhE+4+jwBeEk4JiHHLmDFkj+e3kX8JXtL91J9+x8uXx4VO+7X/DGePZOgNUIsWoeDONCbb09BZ7hQ4iXozv7sb++H/3Hu5Y0Mk+QhBIhWdgzyJDn9iPPIVoTQh1BhsGcL4hMVh5JAVt/rCijgehxQvaEXDlMTDLGhDRlGLk541LMb4M+khhDBHL8lLc7ZQmVK1xRHBWeVJ35AqnvQhLQkDlIXrTtZ3bmSfGtmoiLood4YSKRb7jeGuZHA4L2+zWV/bbVNF4vv42MjPGGM2qmiJWxtUDN7/xmFIIL/5/hHWDz2/N7jlDXLGGiYMe1bFLG53RGPUhOs+iA0dBzN6SLdJ2NuaTUl9x7QJyv5VkQCT9PZ7TC/Je8PPp9G/0+MWRrtNrqGq1loyABZfOJWZ9IR55xmQ6UOh3EBKvLjtJSMC9UgmrvQK8oJ6oCdN0WDsQ2dyes4HMzJ5pL0l9/N9WjmkRV1qOMMGpd/YDMkZQBxXoBJwElYof9dJC6oSKHHE4I2pq7vAS9Us1JbXxScGyjWHBAyaEJDlNwyuFIbquu4Bxe5pVAlxS7fOnahfH9SxgUJXxg0f5gUNA2gCSvz1IHYm/f9Nv7xWvE8HRfwxgNLnNAryDqXeysoom0j/6cUHgyeNg5ibvDCcfnpnPeG156p+ogDAhoOolFAPsBKs/unqa+1JiOx7IqV2BQglQlLKqy8/itF3E54lFr+MFdF91QfvHzypk+nKGL71rXNJuP2pk4Sf3KfMjXj7KIdVJWtc/Tzpsm0PZNk7l/nqrIuvk2ZzwFvpq25WmsP6AOTlulZ5uG3Za2NUyoflgtgqIfjLtVMK2eB079u8CPDM66Epw3P1hACw9HJhsTlZTeFg9D7TFpQGHHULXGIO/Zag4DTYktU1tiPsfL7XnKPVM++qeVT0UBeodqMr7U1KgmvRzkQ6mp0eCW79J6WzUd0uCmby7fk3J6zco5tMHVtcKL/rJUvXeTa73xs9lrFIJeLVAf2ORan+AJpAKc91uWLe3TleVey7KceKbGsmy99IXlUUyuBT6tfD6MybX0LzU1qgmUg/xSNYlm9oe8+KV+9qdGcPoH</diagram></mxfile>">
@@ -1261,12 +1237,10 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000">;</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="substitution-in-function-definitions"><span class="heading-counter">1.3.5</span> Substitution in Function Definitions<code class="draft"> [](#substitution-in-function-definitions)</code></h3>
 <figure>
 <table>
@@ -1450,15 +1424,13 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    ...</span><span style="color: #001080">expression</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">body:</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">body</span><span style="color: #000000">),</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  };</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="name-mismatch"><span class="heading-counter">1.3.6</span> Name Mismatch<code class="draft"> [](#name-mismatch)</code></h3>
 <figure>
 <table>
@@ -1624,13 +1596,11 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000"> !== </span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">) </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000">;</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="name-reuse"><span class="heading-counter">1.3.7</span> Name Reuse<code class="draft"> [](#name-reuse)</code></h3>
 <figure>
 <table>
@@ -1817,16 +1787,14 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">params</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">].</span><span style="color: #001080">name</span><span style="color: #000000"> === </span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">) </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    ...</span><span style="color: #001080">expression</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">body:</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">body</span><span style="color: #000000">),</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  };</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
 <ul>
@@ -2077,16 +2045,14 @@ August 2020</p>
 </svg></p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// substitute()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    ...</span><span style="color: #001080">expression</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">callee:</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">),</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">arguments:</span><span style="color: #000000"> [</span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">arguments</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">])],</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  };</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>This concludes the implementation of <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code>.</p>
 <h3 id="an-argument-that-is-not-immediate"><span class="heading-counter">1.3.9</span> An Argument That Is Not Immediate<code class="draft"> [](#an-argument-that-is-not-immediate)</code></h3>
 <figure>
@@ -2115,8 +2081,7 @@ August 2020</p>
 </figure>
 <p>The <code><span style="color: #001080">argument</span></code>s in the example programs from <a href="#an-expression-that-already-is-a-value">§&nbsp;1.3.3</a>–<a href="#substitution-in-function-calls">§&nbsp;1.3.8</a> are <code><span style="color: #001080">ArrowFunctionExpression</span></code>s, but in general an <code><span style="color: #001080">argument</span></code> may be any kind of <code><span style="color: #001080">Expression</span></code>; for example, in the program above the <code><span style="color: #001080">argument</span></code> is a <code><span style="color: #001080">CallExpression</span></code> (<code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code>). We address the general case by calling <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> recursively on the <code><span style="color: #001080">argument</span></code> to evaluate it to a <code><span style="color: #001080">Value</span></code>:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000"> !== </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">"NOT IMPLEMENTED YET"</span><span style="color: #000000">);</span></code></pre></td></tr>
@@ -2132,8 +2097,7 @@ August 2020</p>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #008000">// ...</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
 <ul>
@@ -2171,8 +2135,7 @@ August 2020</p>
 </figure>
 <p>This is the dual of <a href="#an-argument-that-is-not-immediate">§&nbsp;1.3.9</a> for the called function, and the solution is the same: to call <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> recursively:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">params</span><span style="color: #000000">: [</span><span style="color: #001080">parameter</span><span style="color: #000000">],</span></code></pre></td></tr>
@@ -2186,8 +2149,7 @@ August 2020</p>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #008000">// ...</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="continuing-to-run-after-a-function-call"><span class="heading-counter">1.3.11</span> Continuing to Run After a Function Call<code class="draft"> [](#continuing-to-run-after-a-function-call)</code></h3>
 <figure>
 <table>
@@ -2215,8 +2177,7 @@ August 2020</p>
 </figure>
 <p>This is similar to <a href="#an-argument-that-is-not-immediate">§&nbsp;1.3.9</a> and <a href="#a-function-that-is-not-immediate">§&nbsp;1.3.10</a>: the result of substitution may be not an immediate function but another call, in which case more computation is required. We solve this with yet another recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code>:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">params</span><span style="color: #000000">: [</span><span style="color: #001080">parameter</span><span style="color: #000000">],</span></code></pre></td></tr>
@@ -2227,8 +2188,7 @@ August 2020</p>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">substitute</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #008000">// ...</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="a-reference-to-an-undefined-variable"><span class="heading-counter">1.3.12</span> A Reference to an Undefined Variable<code class="draft"> [](#a-reference-to-an-undefined-variable)</code></h3>
 <figure>
 <table>
@@ -2256,12 +2216,10 @@ August 2020</p>
 </figure>
 <p>The only case in which <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> may encounter a variable reference directly is if the referenced variable is undefined, otherwise <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code> would have already substituted it (see <a href="#a-call-involving-immediate-functions">§&nbsp;1.3.4</a>–<a href="#continuing-to-run-after-a-function-call">§&nbsp;1.3.11</a>). In this case, we throw an exception:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// run()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">`Reference to undefined variable: </span><span style="color: #0000FF">${</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #0000FF">}</span><span style="color: #A31515">`</span><span style="color: #000000">);</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <figure>
 <table>
 <thead>
@@ -2284,8 +2242,7 @@ August 2020</p>
 <h3 id="the-entire-runner"><span class="heading-counter">1.3.13</span> The Entire Runner<code class="draft"> [](#the-entire-runner)</code></h3>
 <p>The implementation of the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function is complete:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">switch</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000">) {</span></code></pre></td></tr>
@@ -2321,8 +2278,7 @@ August 2020</p>
 <tr><td class="line-number"><pre><code>34</code></pre></td><td><pre><code><span style="color: #000000">      </span><span style="color: #0000FF">throw</span><span style="color: #000000"> </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Error</span><span style="color: #000000">(</span><span style="color: #A31515">`Reference to undefined variable: </span><span style="color: #0000FF">${</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #0000FF">}</span><span style="color: #A31515">`</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>35</code></pre></td><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>36</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
 <h3 id="an-operational-semantics-for-the-interpreter"><span class="heading-counter">1.3.14</span> An Operational Semantics for the Interpreter<code class="draft"> [](#an-operational-semantics-for-the-interpreter)</code></h3>
@@ -2904,8 +2860,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <p>The parser is responsible for converting a string representing an Yocto-JavaScript program into data structures that are more convenient for the runner to manipulate (see <a href="#architecture">§&nbsp;1.3.1</a> for a high-level view of the architecture and <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a> for the definition of the data structures). We choose data structures that are compatible with Babel&nbsp;[<a href="#babel">2</a>], which is a library to manipulate JavaScript programs that we use to implement the Yocto-JavaScript parser and the generator (see <a href="#generator">§&nbsp;1.3.16</a>).</p>
 <p>Our strategy to implement the Yocto-JavaScript parser is to delegate most of the work to Babel and check that the input program is using only features supported by Yocto-JavaScript. The following is the full implementation of the parser:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">parse</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">): </span><span style="color: #267F99">Expression</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000"> = </span><span style="color: #001080">babelParser</span><span style="color: #000000">.</span><span style="color: #795E26">parseExpression</span><span style="color: #000000">(</span><span style="color: #001080">input</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #001080">babelTypes</span><span style="color: #000000">.</span><span style="color: #795E26">traverse</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">, (</span><span style="color: #001080">node</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">switch</span><span style="color: #000000"> (</span><span style="color: #001080">node</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000">) {</span></code></pre></td></tr>
@@ -2933,8 +2888,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>26</code></pre></td><td><pre><code><span style="color: #000000">  });</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>27</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000"> </span><span style="color: #0000FF">as</span><span style="color: #000000"> </span><span style="color: #267F99">Expression</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>28</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <ul>
 <li>
 <p><strong>Line 1:</strong> The parser is defined as a function called <code><span style="color: #795E26">parse</span><span style="color: #000000">()</span></code>, which receives a <code><span style="color: #001080">string</span></code> called <code><span style="color: #001080">input</span></code> that represents a program and returns an <code><span style="color: #001080">Expression</span></code> (see <a href="#data-structures-to-represent-yocto-javascript-programs">§&nbsp;1.3.2</a>).</p>
@@ -2968,12 +2922,10 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <h3 id="generator"><span class="heading-counter">1.3.16</span> Generator<code class="draft"> [](#generator)</code></h3>
 <p>The generator transforms a <code><span style="color: #001080">Value</span></code> produced by <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> into a human-readable format (see <a href="#architecture">§&nbsp;1.3.1</a> for a high-level view of the architecture). Similar to what happened in the parser (see <a href="#parser">§&nbsp;1.3.15</a>), we delegate most of the implementation to Babel&nbsp;[<a href="#babel">2</a>]. The following is the full implementation of the generator:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">Value</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">Value</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">babelGenerator</span><span style="color: #000000">.</span><span style="color: #795E26">default</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000"> </span><span style="color: #0000FF">as</span><span style="color: #000000"> </span><span style="color: #267F99">any</span><span style="color: #000000">).</span><span style="color: #001080">code</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>We convert the <code><span style="color: #001080">value</span></code> from the Yocto-JavaScript <code><span style="color: #001080">Value</span></code> type into the <code><span style="color: #001080">any</span></code> type to sidestep the TypeScript type checker. This conversion is safe because the Yocto-JavaScript <code><span style="color: #001080">Value</span></code> type is compatible with the parts of the Babel <code><span style="color: #267F99">Node</span></code> type that the <code><span style="color: #001080">babelGenerator</span><span style="color: #000000">.</span><span style="color: #795E26">default</span><span style="color: #000000">()</span></code> function needs.</p>
 <h3 id="programs-that-do-not-terminate"><span class="heading-counter">1.3.17</span> Programs That Do Not Terminate<code class="draft"> [](#programs-that-do-not-terminate)</code></h3>
 <figure>
@@ -3238,10 +3190,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <th align="left">Step&nbsp;1 Output</th>
 <td align="left">
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">{ </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">, </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {} }</span></code></pre></td></tr>
-          </tbody>
-        </table>
+          <tbody><tr><td><pre><code><span style="color: #000000">{ </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">, </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {} }</span></code></pre></td></tr>
+        </tbody></table>
 </td>
 </tr>
 <tr>
@@ -3254,15 +3204,13 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <th align="left">Step&nbsp;1 Output</th>
 <td align="left">
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`z</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">y`</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: { </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">, </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {} }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 </td>
 </tr>
 </tbody></table>
@@ -3295,8 +3243,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <h3 id="new-data-structures"><span class="heading-counter">1.4.2</span> New Data Structures<code class="draft"> [](#new-data-structures)</code></h3>
 <p>The following are the data structures used to represent environments and closures:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td><pre><code></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Closure</span><span style="color: #000000"> = {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #001080">function</span><span style="color: #000000">: </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span></code></pre></td></tr>
@@ -3304,26 +3251,22 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td><pre><code><span style="color: #000000">};</span></code></pre></td></tr>
 <tr><td><pre><code></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Value</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Implementation Details</strong></span></legend>
 <p>The <code><span style="color: #001080">MapDeepEqual</span></code> data structure is provided by a JavaScript package developed by the author called Collections Deep Equal&nbsp;[<a href="#collections-deep-equal">6</a>]. A <code><span style="color: #001080">MapDeepEqual</span></code> is similar to a <code><span style="color: #267F99">Map</span></code>, except that the keys are compared by value, not by reference, for example:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Map</span><span style="color: #000000">([[{ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> }, </span><span style="color: #A31515">"Leandro"</span><span style="color: #000000">]]).</span><span style="color: #795E26">get</span><span style="color: #000000">({ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> });</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">Map</span><span style="color: #000000">([[{ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> }, </span><span style="color: #A31515">"Leandro"</span><span style="color: #000000">]]).</span><span style="color: #795E26">get</span><span style="color: #000000">({ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> });</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">undefined</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">&gt; </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">([[{ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> }, </span><span style="color: #A31515">"Leandro"</span><span style="color: #000000">]]).</span><span style="color: #795E26">get</span><span style="color: #000000">({ </span><span style="color: #001080">age:</span><span style="color: #000000"> </span><span style="color: #098658">29</span><span style="color: #000000"> });</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #A31515">"Leandro"</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>The occurrences of <code><span style="color: #000000">{ </span><span style="color: #001080">age</span><span style="color: #000000">: </span><span style="color: #098658">29</span></code>} are objects with the same key and value, but they are not the same object.</p>
 </fieldset>
 <h3 id="adding-an-environment-to-the-runner"><span class="heading-counter">1.4.3</span> Adding an Environment to the Runner<code class="draft"> [](#adding-an-environment-to-the-runner)</code></h3>
 <p>The runner needs to maintain an environment, so we modify the implementation of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> from <a href="#the-entire-runner">§&nbsp;1.3.13</a> to introduce an auxiliary function called <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> that receives an <code><span style="color: #001080">environment</span></code> as an extra parameter:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">, </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">());</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000">: </span><span style="color: #267F99">Environment</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">switch</span><span style="color: #000000"> (</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">type</span><span style="color: #000000">) {</span></code></pre></td></tr>
@@ -3361,8 +3304,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>36</code></pre></td><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>37</code></pre></td><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>38</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>\begin{description}
 \item [Line 3:]</p>
 <p>We define the <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> auxiliary function that receives an <code><span style="color: #001080">environment</span></code> as an extra parameter.</p>
@@ -3390,12 +3332,10 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </figure>
 <p>When the interpreter encounters a function definition, it captures the current <code><span style="color: #001080">environment</span></code> in a closure:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"ArrowFunctionExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> { </span><span style="color: #001080">function:</span><span style="color: #000000"> </span><span style="color: #001080">expression</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000"> };</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="a-function-call"><span class="heading-counter">1.4.5</span> A Function Call<code class="draft"> [](#a-function-call)</code></h3>
 <figure>
 <p>\begin{tabular}{ll}
@@ -3414,8 +3354,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </figure>
 <p>First, we remove <code><span style="color: #795E26">substitute</span><span style="color: #000000">()</span></code>, which is the goal of Step&nbsp;1:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">params</span><span style="color: #000000">: [</span><span style="color: #001080">parameter</span><span style="color: #000000">],</span></code></pre></td></tr>
@@ -3423,12 +3362,10 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td><pre><code><span style="color: #000000">  } = </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000"> = </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">arguments</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">], </span><span style="color: #001080">environment</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000">);</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>Next, we fix the pattern that matches the result of the interpretation of the called function to take in account the closure:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">function</span><span style="color: #000000">: {</span></code></pre></td></tr>
@@ -3439,8 +3376,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td><pre><code><span style="color: #000000">  } = </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">callee</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">argument</span><span style="color: #000000"> = </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">arguments</span><span style="color: #000000">[</span><span style="color: #098658">0</span><span style="color: #000000">], </span><span style="color: #001080">environment</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">body</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000">);</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>Finally, we modify the recursive call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> that interprets the function body so that it receives a new augmented <code><span style="color: #001080">environment</span></code> including a mapping from the <code><span style="color: #001080">parameter</span></code> (for example, <code><span style="color: #001080">x</span></code>) to the <code><span style="color: #001080">argument</span></code> (for example, <svg xmlns:xlink="http://www.w3.org/1999/xlink" width="0.903ex" height="2.843ex" style="vertical-align: -0.838ex;" viewBox="0 -863.1 389 1223.9" role="img" focusable="false" xmlns="http://www.w3.org/2000/svg" aria-labelledby="MathJax-SVG-1-Title">
 <title id="MathJax-SVG-1-Title">\langle</title>
 <defs aria-hidden="true">
@@ -3451,8 +3387,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </g>
 </svg> js<code>(y =&gt; y)</code>, [] \rangle`):</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">function</span><span style="color: #000000">: {</span></code></pre></td></tr>
@@ -3466,8 +3401,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr class="highlighted-line"><td class="line-number"><pre><code>12</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">body</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>13</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">(</span><span style="color: #001080">environment</span><span style="color: #000000">).</span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, </span><span style="color: #001080">argument</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>14</code></pre></td><td><pre><code><span style="color: #000000">  );</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="name-reuse-1"><span class="heading-counter">1.4.6</span> Name Reuse<code class="draft"> [](#name-reuse-1)</code></h3>
 <figure>
 <p>\begin{tabular}{ll}
@@ -3502,8 +3436,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </figure>
 <p>When we encounter a variable reference, we look it up in the current environment:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">value</span><span style="color: #000000"> = </span><span style="color: #001080">environment</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">value</span><span style="color: #000000"> === </span><span style="color: #0000FF">undefined</span><span style="color: #000000">)</span></code></pre></td></tr>
@@ -3511,8 +3444,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">      </span><span style="color: #A31515">`Reference to undefined variable: </span><span style="color: #0000FF">${</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #0000FF">}</span><span style="color: #A31515">`</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    );</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">value</span><span style="color: #000000">;</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="a-function-body-is-evaluated-with-the-environment-in-its-closure"><span class="heading-counter">1.4.8</span> A Function Body Is Evaluated with the Environment in Its Closure<code class="draft"> [](#a-function-body-is-evaluated-with-the-environment-in-its-closure)</code></h3>
 <figure>
 <p>\begin{tabular}{ll}
@@ -3587,8 +3519,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </figure>
 <p>To implement this, we change the recursive call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code> that evaluates the function body so that it uses the environment coming from the closure (<code><span style="color: #001080">functionEnvironment</span></code>) instead of the current environment (<code><span style="color: #001080">environment</span></code>):</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">:</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">function</span><span style="color: #000000">: {</span></code></pre></td></tr>
@@ -3602,8 +3533,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">body</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr class="highlighted-line"><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">(</span><span style="color: #001080">functionEnvironment</span><span style="color: #000000">).</span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, </span><span style="color: #001080">argument</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  );</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
 <p>The principle of being able to reason about a function only by looking at its definition is something called <em>local reasoning</em> (see §&nbsp;\ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called <em>dynamic scoping</em>, because the <em>scope</em> of a variable (where a variable is defined) is <em>dynamic</em>, depending on where the function is called. The treatment given to the environment in this section is something called <em>static scoping</em> or <em>lexical scoping</em>, because the scope of a variable is determined before we start interpreting the program.</p>
@@ -3615,8 +3545,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <h3 id="the-entire-runner-1"><span class="heading-counter">1.4.9</span> The Entire Runner<code class="draft"> [](#the-entire-runner-1)</code></h3>
 <p>We completed the changes necessary to transform the <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> function from the substitution-based interpreter in Step&nbsp;0 into an environment-based interpreter:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Closure</span><span style="color: #000000"> = {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #001080">function</span><span style="color: #000000">: </span><span style="color: #267F99">ArrowFunctionExpression</span><span style="color: #000000">;</span></code></pre></td></tr>
@@ -3654,8 +3583,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>36</code></pre></td><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>37</code></pre></td><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>38</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
 <h3 id="operational-semantics"><span class="heading-counter">1.4.10</span> Operational Semantics<code class="draft"> [](#operational-semantics)</code></h3>
@@ -3728,8 +3656,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </svg> js<code>(z =&gt; x) ``, [ `` js</code>x <code>\mapsto \langle</code> js<code>(y =&gt; y)</code>, [] \rangle] \rangle`</p>
 </figure>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"function"</span><span style="color: #000000">: </span><span style="color: #A31515">"z =&gt; x"</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #A31515">"environment"</span><span style="color: #000000">: [</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">    [</span></code></pre></td></tr>
@@ -3741,12 +3668,10 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td><pre><code><span style="color: #000000">    ]</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  ]</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>The following is the modified implementation of <code><span style="color: #795E26">generate</span><span style="color: #000000">()</span></code>:</p>
 <table class="listing">
-          <tbody>
-            <tr class="highlighted-line"><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">any</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
+          <tbody><tr class="highlighted-line"><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">generate</span><span style="color: #000000">(</span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">any</span><span style="color: #000000">): </span><span style="color: #267F99">string</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #267F99">JSON</span><span style="color: #000000">.</span><span style="color: #795E26">stringify</span><span style="color: #000000">(</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">value</span><span style="color: #000000">,</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">    (</span><span style="color: #001080">key</span><span style="color: #000000">, </span><span style="color: #001080">value</span><span style="color: #000000">) </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span></code></pre></td></tr>
@@ -3763,8 +3688,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr class="highlighted-line"><td class="line-number"><pre><code>15</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #098658">2</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>16</code></pre></td><td><pre><code><span style="color: #000000">  );</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>17</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>\begin{description}
 \item [Line 1:]</p>
 <p>Change the input type from <code><span style="color: #001080">Value</span></code> to <code><span style="color: #001080">any</span></code>, because this implementation of <code><span style="color: #795E26">strinfigy</span><span style="color: #000000">()</span></code> supports any data structure, including the data structures we will define in later Steps.</p>
@@ -3985,27 +3909,23 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <h3 id="new-data-structures-1"><span class="heading-counter">1.5.2</span> New Data Structures<code class="draft"> [](#new-data-structures-1)</code></h3>
 <p>The following are the data structures used to represent environments, stores, and addresses:</p>
 <table class="listing">
-          <tbody>
-            <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Address</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
+          <tbody><tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Address</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
 <tr><td><pre><code></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Store</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Address</span><span style="color: #000000">, </span><span style="color: #267F99">Value</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
 <tr><td><pre><code></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Address</span><span style="color: #000000"> = </span><span style="color: #267F99">number</span><span style="color: #000000">;</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <h3 id="adding-a-store-to-the-runner"><span class="heading-counter">1.5.3</span> Adding a Store to the Runner<code class="draft"> [](#adding-a-store-to-the-runner)</code></h3>
 <p>We modify the implementation of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> from §&nbsp;\ref{Step 1: The Entire Runner} to introduce a <code><span style="color: #001080">store</span></code>:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): { </span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">Value</span><span style="color: #000000">; </span><span style="color: #001080">store</span><span style="color: #000000">: </span><span style="color: #267F99">Store</span><span style="color: #000000"> } {</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">run</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">): { </span><span style="color: #001080">value</span><span style="color: #000000">: </span><span style="color: #267F99">Value</span><span style="color: #000000">; </span><span style="color: #001080">store</span><span style="color: #000000">: </span><span style="color: #267F99">Store</span><span style="color: #000000"> } {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">store</span><span style="color: #000000">: </span><span style="color: #267F99">Store</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">();</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> { </span><span style="color: #001080">value:</span><span style="color: #000000"> </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">, </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">()), </span><span style="color: #001080">store</span><span style="color: #000000"> };</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">function</span><span style="color: #000000"> </span><span style="color: #795E26">step</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">: </span><span style="color: #267F99">Expression</span><span style="color: #000000">, </span><span style="color: #001080">environment</span><span style="color: #000000">: </span><span style="color: #267F99">Environment</span><span style="color: #000000">): </span><span style="color: #267F99">Value</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>5</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #008000">// ...</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>6</code></pre></td><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>7</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>\begin{description}
 \item [Lines 1 and 3:]</p>
 <p>The <code><span style="color: #001080">store</span></code> is returned because it is necessary to look up variable references in the <code><span style="color: #001080">value</span></code>.</p>
@@ -4030,8 +3950,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </figure>
 <p>In Step&nbsp;1, when we encounter a function call we extend the <code><span style="color: #001080">functionEnvironment</span></code> with a mapping from the <code><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span></code> to the <code><span style="color: #001080">argument</span></code> (see §&nbsp;\ref{A Function Call},&nbsp;\ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step&nbsp;2, we introduce the <code><span style="color: #001080">store</span></code> as a layer of indirection:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"CallExpression"</span><span style="color: #000000">: {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> {</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #001080">function</span><span style="color: #000000">: {</span></code></pre></td></tr>
@@ -4048,8 +3967,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr class="highlighted-line"><td class="line-number"><pre><code>15</code></pre></td><td><pre><code><span style="color: #000000">    </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">(</span><span style="color: #001080">functionEnvironment</span><span style="color: #000000">).</span><span style="color: #795E26">set</span><span style="color: #000000">(</span><span style="color: #001080">parameter</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">, </span><span style="color: #001080">address</span><span style="color: #000000">)</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>16</code></pre></td><td><pre><code><span style="color: #000000">  );</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>17</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>\begin{description}
 \item [Line 11:]</p>
 <p>Allocate an <code><span style="color: #001080">address</span></code>. We use the <code><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #001080">size</span></code> as the <code><span style="color: #001080">address</span></code> because as the <code><span style="color: #001080">store</span></code> grows this number changes, so it is guaranteed to be unique throughout the interpretation of a program.</p>
@@ -4076,8 +3994,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </figure>
 <p>In Step&nbsp;1 we retrieved values directly from the <code><span style="color: #001080">environment</span></code> (see §&nbsp;\ref{A Variable Reference}), but in Step&nbsp;2 we have to go through the <code><span style="color: #001080">store</span></code>:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #008000">// step()</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code><span style="color: #0000FF">case</span><span style="color: #000000"> </span><span style="color: #A31515">"Identifier"</span><span style="color: #000000">: {</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #001080">address</span><span style="color: #000000"> = </span><span style="color: #001080">environment</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #001080">expression</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">);</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">if</span><span style="color: #000000"> (</span><span style="color: #001080">address</span><span style="color: #000000"> === </span><span style="color: #0000FF">undefined</span><span style="color: #000000">)</span></code></pre></td></tr>
@@ -4086,8 +4003,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>7</code></pre></td><td><pre><code><span style="color: #000000">    );</span></code></pre></td></tr>
 <tr class="highlighted-line"><td class="line-number"><pre><code>8</code></pre></td><td><pre><code><span style="color: #000000">  </span><span style="color: #0000FF">return</span><span style="color: #000000"> </span><span style="color: #001080">store</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #001080">address</span><span style="color: #000000">)!;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>9</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <p>\begin{description}
 \item [Line 3:]</p>
 <p>Retrieve the <code><span style="color: #001080">address</span></code> from the <code><span style="color: #001080">environment</span></code>.</p>
@@ -4097,8 +4013,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <h3 id="the-entire-runner-2"><span class="heading-counter">1.5.6</span> The Entire Runner<code class="draft"> [](#the-entire-runner-2)</code></h3>
 <p>We completed the changes necessary to remove the circularity between closures and environments:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Address</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Environment</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Identifier</span><span style="color: #000000">[</span><span style="color: #A31515">"name"</span><span style="color: #000000">], </span><span style="color: #267F99">Address</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Store</span><span style="color: #000000"> = </span><span style="color: #267F99">MapDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Address</span><span style="color: #000000">, </span><span style="color: #267F99">Value</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code></code></pre></td></tr>
@@ -4139,8 +4054,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>39</code></pre></td><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>40</code></pre></td><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>41</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Advanced</strong></span></legend>
 <h3 id="operational-semantics-1"><span class="heading-counter">1.5.7</span> Operational Semantics<code class="draft"> [](#operational-semantics-1)</code></h3>
@@ -4327,8 +4241,7 @@ A = \lvert \sigma_a \rvert \
 <h3 id="the-entire-runner-3"><span class="heading-counter">1.6.1</span> The Entire Runner<code class="draft"> [](#the-entire-runner-3)</code></h3>
 <p>We completed the changes necessary to produce only finitely many addresses:</p>
 <table class="listing">
-          <tbody>
-            <tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">SetDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Closure</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
+          <tbody><tr><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">SetDeepEqual</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Closure</span><span style="color: #000000">&gt;;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>3</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Address</span><span style="color: #000000"> = </span><span style="color: #267F99">Identifier</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>4</code></pre></td><td><pre><code></code></pre></td></tr>
@@ -4372,8 +4285,7 @@ A = \lvert \sigma_a \rvert \
 <tr><td class="line-number"><pre><code>42</code></pre></td><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>43</code></pre></td><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>44</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
-          </tbody>
-        </table>
+        </tbody></table>
 <!--
 TODO: Some loss of precision. Now it’s an analyzer (of sorts).
 
