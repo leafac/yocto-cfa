@@ -28,12 +28,12 @@ type Identifier = {
 
 type Value = Closure;
 
+type Environment = MapDeepEqual<Identifier["name"], Value>;
+
 type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
 };
-
-type Environment = MapDeepEqual<Identifier["name"], Value>;
 
 function run(expression: Expression): Value {
   return step(expression, new MapDeepEqual());

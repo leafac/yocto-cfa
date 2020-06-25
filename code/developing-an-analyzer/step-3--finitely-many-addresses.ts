@@ -28,12 +28,12 @@ type Identifier = {
 
 type Value = SetDeepEqual<Closure>;
 
+type Environment = MapDeepEqual<Identifier["name"], Address>;
+
 type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
 };
-
-type Environment = MapDeepEqual<Identifier["name"], Address>;
 
 type Store = MapDeepEqual<Address, Value>;
 
