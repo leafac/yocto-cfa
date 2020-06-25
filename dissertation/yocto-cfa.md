@@ -1049,7 +1049,7 @@ Detecting non-termination in an interpreter without losing any information about
 
 The interpreter in Step 0 may not terminate for some programs, and preventing non-termination is one of the main issues we must address when developing an analyzer (see [](#programs-that-do-not-terminate)). The source of non-termination in Step 0 is substitution, which may produce infinitely many new expressions and cause the interpreter to loop forever. In Step 1, we modify the interpreter so that it does not perform substitution, and as a consequence it considers only the finitely many expressions found in the input program. The interpreter in Step 1 may still not terminate, but that is due to other sources of non-termination that will be addressed in subsequent Steps.
 
-### Avoiding Substitution by Introducing Environments and Closures
+### Avoiding Substitution by Introducing Environments
 
 When the interpreter from Step 0 encounters a function call, it produces a new expression by traversing the body of the called function and substituting the references to the parameter with the argument (see [](#substitution-in-function-definitions)), for example:
 
@@ -1062,61 +1062,60 @@ When the interpreter from Step 0 encounters a function call, it produces a new 
 
 </figure>
 
-The issue with this strategy is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), there is a possibility that the interpreter tries to produce infinitely many of these new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by interpreting function calls with a different strategy: instead of performing substitution, we maintain a map from variables to the values with which they would have been substituted, for example:
+The issue with this strategy for building an analyzer is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they would have been substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:
 
-<figure>
-
-<table>
-<tr>
-<th align="left">Example Program
-<td align="left">
-
-`` js`x => x ``
-
-<tr>
-<th align="left">Step 1 Output
-<td align="left">
-
-```json
-{ "function": `x => x`, "environment": {} }
-```
-
-<tr>
-<th align="left">Example Program
-<td align="left">
-
-`` js`(y => z => y)(x => x) ``
-
-<tr>
-<th align="left">Step 1 Output
-<td align="left">
-
-```json
-{
-  "function": `z => y`,
-  "environment": {
-    "y": { "function": `x => x`, "environment": {} }
-  }
-}
-```
-
-</table>
-
-</figure>
+|                     | Expression                     | Environment                  |
+| :------------------ | :----------------------------- | :--------------------------- |
+| **Example Program** | `` js`(y => z => y)(x => x) `` |                              |
+| **Step 1 Output**   | `` js`z => y ``                | `` json`{ "y": `x => x` } `` |
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-A map from variables to the values with which they would have been replaced (for example, `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]`) is something called an _environment_. A function along with an environment (for example, `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle`) is something called a *closure* [closures]().
+- **Environment:** A map from variables to the values with which they should be replaced, for example, `` json`{ "y": `x => x` } ``.
 
 </fieldset>
 
-In Step 1 we have a different notion of _value_: while in Step 0 the interpreter produced a _function_, now it produces a _closure_. It is possible to use the closure produced in Step 1 to recreate the function that would have been produced in Step 0 by substituting the variable references in the function body with the corresponding values from the environment found in the closure. We may do this to check that the outputs of the interpreters are equivalent, but in Step 1 we do not perform substitution in the regular course of interpretation; we add more mappings to the environment and look up variable references in the environment.
+The following is the data structure used to represent environments:
+
+```ts
+type Environment = MapDeepEqual<Identifier["name"], Value>;
+```
+
+<fieldset>
+<legend><strong>Implementation Details</strong></legend>
+
+The `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`MapDeepEqual `` is similar to a native JavaScript `` ts`Map `` [javascript-map](), but the keys are compared differently: on a `` ts`Map `` the keys are compared by whether they are the same reference to the same object, and on a `` ts`MapDeepEqual `` the keys are compared by whether they are objects with the same keys and values, for example:
+
+```ts
+> const anObject = { age: 29 }
+> const anotherObjectWithTheSameKeysAndValues = { age: 29 }
+> const aValue = "Leandro"
+> new Map().set(anObject, aValue)
+           .get(anotherObjectWithTheSameKeysAndValues)
+undefined
+> new MapDeepEqual().set(anObject, aValue)
+                    .get(anotherObjectWithTheSameKeysAndValues)
+"Leandro"
+```
+
+</fieldset>
+
+---
+
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
+- **Closure [closures]():** A function definition along with the environment under which it was defined, for example, `` json`{ "function": `x => x`, "environment": {} } ``.
+
+</fieldset>
+
+The notion of what constitutes a _value_ in Step 1 is different from that of Step 0: while in Step 0 the interpreter produced a _function_, now it produces a _closure_. This closure may be used to recreate the output of Step 0 by substituting the variable references in the function body with the corresponding values from the closure’s environment. We may do this to check that the outputs of the interpreters are equivalent.
 
 <fieldset>
 <legend><strong>Alternative Argument</strong></legend>
 
-Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which substitutions are delayed until they are needed.
+Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which the substitutions are _delayed_ until needed.
 
 </fieldset>
 
@@ -1131,25 +1130,7 @@ type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
 };
-
-type Environment = MapDeepEqual<Identifier["name"], Value>;
 ```
-
-<fieldset>
-<legend><strong>Implementation Details</strong></legend>
-
-The `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`MapDeepEqual `` is similar to a `` ts`Map ``, except that the keys are compared by value, not by reference, for example:
-
-```ts
-> new Map([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
-undefined
-> new MapDeepEqual([[{ age: 29 }, "Leandro"]]).get({ age: 29 });
-"Leandro"
-```
-
-The occurrences of `` ts`{ age: 29 ``} are objects with the same key and value, but they are not the same object.
-
-</fieldset>
 
 ### Adding an Environment to the Runner
 
@@ -1995,6 +1976,7 @@ TODO: Variations
 1. <span id="javascript-destructuring-assignment"></span> Mozilla. _Destructuring Assignment_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment>. Accessed 2020-01-27.
 1. <span id="javascript-eval"></span> Mozilla. `` js`eval() ``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval>. Accessed 2020-02-13.
 1. <span id="javascript-json-stringify"></span> Mozilla. `` js`JSON.stringify() ``. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify>. Accessed 2020-04-13.
+1. <span id="javascript-map"></span> Mozilla. Map. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map>. Accessed 2020-06-25.
 1. <span id="javascript-spread-syntax"></span> Mozilla. _Spread Syntax_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax>. Accessed 2020-02-03.
 1. <span id="javascript-template-literals"></span> Mozilla. _Template Literals_. <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals>. Accessed 2020-02-03.
 1. <span id="call-by-name-call-by-value-and-the-lambda-calculus"></span> Gordon Plotkin. _Call-By-Name, Call-By-Value and the `` math`\lambda ``-Calculus_. Theoretical Computer Science. 1975. <https://doi.org/10.1016/0304-3975(75)90017-1>.
