@@ -1,7 +1,7 @@
 import * as babelParser from "@babel/parser";
 import * as babelTypes from "@babel/types";
 import * as babelGenerator from "@babel/generator";
-import { MapDeepEqual, SetDeepEqual } from "collections-deep-equal";
+import { Map, Set } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
   return generate(run(parse(input)));
@@ -26,29 +26,29 @@ type Identifier = {
   name: string;
 };
 
-type Value = SetDeepEqual<Closure>;
+type Value = Set<Closure>;
 
-type Environment = MapDeepEqual<Identifier["name"], Address>;
+type Environment = Map<Identifier["name"], Address>;
 
 type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
 };
 
-type Store = MapDeepEqual<Address, Value>;
+type Store = Map<Address, Value>;
 
 type Address = Identifier;
 
 function run(expression: Expression): { value: Value; store: Store } {
-  const store: Store = new MapDeepEqual();
-  return { value: step(expression, new MapDeepEqual()), store };
+  const store: Store = new Map();
+  return { value: step(expression, new Map()), store };
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression": {
-        return new SetDeepEqual([{ function: expression, environment }]);
+        return new Set([{ function: expression, environment }]);
       }
       case "CallExpression": {
-        const value: Value = new SetDeepEqual();
+        const value: Value = new Set();
         for (const {
           function: {
             params: [parameter],
@@ -58,11 +58,11 @@ function run(expression: Expression): { value: Value; store: Store } {
         } of step(expression.callee, environment)) {
           const argument = step(expression.arguments[0], environment);
           const address = parameter;
-          store.merge(new MapDeepEqual([[address, argument]]));
+          store.merge(new Map([[address, argument]]));
           value.merge(
             step(
               body,
-              new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+              new Map(functionEnvironment).set(parameter.name, address)
             )
           );
         }

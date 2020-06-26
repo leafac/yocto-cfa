@@ -1,7 +1,7 @@
 import * as babelParser from "@babel/parser";
 import * as babelTypes from "@babel/types";
 import * as babelGenerator from "@babel/generator";
-import { MapDeepEqual } from "collections-deep-equal";
+import { Map } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
   return generate(run(parse(input)));
@@ -28,20 +28,20 @@ type Identifier = {
 
 type Value = Closure;
 
-type Environment = MapDeepEqual<Identifier["name"], Address>;
+type Environment = Map<Identifier["name"], Address>;
 
 type Closure = {
   function: ArrowFunctionExpression;
   environment: Environment;
 };
 
-type Store = MapDeepEqual<Address, Value>;
+type Store = Map<Address, Value>;
 
 type Address = number;
 
 function run(expression: Expression): { value: Value; store: Store } {
-  const store: Store = new MapDeepEqual();
-  return { value: step(expression, new MapDeepEqual()), store };
+  const store: Store = new Map();
+  return { value: step(expression, new Map()), store };
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression": {
@@ -60,7 +60,7 @@ function run(expression: Expression): { value: Value; store: Store } {
         store.set(address, argument);
         return step(
           body,
-          new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+          new Map(functionEnvironment).set(parameter.name, address)
         );
       }
       case "Identifier": {

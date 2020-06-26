@@ -1,7 +1,7 @@
 import * as babelParser from "@babel/parser";
 import * as babelTypes from "@babel/types";
 import * as babelGenerator from "@babel/generator";
-import { MapDeepEqual } from "collections-deep-equal";
+import { Map } from "collections-deep-equal";
 
 export function evaluate(input: string): string {
   return generate(run(parse(input)));
@@ -28,7 +28,7 @@ type Identifier = {
 
 type Value = Closure;
 
-type Environment = MapDeepEqual<Identifier["name"], Value>;
+type Environment = Map<Identifier["name"], Value>;
 
 type Closure = {
   function: ArrowFunctionExpression;
@@ -36,7 +36,7 @@ type Closure = {
 };
 
 function run(expression: Expression): Value {
-  return step(expression, new MapDeepEqual());
+  return step(expression, new Map());
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
@@ -52,7 +52,7 @@ function run(expression: Expression): Value {
         const argument = step(expression.arguments[0], environment);
         return step(
           body,
-          new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
+          new Map(functionEnvironment).set(parameter.name, argument)
         );
       case "Identifier":
         const value = environment.get(expression.name);
