@@ -1062,12 +1062,12 @@ When the interpreter from Step 0 encounters a function call, it produces a new 
 
 </figure>
 
-The issue with this strategy for building an analyzer is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they would have been substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:
+The issue with this strategy is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they would have been substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:
 
-|                     | Expression                     | Environment                  |
-| :------------------ | :----------------------------- | :--------------------------- |
-| **Example Program** | `` js`(y => z => y)(x => x) `` |                              |
-| **Step 1 Output**   | `` js`z => y ``                | `` json`{ "y": `x => x` } `` |
+|                     |                                                                          |
+| :------------------ | :----------------------------------------------------------------------- |
+| **Example Program** | `` js`(y => z => y)(x => x) ``                                           |
+| **Step 1 Output**   | Expression: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -1079,66 +1079,16 @@ The issue with this strategy for building an analyzer is that the expression `` 
 The following is the data structure used to represent environments:
 
 ```ts
-type Environment = MapDeepEqual<Identifier["name"], Value>;
+type Environment = Map<Identifier["name"], Value>;
 ```
 
-<fieldset>
-<legend><strong>Implementation Details</strong></legend>
-
-The `` ts`MapDeepEqual `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`MapDeepEqual `` is similar to a native JavaScript `` ts`Map `` [javascript-map](), but the keys are compared differently: on a `` ts`Map `` the keys are compared by whether they are the same reference to the same object, and on a `` ts`MapDeepEqual `` the keys are compared by whether they are objects with the same keys and values, for example:
-
-```ts
-> const anObject = { age: 29 }
-> const anotherObjectWithTheSameKeysAndValues = { age: 29 }
-> const aValue = "Leandro"
-> new Map().set(anObject, aValue)
-           .get(anotherObjectWithTheSameKeysAndValues)
-undefined
-> new MapDeepEqual().set(anObject, aValue)
-                    .get(anotherObjectWithTheSameKeysAndValues)
-"Leandro"
-```
-
-</fieldset>
-
----
-
-<fieldset>
-<legend><strong>Technical Terms</strong></legend>
-
-- **Closure [closures]():** A function definition along with the environment under which it was defined, for example, `` json`{ "function": `x => x`, "environment": {} } ``.
-
-</fieldset>
-
-The notion of what constitutes a _value_ in Step 1 is different from that of Step 0: while in Step 0 the interpreter produced a _function_, now it produces a _closure_. This closure may be used to recreate the output of Step 0 by substituting the variable references in the function body with the corresponding values from the closure’s environment. We may do this to check that the outputs of the interpreters are equivalent.
-
-<fieldset>
-<legend><strong>Alternative Argument</strong></legend>
-
-Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which the substitutions are _delayed_ until needed.
-
-</fieldset>
-
-### New Data Structures
-
-The following are the data structures used to represent environments and closures:
-
-```ts
-type Value = Closure;
-
-type Closure = {
-  function: ArrowFunctionExpression;
-  environment: Environment;
-};
-```
-
-### Adding an Environment to the Runner
+### Setting up an Environment on the Runner
 
 The runner needs to maintain an environment, so we modify the implementation of `` ts`run() `` from [](#the-entire-runner) to introduce an auxiliary function called `` ts`step() `` that receives an `` ts`environment `` as an extra parameter:
 
 ```ts{number}{2-3,11-13}
 function run(expression: Expression): Value {
-  return step(expression, new MapDeepEqual());
+  return step(expression, new Map());
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
@@ -1177,21 +1127,187 @@ function run(expression: Expression): Value {
 }
 ```
 
-\begin{description}
-\item [Line 3:]
+- **Line 3:** We define the `` ts`step() `` auxiliary function that receives an `` ts`environment `` as an extra parameter.
+- **Line 2:** The `` ts`environment `` starts empty.
+- **Lines 11–13:** The recursive calls to `` ts`run() `` are changed to recursive calls to `` ts`step() `` and the `` ts`environment `` is propagated.
 
-We define the `` ts`step() `` auxiliary function that receives an `` ts`environment `` as an extra parameter.
+With these modifications the environment is available to the runner, but it is not used for anything yet; it is just propagated through the recursive calls but remains empty and is never looked up.
 
-\item [Line 2:]
+### Using the Environment
 
-The `` ts`environment `` starts empty.
+<figure>
 
-\item [Lines 11–13:]
+|      Example Program      | Current Output  | Expected Output |
+| :-----------------------: | :-------------: | :-------------: |
+| `` js`(y => y)(x => x) `` | `` js`x => x `` | `` js`x => x `` |
 
-The recursive calls to `` ts`run() `` are changed to recursive calls to `` ts`step() `` and the `` ts`environment `` is propagated.
-\end{description}
+</figure>
 
-The listing above does not compile yet because we are not producing closures. In the following sections we fix this by considering how to manage the `` ts`environment `` for each type of `` ts`expression ``.
+In [](#setting-up-an-environment-on-the-runner) we setup the environment on the runner, but did not use it for anything. We now modify the runner to use the environment without changing the output of the interpreter (see example above); the modifications come in three parts:
+
+- **Part 1:** When encountering a function call, add to the environment a mapping from the parameter to the argument:
+
+```ts{13-16}
+function run(expression: Expression): Value {
+  return step(expression, new Map());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return expression;
+      case "CallExpression":
+        const {
+          params: [parameter],
+          body,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(
+          substitute(body),
+          new Map(environment).set(parameter.name, argument)
+        );
+        function substitute(expression: Expression): Expression {
+          switch (expression.type) {
+            case "ArrowFunctionExpression":
+              if (expression.params[0].name === parameter.name)
+                return expression;
+              return {
+                ...expression,
+                body: substitute(expression.body),
+              };
+            case "CallExpression":
+              return {
+                ...expression,
+                callee: substitute(expression.callee),
+                arguments: [substitute(expression.arguments[0])],
+              };
+            case "Identifier":
+              if (expression.name !== parameter.name) return expression;
+              return argument;
+          }
+        }
+      case "Identifier":
+        throw new Error(`Reference to undefined variable: ${expression.name}`);
+    }
+  }
+}
+```
+
+- **Part 2:** When encountering a variable reference, look it up on the environment:
+
+```ts{38-43}
+function run(expression: Expression): Value {
+  return step(expression, new Map());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return expression;
+      case "CallExpression":
+        const {
+          params: [parameter],
+          body,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(
+          substitute(body),
+          new Map(environment).set(parameter.name, argument)
+        );
+        function substitute(expression: Expression): Expression {
+          switch (expression.type) {
+            case "ArrowFunctionExpression":
+              if (expression.params[0].name === parameter.name)
+                return expression;
+              return {
+                ...expression,
+                body: substitute(expression.body),
+              };
+            case "CallExpression":
+              return {
+                ...expression,
+                callee: substitute(expression.callee),
+                arguments: [substitute(expression.arguments[0])],
+              };
+            case "Identifier":
+              if (expression.name !== parameter.name) return expression;
+              return argument;
+          }
+        }
+      case "Identifier":
+        const value = environment.get(expression.name);
+        if (value === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return value;
+    }
+  }
+}
+```
+
+- **Part 3:** Remove substitution, which is no longer necessary:
+
+```ts{13}
+function run(expression: Expression): Value {
+  return step(expression, new Map());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return expression;
+      case "CallExpression":
+        const {
+          params: [parameter],
+          body,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(body, new Map(environment).set(parameter.name, argument));
+      case "Identifier":
+        const value = environment.get(expression.name);
+        if (value === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return value;
+    }
+  }
+}
+```
+
+---
+
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
+
+- **Closure [closures]():** A function definition along with the environment under which it was defined, for example, `` json`{ "function": `x => x`, "environment": {} } ``.
+
+</fieldset>
+
+The notion of what constitutes a _value_ in Step 1 is different from that of Step 0: while in Step 0 the interpreter produced a _function_, now it produces a _closure_. This closure may be used to recreate the output of Step 0 by substituting the variable references in the function body with the corresponding values from the closure’s environment. We may do this to check that the outputs of the interpreters are equivalent.
+
+<fieldset>
+<legend><strong>Alternative Argument</strong></legend>
+
+Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which the substitutions are _delayed_ until needed.
+
+</fieldset>
+
+<fieldset>
+<legend><strong>Implementation Details</strong></legend>
+
+The `` ts`Map `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`Map `` is similar to a native JavaScript `` ts`Map `` [javascript-map](), but the keys are compared differently: on a `` ts`Map `` the keys are compared by whether they are the same reference to the same object, and on a `` ts`Map `` the keys are compared by whether they are objects with the same keys and values, for example:
+
+```ts
+> const anObject = { age: 29 }
+> const anotherObjectWithTheSameKeysAndValues = { age: 29 }
+> const aValue = "Leandro"
+> new Map().set(anObject, aValue)
+           .get(anotherObjectWithTheSameKeysAndValues)
+undefined
+> new Map().set(anObject, aValue)
+                    .get(anotherObjectWithTheSameKeysAndValues)
+"Leandro"
+```
+
+</fieldset>
+
+---
 
 ### A Function Definition
 
@@ -1269,7 +1385,7 @@ case "CallExpression":
   const argument = step(expression.arguments[0], environment);
   return step(
     body,
-    new MapDeepEqual(environment).set(parameter.name, argument)
+    new Map(environment).set(parameter.name, argument)
   );
 ```
 
@@ -1379,7 +1495,7 @@ case "CallExpression":
   const argument = step(expression.arguments[0], environment);
   return step(
     body,
-    new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
+    new Map(functionEnvironment).set(parameter.name, argument)
   );
 ```
 
@@ -1409,10 +1525,10 @@ type Closure = {
   environment: Environment;
 };
 
-type Environment = MapDeepEqual<Identifier["name"], Value>;
+type Environment = Map<Identifier["name"], Value>;
 
 function run(expression: Expression): Value {
-  return step(expression, new MapDeepEqual());
+  return step(expression, new Map());
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression":
@@ -1428,7 +1544,7 @@ function run(expression: Expression): Value {
         const argument = step(expression.arguments[0], environment);
         return step(
           body,
-          new MapDeepEqual(functionEnvironment).set(parameter.name, argument)
+          new Map(functionEnvironment).set(parameter.name, argument)
         );
       case "Identifier":
         const value = environment.get(expression.name);
@@ -1650,9 +1766,9 @@ The technique used in Step 2 is related to the run-time environments that are t
 The following are the data structures used to represent environments, stores, and addresses:
 
 ```ts
-type Environment = MapDeepEqual<Identifier["name"], Address>;
+type Environment = Map<Identifier["name"], Address>;
 
-type Store = MapDeepEqual<Address, Value>;
+type Store = Map<Address, Value>;
 
 type Address = number;
 ```
@@ -1663,8 +1779,8 @@ We modify the implementation of `` ts`run() `` from § \ref{Step 1: The Entire 
 
 ```ts{number}
 function run(expression: Expression): { value: Value; store: Store } {
-  const store: Store = new MapDeepEqual();
-  return { value: step(expression, new MapDeepEqual()), store };
+  const store: Store = new Map();
+  return { value: step(expression, new Map()), store };
   function step(expression: Expression, environment: Environment): Value {
     // ...
   }
@@ -1710,7 +1826,7 @@ case "CallExpression": {
   store.set(address, argument);
   return step(
     body,
-    new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+    new Map(functionEnvironment).set(parameter.name, address)
   );
 }
 ```
@@ -1770,15 +1886,15 @@ Retrieve the `` ts`value `` from the `` ts`store `` at the given `` ts`address `
 We completed the changes necessary to remove the circularity between closures and environments:
 
 ```ts{number}
-type Environment = MapDeepEqual<Identifier["name"], Address>;
+type Environment = Map<Identifier["name"], Address>;
 
-type Store = MapDeepEqual<Address, Value>;
+type Store = Map<Address, Value>;
 
 type Address = number;
 
 function run(expression: Expression): { value: Value; store: Store } {
-  const store: Store = new MapDeepEqual();
-  return { value: step(expression, new MapDeepEqual()), store };
+  const store: Store = new Map();
+  return { value: step(expression, new Map()), store };
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression": {
@@ -1797,7 +1913,7 @@ function run(expression: Expression): { value: Value; store: Store } {
         store.set(address, argument);
         return step(
           body,
-          new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+          new Map(functionEnvironment).set(parameter.name, address)
         );
       }
       case "Identifier": {
@@ -1881,20 +1997,20 @@ We address this issue in Step 3.
 We completed the changes necessary to produce only finitely many addresses:
 
 ```ts{number}
-type Value = SetDeepEqual<Closure>;
+type Value = Set<Closure>;
 
 type Address = Identifier;
 
 function run(expression: Expression): { value: Value; store: Store } {
-  const store: Store = new MapDeepEqual();
-  return { value: step(expression, new MapDeepEqual()), store };
+  const store: Store = new Map();
+  return { value: step(expression, new Map()), store };
   function step(expression: Expression, environment: Environment): Value {
     switch (expression.type) {
       case "ArrowFunctionExpression": {
-        return new SetDeepEqual([{ function: expression, environment }]);
+        return new Set([{ function: expression, environment }]);
       }
       case "CallExpression": {
-        const value: Value = new SetDeepEqual();
+        const value: Value = new Set();
         for (const {
           function: {
             params: [parameter],
@@ -1904,11 +2020,11 @@ function run(expression: Expression): { value: Value; store: Store } {
         } of step(expression.callee, environment)) {
           const argument = step(expression.arguments[0], environment);
           const address = parameter;
-          store.merge(new MapDeepEqual([[address, argument]]));
+          store.merge(new Map([[address, argument]]));
           value.merge(
             step(
               body,
-              new MapDeepEqual(functionEnvironment).set(parameter.name, address)
+              new Map(functionEnvironment).set(parameter.name, address)
             )
           );
         }
