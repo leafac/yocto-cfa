@@ -1145,7 +1145,7 @@ With these modifications the environment is available to the runner, but it is n
 
 In [](#setting-up-an-environment-on-the-runner) we setup the environment on the runner, but did not use it for anything. We now modify the runner to use the environment:
 
-```ts{13,15-20}{number}
+```ts{number}{13,15-20}
 function run(expression: Expression): Value {
   return step(expression, new Map());
   function step(expression: Expression, environment: Environment): Value {
@@ -1198,7 +1198,7 @@ With the modifications introduced in [](#using-the-environment) the interpreter 
 
 </fieldset>
 
-```ts
+```ts{number}{1,3-6,13,16,19}
 type Value = Closure;
 
 type Closure = {
@@ -1233,155 +1233,16 @@ function run(expression: Expression): Value {
 }
 ```
 
----
+- **Line 1:** In an environment-based interpreter a value is not only a function, but also the environment containing the substitutions that have not ocurred yet.
+- **Lines 3–6:** The definition of the data structure for closures.
+- **Line 13:** When encountering a function definition, create a closure with the function and the current `` ts`environment ``.
+- **Lines 16 and 19:** Capture the function part of the closure returned by the recursive call to `` ts`step() ``.
 
-The notion of what constitutes a _value_ in Step 1 is different from that of Step 0: while in Step 0 the interpreter produced a _function_, now it produces a _closure_. This closure may be used to recreate the output of Step 0 by substituting the variable references in the function body with the corresponding values from the closure’s environment. We may do this to check that the outputs of the interpreters are equivalent.
-
-<fieldset>
-<legend><strong>Alternative Argument</strong></legend>
-
-Another way to reason about an environment-based interpreter is that it is a substitution-based interpreter in which the substitutions are _delayed_ until needed.
-
-</fieldset>
-
-<fieldset>
-<legend><strong>Implementation Details</strong></legend>
-
-The `` ts`Map `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`Map `` is similar to a native JavaScript `` ts`Map `` [javascript-map](), but the keys are compared differently: on a `` ts`Map `` the keys are compared by whether they are the same reference to the same object, and on a `` ts`Map `` the keys are compared by whether they are objects with the same keys and values, for example:
-
-```ts
-> const anObject = { age: 29 }
-> const anotherObjectWithTheSameKeysAndValues = { age: 29 }
-> const aValue = "Leandro"
-> new Map().set(anObject, aValue)
-           .get(anotherObjectWithTheSameKeysAndValues)
-undefined
-> new Map().set(anObject, aValue)
-                    .get(anotherObjectWithTheSameKeysAndValues)
-"Leandro"
-```
-
-</fieldset>
-
----
-
-### A Function Definition
-
-<figure>
-
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`x => x `` \\
-\textbf{Current Output} & — \\
-\textbf{Expected Output} & `` math`\langle `` js`(x => x)`, [] \rangle` \\
-\end{tabular}
-
-</figure>
-
-When the interpreter encounters a function definition, it captures the current `` ts`environment `` in a closure:
-
-```ts
-// step()
-case "ArrowFunctionExpression":
-  return { function: expression, environment };
-```
-
-### A Function Call
-
-<figure>
-
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => z => x)(y => y) `` \\
-\textbf{Current Output} & — \\
-\textbf{Expected Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
-\end{tabular}
-
-</figure>
-
-First, we remove `` ts`substitute() ``, which is the goal of Step 1:
-
-```ts{8}
-// step()
-case "CallExpression":
-  const {
-    params: [parameter],
-    body,
-  } = step(expression.callee, environment);
-  const argument = step(expression.arguments[0], environment);
-  return step(body, environment);
-```
-
-Next, we fix the pattern that matches the result of the interpretation of the called function to take in account the closure:
-
-```ts{4,7,8}
-// step()
-case "CallExpression":
-  const {
-    function: {
-      params: [parameter],
-      body,
-    },
-    environment: functionEnvironment,
-  } = step(expression.callee, environment);
-  const argument = step(expression.arguments[0], environment);
-  return step(body, environment);
-```
-
-Finally, we modify the recursive call to `` ts`step() `` that interprets the function body so that it receives a new augmented `` ts`environment `` including a mapping from the `` ts`parameter `` (for example, `` js`x ``) to the `` ts`argument `` (for example, `` math`\langle `` js`(y => y)`, [] \rangle`):
-
-```ts{number}{11-14}
-// step()
-case "CallExpression":
-  const {
-    function: {
-      params: [parameter],
-      body,
-    },
-    environment: functionEnvironment,
-  } = step(expression.callee, environment);
-  const argument = step(expression.arguments[0], environment);
-  return step(
-    body,
-    new Map(environment).set(parameter.name, argument)
-  );
-```
-
-### Name Reuse
-
-<figure>
-
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(x => x => z => x)(a => a)(y => y) `` \\
-\textbf{Current Output} & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle `` js`(z => x) ``, [`` js`x `` \mapsto \langle `` js`(y => y) ``, [] \rangle] \rangle `` \\
-\end{tabular}
-
-</figure>
-
-If a name is reused (for example, `` js`x `` in the example program above), then the second time it is encountered by `` ts`step() `` it is overwritten in the `` ts`environment `` (see the call to `` ts`set() `` in line 13 of § \ref{A Function Call}, which overwrites an existing map key). This causes the variable reference to `` js`x `` to refer to the second (inner) `` ts`x ``, which is the expected behavior (it is what we called Option 2 in § \ref{Step 0: Name Reuse}).
-
-### A Variable Reference
-
-<figure>
-
-\begin{tabular}{ll}
-\textbf{Example Program} & `` js`(y => y)(x => x) `` \\
-\textbf{Current Output} & — \\
-\textbf{Expected Output} & `` math`\langle `` js` (y => y) ``, [] \rangle `` \\ \\ \textbf{Example Program} & `` js `(x => y)(y => y) `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` text` Reference to undefined variable: y `` \\ \\ \textbf{Example Program} & `` js `x => y `\\ \textbf{Current Output} & — \\ \textbf{Expected Output} &` math` \langle `` js `(x => y) `, [] \rangle` \\
-\end{tabular}
-
-</figure>
-
-When we encounter a variable reference, we look it up in the current environment:
-
-```ts{3-8}
-// step()
-case "Identifier":
-  const value = environment.get(expression.name);
-  if (value === undefined)
-    throw new Error(
-      `Reference to undefined variable: ${expression.name}`
-    );
-  return value;
-```
+<!-- TODO:
+Subtle points:
+- Use the environment to recreate the original output from Step 1.
+- Name reuse.
+-->
 
 ### A Function Body Is Evaluated with the Environment in Its Closure
 
@@ -1621,6 +1482,29 @@ Format the output with indentation of two spaces.
 \end{description}
 
 This implementation of `` ts`generate() `` supports not only closures but any data structure (because of `` ts`JSON.stringify() ``), so it will remain the same in the following Steps.
+
+---
+
+<fieldset>
+<legend><strong>Implementation Details</strong></legend>
+
+The `` ts`Map `` data structure is provided by a JavaScript package developed by the author called Collections Deep Equal [collections-deep-equal](). A `` ts`Map `` is similar to a native JavaScript `` ts`Map `` [javascript-map](), but the keys are compared differently: on a `` ts`Map `` the keys are compared by whether they are the same reference to the same object, and on a `` ts`Map `` the keys are compared by whether they are objects with the same keys and values, for example:
+
+```ts
+> const anObject = { age: 29 }
+> const anotherObjectWithTheSameKeysAndValues = { age: 29 }
+> const aValue = "Leandro"
+> new Map().set(anObject, aValue)
+           .get(anotherObjectWithTheSameKeysAndValues)
+undefined
+> new Map().set(anObject, aValue)
+                    .get(anotherObjectWithTheSameKeysAndValues)
+"Leandro"
+```
+
+</fieldset>
+
+---
 
 ### Programs That Do Not Terminate
 
