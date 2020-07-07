@@ -1062,17 +1062,17 @@ When the interpreter from Step 0 encounters a function call, it produces a new 
 
 </figure>
 
-The issue with this strategy is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they would have been substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:
+The issue with this strategy is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they should be substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:
 
-|                     |                                                                          |
-| :------------------ | :----------------------------------------------------------------------- |
-| **Example Program** | `` js`(y => z => y)(x => x) ``                                           |
-| **Step 1 Output**   | Expression: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
+|                     |                                                                        |
+| :------------------ | :--------------------------------------------------------------------- |
+| **Example Program** | `` js`(y => z => y)(x => x) ``                                         |
+| **Step 1 Output**   | Function: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Environment:** A map from variables to the values with which they should be replaced, for example, `` json`{ "y": `x => x` } ``.
+- **Environment:** A map from variables to the values with which they should be substituted, for example, `` json`{ "y": `x => x` } ``.
 
 </fieldset>
 
@@ -1131,7 +1131,7 @@ function run(expression: Expression): Value {
 - **Line 2:** The `` ts`environment `` starts empty.
 - **Lines 11–13:** The recursive calls to `` ts`run() `` are changed to recursive calls to `` ts`step() `` and the `` ts`environment `` is propagated.
 
-With these modifications the environment is available to the runner, but it is not used for anything yet; it is just propagated through the recursive calls but remains empty and is never looked up.
+With these modifications the environment is available to the runner, but it is not used for anything yet; it is propagated through the recursive calls but remains empty and is never looked up.
 
 ### Using the Environment
 
@@ -1143,108 +1143,9 @@ With these modifications the environment is available to the runner, but it is n
 
 </figure>
 
-In [](#setting-up-an-environment-on-the-runner) we setup the environment on the runner, but did not use it for anything. We now modify the runner to use the environment without changing the output of the interpreter (see example above); the modifications come in three parts:
+In [](#setting-up-an-environment-on-the-runner) we setup the environment on the runner, but did not use it for anything. We now modify the runner to use the environment:
 
-- **Part 1:** When encountering a function call, add to the environment a mapping from the parameter to the argument:
-
-```ts{13-16}
-function run(expression: Expression): Value {
-  return step(expression, new Map());
-  function step(expression: Expression, environment: Environment): Value {
-    switch (expression.type) {
-      case "ArrowFunctionExpression":
-        return expression;
-      case "CallExpression":
-        const {
-          params: [parameter],
-          body,
-        } = step(expression.callee, environment);
-        const argument = step(expression.arguments[0], environment);
-        return step(
-          substitute(body),
-          new Map(environment).set(parameter.name, argument)
-        );
-        function substitute(expression: Expression): Expression {
-          switch (expression.type) {
-            case "ArrowFunctionExpression":
-              if (expression.params[0].name === parameter.name)
-                return expression;
-              return {
-                ...expression,
-                body: substitute(expression.body),
-              };
-            case "CallExpression":
-              return {
-                ...expression,
-                callee: substitute(expression.callee),
-                arguments: [substitute(expression.arguments[0])],
-              };
-            case "Identifier":
-              if (expression.name !== parameter.name) return expression;
-              return argument;
-          }
-        }
-      case "Identifier":
-        throw new Error(`Reference to undefined variable: ${expression.name}`);
-    }
-  }
-}
-```
-
-- **Part 2:** When encountering a variable reference, look it up on the environment:
-
-```ts{38-43}
-function run(expression: Expression): Value {
-  return step(expression, new Map());
-  function step(expression: Expression, environment: Environment): Value {
-    switch (expression.type) {
-      case "ArrowFunctionExpression":
-        return expression;
-      case "CallExpression":
-        const {
-          params: [parameter],
-          body,
-        } = step(expression.callee, environment);
-        const argument = step(expression.arguments[0], environment);
-        return step(
-          substitute(body),
-          new Map(environment).set(parameter.name, argument)
-        );
-        function substitute(expression: Expression): Expression {
-          switch (expression.type) {
-            case "ArrowFunctionExpression":
-              if (expression.params[0].name === parameter.name)
-                return expression;
-              return {
-                ...expression,
-                body: substitute(expression.body),
-              };
-            case "CallExpression":
-              return {
-                ...expression,
-                callee: substitute(expression.callee),
-                arguments: [substitute(expression.arguments[0])],
-              };
-            case "Identifier":
-              if (expression.name !== parameter.name) return expression;
-              return argument;
-          }
-        }
-      case "Identifier":
-        const value = environment.get(expression.name);
-        if (value === undefined)
-          throw new Error(
-            `Reference to undefined variable: ${expression.name}`
-          );
-        return value;
-    }
-  }
-}
-```
-
-- **Part 3:** Remove substitution, which is no longer necessary:
-
-```ts{13}
+```ts{13,15-20}{number}
 function run(expression: Expression): Value {
   return step(expression, new Map());
   function step(expression: Expression, environment: Environment): Value {
@@ -1270,14 +1171,69 @@ function run(expression: Expression): Value {
 }
 ```
 
----
+- **Line 13:** Remove substitution. Instead, when encountering a function call, add to the environment a mapping from the parameter to the argument.
+- **Lines 15–18:** When encountering a variable reference, look it up on the environment.
+
+### Introducing Closures
+
+|                     |                                                                        |
+| ------------------: | :--------------------------------------------------------------------- |
+| **Example Program** | `` js`(y => z => y)(x => x) ``                                         |
+|  **Current Output** | `` js`z => y ``                                                        |
+| **Expected Output** | Function: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
+
+With the modifications introduced in [](#using-the-environment) the interpreter returns a function in which substitutions have not occurred yet, and to make sense of this function we need the environment to be returned as well:
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Closure [closures]():** A function definition along with the environment under which it was defined, for example, `` json`{ "function": `x => x`, "environment": {} } ``.
+- **Closure [closures]():** A data structure containing a function and an environment, for example:
+
+  ```json
+  {
+    "function": `z => y`,
+    "environment": { "y": `x => x` }
+  }
+  ```
 
 </fieldset>
+
+```ts
+type Value = Closure;
+
+type Closure = {
+  function: ArrowFunctionExpression;
+  environment: Environment;
+};
+
+function run(expression: Expression): Value {
+  return step(expression, new Map());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return { function: expression, environment };
+      case "CallExpression":
+        const {
+          function: {
+            params: [parameter],
+            body,
+          },
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(body, new Map(environment).set(parameter.name, argument));
+      case "Identifier":
+        const value = environment.get(expression.name);
+        if (value === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return value;
+    }
+  }
+}
+```
+
+---
 
 The notion of what constitutes a _value_ in Step 1 is different from that of Step 0: while in Step 0 the interpreter produced a _function_, now it produces a _closure_. This closure may be used to recreate the output of Step 0 by substituting the variable references in the function body with the corresponding values from the closure’s environment. We may do this to check that the outputs of the interpreters are equivalent.
 

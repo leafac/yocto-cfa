@@ -55,6 +55,19 @@ h1 {
   margin-right: 0.5em;
 }
 
+figure,
+.listing {
+  margin: 1.12em 0;
+}
+
+figure {
+  text-align: center;
+}
+
+figure > table {
+  margin: 0 auto;
+}
+
 pre {
   font-size: 10pt;
   line-height: 1.5;
@@ -77,15 +90,6 @@ pre {
 
 .listing .highlighted-line {
   background-color: #e0ffff;
-}
-
-figure {
-  text-align: center;
-  margin: 1.12em 0;
-}
-
-figure > table {
-  margin: 0 auto;
 }
 
 table {
