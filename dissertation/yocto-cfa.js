@@ -99,7 +99,12 @@ const GitHubSlugger = require("github-slugger");
         <table class="listing">
           ${highlightedCode.innerHTML
             .split("\n")
-            .map((line) => `<tr><td><pre><code>${line}</code></pre></td></tr>`)
+            .map(
+              (line) =>
+                `<tr><td><pre><code>${
+                  line === "" ? " " : line
+                }</code></pre></td></tr>`
+            )
             .join("\n")}
         </table>
     `
