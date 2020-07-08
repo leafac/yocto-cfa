@@ -1171,10 +1171,12 @@ function run(expression: Expression): Value {
 }
 ```
 
-- **Line 13:** Remove substitution. Instead, when encountering a function call, add to the environment a mapping from the parameter to the argument.
+- **Line 13:** Remove substitution. Instead, when encountering a function call, add to the environment a mapping from the parameter to the argument. If a variable name is reused, then `` ts`set() `` overwrites the existing mapping with the new one, which has the effect of making a variable reference refer to the closest definition (what we called Option 2 in [](#name-reuse)).
 - **Lines 15–18:** When encountering a variable reference, look it up on the environment.
 
 ### Introducing Closures
+
+---
 
 |                     |                                                                        |
 | ------------------: | :--------------------------------------------------------------------- |
@@ -1182,7 +1184,9 @@ function run(expression: Expression): Value {
 |  **Current Output** | `` js`z => y ``                                                        |
 | **Expected Output** | Function: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
 
-With the modifications introduced in [](#using-the-environment) the interpreter returns a function in which substitutions have not occurred yet, and to make sense of this function we need the environment to be returned as well:
+With the modifications introduced in [](#using-the-environment) the interpreter returns a function in which substitutions have not occurred yet. In some cases, for example the program in [](#using-the-environment), this function makes sense on its own; but in other cases, for example the program above, we need the environment to be returned as well to be able to answer questions such as “what does `` js`y `` stand for in `` js`z => y ``?”
+
+With a function and an environment we may recreate the results of Step 0.
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -1197,6 +1201,8 @@ With the modifications introduced in [](#using-the-environment) the interpreter 
   ```
 
 </fieldset>
+
+We modify the interpreter to return closures instead of functions:
 
 ```ts{number}{1,3-6,13,16,19}
 type Value = Closure;
@@ -1233,16 +1239,10 @@ function run(expression: Expression): Value {
 }
 ```
 
-- **Line 1:** In an environment-based interpreter a value is not only a function, but also the environment containing the substitutions that have not ocurred yet.
+- **Line 1:** In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not ocurred yet.
 - **Lines 3–6:** The definition of the data structure for closures.
 - **Line 13:** When encountering a function definition, create a closure with the function and the current `` ts`environment ``.
 - **Lines 16 and 19:** Capture the function part of the closure returned by the recursive call to `` ts`step() ``.
-
-<!-- TODO:
-Subtle points:
-- Use the environment to recreate the original output from Step 1.
-- Name reuse.
--->
 
 ### A Function Body Is Evaluated with the Environment in Its Closure
 

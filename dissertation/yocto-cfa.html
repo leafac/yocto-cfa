@@ -6,7 +6,7 @@
 <meta name="author" content="Leandro Facchinetti">
 <meta name="subject" content="TODO">
 <meta name="keywords" content="todo, todo, ...">
-<meta name="date" content="2020-07-07"></head><body><header>
+<meta name="date" content="2020-07-08"></head><body><header>
 <div class="title-page">
 <div class="title">
 <p>Yocto-CFA:<br>
@@ -24,7 +24,7 @@ in conformity with the requirements for the degree of Doctor of Philosophy</p>
 <p>Baltimore, Maryland<br>
 August 2020</p>
 </div>
-<div class="timestamp draft">2020-07-07T15:39:56.156Z</div></div>
+<div class="timestamp draft">2020-07-08T18:30:31.151Z</div></div>
 <!-- TODO
 # Abstract
 
@@ -3291,10 +3291,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>23</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
         </tbody></table>
 <ul>
-<li><strong>Line 13:</strong> Remove substitution. Instead, when encountering a function call, add to the environment a mapping from the parameter to the argument.</li>
+<li><strong>Line 13:</strong> Remove substitution. Instead, when encountering a function call, add to the environment a mapping from the parameter to the argument. If a variable name is reused, then <code><span style="color: #795E26">set</span><span style="color: #000000">()</span></code> overwrites the existing mapping with the new one, which has the effect of making a variable reference refer to the closest definition (what we called Option&nbsp;2 in <a href="#name-reuse">§&nbsp;1.3.7</a>).</li>
 <li><strong>Lines 15–18:</strong> When encountering a variable reference, look it up on the environment.</li>
 </ul>
 <h3 id="introducing-closures"><span class="heading-counter">1.4.4</span> Introducing Closures<code class="draft"> [](#introducing-closures)</code></h3>
+<hr>
 <table>
 <thead>
 <tr>
@@ -3317,7 +3318,8 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </tr>
 </tbody>
 </table>
-<p>With the modifications introduced in <a href="#using-the-environment">§&nbsp;1.4.3</a> the interpreter returns a function in which substitutions have not occurred yet, and to make sense of this function we need the environment to be returned as well:</p>
+<p>With the modifications introduced in <a href="#using-the-environment">§&nbsp;1.4.3</a> the interpreter returns a function in which substitutions have not occurred yet. In some cases, for example the program in <a href="#using-the-environment">§&nbsp;1.4.3</a>, this function makes sense on its own; but in other cases, for example the program above, we need the environment to be returned as well to be able to answer questions such as “what does <code><span style="color: #001080">y</span></code> stand for in <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code>?”</p>
+<p>With a function and an environment we may recreate the results of Step 0.</p>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
 <ul>
@@ -3332,6 +3334,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </li>
 </ul>
 </fieldset>
+<p>We modify the interpreter to return closures instead of functions:</p>
 <table class="listing">
           <tbody><tr class="highlighted-line"><td class="line-number"><pre><code>1</code></pre></td><td><pre><code><span style="color: #0000FF">type</span><span style="color: #000000"> </span><span style="color: #267F99">Value</span><span style="color: #000000"> = </span><span style="color: #267F99">Closure</span><span style="color: #000000">;</span></code></pre></td></tr>
 <tr><td class="line-number"><pre><code>2</code></pre></td><td><pre><code>&nbsp;</code></pre></td></tr>
@@ -3367,16 +3370,11 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>32</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
         </tbody></table>
 <ul>
-<li><strong>Line 1:</strong> In an environment-based interpreter a value is not only a function, but also the environment containing the substitutions that have not ocurred yet.</li>
+<li><strong>Line 1:</strong> In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not ocurred yet.</li>
 <li><strong>Lines 3–6:</strong> The definition of the data structure for closures.</li>
 <li><strong>Line 13:</strong> When encountering a function definition, create a closure with the function and the current <code><span style="color: #001080">environment</span></code>.</li>
 <li><strong>Lines 16 and 19:</strong> Capture the function part of the closure returned by the recursive call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code>.</li>
 </ul>
-<!-- TODO:
-Subtle points:
-- Use the environment to recreate the original output from Step 1.
-- Name reuse.
--->
 <h3 id="a-function-body-is-evaluated-with-the-environment-in-its-closure"><span class="heading-counter">1.4.5</span> A Function Body Is Evaluated with the Environment in Its Closure<code class="draft"> [](#a-function-body-is-evaluated-with-the-environment-in-its-closure)</code></h3>
 <figure>
 <p>\begin{tabular}{ll}
