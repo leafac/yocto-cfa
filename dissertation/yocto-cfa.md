@@ -1258,7 +1258,7 @@ function run(expression: Expression): Value {
 }
 ```
 
-- **Line 1:** In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not been performed. The change in the definition of `` ts`Value `` affects not only the return of `` ts`run() `` and `` ts`step() ``, but also the values stored in the environments.
+- **Line 1:** In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not been performed. The change in the definition of `` ts`Value `` affects not only the return of `` ts`run() `` and `` ts`step() ``, but also the values stored in the environments, for example, the environment `` json`{ "y": `x => x` } `` turns into `` json`{ "y": { "function": `x => x`, "environment": {} } } ``.
 - **Lines 3–6:** The definition of the data structure for closures.
 - **Line 13:** When encountering a function definition, create a closure with the function and the current `` ts`environment ``.
 - **Lines 16 and 19:** Capture the function part of the closure returned by the recursive call to `` ts`step() ``.
@@ -1272,7 +1272,7 @@ function run(expression: Expression): Value {
 <td align="left">
 
 <!-- prettier-ignore -->
-```js
+```js{number}
 let f;
 
 definition();
@@ -1309,36 +1309,67 @@ function call() {
 
 </figure>
 
-This example program shows the difference between the current environment with which an expression is evaluated and the environment that comes from a closure. The following is a trace of the first call to `` ts`step() ``, when a closure is created:
+In this example program there are two different variables called `` js`y ``: one in line 7, as part of `` js`definition() ``, where the function `` js`f `` is defined; and another in line 12, as part of `` js`call() ``, where `` js`f `` is called. The function `` js`f `` includes a reference to `` js`y ``, and using the interpreter from [](#introducing-closures) this reference refers to the `` js`y `` in `` js`call() ``, so the output of the program is `` js`a => a ``.
 
-<figure>
+There is a problem with this treatment that is similar to the problem with name reuse addressed in [](#name-reuse): to understand `` js`f `` we must not only look at where it was _defined_, but also at all the places where it is _called_ (that is, the interpreter defeats local reasoning). This is not the behavior of the substitution-based interpreter from Step 0 (and also of JavaScript and most other programming languages).
 
-\begin{tabular}{rrcl}
-\multicolumn{4}{c}{\textbf{Trace 1: First Call to `` ts`step() `` · Closure Creation}} \\
-\textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
-& `` ts`expression.callee `` & = & `` js`f => (x => f(x))(a => a) `` \\
-& `` ts`expression.arguments[0] `` & = & `` js`(x => z => x)(y => y) `` \\
-\rowcolor[rgb]{.88,1,1} 10 & `` ts`argument `` & = & `` math`\langle `` js` (z => x) ``, [ `` js `x `\mapsto \langle` js`(y => y)`, [] \rangle] \rangle` \\
-\end{tabular}
+<fieldset>
+<legend><strong>Technical Terms</strong></legend>
 
-</figure>
+- **Static Scoping:** The notion that variable references refer to where a function is _defined_. This is the treatment used by most programming languages, including the interpreter from Step 0.
+- **Dynamic Scoping:** The notion that variable references refer to where a function is _used_. This is the treatment given by the interpreter in [](#introducing-closures).
 
-And the following is a trace of the recursive call to `` ts`step() `` in which that closure is called:
+</fieldset>
 
-<figure>
+<fieldset>
+<legend><strong>Advanced</strong></legend>
 
-\begin{tabular}{rrcl}
-\multicolumn{4}{c}{\textbf{Trace 2: Recursive Call to `` ts`step() `` · Closure Call}} \\
-\textbf{Line} & \multicolumn{1}{l}{(see § \ref{A Function Call})} & & \\
-& `` ts`expression `` & = & `` js`f(x) `` \\
-& `` ts`expression.callee `` & = & `` js`f `` \\
-\rowcolor[rgb]{.88,1,1} & `` ts`expression.arguments[0] `` & = & `` js`x `` \\
-\rowcolor[rgb]{.88,1,1} & `` ts`environment `` & = & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` \\
-9 & `` math` `` ts` step( ``\cdots `` ts `) `& = &` math` \langle `` js ` (z => x) `, [` js `x`\mapsto \langle`js` (y => y) `, [] \rangle] \rangle` \\ 5 & `` ts `parameter `& = &` js` z `` \\ \rowcolor[rgb]{.88,1,1} 6 & `` ts `body `& = &` js` x `` \\ \rowcolor[rgb]{.88,1,1} 8 & `` ts `functionEnvironment `& = &` math` [ `` js `x`\mapsto \langle`js`(y => y) `, [] \rangle]` \\
-\multicolumn{4}{c}{Paused before line 10}\\
-\end{tabular}
+The invention of dynamic scoping was not intentional; it was a mistake in the original implementation of a programming language called LISP [lisp-original, lisp-history](). Subsequent LISP implementations fixed the mistake.
 
-</figure>
+But in some cases dynamic scoping may be useful, and some programming languages include dynamic scoping as a special feature to be used sparingly, for example, Racket’s `` clojure`parameterize `` [racket-guide (§ 4.13)](). Dynamic scoping lets us modify the behavior of functions without having to forward extra arguments, for example, modify the standard output for all the functions that print to the console on a section of a program.
+
+There is also at least on language in which dynamic scoping is the default mechanism and static scoping must be opted into: Emacs Lisp [emacs-lisp (§ 12.10)]().
+
+</fieldset>
+
+We wish to modify the interpreter to implement static scoping instead of dynamic scoping. Variable references should refer to where a function was _defined_, not where it is _used_. To do this, we change the environment under which a function body is interpreted: instead of the current environment, we use the environment captured in the closure that was created when the function was defined:
+
+```ts{number}{13,18}
+function run(expression: Expression): Value {
+  return step(expression, new Map());
+  function step(expression: Expression, environment: Environment): Value {
+    switch (expression.type) {
+      case "ArrowFunctionExpression":
+        return { function: expression, environment };
+      case "CallExpression":
+        const {
+          function: {
+            params: [parameter],
+            body,
+          },
+          environment: functionEnvironment,
+        } = step(expression.callee, environment);
+        const argument = step(expression.arguments[0], environment);
+        return step(
+          body,
+          new Map(functionEnvironment).set(parameter.name, argument)
+        );
+      case "Identifier":
+        const value = environment.get(expression.name);
+        if (value === undefined)
+          throw new Error(
+            `Reference to undefined variable: ${expression.name}`
+          );
+        return value;
+    }
+  }
+}
+```
+
+- **Line 13:** Capture the environment from the closure that was created when the function was defined.
+- **Line 18:** Use the `` js`functionEnvironment `` instead of `` js`environment `` when interpreting the `` js`body ``.
+
+---
 
 At this point, there are two expressions left to evaluate: the argument (`` ts`expression.arguments[0] ``; line 10), and the body of the called function (`` ts`body ``; lines 11–14). Both of these expressions have the same code (`` js`x ``), and our current implementation looks up this variable both times on the current `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a)`, [\cdots] \rangle`.
 
