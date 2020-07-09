@@ -1268,7 +1268,7 @@ function run(expression: Expression): Value {
 <figure>
 
 <table>
-<tr><th align="right">Example JavaScript<br>Program for Intuition
+<tr><th align="right">Example Program<br>in Javascript for Intuition
 <td align="left">
 
 <!-- prettier-ignore -->
@@ -1289,7 +1289,7 @@ function call() {
 }
 ```
 
-<tr><th align="right">Equivalent<br>Yocto-JavaScript Program
+<tr><th align="right">Equivalent Program<br>in Yocto-JavaScript
 <td align="left">
 
 <!-- prettier-ignore -->
@@ -1369,95 +1369,7 @@ function run(expression: Expression): Value {
 - **Line 13:** Capture the environment from the closure that was created when the function was defined.
 - **Line 18:** Use the `` js`functionEnvironment `` instead of `` js`environment `` when interpreting the `` js`body ``.
 
----
-
-At this point, there are two expressions left to evaluate: the argument (`` ts`expression.arguments[0] ``; line 10), and the body of the called function (`` ts`body ``; lines 11–14). Both of these expressions have the same code (`` js`x ``), and our current implementation looks up this variable both times on the current `` ts`environment ``, which produces the same value: `` math`\langle `` js`(a => a)`, [\cdots] \rangle`.
-
-But this leads to an issue: we may not reason about `` js`z => x `` by looking only at where it is defined; we must also examine all the places in which it may be called. This is the same issue we had to solve when considering name reuse in Step 0 (see § \ref{Step 0: Name Reuse}). We would like, instead, for each `` js`x `` to refer to the value that existed in the environment where the closure is _created_, not where it is _called_:
-
-<figure>
-
-\includegraphics[page = 8]{images.pdf}
-
-</figure>
-
-To implement this, we change the recursive call to `` ts`step() `` that evaluates the function body so that it uses the environment coming from the closure (`` js`functionEnvironment ``) instead of the current environment (`` js`environment ``):
-
-```ts{13}
-// step()
-case "CallExpression":
-  const {
-    function: {
-      params: [parameter],
-      body,
-    },
-    environment: functionEnvironment,
-  } = step(expression.callee, environment);
-  const argument = step(expression.arguments[0], environment);
-  return step(
-    body,
-    new Map(functionEnvironment).set(parameter.name, argument)
-  );
-```
-
-<fieldset>
-<legend><strong>Technical Terms</strong></legend>
-
-The principle of being able to reason about a function only by looking at its definition is something called _local reasoning_ (see § \ref{Step 0: Name Reuse}). The treatment given to the environment before this section is something called _dynamic scoping_, because the _scope_ of a variable (where a variable is defined) is _dynamic_, depending on where the function is called. The treatment given to the environment in this section is something called _static scoping_ or _lexical scoping_, because the scope of a variable is determined before we start interpreting the program.
-
-</fieldset>
-
-<fieldset>
-<legend><strong>Advanced</strong></legend>
-
-There are languages that implement dynamic scoping. In some cases dynamic scoping is the only option, for example, in the original implementation of LISP [lisp-original](), though that was later considered a mistake [lisp-history](). In some cases dynamic scoping is the default, but there is an option to use static scoping, for example, in Emacs Lisp [emacs-lisp (§ 12.10)](). In some cases dynamic scoping is an extra feature to be used sparingly, for example, in Racket’s `` clojure`parameterize `` [racket-guide (§ 4.13)]().
-
-</fieldset>
-
-### The Entire Runner
-
-We completed the changes necessary to transform the `` ts`run() `` function from the substitution-based interpreter in Step 0 into an environment-based interpreter:
-
-```ts{number}
-type Value = Closure;
-
-type Closure = {
-  function: ArrowFunctionExpression;
-  environment: Environment;
-};
-
-type Environment = Map<Identifier["name"], Value>;
-
-function run(expression: Expression): Value {
-  return step(expression, new Map());
-  function step(expression: Expression, environment: Environment): Value {
-    switch (expression.type) {
-      case "ArrowFunctionExpression":
-        return { function: expression, environment };
-      case "CallExpression":
-        const {
-          function: {
-            params: [parameter],
-            body,
-          },
-          environment: functionEnvironment,
-        } = step(expression.callee, environment);
-        const argument = step(expression.arguments[0], environment);
-        return step(
-          body,
-          new Map(functionEnvironment).set(parameter.name, argument)
-        );
-      case "Identifier":
-        const value = environment.get(expression.name);
-        if (value === undefined)
-          throw new Error(
-            `Reference to undefined variable: ${expression.name}`
-          );
-        return value;
-    }
-  }
-}
-```
+This concludes the implementation of `` ts`run() `` for the environment-based interpreter.
 
 <fieldset>
 <legend><strong>Advanced</strong></legend>
