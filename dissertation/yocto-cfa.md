@@ -1263,15 +1263,49 @@ function run(expression: Expression): Value {
 - **Line 13:** When encountering a function definition, create a closure with the function and the current `` ts`environment ``.
 - **Lines 16 and 19:** Capture the function part of the closure returned by the recursive call to `` ts`step() ``.
 
-### A Function Body Is Evaluated with the Environment in Its Closure
+### A Function Body Is Evaluated with the Environment from Its Closure
 
 <figure>
 
-\begin{tabular}{ll}
-\textbf{Example Program} & \\
-\multicolumn{2}{l}{`` js`(f => (x => f(x))(a => a))((x => z => x)(y => y)) ``} \\
-\textbf{Current Output} & `` math`\langle `` js` (a => a) ``, [ `` js `f `\mapsto \langle` js` (z => x) ``, [ `` js `x `\mapsto \langle` js` (y => y) ``, [] \rangle ] \rangle] \rangle `` \\ \textbf{Expected Output} & `` math `\langle `` js`(y => y) ``, [] \rangle `` \\
-\end{tabular}
+<table>
+<tr><th align="right">Example JavaScript<br>Program for Intuition
+<td align="left">
+
+<!-- prettier-ignore -->
+```js
+let f;
+
+definition();
+call();
+
+function definition() {
+  const y = x => x;
+  f = z => y;
+}
+
+function call() {
+  const y = a => a;
+  return f(y);
+}
+```
+
+<tr><th align="right">Equivalent<br>Yocto-JavaScript Program
+<td align="left">
+
+<!-- prettier-ignore -->
+```js
+(
+  f => (y => f(y))(a => a)
+)(
+  (y => z => y)(x => x)
+)
+```
+
+<tr><th align="right">Current Output
+<td align="left"><code>json`{ "function": `a => a`, ... }</code>
+<tr><th align="right">Expected Output
+<td align="left"><code>json`{ "function": `x => x`, ... }</code>
+</table>
 
 </figure>
 
@@ -1587,12 +1621,12 @@ In Step 1 a closure contains an environment mapping names to other closures, wh
 
 </figure>
 
-Each closure continues to include its own environment, because it needs to look up variable references from where the closure was created (see § \ref{A Function Body Is Evaluated with the Environment in Its Closure}), but there is only one store for the entire interpreter, and we avoid ambiguities by allocating different addresses, for example:
+Each closure continues to include its own environment, because it needs to look up variable references from where the closure was created (see § \ref{A Function Body Is Evaluated with the Environment from Its Closure}), but there is only one store for the entire interpreter, and we avoid ambiguities by allocating different addresses, for example:
 
 <figure>
 
 \begin{tabular}{rll}
-(See § \ref{A Function Body Is Evaluated with the Environment in Its Closure}) & \multicolumn{1}{c}{\textbf{Step 1}} & \multicolumn{1}{c}{\textbf{Step 2}} \\
+(See § \ref{A Function Body Is Evaluated with the Environment from Its Closure}) & \multicolumn{1}{c}{\textbf{Step 1}} & \multicolumn{1}{c}{\textbf{Step 2}} \\
 `` ts`environment `` & `` math`[ `` js` x `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle, \cdots]` & `` math`[ `` js` x `` \mapsto `` js `0 `, \cdots]` \\
 `` ts`funcEnv. `` & `` math`[ `` js` x `` \mapsto \langle `` js `(y => y) `, [] \rangle]` & `` math`[ `` js` x `` \mapsto `` js `1 `]` \\
 \textbf{Store} & \multicolumn{1}{c}{—} & `` math`[ `` js` 0 `` \mapsto \langle `` js `(a => a) `, [\cdots] \rangle,` \\
@@ -1668,7 +1702,7 @@ The `` ts`store `` is unique for the whole interpreter, unlike `` ts`environment
 
 </figure>
 
-In Step 1, when we encounter a function call we extend the `` ts`functionEnvironment `` with a mapping from the `` ts`parameter.name `` to the `` ts`argument `` (see § \ref{A Function Call}, \ref{A Function Body Is Evaluated with the Environment in Its Closure}). In Step 2, we introduce the `` ts`store `` as a layer of indirection:
+In Step 1, when we encounter a function call we extend the `` ts`functionEnvironment `` with a mapping from the `` ts`parameter.name `` to the `` ts`argument `` (see § \ref{A Function Call}, \ref{A Function Body Is Evaluated with the Environment from Its Closure}). In Step 2, we introduce the `` ts`store `` as a layer of indirection:
 
 ```ts{number}{11,12,15}
 // step()
