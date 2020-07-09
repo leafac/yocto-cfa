@@ -6,7 +6,7 @@
 <meta name="author" content="Leandro Facchinetti">
 <meta name="subject" content="TODO">
 <meta name="keywords" content="todo, todo, ...">
-<meta name="date" content="2020-07-08"></head><body><header>
+<meta name="date" content="2020-07-09"></head><body><header>
 <div class="title-page">
 <div class="title">
 <p>Yocto-CFA:<br>
@@ -24,7 +24,7 @@ in conformity with the requirements for the degree of Doctor of Philosophy</p>
 <p>Baltimore, Maryland<br>
 August 2020</p>
 </div>
-<div class="timestamp draft">2020-07-08T18:30:31.151Z</div></div>
+<div class="timestamp draft">2020-07-09T16:12:28.516Z</div></div>
 <!-- TODO
 # Abstract
 
@@ -3104,7 +3104,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </tbody>
 </table>
 </figure>
-<p>The result of substitution (<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code>) is an expression that contains the initial expression (the first <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code>) in addition to some extra work (the second <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code>), so when it is passed as argument to the recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> in line&nbsp;13, it causes <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> never repeat themselves:</p>
+<p>The result of substitution (<code><span style="color: #000000">(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))(</span><span style="color: #795E26">F</span><span style="color: #000000">(F))</span></code>) contains the initial expression (the first <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code>) in addition to some extra work (the second <code><span style="color: #795E26">F</span><span style="color: #000000">(F)</span></code>), so when it is passed as argument to the recursive call to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> in line&nbsp;13, it causes <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> never repeat themselves:</p>
 <figure>
 <table>
 <thead>
@@ -3169,24 +3169,20 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 </table>
 </figure>
 <p>The issue with this strategy is that the expression <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> does not exist in the original program, and as mentioned in <a href="#programs-that-do-not-terminate">§&nbsp;1.3.17</a>, it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step&nbsp;1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they should be substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:</p>
+<figure>
 <table>
-<thead>
-<tr>
-<th align="left"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><strong>Example Program</strong></td>
-<td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
-</tr>
-<tr>
-<td align="left"><strong>Step&nbsp;1 Output</strong></td>
-<td align="left">Function: <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code><br>Environment: <code><span style="color: #000000">{ </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000"> }</span></code></td>
-</tr>
-</tbody>
-</table>
+<tbody><tr><th align="right">Example Program
+</th><td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code>
+</td></tr><tr><th align="right">Step&nbsp;1 Output
+</th><td align="left">
+<table class="listing">
+          <tbody><tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`z</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">y`</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: { </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000"> }</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
+        </tbody></table>
+</td></tr></tbody></table>
+</figure>
 <fieldset>
 <legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
 <ul>
@@ -3295,43 +3291,32 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <li><strong>Lines 15–18:</strong> When encountering a variable reference, look it up on the environment.</li>
 </ul>
 <h3 id="introducing-closures"><span class="heading-counter">1.4.4</span> Introducing Closures<code class="draft"> [](#introducing-closures)</code></h3>
-<hr>
+<figure>
 <table>
-<thead>
-<tr>
-<th align="right"></th>
-<th align="left"></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="right"><strong>Example Program</strong></td>
-<td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code></td>
-</tr>
-<tr>
-<td align="right"><strong>Current Output</strong></td>
-<td align="left"><code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code></td>
-</tr>
-<tr>
-<td align="right"><strong>Expected Output</strong></td>
-<td align="left">Function: <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code><br>Environment: <code><span style="color: #000000">{ </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000"> }</span></code></td>
-</tr>
-</tbody>
-</table>
-<p>With the modifications introduced in <a href="#using-the-environment">§&nbsp;1.4.3</a> the interpreter returns a function in which substitutions have not occurred yet. In some cases, for example the program in <a href="#using-the-environment">§&nbsp;1.4.3</a>, this function makes sense on its own; but in other cases, for example the program above, we need the environment to be returned as well to be able to answer questions such as “what does <code><span style="color: #001080">y</span></code> stand for in <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code>?”</p>
-<p>With a function and an environment we may recreate the results of Step 0.</p>
-<fieldset>
-<legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
-<ul>
-<li>
-<p><strong>Closure&nbsp;[<a href="#closures">13</a>]:</strong> A data structure containing a function and an environment, for example:</p>
+<tbody><tr><th align="right">Example Program
+</th><td align="left"><code><span style="color: #000000">(</span><span style="color: #001080">y</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span><span style="color: #000000">)(</span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000">)</span></code>
+</td></tr><tr><th align="right">Current Output
+</th><td align="left"><code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">y</span></code>
+</td></tr><tr><th align="right">Expected Output
+</th><td align="left">
 <table class="listing">
           <tbody><tr><td><pre><code><span style="color: #000000">{</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`z</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">y`</span><span style="color: #000000">,</span></code></pre></td></tr>
-<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: { </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000"> }</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    </span><span style="color: #0451A5">"y"</span><span style="color: #000000">: {</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">,</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">      </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {}</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">    }</span></code></pre></td></tr>
+<tr><td><pre><code><span style="color: #000000">  }</span></code></pre></td></tr>
 <tr><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
         </tbody></table>
-</li>
+</td></tr></tbody></table>
+</figure>
+<p>With the modifications introduced in <a href="#using-the-environment">§&nbsp;1.4.3</a> the interpreter returns a function in which substitutions have not ocurred, and information about the substitutions is recorded in the environment, so we must include the environment in the output. If we wish to verify that the interpreters in Step&nbsp;0 and Step&nbsp;1 produce equivalent outputs, we could perform the substitutions using the environment, for example, we could substitute the <code><span style="color: #001080">y</span></code> in the output from the program above with the <code><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> found in the environment to produce the <code><span style="color: #001080">z</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span><span style="color: #000000"> </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> </span><span style="color: #001080">x</span></code> from Step&nbsp;0 (see <a href="#substitution-in-function-definitions">§&nbsp;1.3.5</a>).</p>
+<fieldset>
+<legend><span class="legend-wrapper"><strong>Technical Terms</strong></span></legend>
+<ul>
+<li><strong>Closure&nbsp;[<a href="#closures">13</a>]:</strong> A data structure containing a function and an environment, for example, <code><span style="color: #000000">{ </span><span style="color: #0451A5">"function"</span><span style="color: #000000">: </span><span style="color: #CD3131">`x</span><span style="color: #000000"> </span><span style="color: #CD3131">=&gt;</span><span style="color: #000000"> </span><span style="color: #CD3131">x`</span><span style="color: #000000">, </span><span style="color: #0451A5">"environment"</span><span style="color: #000000">: {} }</span></code>.</li>
 </ul>
 </fieldset>
 <p>We modify the interpreter to return closures instead of functions:</p>
@@ -3370,7 +3355,7 @@ e_f\texttt{(}e_a\texttt{)} \Rightarrow v
 <tr><td class="line-number"><pre><code>32</code></pre></td><td><pre><code><span style="color: #000000">}</span></code></pre></td></tr>
         </tbody></table>
 <ul>
-<li><strong>Line 1:</strong> In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not ocurred yet.</li>
+<li><strong>Line 1:</strong> In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not been performed. The change in the definition of <code><span style="color: #001080">Value</span></code> affects not only the return of <code><span style="color: #795E26">run</span><span style="color: #000000">()</span></code> and <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code>, but also the values stored in the environments.</li>
 <li><strong>Lines 3–6:</strong> The definition of the data structure for closures.</li>
 <li><strong>Line 13:</strong> When encountering a function definition, create a closure with the function and the current <code><span style="color: #001080">environment</span></code>.</li>
 <li><strong>Lines 16 and 19:</strong> Capture the function part of the closure returned by the recursive call to <code><span style="color: #795E26">step</span><span style="color: #000000">()</span></code>.</li>

@@ -1022,7 +1022,7 @@ There are also programs for which interpretation does not terminate that never p
 
 </figure>
 
-The result of substitution (`` js`(F(F))(F(F)) ``) is an expression that contains the initial expression (the first `` js`F(F) ``) in addition to some extra work (the second `` js`F(F) ``), so when it is passed as argument to the recursive call to `` ts`run() `` in line 13, it causes `` ts`run() `` to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to `` ts`run() `` never repeat themselves:
+The result of substitution (`` js`(F(F))(F(F)) ``) contains the initial expression (the first `` js`F(F) ``) in addition to some extra work (the second `` js`F(F) ``), so when it is passed as argument to the recursive call to `` ts`run() `` in line 13, it causes `` ts`run() `` to go into an infinite loop. Unlike what happened in the first example, when interpreting this program the expressions that are passed to `` ts`run() `` never repeat themselves:
 
 <figure>
 
@@ -1064,10 +1064,22 @@ When the interpreter from Step 0 encounters a function call, it produces a new 
 
 The issue with this strategy is that the expression `` js`z => x => x `` does not exist in the original program, and as mentioned in [](#programs-that-do-not-terminate), it is possible that the interpreter tries to produce infinitely many new expressions and loops forever. In Step 1 we want to avoid producing new expressions, so that the interpreter has to consider only the finitely many expressions found in the original program. We accomplish this by introducing a map from variables to the values with which they should be substituted: when we encounter a function call, we add to the map; and when we encounter a variable reference, we look it up on the map, for example:
 
-|                     |                                                                        |
-| :------------------ | :--------------------------------------------------------------------- |
-| **Example Program** | `` js`(y => z => y)(x => x) ``                                         |
-| **Step 1 Output**   | Function: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
+<figure>
+<table>
+<tr><th align="right">Example Program
+<td align="left"><code>js`(y => z => y)(x => x)</code>
+<tr><th align="right">Step 1 Output
+<td align="left">
+
+```json
+{
+  "function": `z => y`,
+  "environment": { "y": `x => x` }
+}
+```
+
+</table>
+</figure>
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
@@ -1176,29 +1188,36 @@ function run(expression: Expression): Value {
 
 ### Introducing Closures
 
----
+<figure>
+<table>
+<tr><th align="right">Example Program
+<td align="left"><code>js`(y => z => y)(x => x)</code>
+<tr><th align="right">Current Output
+<td align="left"><code>js`z => y</code>
+<tr><th align="right">Expected Output
+<td align="left">
 
-|                     |                                                                        |
-| ------------------: | :--------------------------------------------------------------------- |
-| **Example Program** | `` js`(y => z => y)(x => x) ``                                         |
-|  **Current Output** | `` js`z => y ``                                                        |
-| **Expected Output** | Function: `` js`z => y ``<br>Environment: `` json`{ "y": `x => x` } `` |
+```json
+{
+  "function": `z => y`,
+  "environment": {
+    "y": {
+      "function": `x => x`,
+      "environment": {}
+    }
+  }
+}
+```
 
-With the modifications introduced in [](#using-the-environment) the interpreter returns a function in which substitutions have not occurred yet. In some cases, for example the program in [](#using-the-environment), this function makes sense on its own; but in other cases, for example the program above, we need the environment to be returned as well to be able to answer questions such as “what does `` js`y `` stand for in `` js`z => y ``?”
+</table>
+</figure>
 
-With a function and an environment we may recreate the results of Step 0.
+With the modifications introduced in [](#using-the-environment) the interpreter returns a function in which substitutions have not ocurred, and information about the substitutions is recorded in the environment, so we must include the environment in the output. If we wish to verify that the interpreters in Step 0 and Step 1 produce equivalent outputs, we could perform the substitutions using the environment, for example, we could substitute the `` js`y `` in the output from the program above with the `` js`x => x `` found in the environment to produce the `` js`z => x => x `` from Step 0 (see [](#substitution-in-function-definitions)).
 
 <fieldset>
 <legend><strong>Technical Terms</strong></legend>
 
-- **Closure [closures]():** A data structure containing a function and an environment, for example:
-
-  ```json
-  {
-    "function": `z => y`,
-    "environment": { "y": `x => x` }
-  }
-  ```
+- **Closure [closures]():** A data structure containing a function and an environment, for example, `` json`{ "function": `x => x`, "environment": {} } ``.
 
 </fieldset>
 
@@ -1239,7 +1258,7 @@ function run(expression: Expression): Value {
 }
 ```
 
-- **Line 1:** In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not ocurred yet.
+- **Line 1:** In an environment-based interpreter a value is not a function, but a closure, which also contains the environment with mappings for the substitutions that have not been performed. The change in the definition of `` ts`Value `` affects not only the return of `` ts`run() `` and `` ts`step() ``, but also the values stored in the environments.
 - **Lines 3–6:** The definition of the data structure for closures.
 - **Line 13:** When encountering a function definition, create a closure with the function and the current `` ts`environment ``.
 - **Lines 16 and 19:** Capture the function part of the closure returned by the recursive call to `` ts`step() ``.
