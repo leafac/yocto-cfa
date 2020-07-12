@@ -1380,11 +1380,15 @@ We adapt the operational semantics from [](#an-operational-semantics-for-the-int
 
 <figure>
 
-\begin{tabular}{rcll}
-`` math`v `` & = & `` math`\langle `` js` ( ``x `` js ` => `e` js` ) ``, \rho \rangle `` & Values / Closures \\ `` math `\rho `& = &` math`\{x \mapsto v, \cdots\} `` & Environments \\
-\end{tabular}
+|                 |     |                                                                      |              |
+| --------------: | :-: | :------------------------------------------------------------------- | :----------- |
+|    `` math`v `` | ::= | `` math`c ``                                                         | Values       |
+|    `` math`c `` | ::= | `` math`\langle \texttt{(}x\texttt{ => }e\texttt{)}, \rho \rangle `` | Closures     |
+| `` math`\rho `` | ::= | `` math`\{x \mapsto v, \cdots\} ``                                   | Environments |
 
 </figure>
+
+<!-- TODO: Overwriting in the environment. Or do we need alphatization? -->
 
 We then define the relation `` math`\rho \vdash e \Rightarrow v `` to be equivalent to the new implementation of `` ts`run() ``:
 
