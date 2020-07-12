@@ -48,6 +48,7 @@ August 2020
 # Table of Contents
 
 </header>
+
 <main>
 
 <!-- TODO:
@@ -1906,6 +1907,7 @@ TODO: Variations
 -->
 
 </main>
+
 <footer>
 
 # Bibliography
