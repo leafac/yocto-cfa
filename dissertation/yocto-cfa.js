@@ -107,7 +107,7 @@ const GitHubSlugger = require("github-slugger");
             )
             .join("\n")}
         </table>
-    `
+      `
     ).querySelector("table");
     const lines = listing.querySelectorAll("tr");
     if (shouldNumberLines)
