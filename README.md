@@ -6,7 +6,7 @@
 <a href="https://github.com/leafac/yocto-cfa/actions"><img alt="Continuous Integration" src="https://github.com/leafac/yocto-cfa/workflows/.github/workflows/main.yml/badge.svg"></a>
 </p>
 
-<h3 align="center">Yocto-CFA has been abandoned. For various reasons (the pandemic, the birth of my first son, having to move abroad, and so forth) I had to leave the program a couple of months before finishing my dissertation.</h3>
+<h3 align="center">Yocto-CFA has been abandoned.<br>For various reasons (the pandemic, the birth of my first son, having to move abroad, and so forth) I had to leave the PhD program a couple of months before finishing my dissertation.</h3>
 
 ## Requirements
 
